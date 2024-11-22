@@ -96,7 +96,7 @@
 						    <div class="d-row">
 						    	<div class="col-12 col-md-6 text-center offset-md-3 mb-3">
 						    		<input type="text" class="input-pasaporte w-100 input-an p-2 fs-5 mb-5 mb-md-1 text-center" placeholder="" />
-						    		<a href="portal.php" class="btn bg-veris btn-ingresar text-white mt-2 mb-5 mb-md-1 mx-auto rounded-8">INGRESAR</a>
+						    		<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8">INGRESAR</div>
 						    	</div>
 						        <div class="col-12 col-md-10 offset-md-1 d-none d-md-block">
 									<!-- <input class="input-pasaporte input-an" placeholder="" /> -->
@@ -109,7 +109,7 @@
 						        <div class="col-12 col-md-8 mb-3 text-center">
 						    		<input class="w-100 rounded-8 text-center fs-4 mb-1 border-0 shadow-0" id="nombres" type="text" placeholder="Ingresa nombres" />
 								    <input class="w-100 rounded-8 text-center fs-4 mb-1 border-0 shadow-0" id="apellidos" type="text" placeholder="Ingresa apellidos" />
-						    		<button class="btn bg-veris text-white mt-2 mx-auto">BUSCAR</button>
+						    		<button onclick="buscarUsuario();" class="btn bg-veris text-white mt-2 mx-auto">BUSCAR</button>
 						    		<div class="w-100 d-none d-md-block">
 								    	<div class="keyboardContainer w-100"></div>
 								    </div>
