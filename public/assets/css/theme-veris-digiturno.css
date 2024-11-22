@@ -1,0 +1,159 @@
+:root {
+    --veris-blue: #0071CE;
+    --veris-blue-dark: #0A2240;
+    --veris-blue-light: #99C6EB;
+    --veris-blue-sky: #EBF6FE;
+    --silver: #F3F4F5;
+    --pagado: #B9F6CA;
+    --pendiente: #FFC107;
+    --pendiente-light: #FFF8E1;
+}
+
+
+/* Estilos personalizados */
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Estilos para el Header */
+.header {
+    background-color: #f8f9fa;
+    flex: 0 0 auto;
+}
+
+.logo{
+    max-width: 125px;
+}
+
+/* Estilos para el Content */
+.content {
+    flex: 1 0 70%; /* Al menos 70% del alto */
+    overflow-y: auto;
+    background-color: #ffffff;
+}
+
+/* Estilos para el Footer */
+.footer {
+    background-color: #f8f9fa;
+    flex: 0 0 auto;
+}
+
+.bg-veris-dark{
+    background: var(--veris-blue-dark);
+}
+
+.text-veris-light{
+    color: var(--veris-blue-light);
+}
+
+.text-veris-dark{
+    color: var(--veris-blue-dark);
+}
+
+.bg-veris-light{
+    background: var(--veris-blue-light);
+}
+
+.bg-veris-sky{
+    background: var(--veris-blue-sky);
+}
+
+.bg-pendiente{
+    background: var(--pendiente);
+}
+
+.bg-pendiente-light{
+    background: var(--pendiente-light);
+}
+
+.text-veris{
+    color: var(--veris-blue);
+}
+
+.text-pendiente{
+    color: var(--pendiente);
+}
+
+.bg-veris{
+    background: var(--veris-blue);
+}
+
+.rounded-8{
+    border-radius: 8px;
+}
+
+.bg-silver{
+    background-color: var(--silver);
+}
+
+.border-veris-1{
+    border: 1px solid var(--veris-blue);
+}
+
+.border-veris-light-1{
+    border: 1px solid var(--veris-blue-light);
+}
+
+.border-pendiente-1{
+    border: 1px solid var(--pendiente) !important;
+}
+
+.border-veris-2{
+    border: 2px solid var(--veris-blue);
+}
+
+.fw-medium{
+    font-weight: 500;
+}
+
+.bg-pagada{
+    background: var(--pagado);
+}
+
+/*
+.hg-theme-default{
+    border-radius: 0px !important;
+    background-color: #fff !important;
+}
+
+.hg-rows{
+    background: var(--veris-blue) !important;
+}
+
+.hg-button{
+    box-shadow: none !important;
+    border: 0px !important;
+}*/
+
+.item-coincidencia{
+    cursor: pointer;
+}
+
+.item-coincidencia-selected,
+.item-coincidencia:hover{
+    color: #fff !important;
+    background: var(--veris-blue);
+}
+
+.item-coincidencia-selected .letter-name,
+.item-coincidencia:hover .letter-name{
+    color: var(--veris-blue) !important;
+}
+
+/* Estilos específicos para escritorio (lg y arriba) */
+@media (min-width: 992px) {
+    .wrapper {
+        height: 100vh; /* Ocupa toda la altura de la ventana */
+    }
+
+    .content {
+        min-height: 70vh; /* Al menos el 70% del alto */
+    }
+}

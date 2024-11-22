@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\DigiturnoController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/{mac}', [DigiturnoController::class, 'index'])->name('index');
+Route::get('/ingreso/{mac}', [DigiturnoController::class, 'ingreso'])->name('ingreso');
+Route::get('/portal/{portalToken}', [DigiturnoController::class, 'portal'])->name('portal');
 
 Route::get('/test', function () {
     return response('welcome Akold');
