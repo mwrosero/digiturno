@@ -12,9 +12,10 @@ use App\Models\Veris;
 class DigiturnoController extends Controller
 {
     public function index($mac) {
-        // $token = Veris::getToken();
+        $token = Veris::getToken();
         // dd($token);
         return view('digiturno.home')
+                ->with('accessToken',$token)
                 ->with('mac',$mac);
     }
 
