@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <div class="col-4 col-sm-2 col-md-2">
-                    <a href="ingreso.php" class="btn border-veris-1 rounded-8 text-veris w-100 p-2 d-flex justify-content-center align-items-center h-100">
+                    <a href="#" class="btn btn-salir border-veris-1 rounded-8 text-veris w-100 p-2 d-flex justify-content-center align-items-center h-100">
                         <img class="me-2" src="{{ asset('assets/img/exit-icon.svg') }}" alt="">Salir
                     </a>
                 </div>
@@ -284,7 +284,10 @@
     let local = localStorage.getItem('turno-{{ $portalToken }}');
     let dataTurno = JSON.parse(local);
 
+    $('.btn-salir').attr('href',`/ingreso/${ dataTurno.mac }`);
+
     $(document).ready(async function() {
+
         $('#toggle-sidebar').on('click', function() {
             $('#sidebar').toggleClass('sidebar-collapsed sidebar-expanded');
             if ($('#sidebar').hasClass('sidebar-collapsed')) {
@@ -308,7 +311,14 @@
             }
         });
 
-        await drawListFamiliares()
+        await drawListFamiliares();
+        await cargarServicios();
+
+        $('body').on('click', '.item-coincidencia', async function(){
+            $('.item-coincidencia').removeClass('item-coincidencia-selected')
+            $(this).addClass('item-coincidencia-selected');
+            await cargarServicios();
+        });
 
         $('#btnPrint').on('click', function () {
             var htmlContent = $('#hiddenContent').html();
@@ -341,7 +351,7 @@
     }
     async function drawListFamiliares(){
         let elem = ``;
-        elem += `<div data-rel='${JSON.stringify(dataTurno)}' class="item-coincidencia item-coincidencia-selected rounded-8 border-veris-2 p-2 text-center bg-veris-sky mb-2 text-veris fw-medium d-flex justify-content-between align-items-center fs-16">
+        elem += `<div data-rel='${JSON.stringify(dataTurno.paciente)}' class="item-coincidencia item-coincidencia-selected rounded-8 border-veris-2 p-2 text-center bg-veris-sky mb-2 text-veris fw-medium d-flex justify-content-between align-items-center fs-16">
             <div class="letter-name border-veris-1 mx-2 bg-white">${ dataTurno.paciente.nombreCompleto.charAt(0) }</div>
                 <span class="flex-grow-1 name-familiar text-start text-md-center">${ dataTurno.paciente.nombreCompleto }</span>
         </div>`;
@@ -353,6 +363,26 @@
             </div>`;
         })
         $('#list-familiares').html(elem);
+    }
+    async function cargarServicios(){
+        let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+        let paciente = JSON.parse(dataAttr);
+        let args = [];
+        args["endpoint"] =  `${api_url}/${api_war}/paciente/servicios?macAddress=${ dataTurno.mac }&idPaciente=${ paciente.idPaciente }`;
+        //dataCita.paciente.numeroPaciente
+        args["method"] = "GET";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            await drawServicio(data);
+        }else{
+            alert(data.message);
+        }
+    }
+    async function drawServicio(data){
+
     }
 </script>
 <style>
