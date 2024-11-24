@@ -97,7 +97,7 @@
                                 <h3>Servicios</h3>
                             </div>
                             <div class="col-12 mb-2" id="list-servicios">
-                                <div class="card w-100 rounded-8 py-3 px-3 mb-3">
+                                {{-- <div class="card w-100 rounded-8 py-3 px-3 mb-3">
                                     <div class="row d-flex align-items-center">
                                         <div class="col-7">
                                             <h4 class="fw-bold title-servicio position-relative">
@@ -250,7 +250,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -376,13 +376,58 @@
         const data = await call(args);
         console.log(data);
         if(data.code == 200){
-            await drawServicio(data);
+            await drawServicio(data.data);
         }else{
             alert(data.message);
         }
     }
     async function drawServicio(data){
-
+        let elem = ``;
+        $.each(data, function(key, value){
+            elem += `<div class="card w-100 rounded-8 py-3 px-3 mb-3">
+                <div class="row d-flex align-items-center">
+                    <div class="col-7">
+                        <h4 class="fw-bold title-servicio position-relative">
+                            ${ value.nombreServicioNivel1 }
+                            <span class="text-veris fw-medium ">agendada</span>
+                        </h4>
+                    </div>
+                    <div class="col-5 d-flex flex-column align-items-end">
+                        <span class="badge bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
+                            <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
+                            Pagada
+                        </span>
+                    </div>
+                </div>
+                <div class="row g-0 rounded-8 d-flex justify-content-between align-items-center mt-2 bg-veris-sky p-3 px-2 fs-5 mb-2">
+                    <div class="col-12 col-md-6">
+                        <span class="text-veris fw-medium ">Centro:</span> Veris Kennedy
+                    </div>
+                    <div class="col-12 col-md-6 fw-bold fs-4 text-start text-md-end">
+                        <span class="text-veris fw-medium ">Ve al consultorio:</span> 13 <span class="text-veris fw-medium ">|</span> 
+                        <img src="{{ asset('assets/img/marker.svg') }}">
+                    </div>
+                </div>
+                <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
+                    <div class="col-12 col-md-6 d-flex justify-content-between align-items-center mb-2">
+                        <div class="avatar-doctor border-veris-1" style="background: url({{ asset('assets/img/doctor.png') }}) no-repeat top center;background-size: cover;">
+                        </div>
+                        <div class="info-doctor ms-2 flex-grow-1">
+                            <p class="mb-1">Doctor</p>
+                            <p class="mb-1">${value.doctorAtencion}</p>
+                            <p class="mb-1 text-veris fw-medium">Dermatología</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="info-doctor ms-2">
+                            <p class="mb-1"><span class="text-veris fw-medium ">Fecha:</span> 11:00 - 18/10/2024</p>
+                            <p class="mb-1"><span class="text-veris fw-medium ">Beneficio:</span> Salud S.A. N-4-C Plan Ideal 4 Costa</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        })
+        $('#list-servicios').html(elem);
     }
 </script>
 <style>
