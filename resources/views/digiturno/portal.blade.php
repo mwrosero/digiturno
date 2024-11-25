@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <div class="col-4 col-sm-2 col-md-2">
-                    <a href="#" class="btn btn-salir border-veris-1 rounded-8 text-veris w-100 p-2 d-flex justify-content-center align-items-center h-100">
+                    <a href="#" class="btn btn-salir border-veris-1 rounded-8 text-veris w-100 p-2 d-flex justify-content-center align-items-center h-100 fw-bold">
                         <img class="me-2" src="{{ asset('assets/img/exit-icon.svg') }}" alt="">Salir
                     </a>
                 </div>
@@ -95,6 +95,7 @@
                         <div class="row row-servicios overflow-auto">
                             <div class="col-12 mb-2">
                                 <h3>Servicios</h3>
+                                <hr class="w-100">
                             </div>
                             <div class="col-12 mb-2" id="list-servicios">
                                 {{-- <div class="card w-100 rounded-8 py-3 px-3 mb-3">
@@ -260,24 +261,8 @@
     </main>
 </div>
 <script>
-    function actualizarFechaHora() {
-        const now = new Date();
-
-        // Formatear la fecha en dd/mm/yyyy
-        const day = String(now.getDate()).padStart(2, '0');
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const year = now.getFullYear();
-        const formattedDate = `${day}/${month}/${year}`;
-
-        // Formatear la hora en hh:mm
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const formattedTime = `${hours}:${minutes}`;
-
-        // Actualizar los elementos con jQuery
-        $('#fecha').text(formattedDate);
-        $('#hora').text(formattedTime);
-    }
+    let dataServicios;
+    let groupedData = [];
 
     setInterval(actualizarFechaHora, 1000);
 
@@ -346,6 +331,25 @@
             });
         });
     });
+    async function agruparDatos(){
+        $.each(dataServicios, (index, item) => {
+            const existingGroup = groupedData.find(group => group.tipoServicio === item.tipoServicio);
+          
+            if (existingGroup) {
+                // Si el grupo ya existe, agrega el item a "items"
+                existingGroup.items.push(
+                    $.extend({}, item, { tipoServicio: undefined }) // Eliminar tipoServicio de los items
+                );
+            } else {
+                // Si no existe, crea el grupo con el primer item
+                groupedData.push({
+                    tipoServicio: item.tipoServicio,
+                    nombreServicioNivel1: item.nombreServicioNivel1,
+                    items: [$.extend({}, item, { tipoServicio: undefined })] // Eliminar tipoServicio de los items
+                });
+            }
+        });
+    }
     function isMobile() {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
@@ -376,58 +380,110 @@
         const data = await call(args);
         console.log(data);
         if(data.code == 200){
-            await drawServicio(data.data);
+            dataServicios = data.data;
+            await agruparDatos();
+            await drawServicioAgrupado(data.data);
         }else{
             alert(data.message);
         }
     }
-    async function drawServicio(data){
+
+    async function drawServicioAgrupado(){
         let elem = ``;
-        $.each(data, function(key, value){
-            elem += `<div class="card w-100 rounded-8 py-3 px-3 mb-3">
-                <div class="row d-flex align-items-center">
-                    <div class="col-7">
-                        <h4 class="fw-bold title-servicio position-relative">
-                            ${ value.nombreServicioNivel1 }
-                            <span class="text-veris fw-medium ">agendada</span>
-                        </h4>
-                    </div>
-                    <div class="col-5 d-flex flex-column align-items-end">
-                        <span class="badge bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                            <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
-                            Pagada
-                        </span>
-                    </div>
-                </div>
-                <div class="row g-0 rounded-8 d-flex justify-content-between align-items-center mt-2 bg-veris-sky p-3 px-2 fs-5 mb-2">
-                    <div class="col-12 col-md-6">
-                        <span class="text-veris fw-medium ">Centro:</span> Veris Kennedy
-                    </div>
-                    <div class="col-12 col-md-6 fw-bold fs-4 text-start text-md-end">
-                        <span class="text-veris fw-medium ">Ve al consultorio:</span> 13 <span class="text-veris fw-medium ">|</span> 
-                        <img src="{{ asset('assets/img/marker.svg') }}">
-                    </div>
-                </div>
-                <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
-                    <div class="col-12 col-md-6 d-flex justify-content-between align-items-center mb-2">
-                        <div class="avatar-doctor border-veris-1" style="background: url({{ asset('assets/img/doctor.png') }}) no-repeat top center;background-size: cover;">
-                        </div>
-                        <div class="info-doctor ms-2 flex-grow-1">
-                            <p class="mb-1">Doctor</p>
-                            <p class="mb-1">${value.doctorAtencion}</p>
-                            <p class="mb-1 text-veris fw-medium">Dermatología</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="info-doctor ms-2">
-                            <p class="mb-1"><span class="text-veris fw-medium ">Fecha:</span> 11:00 - 18/10/2024</p>
-                            <p class="mb-1"><span class="text-veris fw-medium ">Beneficio:</span> Salud S.A. N-4-C Plan Ideal 4 Costa</p>
-                        </div>
-                    </div>
-                </div>
+        $.each(groupedData, function(key, value){
+            elem += `<h3>${ value.tipoServicio }</h3>`;
+            elem += `<div class="swiper swiper-servicio swiper-servicio-${key} position-relative pb-4 mb-3">
+                <div class="swiper-wrapper py-2" id="contenedorServicios${key}">`;
+            $.each(value.items, function(k, v){
+                elem += `<div class="swiper-slide">
+                            ${ drawCard(v) }
+                        </div>`;
+            })
+            elem += `</div>
+                <button type="button" class="mt-n4 btn btn-prev rounded-circle"></button>
+                <button type="button" class="mt-n4 btn btn-next rounded-circle"></button>
             </div>`;
         })
         $('#list-servicios').html(elem);
+        var swiper = new Swiper('.swiper-servicio', {
+            spaceBetween: 8,
+            navigation: {
+                nextEl: '.btn-next',
+                prevEl: '.btn-prev',
+            },
+            autoplay: false,
+            // watchOverflow: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            breakpoints: {
+                300: {
+                    slidesPerView: 1.1,
+                    centeredSlides: false,
+                    // loop: true,
+                    spaceBetween: 4,
+                },
+                640: {
+                    slidesPerView: 1.2,
+                    // spaceBetween: 8,
+                },
+                768: {
+                    slidesPerView: 1.3,
+                    // spaceBetween: 8,
+                },
+                1024: {
+                    slidesPerView: 1.2,
+                    // spaceBetween: 8,
+                },
+            },
+        });
+    }
+
+    function drawCard(value){
+        let elem = `<div class="card h-100 w-100 rounded-8 py-3 px-3 mb-3">
+            <div class="row d-flex align-items-center">
+                <div class="col-7">
+                    <h4 class="fw-bold title-servicio position-relative">
+                        ${ value.nombreServicioNivel1 }
+                        <span class="text-veris fw-medium ">agendada</span>
+                    </h4>
+                </div>
+                <div class="col-5 d-flex flex-column align-items-end">
+                    <span class="badge bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
+                        <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
+                        Pagada
+                    </span>
+                </div>
+            </div>
+            <div class="row g-0 rounded-8 d-flex justify-content-between align-items-center mt-2 bg-veris-sky p-3 px-2 fs-5 mb-2">
+                <div class="col-12 col-md-6">
+                    <span class="text-veris fw-medium ">Centro:</span> Veris Kennedy
+                </div>
+                <div class="col-12 col-md-6 fw-bold fs-4 text-start text-md-end">
+                    <span class="text-veris fw-medium ">Ve al consultorio:</span> 13 <span class="text-veris fw-medium ">|</span> 
+                    <img src="{{ asset('assets/img/marker.svg') }}">
+                </div>
+            </div>
+            <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
+                <div class="col-12 col-md-6 d-flex justify-content-between align-items-center mb-2">
+                    <div class="avatar-doctor border-veris-1" style="background: url({{ asset('assets/img/doctor.png') }}) no-repeat top center;background-size: cover;">
+                    </div>
+                    <div class="info-doctor ms-2 flex-grow-1">
+                        <p class="mb-1">Doctor</p>
+                        <p class="mb-1">${value.doctorAtencion}</p>
+                        <p class="mb-1 text-veris fw-medium">Dermatología</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="info-doctor ms-2">
+                        <p class="mb-1"><span class="text-veris fw-medium ">Fecha:</span> 11:00 - 18/10/2024</p>
+                        <p class="mb-1"><span class="text-veris fw-medium ">Beneficio:</span> Salud S.A. N-4-C Plan Ideal 4 Costa</p>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        return elem;
     }
 </script>
 <style>
@@ -487,6 +543,121 @@
     }
     .qr-orden{
         max-width: 150px;
+    }
+    .btn-prev-arrow::after,
+    .btn-prev::after,
+    .swiper-button-prev::after {
+      margin-right: .0625rem;
+      content: "\F284" !important;
+    }
+
+    .btn-next-arrow::after,
+    .btn-next::after,
+    .swiper-button-next::after {
+      margin-left: .0625rem;
+      content: "\F285" !important;
+    }
+
+    .btn-next-arrow,
+    .btn-prev-arrow,
+    .btn-next::after,
+    .btn-prev::after,
+    .swiper-button-next::after,
+    .swiper-button-prev::after {
+      font-family: bootstrap-icons !important;
+      font-weight: 900 !important;
+      font-size: 1.5rem !important;
+      line-height: 2rem !important;
+    }
+
+    .btn-prev-arrow {
+      left: -10px !important;
+    }
+
+    .btn-prev {
+      left: 0 !important;
+    }
+
+    .btn-next-arrow {
+      right: -10px !important;
+    }
+
+    .btn-next {
+      right: 0 !important;
+    }
+
+    .btn-next,
+    .btn-prev,
+    .swiper-button-next,
+    .swiper-button-prev {
+      position: absolute !important;
+      top: 50% !important;
+      width: 2.25rem !important;
+      height: 2.25rem !important;
+      padding: 0;
+      transition: all .3s ease-in-out !important;
+      border-radius: 50% !important;
+      background-color: #E0E6E9 !important;
+      color: rgba(0, 113, 206, 0.25) !important;
+      text-align: center !important;
+      border: 0 !important;
+      box-shadow: 0 .125rem .125rem -.125rem rgba(31, 27, 45, .08), 0 .25rem .75rem rgba(31, 27, 45, .08) !important;
+      z-index: 10 !important;
+    }
+
+    .btn-next:not(.swiper-button-disabled),
+    .btn-prev:not(.swiper-button-disabled) {
+      /* Estilos aquí */
+      color: #0071CE !important;
+      background: rgba(204, 234, 250, 0.80) !important;
+      box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.10);
+    }
+
+    .btn-next-arrow,
+    .btn-prev-arrow {
+      position: absolute !important;
+      top: 60% !important;
+      width: 2.25rem !important;
+      height: 2.25rem !important;
+      padding: 0;
+      transition: all .3s ease-in-out !important;
+      color: #0071CE !important;
+      text-align: center !important;
+      border: 0 !important;
+      z-index: 10 !important;
+      box-shadow: none !important;
+    }
+    .btn.disabled, .btn:disabled, fieldset:disabled .btn{
+        opacity: 0 !important;
+    }
+    ::-webkit-scrollbar {
+      height: 10px;
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      border-radius: 5px;
+      background-color: #DFE9EB;
+    }
+
+    ::-webkit-scrollbar-track:hover {
+      background-color: #D5DEE0;
+    }
+
+    ::-webkit-scrollbar-track:active {
+      background-color: #D5DEE0;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      background-color: #0071CE;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #19408F;
+    }
+
+    ::-webkit-scrollbar-thumb:active {
+      background-color: #19408F;
     }
     @media print {
         body {

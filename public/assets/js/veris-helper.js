@@ -951,3 +951,24 @@ function capitalizarElemento(elemento) {
         return elemento;
     }
 }
+
+function actualizarFechaHora() {
+    const date = new Date();
+    const now = new Date(date.getTime() - 5 * 60 * 60 * 1000);
+
+
+    // Formatear la fecha en dd/mm/yyyy
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const formattedDate = `${day}/${month}/${year}`;
+
+    // Formatear la hora en hh:mm
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const formattedTime = `${hours}:${minutes}`;
+
+    // Actualizar los elementos con jQuery
+    $('#fecha').text(formattedDate);
+    $('#hora').text(formattedTime);
+}
