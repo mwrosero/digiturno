@@ -81,13 +81,13 @@
 							            <input type="number" min="0" max="9" required style="flex-grow: 1; max-width: 40px; text-align: center;">
 							            <input type="number" min="0" max="9" required style="flex-grow: 1; max-width: 40px; text-align: center;">
 									</div>
-									<button onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mt-2 mx-auto">INGRESAR</button>
+									{{-- <button onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mt-2 mx-auto">INGRESAR</button> --}}
 								</div>
 								<div class="col-12 col-md-4 offset-md-4 d-block d-md-none text-center">
 									<input class="input w-100 p-2 fs-5 mb-5 text-center" type="number" maxlength="10" id="ipCedula" oninput="validateInput(this)" placeholder="" />
-										<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8">INGRESAR</div>
+									<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8">INGRESAR</div>
 								</div>
-								<div class="col-12 col-md-4 offset-md-4 d-none d-md-block">
+								<div class="col-12 col-md-8 offset-md-2 d-none d-md-block mb-5">
 									<div class="simple-keyboard"></div>
 						        </div>
 						    </div>
@@ -96,9 +96,10 @@
 						    <div class="d-row">
 						    	<div class="col-12 col-md-6 text-center offset-md-3 mb-3">
 						    		<input type="text" class="input-pasaporte w-100 input-an p-2 fs-5 mb-5 mb-md-1 text-center" placeholder="" />
-						    		<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8">INGRESAR</div>
+						    		{{-- <div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8">INGRESAR</div> --}}
 						    	</div>
-						        <div class="col-12 col-md-10 offset-md-1 d-none d-md-block">
+						        <div class="col-12 d-none d-md-block">
+						        	{{-- col-md-10 offset-md-1 --}}
 									<!-- <input class="input-pasaporte input-an" placeholder="" /> -->
 									<div class="simple-keyboard-an w-100"></div>
 						        </div>
@@ -109,7 +110,7 @@
 						        <div class="col-12 col-md-8 mb-3 text-center">
 						    		<input class="w-100 rounded-8 text-center fs-4 mb-1 border-0 shadow-0" id="nombres" type="text" placeholder="Ingresa nombres" />
 								    <input class="w-100 rounded-8 text-center fs-4 mb-1 border-0 shadow-0" id="apellidos" type="text" placeholder="Ingresa apellidos" />
-						    		<button onclick="buscarUsuario();" class="btn bg-veris text-white mt-2 mx-auto">BUSCAR</button>
+						    		{{-- <button onclick="buscarUsuario();" class="btn bg-veris text-white mt-2 mx-auto">BUSCAR</button> --}}
 						    		<div class="w-100 d-none d-md-block">
 								    	<div class="keyboardContainer w-100"></div>
 								    </div>
@@ -218,7 +219,8 @@
 	 	onChange: input => onChange(input),
 	  	onKeyPress: button => onKeyPress(button),
 	  	layout: {
-	    	default: ["1 2 3", "4 5 6", "7 8 9", " 0 {bksp}"],
+	    	// default: ["1 2 3", "4 5 6", "7 8 9", " 0 {bksp}"],
+	    	default: ["1 2 3 4 5 {bksp}", "6 7 8 9 0 {enter}"],
 	    	//shift: ["! / #", "$ % ^", "& * (", "{shift} ) +", "{bksp}"]
 	  	},
 	  	inputName: "input",
@@ -227,7 +229,8 @@
 		},
 	  	display: {
             "{bksp}": `<img src="{{ asset('assets/img/delete.svg') }}" alt="">`,
-            "{space}": "Espacio"
+            "{space}": "Espacio",
+            "{enter}": "Ingresar"
         },
 	  	theme: "hg-theme-default hg-layout-numeric numeric-theme"
 	});
@@ -239,6 +242,9 @@
 	}
 
 	async function onKeyPress(button) {
+		if (button === "{enter}" && $('#ipCedula').val().length == 10) {
+        	await buscarUsuario();
+        }
 		const inputs = document.querySelectorAll(".otp-input input");
 
         // Contar cuántos inputs están llenos
@@ -286,12 +292,13 @@
                 "Q W E R T Y U I O P",
                 "A S D F G H J K L Ñ",
                 "Z X C V B N M",
-                "{space}"
+                "{space} {enter}"
             ]
         },
         display: {
             "{bksp}": `<img src="{{ asset('assets/img/delete.svg') }}" alt="">`,
-            "{space}": "Espacio"
+            "{space}": "Espacio",
+            "{enter}": "Buscar"
         },
         theme: "hg-theme-default"
 	});
@@ -310,7 +317,10 @@
 	  	console.log("Input changed", input);
 	}
 
-	function onKeyPressAn(button) {
+	async function onKeyPressAn(button) {
+		if (button === "{enter}") {
+        	await buscarUsuario();
+        }
 	  	console.log("Button pressed", button);
 
 		/**
@@ -384,23 +394,27 @@
         const keyboard = new Keyboard(".keyboardContainer", {
             layout: {
             default: [
-                "1 2 3 4 5 6 7 8 9 0 {bksp}",
-                "Q W E R T Y U I O P",
+                //"1 2 3 4 5 6 7 8 9 0 {bksp}",
+                "Q W E R T Y U I O P {bksp}",
                 "A S D F G H J K L Ñ",
                 "Z X C V B N M",
-                "{space}"
+                "{space} {enter}"
             ]
             },
             display: {
                 "{bksp}": `<img src="{{ asset('assets/img/delete.svg') }}" alt="">`,
-                "{space}": "Espacio"
+                "{space}": "Espacio",
+                "{enter}": "Buscar"
             },
             onChange: input => {
                 if (focusedInput) {
                     focusedInput.value = input; // Actualizar el valor del input activo
                 }
             },
-            onKeyPress: button => {
+            onKeyPress: async button => {
+            	if (button === "{enter}" && $('#nombres').val() != "" && $('#apellidos').val() != "") {
+		        	await buscarUsuario();
+		        }
                 console.log("Tecla presionada:", button);
             }
         });
@@ -497,6 +511,10 @@
 	/* Firefox */
 	input[type=number] {
 	  -moz-appearance: textfield;
+	}
+
+	.hg-button {
+	    padding: 30px !important;!i;!;
 	}
 
 	@media only screen and (max-width: 576px) {
