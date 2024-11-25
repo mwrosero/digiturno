@@ -69,7 +69,7 @@
 						<div class="tab-pane fade mt-3 px-2 w-100 show active" id="pills-cedula" role="tabpanel" aria-labelledby="pills-cedula-tab" tabindex="0">
 						    <div class="row">
 						    	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center">
-						    		<input autocomplete="off" id="cedula" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1 onlyNumber" maxlength="10">
+						    		<input autofocus autocomplete="off" id="cedula" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1 onlyNumber" maxlength="10">
 						    		<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8 my-5 d-block d-md-none">INGRESAR</div>
 						    	</div>
 						    </div>
@@ -209,6 +209,8 @@
     setInterval(actualizarFechaHora, 1000);
 
 	document.addEventListener("DOMContentLoaded", () => {
+		Keyboard.open();
+		
         $('body').on('click', '.item-coincidencia', function(){
         	let data = JSON.parse($(this).attr("data-rel"));
         	storeData(data);
