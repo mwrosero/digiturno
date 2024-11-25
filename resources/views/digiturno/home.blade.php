@@ -25,7 +25,6 @@
 				<div class="col-12 bg-silver d-flex justify-content-between align-items-center">
 					<div class="p-3 m-3">
 						<h2 class="fw-bold">Genera <span class="text-veris">tu turno</span><br><span class="text-veris">desde el celular</span></h2>
-						<h1>{{ $mac }}</h1>
 					</div>
 					<div class="p-3 m-3">
 						<h5 class="fw-normal"><span class="fw-bold">Escanea el código QR, o también puedes aplasta<br>en “continuar”</span> para ingresar y genera tu turno.</h5>
@@ -54,25 +53,6 @@
 	</footer>
 </div>
 <script>
-	function actualizarFechaHora() {
-        const now = new Date();
-
-        // Formatear la fecha en dd/mm/yyyy
-        const day = String(now.getDate()).padStart(2, '0');
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const year = now.getFullYear();
-        const formattedDate = `${day}/${month}/${year}`;
-
-        // Formatear la hora en hh:mm
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const formattedTime = `${hours}:${minutes}`;
-
-        // Actualizar los elementos con jQuery
-        $('#fecha').text(formattedDate);
-        $('#hora').text(formattedTime);
-    }
-
-    setInterval(actualizarFechaHora, 1000);
+	setInterval(actualizarFechaHora, 1000);
 </script>
 @endsection
