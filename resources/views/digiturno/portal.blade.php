@@ -21,10 +21,10 @@
                 </div>
             </div>
         </div>
-        <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light p-0">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light p-0">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">
-                    <img class="logo" src="images/veris-large.png" alt="">
+                    <img class="logo" src="{{ asset('assets/img/veris-large.png') }}" alt="">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,7 @@
                     </ul>
                 </div>
             </div>
-        </nav> -->
+        </nav>
     </header>
 
     <!-- Content -->
@@ -74,8 +74,8 @@
                         <div class="d-block d-md-flex bg-light mb-3 justify-content-between align-items-center w-100 rounded-8 text-center bg-white text-veris-dark my-2 p-3">
                             <img class="ms-2" src="{{ asset('assets/img/info-ico.svg') }}" alt="">
                             <span class="label-info ms-4 text-start flex-grow-1">Por favor verifica la información<br>correcta para continuar.</span>
-                            <div id="hiddenContent" class="d-none" style="width: 300px;">
-                                <img class="w-50 logo my-3" src="images/veris-large.png" alt="">
+                            {{-- <div id="hiddenContent" class="d-none" style="width: 300px;">
+                                <img class="w-50 logo my-3" src="{{ asset('assets/img/veris-large.png') }}" alt="">
                                 <div class="w-100 d-flex justify-content-end align-items-center text-end">
                                     <h2 class="mb-1 fs-3 fw-bold text-veris-dark">Tu turno será en</h2>
                                         <h2 class="fs-4 fw-bold text-center text-veris mb-1">00:10:00</h2>
@@ -88,9 +88,9 @@
                                             Nos vemos pronto
                                         </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div id="btnPrint" class="btn bg-veris d-none d-md-block text-white p-2 px-5 fs-5 fw-bold rounded-8 mt-3 mt-md-0">Generar turno</div>
-                            <a href="turno.php" class="btn d-blocl d-md-none bg-veris text-white p-2 px-5 fs-5 fw-bold rounded-8 mt-3 mt-md-0">Generar turno</a>
+                            <div id="btn-redirect-turno" url-rel="/turno/{{ $portalToken }}" class="btn d-blocl d-md-none bg-veris text-white p-2 px-5 fs-5 fw-bold rounded-8 mt-3 mt-md-0">Generar turno</div>
                         </div>
                         <div class="row row-servicios overflow-auto">
                             <div class="col-12 mb-2">
@@ -305,7 +305,17 @@
             await cargarServicios();
         });
 
-        $('#btnPrint').on('click', function () {
+        $('body').on('click', '#btn-redirect-turno', function(){
+            dataTurno.pacienteSeleccionado = JSON.parse($('.item-coincidencia-selected').attr("data-rel"));
+            localStorage.setItem('turno-{{ $portalToken }}', JSON.stringify(dataTurno));
+            location.href = $(this).attr('url-rel');
+        })
+
+        $('body').on('click', '#btnPrint', async function(){
+            await generarTurno();
+        })
+
+        /*$('#btnPrint').on('click', function () {
             var htmlContent = $('#hiddenContent').html();
             var _htmlContent = `
                 <div style="text-align: center; font-family: Arial, sans-serif; width: 80mm;">
@@ -329,7 +339,7 @@
                     }
                 `
             });
-        });
+        });*/
     });
     async function agruparDatos(){
         $.each(dataServicios, (index, item) => {
@@ -384,7 +394,8 @@
             await agruparDatos();
             await drawServicioAgrupado(data.data);
         }else{
-            alert(data.message);
+            $('#mensajeError').html(`${data.message}`)
+            $('#modalAlerta').modal('show');
         }
     }
 
@@ -484,6 +495,25 @@
             </div>
         </div>`;
         return elem;
+    }
+
+    async function generarTurno(){
+        let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+        let paciente = JSON.parse(dataAttr);
+        let args = [];
+        args["endpoint"] =  `${api_url}/${api_war}/transaccion/generar_ticket?macAddress=${ dataTurno.mac }&tipoIdentificacion=${paciente.nombreTipoIdentificacion}&numeroIdentificacion=${paciente.numeroIdentificacion}&nombreCompleto=${ paciente.nombreCompleto }`;
+        //dataCita.paciente.numeroPaciente
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            
+        }else{
+            $('#mensajeError').html(`${data.message}`)
+            $('#modalAlerta').modal('show');
+        }
     }
 </script>
 <style>
