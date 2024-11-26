@@ -19,7 +19,7 @@ const Keyboard = {
     this.elements.main = document.createElement("div");
     this.elements.keysContainer = document.createElement("div");
 
-    this.elements.main.classList.add("keyboard", "keyboard-hidden");
+    this.elements.main.classList.add("keyboard", "keyboard-hidden","d-none","d-md-block");
     this.elements.keysContainer.classList.add("keyboard-keys");
     this.elements.keysContainer.appendChild(this._createKeys());
 
