@@ -21,27 +21,6 @@
                 </div>
             </div>
         </div>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light p-0">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">
-                    <img class="logo" src="{{ asset('assets/img/veris-large.png') }}" alt="">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Características</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
     </header>
 
     <!-- Content -->
@@ -389,10 +368,15 @@
         args["showLoader"] = true;
         const data = await call(args);
         console.log(data);
+        $('#list-servicios').empty();
         if(data.code == 200){
             dataServicios = data.data;
-            await agruparDatos();
-            await drawServicioAgrupado(data.data);
+            if(data.data.length > 0){
+                await agruparDatos();
+                await drawServicioAgrupado(data.data);
+            }else{
+                $('#list-servicios').html(`Sin servicios que mostrar`);
+            }
         }else{
             $('#mensajeError').html(`${data.message}`)
             $('#modalAlerta').modal('show');
@@ -478,7 +462,7 @@
             </div>
             <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
                 <div class="col-12 col-md-6 d-flex justify-content-between align-items-center mb-2">
-                    <div class="avatar-doctor border-veris-1" style="background: url({{ asset('assets/img/doctor.png') }}) no-repeat top center;background-size: cover;">
+                    <div class="avatar-doctor border-veris-1" style="background: url(${ (value.fotoMedicoApp != null) ? value.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
                     </div>
                     <div class="info-doctor ms-2 flex-grow-1">
                         <p class="mb-1">Doctor</p>
@@ -660,6 +644,9 @@
     .btn.disabled, .btn:disabled, fieldset:disabled .btn{
         opacity: 0 !important;
     }
+    .swiper .swiper-slide{
+        color: inherit !important;
+    }
     ::-webkit-scrollbar {
       height: 10px;
       width: 10px;
@@ -689,6 +676,7 @@
     ::-webkit-scrollbar-thumb:active {
       background-color: #19408F;
     }
+
     @media print {
         body {
             margin: 0; /* Sin márgenes */
