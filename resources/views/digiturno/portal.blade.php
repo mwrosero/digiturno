@@ -2,7 +2,7 @@
 @section('content')
 {{-- Modal notificar llegada --}}
 <div class="modal modal-top fade" id="modalNotificarLlegada" tabindex="-1" aria-labelledby="modalNotificarLlegadaLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm modal-dialog-centered mx-auto">
+        <div class="modal-dialog modal modal-dialog-centered mx-auto">
             <form class="modal-content rounded-4">
                 <div class="modal-header d-none">
                     <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -316,12 +316,14 @@
 
         $('body').on('click', '.btn-notificar-llegada', async function(){
             let detalle = $(this).attr('data-rel');
+            mostrarPrestaciones(JSON.parse(detalle))
             $('.btn-print-notificar-llegada').attr('data-rel',detalle)
             $('#modalNotificarLlegada').modal('show');
         })
 
         $('body').on('click', '.btn-print-notificar-llegada', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
+            console.log(detalle)
             await notificarLlegada(detalle);
         })
 
@@ -352,12 +354,16 @@
         });*/
     });
 
-    async function notificarLlegada(detalle){
+    async function mostrarPrestaciones(detalle){
         let elem = ``;
         $.each(detalle, function(key,value){
-            elem += `<li>${ value.nombreServicio }</li>`
+            elem += `<li class="list-group-item">${ value.nombreServicio }</li>`
         })
         $('#listaPrestaciones').html(elem);
+    }
+
+    async function notificarLlegada(detalle){
+        //
     }
 
     async function agruparDatos(){
@@ -412,6 +418,7 @@
         if(data.code == 200){
             dataServicios = data.data;
             if(data.data.length > 0){
+                groupedData = [];
                 await agruparDatos();
                 await drawServicioAgrupado(data.data);
             }else{
@@ -442,7 +449,7 @@
             }
         })
         $('#list-servicios').html(elem);
-        var swiper = new Swiper('.swiper-servicio', {
+        swiper = new Swiper('.swiper-servicio', {
             spaceBetween: 8,
             navigation: {
                 nextEl: '.btn-next',
@@ -499,13 +506,13 @@
     }
 
     function verificarEstadoOrden(value){
-        console.log(value)
+        var estaPagada = false
         $.each(value.detallesOrden, function(k,v) {
             if(v.estaFacturado){
-                return true;
+                estaPagada = true;
             }
         });
-        return false
+        return estaPagada;
     }
 
     function sectionStatusPagoOrdenes(detalle){
@@ -516,7 +523,7 @@
                 <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
                 Pagada
             </span>
-            <button data-rel='${ JSON.stringify(value.detallesOrden) }' class="btn badge bg-veris btn-notificar-llegada text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Notificar llegada</button>`;
+            <button data-rel='${ JSON.stringify(detalle.detallesOrden) }' class="btn badge bg-veris btn-notificar-llegada text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Notificar llegada</button>`;
         }else{
             return `<span class="badge d-flex align-items-center bg-pendiente-light text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
                 <img class="me-1" src="{{ asset('assets/img/icon-pendiente.svg') }}" alt="">
@@ -687,7 +694,7 @@
                 elem += `<div class="row d-flex align-items-center mb-3">
                     <div class="col-7">
                         <h4 class="fw-bold title-servicio position-relative">
-                            Cita médica
+                            ${value.nombreServicioNivel1}
                             <span class="text-veris fw-medium "> agendada</span>
                         </h4>
                     </div>
