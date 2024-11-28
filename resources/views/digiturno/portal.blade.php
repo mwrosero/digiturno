@@ -1,5 +1,25 @@
 @extends('template.app-template')
 @section('content')
+{{-- Modal notificar llegada --}}
+<div class="modal modal-top fade" id="modalNotificarLlegada" tabindex="-1" aria-labelledby="modalNotificarLlegadaLabel" aria-hidden="true">
+        <div class="modal-dialog modal modal-dialog-centered mx-auto">
+            <form class="modal-content rounded-4">
+                <div class="modal-header d-none">
+                    <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <h5 class="fs--20 line-height-24 mt-3 mb--20">{{ __('Detalle la orden:') }}</h5>
+                    <div class="row gx-2 justify-content-between align-items-center">
+                        <ul class="list-group list-group-checkable d-grid gap-2 border-0" id="listaPrestaciones">
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer pt-0 pb-3 px-3">
+                    <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-3 py-2 btn-print-notificar-llegada" data-bs-dismiss="modal" style="color: #6A7D8E;">Aceptar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 <div class="wrapper">
     <!-- Header -->
     <header class="header p-3">
@@ -294,6 +314,19 @@
             await generarTurno();
         })
 
+        $('body').on('click', '.btn-notificar-llegada', async function(){
+            let detalle = $(this).attr('data-rel');
+            mostrarPrestaciones(JSON.parse(detalle))
+            $('.btn-print-notificar-llegada').attr('data-rel',detalle)
+            $('#modalNotificarLlegada').modal('show');
+        })
+
+        $('body').on('click', '.btn-print-notificar-llegada', async function(){
+            let detalle = JSON.parse($(this).attr('data-rel'));
+            console.log(detalle)
+            await notificarLlegada(detalle);
+        })
+
         /*$('#btnPrint').on('click', function () {
             var htmlContent = $('#hiddenContent').html();
             var _htmlContent = `
@@ -320,6 +353,19 @@
             });
         });*/
     });
+
+    async function mostrarPrestaciones(detalle){
+        let elem = ``;
+        $.each(detalle, function(key,value){
+            elem += `<li class="list-group-item">${ value.nombreServicio }</li>`
+        })
+        $('#listaPrestaciones').html(elem);
+    }
+
+    async function notificarLlegada(detalle){
+        //
+    }
+
     async function agruparDatos(){
         $.each(dataServicios, (index, item) => {
             const existingGroup = groupedData.find(group => group.tipoServicio === item.tipoServicio);
@@ -372,6 +418,7 @@
         if(data.code == 200){
             dataServicios = data.data;
             if(data.data.length > 0){
+                groupedData = [];
                 await agruparDatos();
                 await drawServicioAgrupado(data.data);
             }else{
@@ -402,7 +449,7 @@
             }
         })
         $('#list-servicios').html(elem);
-        var swiper = new Swiper('.swiper-servicio', {
+        swiper = new Swiper('.swiper-servicio', {
             spaceBetween: 8,
             navigation: {
                 nextEl: '.btn-next',
@@ -458,6 +505,33 @@
         }
     }
 
+    function verificarEstadoOrden(value){
+        var estaPagada = false
+        $.each(value.detallesOrden, function(k,v) {
+            if(v.estaFacturado){
+                estaPagada = true;
+            }
+        });
+        return estaPagada;
+    }
+
+    function sectionStatusPagoOrdenes(detalle){
+        let estaPagado = verificarEstadoOrden(detalle)
+
+        if(estaPagado){
+            return `<span class="badge d-flex align-items-center bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
+                <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
+                Pagada
+            </span>
+            <button data-rel='${ JSON.stringify(detalle.detallesOrden) }' class="btn badge bg-veris btn-notificar-llegada text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Notificar llegada</button>`;
+        }else{
+            return `<span class="badge d-flex align-items-center bg-pendiente-light text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
+                <img class="me-1" src="{{ asset('assets/img/icon-pendiente.svg') }}" alt="">
+                Por pagar
+            </span>`;
+        }
+    }
+
     function mostrarMetodosPago(detalle){
         if(detalle.estaPagado){
             return ``;
@@ -469,6 +543,16 @@
                     <span class="text-veris fw-bold py-2 text-center">TIEMPO PARA PAGAR:</span> <span id="${countdownId}" class="countdown" data-rel='${detalle.horaInicio}'></span>
                 </div>
             </div>
+            <div class="col-12 d-block d-md-flex justify-content-center align-items-center gap-2">
+                <span class="text-veris fw-medium -dark me-2 p-2 my-2 text-end">Método de pago</span>
+                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 d-block me-2 my-2">Pagar en caja</button>
+                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 d-block my-2">Link de pago</button>
+            </div>
+        </div>`;
+    }
+
+    function mostrarMetodosPagoOrden(detalle){
+        return `<div class="row g-0 rounded-8 mt-2 bg-veris-sky p-3 px-2 fs-5">
             <div class="col-12 d-block d-md-flex justify-content-center align-items-center gap-2">
                 <span class="text-veris fw-medium -dark me-2 p-2 my-2 text-end">Método de pago</span>
                 <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 d-block me-2 my-2">Pagar en caja</button>
@@ -562,6 +646,12 @@
             console.log(99)
             classBorderPerdida = "border-perdida";
         }
+        if(value.tipoServicio == "ORDEN_MEDICA"){
+            var ordenPagada = verificarEstadoOrden(value);
+            if(!ordenPagada){
+                classBorderPerdida = "border-pendiente-1";
+            }
+        }
         let elem = `<div class="card h-100 w-100 rounded-8 py-3 px-3 mb-3 ${classBorderPerdida}">`;
         switch(value.tipoServicio){
             case 'RESERVA':
@@ -600,6 +690,33 @@
                     </div>
                 </div>`;
             break;
+            case 'ORDEN_MEDICA':
+                elem += `<div class="row d-flex align-items-center mb-3">
+                    <div class="col-7">
+                        <h4 class="fw-bold title-servicio position-relative">
+                            ${value.nombreServicioNivel1}
+                            <span class="text-veris fw-medium "> agendada</span>
+                        </h4>
+                    </div>
+                    <div class="col-5 d-flex flex-column align-items-end">
+                        ${ sectionStatusPagoOrdenes(value) }
+                    </div>
+                </div>`;
+                if(!ordenPagada){
+                    elem += `${ mostrarMetodosPagoOrden(value) }`;
+                }
+                elem += `<div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
+                    <div class="col-12 d-flex justify-content-between align-items-center mb-2">
+                        <div class="avatar-doctor border-veris-1 ${classBorderPerdida}" style="background: url(${ (value.fotoMedicoApp != null) ? value.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
+                        </div>
+                        <div class="info-doctor ms-2 flex-grow-1">
+                            <p class="mb-1">Doctor</p>
+                            <p class="mb-1 fw-medium">${value.doctorAtencion}</p>
+                            <p class="mb-1 d-flex justify-content-start align-items-start"><span class="text-veris fw-medium me-2">Beneficio:</span> ${obtenerBeneficio(value.beneficio)}</p>
+                        </div>
+                    </div>
+                </div>`;
+            break;
             case 'ORDENES_APOYO_PENDIENTE':
                 elem += `<div class="row d-flex align-items-center">
                     <div class="col-7">
@@ -613,7 +730,7 @@
                             <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
                             Pagada
                         </span>
-                        <button class="btn badge bg-veris text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Notificar llegada</button>
+                        <button data-rel='${ JSON.stringify(value.detallesOrden) }' class="btn badge bg-veris btn-notificar-llegada text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Notificar llegada</button>
                     </div>
                 </div>
                 <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
