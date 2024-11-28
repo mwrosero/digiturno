@@ -953,22 +953,113 @@ function capitalizarElemento(elemento) {
 }
 
 function actualizarFechaHora() {
+    // Crear la fecha actual
     const date = new Date();
-    const now = new Date(date.getTime() - 5 * 60 * 60 * 1000);
 
+    // Configurar el formateador para UTC-5
+    const options = { timeZone: 'America/Bogota', hour12: false };
+    const dateFormatter = new Intl.DateTimeFormat('es-EC', { ...options, year: 'numeric', month: '2-digit', day: '2-digit' });
+    const timeFormatter = new Intl.DateTimeFormat('es-EC', { ...options, hour: '2-digit', minute: '2-digit' });
 
-    // Formatear la fecha en dd/mm/yyyy
-    const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const year = now.getFullYear();
-    const formattedDate = `${day}/${month}/${year}`;
-
-    // Formatear la hora en hh:mm
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const formattedTime = `${hours}:${minutes}`;
+    // Formatear fecha y hora
+    const formattedDate = dateFormatter.format(date); // Ejemplo: 27/11/2024
+    const formattedTime = timeFormatter.format(date); // Ejemplo: 15:45
 
     // Actualizar los elementos con jQuery
     $('#fecha').text(formattedDate);
     $('#hora').text(formattedTime);
+}
+
+function iniciarCountdownDesdeAtributos() {
+    // Seleccionamos todos los elementos con la clase 'countdown'
+    const countdowns = document.querySelectorAll('.countdown');
+
+    countdowns.forEach(countdown => {
+        // Obtener la fecha de inicio desde el atributo data-rel (formato "dd/mm/yyyy hh:mm")
+        const fechaLimite = countdown.getAttribute('data-rel'); // Ejemplo: "28/11/2024 07:00"
+
+        // Parsear la fecha desde el formato "dd/mm/yyyy hh:mm"
+        const [day, month, year, hour, minute] = fechaLimite.split(/[\/\s:]/);
+
+        // Crear un objeto Intl.DateTimeFormat para la zona horaria UTC-5
+        const dateFormatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/Bogota',  // Zona horaria UTC-5
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+        });
+
+        // Crear la fecha límite en formato "yyyy-mm-dd hh:mm:ss" para usarlo en un nuevo Date
+        const fechaLimiteString = `${month}/${day}/${year} ${hour}:${minute}:00`;
+        const fechaLimiteUTC5 = new Date(dateFormatter.format(new Date(fechaLimiteString)));
+
+        // Función para actualizar el contador
+        const actualizarCountdown = () => {
+            // Obtener la fecha actual en UTC-5
+            const fechaActual = new Date();
+            const fechaActualUTC5 = new Date(fechaActual.toLocaleString('en-US', { timeZone: 'America/Bogota' }));
+
+            // Calcular la diferencia entre la fecha límite y la fecha actual en UTC-5
+            let diff = fechaLimiteUTC5 - fechaActualUTC5;
+
+            if (diff <= 0) {
+                countdown.textContent = "Tiempo agotado";
+            } else {
+                // Calcular horas, minutos y segundos restantes
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                // Formatear las horas, minutos y segundos para que siempre tengan 2 dígitos
+                const formattedHours = String(hours).padStart(2, '0');
+                const formattedMinutes = String(minutes).padStart(2, '0');
+                const formattedSeconds = String(seconds).padStart(2, '0');
+
+                // Formatear el tiempo restante
+                countdown.textContent = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+            }
+        };
+
+        // Inicializar el contador al cargar la página
+        actualizarCountdown();
+
+        // Actualizar el countdown cada segundo
+        setInterval(actualizarCountdown, 1000);
+    });
+}
+
+function tieneTiempo(fechaLimite) {
+    // Obtener la fecha de inicio desde el atributo data-rel (formato "dd/mm/yyyy hh:mm")
+
+    // Parsear la fecha desde el formato "dd/mm/yyyy hh:mm"
+    const [day, month, year, hour, minute] = fechaLimite.split(/[\/\s:]/);
+
+    // Crear un objeto Intl.DateTimeFormat para la zona horaria UTC-5
+    const dateFormatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Bogota',  // Zona horaria UTC-5
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+    });
+
+    // Crear la fecha límite en formato "yyyy-mm-dd hh:mm:ss" para usarlo en un nuevo Date
+    const fechaLimiteString = `${month}/${day}/${year} ${hour}:${minute}:00`;
+    const fechaLimiteUTC5 = new Date(dateFormatter.format(new Date(fechaLimiteString)));
+    const fechaActual = new Date();
+    const fechaActualUTC5 = new Date(fechaActual.toLocaleString('en-US', { timeZone: 'America/Bogota' }));
+
+    // Calcular la diferencia entre la fecha límite y la fecha actual en UTC-5
+    let diff = fechaLimiteUTC5 - fechaActualUTC5;
+
+    if (diff <= 0) {
+        return false;
+    }
+
+    return true;
 }
