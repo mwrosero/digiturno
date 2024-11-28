@@ -72,10 +72,10 @@
                             <div id="btn-redirect-turno" url-rel="/turno/{{ $portalToken }}" class="btn d-blocl d-md-none bg-veris text-white p-2 px-5 fs-5 fw-bold rounded-8 mt-3 mt-md-0">Generar turno</div>
                         </div>
                         <div class="row row-servicios overflow-auto">
-                            <div class="col-12 mb-2">
+                            {{-- <div class="col-12 mb-2">
                                 <h3>Servicios</h3>
                                 <hr class="w-100">
-                            </div>
+                            </div> --}}
                             <div class="col-12 mb-2" id="list-servicios">
                                 {{-- <div class="card w-100 rounded-8 py-3 px-3 mb-3">
                                     <div class="row d-flex align-items-center">
@@ -386,18 +386,20 @@
     async function drawServicioAgrupado(){
         let elem = ``;
         $.each(groupedData, function(key, value){
-            elem += `<h3>${ value.tipoServicio }</h3>`;
-            elem += `<div class="swiper swiper-servicio swiper-servicio-${key} position-relative pb-4 mb-3">
-                <div class="swiper-wrapper py-2" id="contenedorServicios${key}">`;
-            $.each(value.items, function(k, v){
-                elem += `<div class="swiper-slide">
-                            ${ drawCard(v) }
-                        </div>`;
-            })
-            elem += `</div>
-                <button type="button" class="mt-n4 btn btn-prev rounded-circle"></button>
-                <button type="button" class="mt-n4 btn btn-next rounded-circle"></button>
-            </div>`;
+            if(value.tipoServicio != "BATERIA_PRESTACIONES" && value.tipoServicio != "PAQUETES_PROMOCIONALES"){
+                elem += `<h3>${ value.tipoServicio }</h3>`;
+                elem += `<div class="swiper swiper-servicio swiper-servicio-${key} position-relative pb-4 mb-3">
+                    <div class="swiper-wrapper py-2" id="contenedorServicios${key}">`;
+                $.each(value.items, function(k, v){
+                    elem += `<div class="swiper-slide">
+                                ${ drawCard(v) }
+                            </div>`;
+                })
+                elem += `</div>
+                    <button type="button" class="mt-n4 btn btn-prev rounded-circle"></button>
+                    <button type="button" class="mt-n4 btn btn-next rounded-circle"></button>
+                </div>`;
+            }
         })
         $('#list-servicios').html(elem);
         var swiper = new Swiper('.swiper-servicio', {
@@ -433,51 +435,273 @@
                 },
             },
         });
+        iniciarCountdownDesdeAtributos();
+    }
+
+    function sectionStatusPago(detalle){
+        if(!tieneTiempo(detalle.horaInicio)){
+            return `<span class="badge d-flex align-items-center bg-perdida text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
+                <img class="me-1" src="{{ asset('assets/img/icon-cita-perdida.svg') }}" alt="">
+                No asistió a tiempo
+            </span>`;
+        }
+        if(detalle.estaPagado){
+            return `<span class="badge d-flex align-items-center bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
+                <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
+                Pagada
+            </span>`;
+        }else{
+            return `<span class="badge d-flex align-items-center bg-pendiente-light text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
+                <img class="me-1" src="{{ asset('assets/img/icon-pendiente.svg') }}" alt="">
+                Por pagar
+            </span>`;
+        }
+    }
+
+    function mostrarMetodosPago(detalle){
+        if(detalle.estaPagado){
+            return ``;
+        }
+        const countdownId = `countdown-${Math.random().toString(36).substring(2, 9)}`;
+        return `<div class="row g-0 rounded-8 mt-2 bg-veris-sky p-3 px-2 fs-5">
+            <div class="col-8 offset-2 text-center fs-5 fw-bold ">
+                <div class="w-100 border-veris-1 rounded-8 mb-3 bg-white py-2">
+                    <span class="text-veris fw-bold py-2 text-center">TIEMPO PARA PAGAR:</span> <span id="${countdownId}" class="countdown" data-rel='${detalle.horaInicio}'></span>
+                </div>
+            </div>
+            <div class="col-12 d-block d-md-flex justify-content-center align-items-center gap-2">
+                <span class="text-veris fw-medium -dark me-2 p-2 my-2 text-end">Método de pago</span>
+                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 d-block me-2 my-2">Pagar en caja</button>
+                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 d-block my-2">Link de pago</button>
+            </div>
+        </div>`;
+    }
+
+    function iniciarCountdown(horaFin, elemento) {
+        // Convertir la hora de finalización a un objeto Date
+        const fechaFin = new Date(horaFin);
+
+        function actualizarCountdown() {
+            // Obtener la fecha actual
+            const fechaActual = new Date();
+
+            // Calcular la diferencia en milisegundos
+            const diferenciaMS = fechaFin - fechaActual;
+
+            if (diferenciaMS <= 0) {
+                // Detener el countdown si ya pasó la hora
+                clearInterval(intervalo);
+                document.querySelector(elemento).textContent = "¡Tiempo agotado!";
+                return;
+            }
+
+            // Convertir la diferencia a horas, minutos y segundos
+            const horas = Math.floor(diferenciaMS / (1000 * 60 * 60));
+            const minutos = Math.floor((diferenciaMS % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((diferenciaMS % (1000 * 60)) / 1000);
+
+            // Formatear usando Intl.NumberFormat para asegurarse de que sean siempre dos dígitos
+            const formatter = new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 });
+            const tiempoRestante = `${formatter.format(horas)}:${formatter.format(minutos)}:${formatter.format(segundos)}`;
+
+            // Actualizar el contenido del elemento en la página
+            document.querySelector(elemento).textContent = `TIEMPO PARA PAGAR: ${tiempoRestante}`;
+        }
+
+        // Actualizar el countdown cada segundo
+        const intervalo = setInterval(actualizarCountdown, 1000);
+
+        // Ejecutar una vez inmediatamente para evitar el retraso del primer segundo
+        actualizarCountdown();
+    }
+
+    function mostrarConsultorio(detalle){
+        if(detalle.estaPagado){
+            return `<div class="row g-0 rounded-8 d-flex justify-content-between align-items-center mt-2 bg-veris-sky p-3 px-2 fs-5 mb-2">
+                <div class="col-12 col-md-6">
+                    <span class="text-veris fw-medium ">Centro:</span> ${detalle.nombreSucursal}
+                </div>
+                <div class="col-12 col-md-6 fw-bold fs-5 text-start text-md-end">
+                    <span class="text-veris fw-medium ">Ve al ${(detalle.nombreSitioConsultorio.split(' '))[0].toLowerCase()}:</span> ${(detalle.nombreSitioConsultorio.split(' '))[1]} <!--span class="text-veris fw-medium ">|</span--> 
+                    <!--img src="{{ asset('assets/img/marker.svg') }}"-->
+                </div>
+            </div>`;
+        }
+        return ``;
+    }
+
+    function mostrarReservaCaducada(detalle){
+        return `<div class="row g-0 rounded-8 d-flex justify-content-between align-items-center mt-2 bg-veris-sky p-3 px-2 fs-5 mb-2">
+            <div class="col-12 col-md-6 line-height-22">
+                <span class="text-veris fw-medium">Lamentamos que no pudiste asistir a tu cita.</span> Genera un turno para ayudarte a reprogramarla.
+            </div>
+            <div class="col-12 col-md-6 fw-bold fs-4 text-end">
+                <button data-rel='${ JSON.stringify(detalle) }' class="btn btn-turno badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 d-block me-2 my-2 mx-auto">Generar turno</button>
+            </div>
+        </div>`;
+    }
+
+    function obtenerBeneficio(beneficio){
+        if(beneficio  == null){
+            return ``;
+        }
+        if(beneficio.convenio != null){
+            return beneficio.convenio.nombreConvenio;
+        }else if(beneficio.paquete != null){
+            return beneficio.paquete.nombrePaquete;
+        }else if(beneficio.tarjeta != null){
+            return beneficio.tarjeta.nombreTarjeta;
+        }else{
+            return ``;
+        }
     }
 
     function drawCard(value){
-        let elem = `<div class="card h-100 w-100 rounded-8 py-3 px-3 mb-3">
-            <div class="row d-flex align-items-center">
-                <div class="col-7">
-                    <h4 class="fw-bold title-servicio position-relative">
-                        ${ value.nombreServicioNivel1 }
-                        <span class="text-veris fw-medium ">agendada</span>
-                    </h4>
-                </div>
-                <div class="col-5 d-flex flex-column align-items-end">
-                    <span class="badge bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                        <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
-                        Pagada
-                    </span>
-                </div>
-            </div>
-            <div class="row g-0 rounded-8 d-flex justify-content-between align-items-center mt-2 bg-veris-sky p-3 px-2 fs-5 mb-2">
-                <div class="col-12 col-md-6">
-                    <span class="text-veris fw-medium ">Centro:</span> Veris Kennedy
-                </div>
-                <div class="col-12 col-md-6 fw-bold fs-4 text-start text-md-end">
-                    <span class="text-veris fw-medium ">Ve al consultorio:</span> 13 <span class="text-veris fw-medium ">|</span> 
-                    <img src="{{ asset('assets/img/marker.svg') }}">
-                </div>
-            </div>
-            <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
-                <div class="col-12 col-md-6 d-flex justify-content-between align-items-center mb-2">
-                    <div class="avatar-doctor border-veris-1" style="background: url(${ (value.fotoMedicoApp != null) ? value.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
+        let classBorderPerdida = "";
+        if( value.tipoServicio == "RESERVA" && !tieneTiempo(value.horaInicio) ){
+            console.log(99)
+            classBorderPerdida = "border-perdida";
+        }
+        let elem = `<div class="card h-100 w-100 rounded-8 py-3 px-3 mb-3 ${classBorderPerdida}">`;
+        switch(value.tipoServicio){
+            case 'RESERVA':
+                elem += `<div class="row d-flex align-items-center mb-3">
+                    <div class="col-7">
+                        <h4 class="fw-bold title-servicio position-relative">
+                            Cita médica
+                            <span class="text-veris fw-medium "> agendada</span>
+                        </h4>
                     </div>
-                    <div class="info-doctor ms-2 flex-grow-1">
-                        <p class="mb-1">Doctor</p>
-                        <p class="mb-1">${value.doctorAtencion}</p>
-                        <p class="mb-1 text-veris fw-medium">Dermatología</p>
+                    <div class="col-5 d-flex flex-column align-items-end">
+                        ${ sectionStatusPago(value) }
+                    </div>
+                </div>`;
+                if(tieneTiempo(value.horaInicio)){
+                    elem += `${ mostrarMetodosPago(value) }`;
+                    elem += `${ mostrarConsultorio(value) }`;
+                }else{
+                    elem += `${ mostrarReservaCaducada(value) }`;
+                }
+                elem += `<div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
+                    <div class="col-12 col-md-6 d-flex justify-content-between align-items-center mb-2">
+                        <div class="avatar-doctor border-veris-1 ${classBorderPerdida}" style="background: url(${ (value.fotoMedicoApp != null) ? value.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
+                        </div>
+                        <div class="info-doctor ms-2 flex-grow-1">
+                            <p class="mb-1">Doctor</p>
+                            <p class="mb-1 fw-medium">${value.nombreMedico}</p>
+                            <p class="mb-1 text-veris fw-medium">${value.nombreEspecialidad}</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="info-doctor ms-2">
+                            <p class="mb-1 d-flex justify-content-start align-items-start"><span class="text-veris fw-medium me-2">Fecha:</span> ${value.horaInicio}</p>
+                            <p class="mb-1 d-flex justify-content-start align-items-start"><span class="text-veris fw-medium me-2">Beneficio:</span> ${obtenerBeneficio(value.beneficio)}</p>
+                        </div>
+                    </div>
+                </div>`;
+            break;
+            case 'ORDENES_APOYO_PENDIENTE':
+                elem += `<div class="row d-flex align-items-center">
+                    <div class="col-7">
+                        <h4 class="fw-bold title-servicio position-relative">
+                            Laboratorio 
+                            <span class="text-veris fw-medium ">clínico</span>
+                        </h4>
+                    </div>
+                    <div class="col-5 d-flex flex-column align-items-end">
+                        <span class="badge bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
+                            <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
+                            Pagada
+                        </span>
+                        <button class="btn badge bg-veris text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Notificar llegada</button>
                     </div>
                 </div>
-                <div class="col-12 col-md-6">
-                    <div class="info-doctor ms-2">
-                        <p class="mb-1"><span class="text-veris fw-medium ">Fecha:</span> 11:00 - 18/10/2024</p>
-                        <p class="mb-1"><span class="text-veris fw-medium ">Beneficio:</span> Salud S.A. N-4-C Plan Ideal 4 Costa</p>
+                <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
+                    <div class="col-12 col-md-6 d-flex justify-content-between align-items-center mb-3">
+                        <div class="avatar-doctor border-veris-1" style="background: url(images/doctor.png) no-repeat top center;background-size: cover;">
+                        </div>
+                        <div class="info-doctor ms-2 flex-grow-1">
+                            <p class="mb-1 text-veris fw-medium fw-medium">Remitente</p>
+                            <p class="mb-1">Doctor</p>
+                            <p class="mb-1">Manuel Andrade Saenz</p>
+                            <p class="mb-1 text-veris fw-medium">Medicina General</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="info-orden d-md-flex justify-content-between align-items-center d-none">
+                            <div>
+                                <p class="mb-1 fw-medium text-veris">Escanea
+                                <p class="mb-1">Para ver la orden completa</p>
+                            </div>
+                            <img class="qr-orden" src="images/qr.svg" alt="">
+                        </div>
+                        <div class="info-orden d-flex justify-content-between align-items-center d-md-none text-center">
+                            <a href="https://www.akold.com/digiturno/orden.pdf" target="_blank" class="btn badge bg-veris text-white px-4 py-2 fs-6 rounded-8 border-0 d-block mt-2 mx-auto">Ver Orden</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>`;
+                <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
+                    <div class="col-12 col-md-6">
+                        <div class="info-doctor ms-2">
+                            <p class="mb-1"><span class="text-veris fw-medium ">Fecha:</span> 11:00 - 18/10/2024</p>
+                            <p class="mb-1"><span class="text-veris fw-medium ">Beneficio:</span> Salud S.A. N-4-C Plan Ideal 4 Costa</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 d-flex justify-content-between align-items-center">
+                        <div class="info-doctor ms-2 flex-grow-1">
+                            <p class="w-100 mb-1 fw-bold fs-4 text-start">
+                                <span class="text-veris fw-medium ">Ubicación:</span> LABORATORIO <span class="text-veris fw-medium ">|</span> 
+                                <img src="images/marker.svg">
+                            </p>
+                            <p class="mb-1"><span class="text-veris fw-medium ">Centro:</span> Veris Kennedy</p>
+                        </div>
+                    </div>
+                </div>`;
+            break;
+            case 'BATERIA_PRESTACIONES':
+                elem += `<div class="row d-flex align-items-center">
+                    <div class="col-7">
+                        <h4 class="fw-bold title-servicio position-relative">
+                            ${ value.nombreServicioNivel1 }
+                            <span class="text-veris fw-medium ">agendada</span>
+                        </h4>
+                    </div>
+                    <div class="col-5 d-flex flex-column align-items-end">
+                        <span class="badge bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
+                            <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
+                            Pagada
+                        </span>
+                    </div>
+                </div>
+                <div class="row g-0 rounded-8 d-flex justify-content-between align-items-center mt-2 bg-veris-sky p-3 px-2 fs-5 mb-2">
+                    <div class="col-12 col-md-6">
+                        <span class="text-veris fw-medium ">Centro:</span> Veris Kennedy
+                    </div>
+                    <div class="col-12 col-md-6 fw-bold fs-4 text-start text-md-end">
+                        <span class="text-veris fw-medium ">Ve al consultorio:</span> 13 <span class="text-veris fw-medium ">|</span> 
+                        <img src="{{ asset('assets/img/marker.svg') }}">
+                    </div>
+                </div>
+                <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
+                    <div class="col-12 col-md-6 d-flex justify-content-between align-items-center mb-2">
+                        <div class="avatar-doctor border-veris-1" style="background: url(${ (value.fotoMedicoApp != null) ? value.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
+                        </div>
+                        <div class="info-doctor ms-2 flex-grow-1">
+                            <p class="mb-1">Doctor</p>
+                            <p class="mb-1">${value.doctorAtencion}</p>
+                            <p class="mb-1 text-veris fw-medium">Dermatología</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="info-doctor ms-2">
+                            <p class="mb-1"><span class="text-veris fw-medium ">Fecha:</span> 11:00 - 18/10/2024</p>
+                            <p class="mb-1"><span class="text-veris fw-medium ">Beneficio:</span> Salud S.A. N-4-C Plan Ideal 4 Costa</p>
+                        </div>
+                    </div>
+                </div>`;
+            break;
+        }
+        elem += `</div>`;
         return elem;
     }
 
@@ -524,6 +748,7 @@
         line-height: 32px;
         font-weight: 700;
     }
+    .line-height-22{line-height: 22px}
     .label-info{
         font-size: 1.25rem;
         line-height: 1.25rem;
@@ -541,6 +766,9 @@
         width: 75px;
         height: 3px;
         background: var(--veris-blue);
+    }
+    .border-perdida .title-servicio:after{
+        background: #d84316;
     }
     .title-servicio-pendiente:after{
         background: var(--pendiente);
@@ -646,6 +874,9 @@
     }
     .swiper .swiper-slide{
         color: inherit !important;
+    }
+    .swiper .swiper-slide {
+        height: auto;
     }
     ::-webkit-scrollbar {
       height: 10px;
