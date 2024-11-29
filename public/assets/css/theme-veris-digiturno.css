@@ -227,6 +227,22 @@ body, html {
     max-width: 125px;
 }
 
+.fs-14{
+    font-size: 14px;
+}
+
+.line-height-14{
+    line-height: 14px;
+}
+
+.fs-16{
+    font-size: 16px;
+}
+
+.line-height-16{
+    line-height: 16px;
+}
+
 /* Estilos para el Content */
 .content {
     flex: 1 0 70%; /* Al menos 70% del alto */
