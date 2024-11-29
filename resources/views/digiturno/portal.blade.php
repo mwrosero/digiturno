@@ -2,24 +2,24 @@
 @section('content')
 {{-- Modal notificar llegada --}}
 <div class="modal modal-top fade" id="modalNotificarLlegada" tabindex="-1" aria-labelledby="modalNotificarLlegadaLabel" aria-hidden="true">
-        <div class="modal-dialog modal modal-dialog-centered mx-auto">
-            <form class="modal-content rounded-4">
-                <div class="modal-header d-none">
-                    <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog modal modal-dialog-centered mx-auto">
+        <form class="modal-content rounded-8">
+            <div class="modal-header d-none">
+                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3">
+                <h5 class="fs--20 line-height-24 mt-3 mb--20">{{ __('Detalle la orden:') }}</h5>
+                <div class="row gx-2 justify-content-between align-items-center">
+                    <ul class="list-group border-0 p-0" id="listaPrestaciones">
+                    </ul>
                 </div>
-                <div class="modal-body p-3">
-                    <h5 class="fs--20 line-height-24 mt-3 mb--20">{{ __('Detalle la orden:') }}</h5>
-                    <div class="row gx-2 justify-content-between align-items-center">
-                        <ul class="list-group list-group-checkable d-grid gap-2 border-0" id="listaPrestaciones">
-                        </ul>
-                    </div>
-                </div>
-                <div class="modal-footer pt-0 pb-3 px-3">
-                    <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-3 py-2 btn-print-notificar-llegada" data-bs-dismiss="modal" style="color: #6A7D8E;">Aceptar</button>
-                </div>
-            </form>
-        </div>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0">
+                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto btn-print-notificar-llegada fs-4" data-bs-dismiss="modal">Aceptar</button>
+            </div>
+        </form>
     </div>
+</div>
 <div class="wrapper">
     <!-- Header -->
     <header class="header p-3">
@@ -50,7 +50,8 @@
                 <div id="sidebar" class="col-12 col-md-3 mb-3 mb-md-0 bg-silver sidebar-expanded h-100 overflow-auto"> <!-- Sidebar content here -->
                     <div id="toggle-sidebar" class="header-sidebar cursor-pointer w-100 d-flex justify-content-between align-items-center py-3 title-servicio position-relative">
                         <img class="me-2" src="{{ asset('assets/img/circulo-familiar.svg') }}" alt="">
-                        <h4 class="mb-0 me-2">Circulo Familiar</h4>
+                        <h4 class="mb-0 me-2 d-none d-md-block">Circulo Familiar</h4>
+                        <p class="name-selected-sidebar d-block d-md-none m-0 text-veris fw-medium fs-3 mx-2"></p>
                         <img class="arrow-ico" src="{{ asset('assets/img/arrow.svg') }}" alt="">
                     </div>
                     <div class="w-100 mt-3 py-3" id="list-familiares">
@@ -277,20 +278,24 @@
             if ($('#sidebar').hasClass('sidebar-collapsed')) {
                 $('#sidebar').removeClass('col-md-3').addClass('col-md-1');
                 $('#content').removeClass('col-md-9').addClass('col-md-11');
-                $('#toggle-sidebar h4, .name-familiar').addClass('d-none')
+                $('.name-familiar').addClass('d-none')
                 $('#toggle-sidebar').addClass('title-servicio-sm');
                 $('.arrow-ico').addClass('rotate-arrow');
                 if(isMobile()){
                     $('#list-familiares').addClass('d-none');
+                }else{
+                    $('#toggle-sidebar h4').addClass('d-none')
                 }
             } else {
                 $('#sidebar').removeClass('col-md-1').addClass('col-md-3');
                 $('#content').removeClass('col-md-11').addClass('col-md-9');
-                $('#toggle-sidebar h4, .name-familiar').removeClass('d-none');
+                $('.name-familiar').removeClass('d-none');
                 $('#toggle-sidebar').removeClass('title-servicio-sm');
                 $('.arrow-ico').removeClass('rotate-arrow');
                 if(isMobile()){
                     $('#list-familiares').removeClass('d-none');
+                }else{
+                    $('#toggle-sidebar h4').removeClass('d-none');
                 }
             }
         });
@@ -357,7 +362,13 @@
     async function mostrarPrestaciones(detalle){
         let elem = ``;
         $.each(detalle, function(key,value){
-            elem += `<li class="list-group-item">${ value.nombreServicio }</li>`
+            //let class_estado_prestacion = (value.)
+            elem += `<li class="list-group-item bg-white border-0 mb-1 py-0 fs-16 line-height-16 d-flex justify-content-between align-items-center">
+                ${ value.nombreServicio }
+                <span class="badge bg-warning badge-pill">
+                    <i class="fa-solid fa-exclamation text-white"></i>
+                </span>
+                </li>`
         })
         $('#listaPrestaciones').html(elem);
     }
@@ -395,6 +406,8 @@
                 <span class="flex-grow-1 name-familiar text-start text-md-center">${ dataTurno.paciente.nombreCompleto }</span>
         </div>`;
 
+        $('.name-selected-sidebar').html(`${dataTurno.paciente.primerNombre} ${dataTurno.paciente.primerApellido}`);
+
         $.each(dataTurno.paciente.lsGrupoFamiliar, function(key, value){
             elem += `<div data-rel='${JSON.stringify(value)}' class="item-coincidencia rounded-8 border-veris-2 p-2 text-center bg-veris-sky mb-2 text-veris fw-medium d-flex justify-content-between align-items-center fs-16">
                 <div class="letter-name border-veris-1 mx-2 bg-white">${ value.nombreCompleto.charAt(0) }</div>
@@ -406,6 +419,7 @@
     async function cargarServicios(){
         let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
+        $('.name-selected-sidebar').html(`${paciente.primerNombre} ${paciente.primerApellido}`);
         let args = [];
         args["endpoint"] =  `${api_url}/${api_war}/paciente/servicios?macAddress=${ dataTurno.mac }&idPaciente=${ paciente.idPaciente }`;
         //dataCita.paciente.numeroPaciente
@@ -428,6 +442,17 @@
             $('#mensajeError').html(`${data.message}`)
             $('#modalAlerta').modal('show');
         }
+
+        if(isMobile()){
+            hideListFamiliares()
+        }
+    }
+
+    function hideListFamiliares(){
+        $('#list-familiares').addClass('d-none');
+        $('#sidebar').addClass('sidebar-collapsed');
+        $('#sidebar').removeClass('sidebar-expanded');
+        $('.arrow-ico').addClass('rotate-arrow');
     }
 
     async function drawServicioAgrupado(){
@@ -545,8 +570,8 @@
             </div>
             <div class="col-12 d-block d-md-flex justify-content-center align-items-center gap-2">
                 <span class="text-veris fw-medium -dark me-2 p-2 my-2 text-end">Método de pago</span>
-                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 d-block me-2 my-2">Pagar en caja</button>
-                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 d-block my-2">Link de pago</button>
+                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2">Pagar en caja</button>
+                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2">Link de pago</button>
             </div>
         </div>`;
     }
@@ -555,8 +580,8 @@
         return `<div class="row g-0 rounded-8 mt-2 bg-veris-sky p-3 px-2 fs-5">
             <div class="col-12 d-block d-md-flex justify-content-center align-items-center gap-2">
                 <span class="text-veris fw-medium -dark me-2 p-2 my-2 text-end">Método de pago</span>
-                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 d-block me-2 my-2">Pagar en caja</button>
-                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 d-block my-2">Link de pago</button>
+                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2">Pagar en caja</button>
+                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2">Link de pago</button>
             </div>
         </div>`;
     }
@@ -685,20 +710,20 @@
                     <div class="col-12 col-md-6">
                         <div class="info-doctor ms-2">
                             <p class="mb-1 d-flex justify-content-start align-items-start"><span class="text-veris fw-medium me-2">Fecha:</span> ${value.horaInicio}</p>
-                            <p class="mb-1 d-flex justify-content-start align-items-start"><span class="text-veris fw-medium me-2">Beneficio:</span> ${obtenerBeneficio(value.beneficio)}</p>
+                            <p class="mb-1"><span class="text-veris fw-medium me-2">Beneficio:</span> ${obtenerBeneficio(value.beneficio)}</p>
                         </div>
                     </div>
                 </div>`;
             break;
             case 'ORDEN_MEDICA':
                 elem += `<div class="row d-flex align-items-center mb-3">
-                    <div class="col-7">
-                        <h4 class="fw-bold title-servicio position-relative">
-                            ${value.nombreServicioNivel1}
+                    <div class="col-12 col-md-7">
+                        <h4 class="fw-bold title-servicio text-capitalize position-relative">
+                            ${value.nombreServicioNivel1.toLowerCase()}
                             <span class="text-veris fw-medium "> agendada</span>
                         </h4>
                     </div>
-                    <div class="col-5 d-flex flex-column align-items-end">
+                    <div class="col-12 col-md-5 mt-2 mt-md-0 d-flex flex-column align-items-start align-items-md-end">
                         ${ sectionStatusPagoOrdenes(value) }
                     </div>
                 </div>`;
@@ -712,20 +737,20 @@
                         <div class="info-doctor ms-2 flex-grow-1">
                             <p class="mb-1">Doctor</p>
                             <p class="mb-1 fw-medium">${value.doctorAtencion}</p>
-                            <p class="mb-1 d-flex justify-content-start align-items-start"><span class="text-veris fw-medium me-2">Beneficio:</span> ${obtenerBeneficio(value.beneficio)}</p>
+                            <p class="mb-1"><span class="text-veris fw-medium me-2">Beneficio:</span> ${obtenerBeneficio(value.beneficio)}</p>
                         </div>
                     </div>
                 </div>`;
             break;
             case 'ORDENES_APOYO_PENDIENTE':
                 elem += `<div class="row d-flex align-items-center">
-                    <div class="col-7">
+                    <div class="col-12 col-md-7">
                         <h4 class="fw-bold title-servicio position-relative">
                             Laboratorio 
                             <span class="text-veris fw-medium ">clínico</span>
                         </h4>
                     </div>
-                    <div class="col-5 d-flex flex-column align-items-end">
+                    <div class="col-12 col-md-5 d-flex flex-column align-items-start align-items-md-end">
                         <span class="badge bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
                             <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
                             Pagada
@@ -842,6 +867,13 @@
     }
 </script>
 <style>
+    .name-selected-sidebar{
+        line-height: 22px;
+    }
+    #listaPrestaciones {
+        height: 300px;
+        overflow-y: auto;
+    }
     .cursor-pointer{
         cursor: pointer;
     }
@@ -874,6 +906,7 @@
         border-radius: 100%;
         width: 100px;
         height: 100px;
+        aspect-ratio: 1
     }
     .title-servicio:after{
         content: "";
