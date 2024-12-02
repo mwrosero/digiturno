@@ -4,6 +4,31 @@
     $tokenTurno = base64_encode(uniqid());
 @endphp
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+{{-- Modal coincidencias --}}
+<div class="modal modal-top fade" id="modalCoincidencias" tabindex="-1" aria-labelledby="modalCoincidenciasLabel" aria-hidden="true">
+    <div class="modal-dialog modal modal-dialog-centered mx-auto">
+        <form class="modal-content rounded-8">
+            <div class="modal-header d-none">
+                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3">
+                <h5 class="fs--20 line-height-24 mt-3 mb--20">{{ __('Coincidencias') }}</h5>
+                <div class="d-flex bg-light mb-3 justify-content-between align-items-center w-100 rounded-8 text-center bg-white text-veris-dark my-2">
+	        		<img class="ms-2" src="{{ asset('assets/img/info-ico') }}.svg" alt="">
+	        		<span class="ms-2 text-start flex-grow-1">Por favor verifica la información<br>correcta para continuar.</span>
+	        	</div>
+                <div class="row gx-2 justify-content-between align-items-center">
+                    <ul class="list-group border-0 p-0 px-2" id="listaCoincidencias">
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0">
+                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto btn-print-notificar-llegada fs-4" data-bs-dismiss="modal">Aceptar</button>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="wrapper">
 	<!-- Header -->
 	<header class="header p-3">
@@ -83,33 +108,27 @@
 						    </div>
 						</div>
 						<div class="tab-pane fade mt-3 px-2 w-100" id="pills-nombres" role="tabpanel" aria-labelledby="pills-nombres-tab" tabindex="0">
-						    <div class="row">
-						        <div class="col-12 col-md-8 mb-3 text-center">
-						    		<input autocomplete="off" class="w-100 onlyLetters text-uppercase keyboard-input p-1 rounded-8 text-center fs-3 mb-2" id="nombres" type="text" placeholder="Ingresa nombres" />
-								    <input autocomplete="off" class="w-100 onlyLetters text-uppercase keyboard-input p-1 text-center fs-3 rounded-8" id="apellidos" type="text" placeholder="Ingresa apellidos" />
+						    <div class="d-row">
+						        <div class="col-12 col-md-8 offset-md-2 mt-2 mb-4 text-center">
+						    		<input autocomplete="off" class="w-100 onlyLetters text-uppercase keyboard-input p-1 rounded-8 text-center fs-1 mb-2" id="nombres" type="text" placeholder="Ingresa nombres" />
+								    <input autocomplete="off" class="w-100 onlyLetters text-uppercase keyboard-input p-1 text-center fs-1 rounded-8" id="apellidos" type="text" placeholder="Ingresa apellidos" />
 						    		{{-- <button onclick="buscarUsuario();" class="btn bg-veris text-white mt-2 mx-auto">BUSCAR</button> --}}
 						    		<div class="w-100 d-none d-md-block">
 								    	<div class="keyboardContainer w-100"></div>
 								    </div>
 						        </div>
-						        <div class="col-12 col-md-4 ">
+						        {{-- <div class="col-12 col-md-4 ">
 						        	COINCIDENCIAS
 						        	<div class="d-flex bg-light mb-3 justify-content-between align-items-center w-100 rounded-8 text-center bg-white text-veris-dark my-2">
 						        		<img class="ms-2" src="{{ asset('assets/img/info-ico') }}.svg" alt="">
 						        		<span class="ms-2 text-start flex-grow-1">Por favor verifica la información<br>correcta para continuar.</span>
 						        	</div>
-						        	<div class="w-100" id="list-coincidencias">
-						        		{{-- <div class="item-coincidencia rounded-8 border-veris-2 p-2 text-center bg-veris-sky mb-2 text-veris fw-medium">
+						        	<div class="w-100" id="listaCoincidencias">
+						        		<div class="item-coincidencia rounded-8 border-veris-2 p-2 text-center bg-veris-sky mb-2 text-veris fw-medium">
 						        			Michael Washington Rosero Peralta
 						        		</div>
-						        		<div class="item-coincidencia rounded-8 border-veris-2 p-2 text-center bg-veris-sky mb-2 text-veris fw-medium">
-						        			Washington Alfonso Rosero Altamirano
-						        		</div>
-						        		<div class="item-coincidencia rounded-8 border-veris-2 p-2 text-center bg-veris-sky mb-2 text-veris fw-medium">
-						        			Michael Julio Rosero Perez
-						        		</div> --}}
 						        	</div>
-						        </div>
+						        </div> --}}
 						    </div>
 						</div>
 					</div>
@@ -157,7 +176,7 @@
       		return;
 		}
 		let args = [];
-        args["endpoint"] =  `${api_url}/${api_war}/paciente/validar_datos?tipoFiltro=${ tipoFiltro }&valor=${ encodeURIComponent(valorFiltro) }`;
+        args["endpoint"] = `${api_url}/${api_war}/paciente/validar_datos?tipoFiltro=${ tipoFiltro }&valor=${ encodeURIComponent(valorFiltro) }`;
         //dataCita.paciente.numeroPaciente
         args["method"] = "GET";
         args["token"] = accessToken;
@@ -175,10 +194,12 @@
       			let elem = ``;
       			$.each(data.data, function(key, value){
       				elem += `<div data-rel='${JSON.stringify(value)}' class="item-coincidencia rounded-8 border-veris-2 p-2 text-center bg-veris-sky mb-2 text-veris fw-medium">
-	        			${value.nombreCompleto}
+	        			${value.nombreCompleto}<br>
+	        			<span class="fs-12 text-veris-dark">${value.nombreTipoIdentificacion}: ${value.numeroIdentificacion}</span>
 	        		</div>`
       			});
-      			$('#list-coincidencias').html(elem);
+      			$('#listaCoincidencias').html(elem);
+      			$('#modalCoincidencias').modal("show");
       		}
       	}
 	}
@@ -208,13 +229,31 @@
 
     setInterval(actualizarFechaHora, 1000);
 
+    async function buscarFamiliares(paciente){
+    	let args = [];
+        args["endpoint"] = `${api_url}/${api_war}/paciente/grupo_familiar?idPaciente=${ paciente.idPaciente }`;
+        //dataCita.paciente.numeroPaciente
+        args["method"] = "GET";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        const data = await call(args);
+        console.log(data);
+      	if(data.code == 200){
+      		paciente.lsGrupoFamiliar = data.data
+      		storeData(paciente);
+      		location.href = "/portal/{{ $tokenTurno }}";
+      	}else{
+      		storeData(paciente);
+      		location.href = "/portal/{{ $tokenTurno }}";
+      	}
+    }
+
 	document.addEventListener("DOMContentLoaded", () => {
 		Keyboard.open();
 		
-        $('body').on('click', '.item-coincidencia', function(){
+        $('body').on('click', '.item-coincidencia', async function(){
         	let data = JSON.parse($(this).attr("data-rel"));
-        	storeData(data);
-      		location.href = "/portal/{{ $tokenTurno }}";
+        	await buscarFamiliares(data);
         });
 
         $(document).on("click", function (event) {
@@ -275,7 +314,7 @@
 	.hg-theme-default.hg-layout-numeric .hg-button{
 		font-size: 35px;
 	}
-	#list-coincidencias {
+	#listaCoincidencias {
 	    max-height: 280px;
 	    overflow-y: auto;
 	}

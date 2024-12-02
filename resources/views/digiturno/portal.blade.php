@@ -1044,35 +1044,6 @@
     .swiper .swiper-slide {
         height: auto;
     }
-    ::-webkit-scrollbar {
-      height: 10px;
-      width: 10px;
-    }
-    ::-webkit-scrollbar-track {
-      border-radius: 5px;
-      background-color: #DFE9EB;
-    }
-
-    ::-webkit-scrollbar-track:hover {
-      background-color: #D5DEE0;
-    }
-
-    ::-webkit-scrollbar-track:active {
-      background-color: #D5DEE0;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      border-radius: 5px;
-      background-color: #0071CE;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background-color: #19408F;
-    }
-
-    ::-webkit-scrollbar-thumb:active {
-      background-color: #19408F;
-    }
 
     @media print {
         body {
