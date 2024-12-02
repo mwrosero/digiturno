@@ -31,7 +31,8 @@
 					</div>
 				</div>
 				<div class="col-12 d-flex flex-column justify-content-center align-items-center">
-					<img src="{{ asset('assets/img/qr-inicio.png') }}" alt="" style="width: 250px">
+					{{-- <img src="{{ asset('assets/img/qr-inicio.png') }}" alt="" style="width: 250px"> --}}
+					<div id="qrcode"></div>
 					<p class="mb-0 fs-3 fw-bold text-veris">Escanea</p>
 					<span class="fs-4 text-center">para generar tu próximo turno<br>desde tu celular.</span>
 				</div>
@@ -52,7 +53,17 @@
 		</div>
 	</footer>
 </div>
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/qrcode.js"></script>
 <script>
 	setInterval(actualizarFechaHora, 1000);
+	$(document).ready(async function() {
+		$('#qrcode').qrcode({
+			width: 200,
+            height: 200,
+            color: "#000",
+            bgColor: "#FFF",
+            text: "https://digiturno.akold.com/ingreso/{{ $mac }}"
+		});
+	})
 </script>
 @endsection
