@@ -361,7 +361,7 @@
 
     async function mostrarPrestaciones(detalle){
         let elem = ``;
-        $.each(detalle, function(key,value){
+        $.each(detalle.detallesOrden, function(key,value){
             //let class_estado_prestacion = (value.)
             elem += `<li class="list-group-item bg-white border-0 mb-1 py-0 fs-16 line-height-16 d-flex justify-content-between align-items-center">
                 ${ value.nombreServicio }
@@ -374,7 +374,20 @@
     }
 
     async function notificarLlegada(detalle){
-        //
+        console.log(detalle);
+        return;
+        let args = [];
+        https://desa-turnero.phantomx.com.ec/turnero/v2/orden/activa_orden_laboratorio?codigoOrdenApoyo=6926775&macAddress=24-2F-FA-07-13-0A
+        args["endpoint"] =  `${api_url}/${api_war}/orden/activa_orden_laboratorio?codigoOrdenApoyo?macAddress=${ dataTurno.mac }&codigoOrdenApoyo=${ paciente.idPaciente }`;
+        //dataCita.paciente.numeroPaciente
+        args["method"] = "GET";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+
+        }
     }
 
     async function agruparDatos(){
@@ -548,7 +561,7 @@
                 <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
                 Pagada
             </span>
-            <button data-rel='${ JSON.stringify(detalle.detallesOrden) }' class="btn badge bg-veris btn-notificar-llegada text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Notificar llegada</button>`;
+            <button data-rel='${ JSON.stringify(detalle) }' class="btn badge bg-veris btn-notificar-llegada text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Notificar llegada</button>`;
         }else{
             return `<span class="badge d-flex align-items-center bg-pendiente-light text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
                 <img class="me-1" src="{{ asset('assets/img/icon-pendiente.svg') }}" alt="">
@@ -720,7 +733,7 @@
                     <div class="col-12 col-md-7">
                         <h4 class="fw-bold title-servicio text-capitalize position-relative">
                             ${value.nombreServicioNivel1.toLowerCase()}
-                            <span class="text-veris fw-medium "> agendada</span>
+                            <!--span class="text-veris fw-medium "> agendada</span-->
                         </h4>
                     </div>
                     <div class="col-12 col-md-5 mt-2 mt-md-0 d-flex flex-column align-items-start align-items-md-end">
@@ -755,7 +768,7 @@
                             <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
                             Pagada
                         </span>
-                        <button data-rel='${ JSON.stringify(value.detallesOrden) }' class="btn badge bg-veris btn-notificar-llegada text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Notificar llegada</button>
+                        <button data-rel='${ JSON.stringify(value) }' class="btn badge bg-veris btn-notificar-llegada text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Notificar llegada</button>
                     </div>
                 </div>
                 <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
@@ -919,6 +932,9 @@
     }
     .border-perdida .title-servicio:after{
         background: #d84316;
+    }
+    .border-pendiente-1 .title-servicio:after{
+        background: var(--pendiente);
     }
     .title-servicio-pendiente:after{
         background: var(--pendiente);
