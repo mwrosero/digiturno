@@ -1,5 +1,27 @@
 @extends('template.app-template')
 @section('content')
+{{-- Modal turno generado --}}
+<div class="modal fade" id="turnoModal" aria-labelledby="turnoModalLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="turnoModalLabel"></h5>
+            </div>
+            <div class="modal-body">
+                <!-- Código del turno -->
+                <div class="turno-codigo fs-70 text-center p-2 w-75 rounded-8 border-veris-5 text-veris border-veris-3 mx-auto"></div>
+
+                <!-- Información adicional -->
+                <div class="info-box my-3 text-center">
+                    
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <a href="#" type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-salir" data-bs-dismiss="modal">Aceptar</a>
+            </div>
+        </div>
+    </div>
+</div>
 {{-- Modal notificar llegada --}}
 <div class="modal modal-top fade" id="modalNotificarLlegada" tabindex="-1" aria-labelledby="modalNotificarLlegadaLabel" aria-hidden="true">
     <div class="modal-dialog modal modal-dialog-centered mx-auto">
@@ -15,7 +37,7 @@
                 </div>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0">
-                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto btn-print-notificar-llegada fs-4" data-bs-dismiss="modal">Aceptar</button>
+                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-print-notificar-llegada" data-bs-dismiss="modal">Aceptar</button>
             </div>
         </form>
     </div>
@@ -872,7 +894,12 @@
         const data = await call(args);
         console.log(data);
         if(data.code == 200){
-            
+            $('#turnoModalLabel').html(`Turno - ${data.data.nombreSucursalTurnero}`);
+            $('.turno-codigo').html(`${data.data.turno}`);
+            $('.info-box').html(`<p class="turno-prioridad">${data.data.mensajeLlegada}</p>
+                    <p><strong>Paciente:</strong> ${data.data.nombreCompleo}</p>`);
+            $('#turnoModal').modal('show')
+            console.log("iniciar conteo para enviar a home")
         }else{
             $('#mensajeError').html(`${data.message}`)
             $('#modalAlerta').modal('show');
