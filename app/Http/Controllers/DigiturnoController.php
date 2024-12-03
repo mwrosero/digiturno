@@ -41,4 +41,11 @@ class DigiturnoController extends Controller
                 ->with('accessToken',$token)
                 ->with('portalToken',$portalToken);
     }
+
+    public function turnero($mac){
+        $token = Veris::getToken();
+        return view('digiturno.visor_turnero')
+               ->with('accessToken',$token)
+                ->with('mac',$mac);
+    }
 }
