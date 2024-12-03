@@ -17,7 +17,7 @@
                 </div>
             </div>
             <div class="modal-footer justify-content-center">
-                <a href="#" type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-salir" data-bs-dismiss="modal">Aceptar</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-salir">Aceptar</a>
             </div>
         </div>
     </div>
