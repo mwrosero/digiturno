@@ -112,6 +112,7 @@
 						        <div class="col-12 col-md-8 offset-md-2 mt-2 mb-4 text-center">
 						    		<input autocomplete="off" class="w-100 onlyLetters text-uppercase keyboard-input p-1 rounded-8 text-center fs-1 mb-2" id="nombres" type="text" placeholder="Ingresa nombres" />
 								    <input autocomplete="off" class="w-100 onlyLetters text-uppercase keyboard-input p-1 text-center fs-1 rounded-8" id="apellidos" type="text" placeholder="Ingresa apellidos" />
+								    <div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8 my-5 d-block d-md-none">BUSCAR</div>
 						    		{{-- <button onclick="buscarUsuario();" class="btn bg-veris text-white mt-2 mx-auto">BUSCAR</button> --}}
 						    		<div class="w-100 d-none d-md-block">
 								    	<div class="keyboardContainer w-100"></div>
@@ -331,6 +332,10 @@
 
 	.hg-button {
 	    padding: 30px !important;!i;!;
+	}
+
+	button.keyboard-key.keyboard-wide.keyboard-dark {
+	    background: #0071CE;
 	}
 
 	@media only screen and (max-width: 576px) {
