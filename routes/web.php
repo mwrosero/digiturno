@@ -19,6 +19,7 @@ Route::get('/ingreso2/{mac}', [DigiturnoController::class, 'ingreso2'])->name('i
 Route::get('/portal/{portalToken}', [DigiturnoController::class, 'portal'])->name('portal');
 Route::get('/turno/{portalToken}', [DigiturnoController::class, 'turno'])->name('turno');
 Route::get('/turnero/{mac}', [DigiturnoController::class, 'turnero'])->name('turnero');
+Route::get('/turnero/laboratorio/{mac}', [DigiturnoController::class, 'turneroLaboratorio'])->name('turneroLaboratorio');
 
 Route::get('/test', function () {
     return response('welcome Akold');

@@ -1,13 +1,15 @@
 @extends('template.app-template')
 @section('content')
+<link rel="stylesheet" href="{{ asset('assets/css/print.min.css?v=1.0')}}">
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/print.min.js"></script>
 {{-- Modal turno generado --}}
-<div class="modal fade" id="turnoModal" aria-labelledby="turnoModalLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="turnoModal" aria-labelledby="turnoModalLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="turnoModalLabel"></h5>
-            </div>
-            <div class="modal-body">
+            {{-- <div class="modal-header">
+            </div> --}}
+            <div class="modal-body" id="turnoDisplay">
+                <h5 class="modal-title text-center my-2 text-uppercase" id="turnoModalLabel"></h5>
                 <!-- Código del turno -->
                 <div class="turno-codigo fs-70 text-center p-2 w-75 rounded-8 border-veris-5 text-veris border-veris-3 mx-auto"></div>
 
@@ -17,13 +19,13 @@
                 </div>
             </div>
             <div class="modal-footer justify-content-center">
-                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-salir">Aceptar</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-salir">CERRAR</a>
             </div>
         </div>
     </div>
 </div>
 {{-- Modal notificar llegada --}}
-<div class="modal modal-top fade" id="modalNotificarLlegada" tabindex="-1" aria-labelledby="modalNotificarLlegadaLabel" aria-hidden="true">
+<div class="modal modal-top fade" id="modalNotificarLlegada" tabindex="-1" aria-labelledby="modalNotificarLlegadaLabel">
     <div class="modal-dialog modal modal-dialog-centered mx-auto">
         <form class="modal-content rounded-8">
             <div class="modal-header d-none">
@@ -38,6 +40,22 @@
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0">
                 <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-print-notificar-llegada" data-bs-dismiss="modal">Aceptar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{{-- Modal notificar llegada dirigirse --}}
+<div class="modal modal-top fade" id="modalNotificarLlegadaDirigirLugar" tabindex="-1" aria-labelledby="modalNotificarLlegadaDirigirLugarLabel">
+    <div class="modal-dialog modal modal-dialog-centered mx-auto">
+        <form class="modal-content rounded-8">
+            <div class="modal-header d-none">
+                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3">
+                <h5 class="fs--20 line-height-24 mt-3 mb--20" id="direccionDirigirseLlegada">Dirigirse a</h5>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0">
+                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-salir">CERRAR</a>
             </div>
         </form>
     </div>
@@ -72,7 +90,7 @@
                 <div id="sidebar" class="col-12 col-md-3 mb-3 mb-md-0 bg-silver sidebar-expanded h-100 overflow-auto"> <!-- Sidebar content here -->
                     <div id="toggle-sidebar" class="header-sidebar cursor-pointer w-100 d-flex justify-content-between align-items-center py-3 title-servicio position-relative">
                         <img class="me-2" src="{{ asset('assets/img/circulo-familiar.svg') }}" alt="">
-                        <h4 class="mb-0 me-2 d-none d-md-block">Circulo Familiar</h4>
+                        <h4 class="mb-0 me-2 d-none d-md-block text-center">Circulo Familiar</h4>
                         <p class="name-selected-sidebar d-block d-md-none m-0 text-veris fw-medium fs-3 mx-2"></p>
                         <img class="arrow-ico" src="{{ asset('assets/img/arrow.svg') }}" alt="">
                     </div>
@@ -111,7 +129,7 @@
                                         </div>
                                 </div>
                             </div> --}}
-                            <div id="btnPrint" class="btn bg-veris d-none d-md-block text-white p-2 px-5 fs-5 fw-bold rounded-8 mt-3 mt-md-0">Generar turno</div>
+                            <div id="btnPrint" class="btn bg-veris d-none d-md-block text-white p-2 px-5 fs-5 fw-bold rounded-8 mt-3 mt-md-0 btn-turno">Generar turno</div>
                             <div id="btn-redirect-turno" url-rel="/turno/{{ $portalToken }}" class="btn d-blocl d-md-none bg-veris text-white p-2 px-5 fs-5 fw-bold rounded-8 mt-3 mt-md-0">Generar turno</div>
                         </div>
                         <div class="row row-servicios overflow-auto">
@@ -285,6 +303,7 @@
 <script>
     let dataServicios;
     let groupedData = [];
+    var estadosVigentes = ["REG", "ENTS", "FAC"];
 
     setInterval(actualizarFechaHora, 1000);
 
@@ -306,7 +325,7 @@
                 if(isMobile()){
                     $('#list-familiares').addClass('d-none');
                 }else{
-                    $('#toggle-sidebar h4').addClass('d-none')
+                    $('#toggle-sidebar h4').addClass('d-md-none')
                 }
             } else {
                 $('#sidebar').removeClass('col-md-1').addClass('col-md-3');
@@ -317,7 +336,7 @@
                 if(isMobile()){
                     $('#list-familiares').removeClass('d-none');
                 }else{
-                    $('#toggle-sidebar h4').removeClass('d-none');
+                    $('#toggle-sidebar h4').removeClass('d-md-none');
                 }
             }
         });
@@ -337,7 +356,7 @@
             location.href = $(this).attr('url-rel');
         })
 
-        $('body').on('click', '#btnPrint', async function(){
+        $('body').on('click', '.btn-turno', async function(){
             await generarTurno();
         })
 
@@ -381,6 +400,47 @@
         });*/
     });
 
+    async function printTurno(detalle){
+        // {
+        //     "turno": "TG-008",
+        //     "mensajeLlegada": "WOOOW!! ERES EL NUMERO 3 PRONTO TOCA TU TURNO",
+        //     "nombreCompleo": "ROSENBERG MIRANDA DENISSE ALEXANDRA",
+        //     "nombreMuestraTurnero": "Veris",
+        //     "nombreSucursalTurnero": "Veris Kennedy",
+        //     "prioridad": 0,
+        //     "nemonicoPrioridad": "NORMAL"
+        // }
+        var content = $('#turnoDisplay').html();
+        var htmlContent = `
+            <html>
+            <head>
+                <!-- Incluye Bootstrap o tu CSS personalizado -->
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+                <link rel="stylesheet" href="{{ asset('assets/css/theme-veris-digiturno.css?v=1.0')}}">
+                <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-icons.min.css?v=1.0')}}">
+            </head>
+            <body>
+                <img class="logo mx-auto my-3" src="{{ asset('assets/img/veris-large.png') }}" alt="">
+                ${content}
+            </body>
+            </html>
+        `;
+
+        printJS({
+            printable: htmlContent,
+            type: 'raw-html',
+            style: `
+                @media print {
+                    body {
+                        font-size: 14px;
+                        margin: 0;
+                        padding: 0;
+                    }
+                }
+            `
+        });
+    }
+
     async function mostrarPrestaciones(detalle){
         let elem = ``;
         $.each(detalle.detallesOrden, function(key,value){
@@ -397,10 +457,8 @@
 
     async function notificarLlegada(detalle){
         console.log(detalle);
-        return;
         let args = [];
-        https://desa-turnero.phantomx.com.ec/turnero/v2/orden/activa_orden_laboratorio?codigoOrdenApoyo=6926775&macAddress=24-2F-FA-07-13-0A
-        args["endpoint"] =  `${api_url}/${api_war}/orden/activa_orden_laboratorio?codigoOrdenApoyo?macAddress=${ dataTurno.mac }&codigoOrdenApoyo=${ paciente.idPaciente }`;
+        args["endpoint"] =  `${api_url}/${api_war}/orden/activa_orden_laboratorio?macAddress=${ dataTurno.mac }&codigoOrdenApoyo=${ detalle.numeroOrden }`;
         //dataCita.paciente.numeroPaciente
         args["method"] = "GET";
         args["token"] = accessToken;
@@ -408,7 +466,8 @@
         const data = await call(args);
         console.log(data);
         if(data.code == 200){
-
+            $('#direccionDirigirseLlegada').html(`Dirigirse a: área de laboratorios`);
+            $('#modalNotificarLlegadaDirigirLugar').modal('show');
         }
     }
 
@@ -479,7 +538,7 @@
         }
 
         if(isMobile()){
-            hideListFamiliares()
+            //hideListFamiliares()
         }
     }
 
@@ -490,11 +549,31 @@
         $('.arrow-ico').addClass('rotate-arrow');
     }
 
+    function nombreComercialServicio(str){
+        switch(str){
+            case 'ORDEN_MEDICA':
+                return 'Órdenes Médicas por Pagar';
+            break;
+            case 'ORDENES_APOYO_PENDIENTE':
+                return 'Órdenes Médicas Pagadas';
+            break;
+            case 'RESERVA':
+                return 'Citas Médicas';
+            break;
+            case 'BATERIA_PRESTACIONES':
+                return 'Chequeos';
+            break;
+            case 'PAQUETES_PROMOCIONALES':
+                return 'Paquetes promocionales';
+            break;
+        }
+    }
+
     async function drawServicioAgrupado(){
         let elem = ``;
         $.each(groupedData, function(key, value){
-            if(value.tipoServicio != "BATERIA_PRESTACIONES" && value.tipoServicio != "PAQUETES_PROMOCIONALES"){
-                elem += `<h3>${ value.tipoServicio }</h3>`;
+            if(value.tipoServicio != "BATERIA_PRESTACIONES"){
+                elem += `<h3>${ nombreComercialServicio(value.tipoServicio) }</h3>`;
                 elem += `<div class="swiper swiper-servicio swiper-servicio-${key} position-relative pb-4 mb-3">
                     <div class="swiper-wrapper py-2" id="contenedorServicios${key}">`;
                 $.each(value.items, function(k, v){
@@ -537,7 +616,7 @@
                     // spaceBetween: 8,
                 },
                 1024: {
-                    slidesPerView: 1.2,
+                    slidesPerView: 1.5,
                     // spaceBetween: 8,
                 },
             },
@@ -565,8 +644,32 @@
         }
     }
 
+    function sectionStatusPagoPaquete(detalle){
+        if(estadosVigentes.includes(detalle.codigoEstado)){
+            return `<span class="badge d-flex align-items-center bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
+                <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
+                Vigente
+            </span>`;
+        }else{
+            return `<span class="badge d-flex align-items-center bg-pendiente-light text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
+                <img class="me-1" src="{{ asset('assets/img/icon-pendiente.svg') }}" alt="">
+                Por pagar
+            </span>`;
+        }
+    }
+
+    function mostrarTiempoVigencia(detalle){
+        //estadosVigentes.includes(detalle.codigoEstado)
+        return ``
+    }
+    
+    function mostrarMetodosPagoPaquete(detalle){
+        return ``
+    }
+
     function verificarEstadoOrden(value){
         var estaPagada = false
+        console.log(value.detallesOrden)
         $.each(value.detallesOrden, function(k,v) {
             if(v.estaFacturado){
                 estaPagada = true;
@@ -605,7 +708,7 @@
             </div>
             <div class="col-12 d-block d-md-flex justify-content-center align-items-center gap-2">
                 <span class="text-veris fw-medium -dark me-2 p-2 my-2 text-end">Método de pago</span>
-                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2">Pagar en caja</button>
+                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2 btn-turno">Pagar en caja</button>
                 <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2">Link de pago</button>
             </div>
         </div>`;
@@ -615,7 +718,7 @@
         return `<div class="row g-0 rounded-8 mt-2 bg-veris-sky p-3 px-2 fs-5">
             <div class="col-12 d-block d-md-flex justify-content-center align-items-center gap-2">
                 <span class="text-veris fw-medium -dark me-2 p-2 my-2 text-end">Método de pago</span>
-                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2">Pagar en caja</button>
+                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2 btn-turno">Pagar en caja</button>
                 <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2">Link de pago</button>
             </div>
         </div>`;
@@ -707,6 +810,7 @@
             classBorderPerdida = "border-perdida";
         }
         if(value.tipoServicio == "ORDEN_MEDICA"){
+            // console.log(value)
             var ordenPagada = verificarEstadoOrden(value);
             if(!ordenPagada){
                 classBorderPerdida = "border-pendiente-1";
@@ -751,6 +855,7 @@
                 </div>`;
             break;
             case 'ORDEN_MEDICA':
+            //case 'ORDENES_APOYO_PENDIENTE':
                 elem += `<div class="row d-flex align-items-center mb-3">
                     <div class="col-12 col-md-7">
                         <h4 class="fw-bold title-servicio text-capitalize position-relative">
@@ -777,7 +882,7 @@
                     </div>
                 </div>`;
             break;
-            case 'ORDENES_APOYO_PENDIENTE':
+            /*case 'ORDENES_APOYO_PENDIENTE_BK':
                 elem += `<div class="row d-flex align-items-center">
                     <div class="col-12 col-md-7">
                         <h4 class="fw-bold title-servicio position-relative">
@@ -834,6 +939,43 @@
                         </div>
                     </div>
                 </div>`;
+            break;*/
+            case 'PAQUETES_PROMOCIONALES':
+                elem += `<div class="row d-flex align-items-center mb-3">
+                    <div class="col-7">
+                        <h4 class="fw-bold title-servicio position-relative">
+                            Empaquetado
+                        </h4>
+                    </div>
+                    <div class="col-5 d-flex flex-column align-items-end">
+                        ${ sectionStatusPagoPaquete(value) }
+                    </div>
+                    <div class="col-12 text-center my-3">
+                        <span class="text-veris fw-bold fs-14 line-height-14"> ${value.nombrePaquete}</span>
+                    </div>
+                </div>`;
+                if (estadosVigentes.includes(value.codigoEstado)){
+                    elem += `${ mostrarTiempoVigencia(value) }`;
+                }else{
+                    elem += `${ mostrarMetodosPagoPaquete(value) }`;
+                }
+                /*elem += `<div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
+                    <div class="col-12 col-md-6 d-flex justify-content-between align-items-center mb-2">
+                        <div class="avatar-doctor border-veris-1 ${classBorderPerdida}" style="background: url(${ (value.fotoMedicoApp != null) ? value.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
+                        </div>
+                        <div class="info-doctor ms-2 flex-grow-1">
+                            <p class="mb-1">Doctor</p>
+                            <p class="mb-1 fw-medium">${value.nombreMedico}</p>
+                            <p class="mb-1 text-veris fw-medium">${value.nombreEspecialidad}</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="info-doctor ms-2">
+                            <p class="mb-1 d-flex justify-content-start align-items-start"><span class="text-veris fw-medium me-2">Fecha:</span> ${value.horaInicio}</p>
+                            <p class="mb-1"><span class="text-veris fw-medium me-2">Beneficio:</span> ${obtenerBeneficio(value.beneficio)}</p>
+                        </div>
+                    </div>
+                </div>`;*/
             break;
             case 'BATERIA_PRESTACIONES':
                 elem += `<div class="row d-flex align-items-center">
@@ -900,6 +1042,9 @@
                     <p><strong>Paciente:</strong> ${data.data.nombreCompleo}</p>`);
             $('#turnoModal').modal('show')
             console.log("iniciar conteo para enviar a home")
+            if(!isMobile()){
+                printTurno(data.data)
+            }
         }else{
             $('#mensajeError').html(`${data.message}`)
             $('#modalAlerta').modal('show');
