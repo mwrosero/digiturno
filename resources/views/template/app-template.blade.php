@@ -51,7 +51,7 @@
         @yield('content')
 
         <!-- Modal alerta -->
-        <div class="modal fade" id="modalAlerta" aria-hidden="true" tabindex="-1" aria-labelledby="modalAlertaLabel" aria-hidden="true">
+        <div class="modal fade" id="modalAlerta" tabindex="-1" aria-labelledby="modalAlertaLabel">
             <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
                 <div class="modal-content rounded-8">
                     <div class="modal-body text-center p-3 pb-2">

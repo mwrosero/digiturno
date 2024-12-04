@@ -9,14 +9,17 @@
         <div class="row flex-row align-items-start h-100">
             <div class="col-3 h-100 d-flex flex-column justify-content-between">
                 <img class="w-75 mb-5" src="{{ asset('assets/img/veris-large.png') }}" alt="">
-                <div class="mt-auto">
-                    <h1 class="text-veris mb-3">Siguiente turno</h1>
+                <div class="mt-auto" id="next-turno">
+                    <!-- <h1 class="text-veris mb-3">Siguiente turno</h1>
                     <div class="card rounded-8 bg-veris-dark">
-                        <div class="card-content text-center p-5">
-                            <span class="text-center fw-bold fs-70 text-white mb-2">TG 001</span>
-                            <p class="text-veris-sky fs-1 mb-0">Módulo 1</p>
+                        <div class="card-content text-center p-4 px-2 d-flex justify-content-around align-items-center">
+                            <img style="width: 75px;" src="{{ asset('assets/img/NORMAL.svg') }}" alt="">
+                            <div class="info">
+                                <span class="text-center fw-bold fs-70 text-white mb-2">TG 001</span>
+                                <p class="text-veris-sky fs-1 mb-0">Módulo 1</p>
+                            </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="col-9 h-100 overflow-hidden">
@@ -36,8 +39,8 @@
     <!-- Footer -->
     <footer class="footer p-3">
         <div class="container-fluid h-100 g-0">
-            <div class="row h-100 d-flex align-items-center">
-                <div class="col-2 h-100">
+            <div class="row h-100 d-flex align-items-center" id="wait-turno">
+                <!-- <div class="col-2 h-100">
                     <div class="d-flex justify-content-start align-items-center text-start fs-50 line-height-50 h-100">
                         Próximos turnos
                     </div>
@@ -56,7 +59,7 @@
                     <div class="d-flex justify-content-start align-items-center text-start fs-50 line-height-50 h-100 rounded-8 border-veris-1 bg-veris-sky">
                         <p class="w-100 m-0 text-center text-veris">TG 004</p>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </footer>
@@ -67,25 +70,131 @@
     }
 </style>
 <script>
-    //setInterval(actualizarFechaHora, 1000);
+    setInterval(cargarTurnos, 5000);
     async function cargarTurnos(){
-      let args = [];
-      args["endpoint"] = `${api_url}/${api_war}/paciente/grupo_familiar?idPaciente=${ paciente.idPaciente }`;
+        let args = [];
+        args["endpoint"] = `${api_url}/${api_war}/transaccion/turnos_asignados_caja?macAddress={{ $mac }}&estado=TURNO_ASIGNADO`;
         //dataCita.paciente.numeroPaciente
-      args["method"] = "GET";
-      args["token"] = accessToken;
-      args["showLoader"] = true;
-      const data = await call(args);
-      console.log(data);
-      if(data.code == 200){
-          paciente.lsGrupoFamiliar = data.data
-      }else{
-          alert(data.message)
-      }
-  }
+        args["method"] = "GET";
+        args["token"] = accessToken;
+        args["showLoader"] = false;
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            let maxIterations = 6;
+            let elem = `<h1 class="text-veris mb-3">Siguiente turno</h1>`;
+            $.each(data.data, function(key, value){
+                let modulo = ``;
+                let modulo_wait = ``;
+                if(value.idcaja != null){
+                    modulo = `<p class="text-veris-sky fs-1 mb-0">Módulo ${value.idcaja}</p>`;
+                    modulo_wait = `<p class="text-veris fs-1 mb-0">Módulo ${value.idcaja}</p>`;
+                }
+                elem += `<div class="card rounded-8 bg-veris-dark">
+                    <div class="card-content text-center p-4 px-2 d-flex justify-content-around align-items-center">
+                        <img style="width: 75px;" src="{{ asset('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">
+                        <div class="info">
+                            <span class="text-center fw-bold fs-70 text-white mb-2">${value.turno}</span>
+                            ${modulo}
+                        </div>
+                    </div>
+                </div>`;
+            })
+            $('#next-turno').html(elem)
+        }
 
-  document.addEventListener("DOMContentLoaded", () => {
+        args["endpoint"] = `${api_url}/${api_war}/transaccion/turnos_asignados_caja?macAddress={{ $mac }}&estado=TURNO_NO_ASIGNADO`;
+        //dataCita.paciente.numeroPaciente
+        args["method"] = "GET";
+        args["token"] = accessToken;
+        args["showLoader"] = false;
+        const dataWait = await call(args);
+        console.log(dataWait);
+        if(dataWait.code == 200){
+            let elem = `<div class="col-2 h-100">
+                <div class="d-flex justify-content-start align-items-center text-start fs-50 line-height-50 h-100">
+                    Próximos turnos
+                </div>
+            </div>`;
+            $.each(dataWait.data, function(key, value){
+                let modulo = ``;
+                let modulo_wait = ``;
+                if(value.idcaja != null){
+                    modulo = `<p class="text-veris-sky fs-1 mb-0">Módulo ${value.idcaja}</p>`;
+                    modulo_wait = `<p class="text-veris fs-1 mb-0">Módulo ${value.idcaja}</p>`;
+                }
+                elem += `<div class="col-2 h-75 p-3">
+                        <div class="d-flex justify-content-start align-items-center text-start fs-50 line-height-50 h-100 rounded-8 border-veris-1 bg-veris-sky">
+                            <img style="width: 50px;" class="mx-2" src="{{ asset('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">
+                            <div class="text-center flex-grow-1">
+                                <p class="w-100 m-0 text-center text-veris">${value.turno}</p>
+                                ${modulo_wait}
+                            </div>
+                        </div>
+                    </div>`;
+            })
+            $('#wait-turno').html(elem)
+        }
+    }
 
-  })
+    async function _cargarTurnos(){
+        let args = [];
+        args["endpoint"] = `${api_url}/${api_war}/transaccion/turnos_asignados_caja?macAddress={{ $mac }}&estado=TODOS`;
+        //dataCita.paciente.numeroPaciente
+        args["method"] = "GET";
+        args["token"] = accessToken;
+        args["showLoader"] = false;
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            let maxIterations = 6;
+            let elem = `<div class="col-2 h-100">
+                <div class="d-flex justify-content-start align-items-center text-start fs-50 line-height-50 h-100">
+                    Próximos turnos
+                </div>
+            </div>`;
+            $.each(data.data, function(key, value){
+                if (key >= maxIterations) {
+                    return false; // Detiene el bucle
+                }
+                let modulo = ``;
+                let modulo_wait = ``;
+                if(value.idcaja != null){
+                    modulo = `<p class="text-veris-sky fs-1 mb-0">Módulo ${value.idcaja}</p>`;
+                    modulo_wait = `<p class="text-veris fs-1 mb-0">Módulo ${value.idcaja}</p>`;
+                }
+                if(key == 0){
+                    let elem_0 = `<h1 class="text-veris mb-3">Siguiente turno</h1>
+                        <div class="card rounded-8 bg-veris-dark">
+                            <div class="card-content text-center p-4 px-2 d-flex justify-content-around align-items-center">
+                                <img style="width: 75px;" src="{{ asset('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">
+                                <div class="info">
+                                    <span class="text-center fw-bold fs-70 text-white mb-2">${value.turno}</span>
+                                    ${modulo}
+                                </div>
+                            </div>
+                        </div>`;
+                    $('#next-turno').html(elem_0);
+                }else{
+                    elem += `<div class="col-2 h-75 p-3">
+                        <div class="d-flex justify-content-start align-items-center text-start fs-50 line-height-50 h-100 rounded-8 border-veris-1 bg-veris-sky">
+                            <img style="width: 50px;" class="mx-2" src="{{ asset('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">
+                            <div class="text-center flex-grow-1">
+                                <p class="w-100 m-0 text-center text-veris">${value.turno}</p>
+                                ${modulo_wait}
+                            </div>
+                        </div>
+                    </div>`;
+                }
+            })
+            $('#wait-turno').html(elem)
+        }else{
+            alert(data.message)
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        await cargarTurnos();
+    })
 </script>  
 @endsection

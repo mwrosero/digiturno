@@ -235,6 +235,22 @@ body, html {
     font-size: 14px;
 }
 
+.fs-20 {
+    font-size: 20px;
+}
+
+.line-height-20{
+    line-height: 20px;
+}
+
+.fs-40 {
+    font-size: 40px;
+}
+
+.line-height-40{
+    line-height: 40px;
+}
+
 .fs-50 {
     font-size: 50px;
 }
