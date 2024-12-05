@@ -44,7 +44,7 @@
         </form>
     </div>
 </div>
-{{-- Modal notificar llegada dirigirse --}}
+{{-- Modal luego notificar llegada dirigirse --}}
 <div class="modal modal-top fade" id="modalNotificarLlegadaDirigirLugar" tabindex="-1" aria-labelledby="modalNotificarLlegadaDirigirLugarLabel">
     <div class="modal-dialog modal modal-dialog-centered mx-auto">
         <form class="modal-content rounded-8">
@@ -60,6 +60,25 @@
         </form>
     </div>
 </div>
+{{-- Modal detalle paquete --}}
+<div class="modal modal-top fade" id="modalDetallePaquete" tabindex="-1" aria-labelledby="modalDetallePaqueteLabel">
+    <div class="modal-dialog modal modal-dialog-centered mx-auto">
+        <form class="modal-content rounded-8">
+            <div class="modal-header d-none">
+                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3">
+                <h5 class="fs--20 line-height-24 mt-3 mb--20" id="tituloPaqueteDetalle"></h5>
+                <ul class="list-group border-0 p-0 my-2" id="detalleComponentesPaquete">
+                </ul>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0">
+                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4" data-bs-dismiss="modal">CERRAR</a>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="wrapper">
     <!-- Header -->
     <header class="header p-3">
@@ -369,8 +388,35 @@
 
         $('body').on('click', '.btn-print-notificar-llegada', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
-            console.log(detalle)
+            // console.log(detalle)
             await notificarLlegada(detalle);
+        })
+
+        $('body').on('click', '.btn-detalle-paquete', async function(){
+            let detalle = JSON.parse($(this).attr('data-rel'));
+            console.log(detalle)
+            $('#tituloPaqueteDetalle').html(`${detalle.nombrePaquete}`);
+            // si el detalle de cantidadDisponible > 0 Tiene la prestacion pendiente por activar
+            // si el campo cantidadUtilizada == 0 y el campo estaRecepcionado == false significa que el paquete no ha sido utilizado en la atencion
+
+            let elem = ``;
+            $.each(detalle.detallesDisponibles, function(key, value){
+                let icon = ``;
+                if(value.cantidadDisponible > 0 || (value.cantidadUtilizada == 0 && !value.estaRecepcionado)){
+                    icon = `<i class="fa-solid fa-triangle-exclamation text-warning"></i>`
+                }else{
+                    icon = `<i class="fa-solid fa-circle-check text-success"></i>`
+                }
+                elem += `<li class="list-group-item bg-white border-0 mb-1 py-0 fs-16 line-height-16 d-flex justify-content-between align-items-start">
+                    ${ value.nombrePrestacion }
+                    <span class="badge badge-pill bg-veris-sky ms-2">
+                        ${ icon }
+                    </span>
+                </li>`
+                // ${ value.nombreServicio }/${ value.nombrePrestacion }
+            })
+            $('#detalleComponentesPaquete').html(elem);
+            $('#modalDetallePaquete').modal('show');
         })
 
         /*$('#btnPrint').on('click', function () {
@@ -456,7 +502,7 @@
     }
 
     async function notificarLlegada(detalle){
-        console.log(detalle);
+        // console.log(detalle);
         let args = [];
         args["endpoint"] =  `${api_url}/${api_war}/orden/activa_orden_laboratorio?macAddress=${ dataTurno.mac }&codigoOrdenApoyo=${ detalle.numeroOrden }`;
         //dataCita.paciente.numeroPaciente
@@ -464,7 +510,7 @@
         args["token"] = accessToken;
         args["showLoader"] = true;
         const data = await call(args);
-        console.log(data);
+        // console.log(data);
         if(data.code == 200){
             $('#direccionDirigirseLlegada').html(`Dirigirse a: área de laboratorios`);
             $('#modalNotificarLlegadaDirigirLugar').modal('show');
@@ -521,7 +567,7 @@
         args["token"] = accessToken;
         args["showLoader"] = true;
         const data = await call(args);
-        console.log(data);
+        // console.log(data);
         $('#list-servicios').empty();
         if(data.code == 200){
             dataServicios = data.data;
@@ -646,10 +692,17 @@
 
     function sectionStatusPagoPaquete(detalle){
         if(estadosVigentes.includes(detalle.codigoEstado)){
-            return `<span class="badge d-flex align-items-center bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
-                Vigente
-            </span>`;
+            if(obtenerDiferenciaDiasIntl(detalle.fechaVigencia) >= 0){
+                return `<span class="badge d-flex align-items-center bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
+                    <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
+                    Vigente
+                </span>`;
+            }else{
+                return `<span class="badge d-flex align-items-center bg-pendiente-light text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
+                    <img class="me-1" src="{{ asset('assets/img/icon-pendiente.svg') }}" alt="">
+                    Caducado
+                </span>`;
+            }
         }else{
             return `<span class="badge d-flex align-items-center bg-pendiente-light text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
                 <img class="me-1" src="{{ asset('assets/img/icon-pendiente.svg') }}" alt="">
@@ -660,16 +713,26 @@
 
     function mostrarTiempoVigencia(detalle){
         //estadosVigentes.includes(detalle.codigoEstado)
+        // detalle.fechaVigencia
+        let dias = obtenerDiferenciaDiasIntl(detalle.fechaVigencia);
         return ``
     }
     
     function mostrarMetodosPagoPaquete(detalle){
-        return ``
+        if(obtenerDiferenciaDiasIntl(detalle.fechaVigencia) >= 0){
+            return `<div class="row g-0 rounded-8 mt-2 bg-veris-sky p-3 px-2 fs-5">
+                <div class="col-12 d-block d-md-flex justify-content-center align-items-center gap-2">
+                    <span class="text-veris fw-medium -dark me-2 p-2 my-2 text-end">Método de pago</span>
+                    <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2 btn-turno">Pagar en caja</button>
+                    <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2">Link de pago</button>
+                </div>
+            </div>`;
+        }
     }
 
     function verificarEstadoOrden(value){
         var estaPagada = false
-        console.log(value.detallesOrden)
+        // console.log(value.detallesOrden)
         $.each(value.detallesOrden, function(k,v) {
             if(v.estaFacturado){
                 estaPagada = true;
@@ -788,6 +851,17 @@
         </div>`;
     }
 
+    function mostrarPaqueteCaducada(detalle){
+        return `<div class="row g-0 rounded-8 d-flex justify-content-between align-items-center bg-veris-sky p-3 px-2 fs-5 mb-2">
+            <div class="col-12 col-md-6 line-height-22">
+                <span class="text-veris fw-medium">Paquete caducado.</span> Genera un turno para revisarlo en Caja.
+            </div>
+            <div class="col-12 col-md-6 fw-bold fs-4 text-end">
+                <button data-rel='${ JSON.stringify(detalle) }' class="btn btn-turno badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 d-block me-2 my-2 mx-auto">Generar turno</button>
+            </div>
+        </div>`;
+    }
+
     function obtenerBeneficio(beneficio){
         if(beneficio  == null){
             return ``;
@@ -806,7 +880,6 @@
     function drawCard(value){
         let classBorderPerdida = "";
         if( value.tipoServicio == "RESERVA" && !tieneTiempo(value.horaInicio) ){
-            console.log(99)
             classBorderPerdida = "border-perdida";
         }
         if(value.tipoServicio == "ORDEN_MEDICA"){
@@ -855,11 +928,17 @@
                 </div>`;
             break;
             case 'ORDEN_MEDICA':
-            //case 'ORDENES_APOYO_PENDIENTE':
+            case 'ORDENES_APOYO_PENDIENTE':
+                let nombreServicio = ``;
+                if(value.tipoServicio == "ORDEN_MEDICA"){
+                    nombreServicio = value.nombreServicioNivel1.toLowerCase()
+                }else{
+                    nombreServicio = value.tipoOrdenApoyo.toLowerCase()
+                }
                 elem += `<div class="row d-flex align-items-center mb-3">
                     <div class="col-12 col-md-7">
                         <h4 class="fw-bold title-servicio text-capitalize position-relative">
-                            ${value.nombreServicioNivel1.toLowerCase()}
+                            ${nombreServicio}
                             <!--span class="text-veris fw-medium "> agendada</span-->
                         </h4>
                     </div>
@@ -870,17 +949,19 @@
                 if(!ordenPagada){
                     elem += `${ mostrarMetodosPagoOrden(value) }`;
                 }
-                elem += `<div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
-                    <div class="col-12 d-flex justify-content-between align-items-center mb-2">
-                        <div class="avatar-doctor border-veris-1 ${classBorderPerdida}" style="background: url(${ (value.fotoMedicoApp != null) ? value.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
+                if(value.doctorAtencion != null){
+                    elem += `<div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
+                        <div class="col-12 d-flex justify-content-between align-items-center mb-2">
+                            <div class="avatar-doctor border-veris-1 ${classBorderPerdida}" style="background: url(${ (value.fotoMedicoApp != null) ? value.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
+                            </div>
+                            <div class="info-doctor ms-2 flex-grow-1">
+                                <p class="mb-1">Doctor</p>
+                                <p class="mb-1 fw-medium">${value.doctorAtencion}</p>
+                                <p class="mb-1"><span class="text-veris fw-medium me-2">Beneficio:</span> ${obtenerBeneficio(value.beneficio)}</p>
+                            </div>
                         </div>
-                        <div class="info-doctor ms-2 flex-grow-1">
-                            <p class="mb-1">Doctor</p>
-                            <p class="mb-1 fw-medium">${value.doctorAtencion}</p>
-                            <p class="mb-1"><span class="text-veris fw-medium me-2">Beneficio:</span> ${obtenerBeneficio(value.beneficio)}</p>
-                        </div>
-                    </div>
-                </div>`;
+                    </div>`;
+                }
             break;
             /*case 'ORDENES_APOYO_PENDIENTE_BK':
                 elem += `<div class="row d-flex align-items-center">
@@ -941,24 +1022,41 @@
                 </div>`;
             break;*/
             case 'PAQUETES_PROMOCIONALES':
-                elem += `<div class="row d-flex align-items-center mb-3">
-                    <div class="col-7">
-                        <h4 class="fw-bold title-servicio position-relative">
-                            Empaquetado
-                        </h4>
-                    </div>
-                    <div class="col-5 d-flex flex-column align-items-end">
-                        ${ sectionStatusPagoPaquete(value) }
-                    </div>
-                    <div class="col-12 text-center my-3">
-                        <span class="text-veris fw-bold fs-14 line-height-14"> ${value.nombrePaquete}</span>
-                    </div>
-                </div>`;
-                if (estadosVigentes.includes(value.codigoEstado)){
-                    elem += `${ mostrarTiempoVigencia(value) }`;
-                }else{
-                    elem += `${ mostrarMetodosPagoPaquete(value) }`;
-                }
+                let tiempoVigencia = obtenerDiferenciaDiasIntl(value.fechaVigencia);
+                //if(tiempoVigencia >= 0){
+                    elem += `<div class="row d-flex align-items-center mb-3">
+                        <div class="col-7">
+                            <h4 class="fw-bold title-servicio position-relative">
+                                Empaquetado
+                            </h4>
+                        </div>
+                        <div class="col-5 d-flex flex-column align-items-end">
+                            ${ sectionStatusPagoPaquete(value) }
+                        </div>
+                        <div class="col-12 text-center my-2">
+                            <span class="text-veris fw-bold fs-14 line-height-14"> ${value.nombrePaquete}</span>
+                        </div>
+                    </div>`;
+                    if (estadosVigentes.includes(value.codigoEstado)){
+                        if(tiempoVigencia >= 0){
+                            elem += `${ mostrarTiempoVigencia(value) }`;
+                        }else{
+                            elem += `${ mostrarPaqueteCaducada(value) }`;
+                        }
+                    }else{
+                        elem += `${ mostrarMetodosPagoPaquete(value) }`;
+                    }
+                    if(tiempoVigencia >= 0){
+                        elem += `<div class="row g-0 rounded-8 d-flex justify-content-between align-items-center bg-veris-sky p-3 px-2 fs-5 mb-2">
+                            <div class="col-12 col-md-6 line-height-22">
+                                <span class="text-veris fw-medium">Detalles</span> del paquete promocional.
+                            </div>
+                            <div class="col-12 col-md-6 fw-bold fs-4 text-end">
+                                <button data-rel='${ JSON.stringify(value) }' class="btn btn-detalle-paquete badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 d-block me-2 my-2 mx-auto">Ver detalles</button>
+                            </div>
+                        </div>`
+                    }
+                //}
                 /*elem += `<div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
                     <div class="col-12 col-md-6 d-flex justify-content-between align-items-center mb-2">
                         <div class="avatar-doctor border-veris-1 ${classBorderPerdida}" style="background: url(${ (value.fotoMedicoApp != null) ? value.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
@@ -1034,14 +1132,14 @@
         args["token"] = accessToken;
         args["showLoader"] = true;
         const data = await call(args);
-        console.log(data);
+        // console.log(data);
         if(data.code == 200){
             $('#turnoModalLabel').html(`Turno - ${data.data.nombreSucursalTurnero}`);
             $('.turno-codigo').html(`${data.data.turno}`);
             $('.info-box').html(`<p class="turno-prioridad">${data.data.mensajeLlegada}</p>
                     <p><strong>Paciente:</strong> ${data.data.nombreCompleo}</p>`);
             $('#turnoModal').modal('show')
-            console.log("iniciar conteo para enviar a home")
+            // console.log("iniciar conteo para enviar a home")
             if(!isMobile()){
                 printTurno(data.data)
             }
@@ -1056,7 +1154,11 @@
         line-height: 22px;
     }
     #listaPrestaciones {
-        height: 300px;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    #detalleComponentesPaquete {
+        max-height: 400px;
         overflow-y: auto;
     }
     .cursor-pointer{

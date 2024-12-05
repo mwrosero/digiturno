@@ -479,6 +479,12 @@ button:active {
   background-color: #19408F;
 }
 
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: 700px;
+    }
+}
+
 /* Estilos específicos para escritorio (lg y arriba) */
 @media (min-width: 992px) {
     .wrapper {
