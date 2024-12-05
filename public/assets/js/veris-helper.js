@@ -1064,3 +1064,27 @@ function tieneTiempo(fechaLimite) {
 
     return true;
 }
+
+function obtenerDiferenciaDiasIntl(fechaStr) {
+  const options = { timeZone: 'America/Bogota', hour12: false };
+  const dateFormatter = new Intl.DateTimeFormat('es-EC', { ...options, year: 'numeric', month: '2-digit', day: '2-digit' });
+
+  // Descomponer la fecha dada (formato dd/mm/yyyy)
+  const [dia, mes, anio] = fechaStr.split('/').map(Number);
+
+  // Crear el objeto Date con la zona horaria especificada para la fecha ingresada
+  const fechaIngresada = new Date(Date.UTC(anio, mes - 1, dia));
+  const fechaActual = new Date();
+
+  // Formatear la fecha actual para asegurarse de respetar la zona horaria
+  const fechaActualFormat = dateFormatter.format(fechaActual);
+  const [diaActual, mesActual, anioActual] = fechaActualFormat.split('/').map(Number);
+
+  const fechaActualUTC = new Date(Date.UTC(anioActual, mesActual - 1, diaActual));
+
+  // Calcular la diferencia en milisegundos y convertirla a días
+  const diferenciaMilisegundos = fechaIngresada - fechaActualUTC;
+  const diferenciaDias = Math.floor(diferenciaMilisegundos / (1000 * 60 * 60 * 24));
+
+  return diferenciaDias;
+}
