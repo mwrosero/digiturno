@@ -542,7 +542,7 @@
     async function drawListFamiliares(){
         let elem = ``;
         elem += `<div data-rel='${JSON.stringify(dataTurno.paciente)}' class="item-coincidencia item-coincidencia-selected rounded-8 border-veris-2 p-2 text-center bg-veris-sky mb-2 text-veris fw-medium d-flex justify-content-between align-items-center fs-16">
-            <div class="letter-name border-veris-1 mx-2 bg-white">${ dataTurno.paciente.nombreCompleto.charAt(0) }</div>
+            <div class="letter-name border-veris-1 mx-2 bg-white" style="aspect-ratio: 1;width: 30px !important;height: 30px !important;">${ dataTurno.paciente.nombreCompleto.charAt(0) }</div>
                 <span class="flex-grow-1 name-familiar text-start text-md-center">${ dataTurno.paciente.nombreCompleto }</span>
         </div>`;
 
@@ -550,7 +550,7 @@
 
         $.each(dataTurno.paciente.lsGrupoFamiliar, function(key, value){
             elem += `<div data-rel='${JSON.stringify(value)}' class="item-coincidencia rounded-8 border-veris-2 p-2 text-center bg-veris-sky mb-2 text-veris fw-medium d-flex justify-content-between align-items-center fs-16">
-                <div class="letter-name border-veris-1 mx-2 bg-white">${ value.nombreCompleto.charAt(0) }</div>
+                <div class="letter-name border-veris-1 mx-2 bg-white" style="aspect-ratio: 1;width: 30px !important;height: 30px !important;">${ value.nombreCompleto.charAt(0) }</div>
                 <span class="flex-grow-1 name-familiar text-start text-md-center">${ value.nombreCompleto }</span>
             </div>`;
         })
@@ -739,7 +739,7 @@
 
     function verificarEstadoOrden(value){
         var estaPagada = false
-        // console.log(value.detallesOrden)
+        console.log(value.detallesOrden)
         $.each(value.detallesOrden, function(k,v) {
             if(v.estaFacturado || estadosVigentes.includes(v.codigoEstado)){
                 estaPagada = true;
@@ -892,6 +892,7 @@
         if(value.tipoServicio == "ORDEN_MEDICA"){
             // console.log(value)
             var ordenPagada = verificarEstadoOrden(value);
+            console.log(ordenPagada)
             if(!ordenPagada){
                 classBorderPerdida = "border-pendiente-1";
             }
@@ -979,6 +980,14 @@
                                 <p class="mb-1">Doctor</p>
                                 <p class="mb-1 fw-medium">${value.doctorAtencion}</p>
                                 ${ nombreEspecialidad }
+                                <p class="mb-1"><span class="text-veris fw-medium me-2">Beneficio:</span> ${obtenerBeneficio(value.beneficio)}</p>
+                            </div>
+                        </div>
+                    </div>`;
+                }else{
+                    elem += `<div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
+                        <div class="col-12 d-flex justify-content-between align-items-center mb-2">
+                            <div class="info-doctor ms-2 flex-grow-1">
                                 <p class="mb-1"><span class="text-veris fw-medium me-2">Beneficio:</span> ${obtenerBeneficio(value.beneficio)}</p>
                             </div>
                         </div>
