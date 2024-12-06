@@ -34,6 +34,7 @@
         <script>
             const accessToken = "{{ $accessToken }}";
             const api_url = "{{ \App\Models\Veris::BASE_URL }}";
+            const api_url_digitales = "{{ \App\Models\Veris::BASE_URL_DIGITALES }}";
             const api_war = "{{ \App\Models\Veris::BASE_WAR }}";
             const _application = "{{ \App\Models\Veris::APPLICATION }}";
             const _idOrganizacion = "{{ \App\Models\Veris::IDORGANIZACION }}";
