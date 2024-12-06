@@ -100,7 +100,8 @@
     //setInterval(actualizarFechaHora, 1000);
     async function cargarTurnos(){
       let args = [];
-      args["endpoint"] = `${api_url}/${api_war}/transaccion/turnos_asignados_caja?macAddress={{ $mac }}`;
+      //curl -X GET "https://api-phantomx.veris.com.ec/apoyosdx/v1/monitor/monitor_turnos_laboratorio?codigoSucursal=14" -H "accept: application/json" -H "Application: wqeqwe" -H "IdOrganizacion: asdasd"
+      args["endpoint"] = `${api_url_digitales}/apoyosdx/v1/monitor/monitor_turnos_laboratorio?codigoSucursal={{ $mac }}&codigoEmpresa=1`;
         //dataCita.paciente.numeroPaciente
       args["method"] = "GET";
       args["token"] = accessToken;
@@ -115,7 +116,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
-    // await cargarTurnos();
+    await cargarTurnos();
   })
 </script>  
 @endsection

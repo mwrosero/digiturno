@@ -715,7 +715,14 @@
         //estadosVigentes.includes(detalle.codigoEstado)
         // detalle.fechaVigencia
         let dias = obtenerDiferenciaDiasIntl(detalle.fechaVigencia);
-        return ``
+        return `<div class="col-12 text-center fs-16 line-height-16 mb-3 fw-bold d-flex justify-content-center align-items-center">
+                <div class="me-3">
+                    <span class="text-veris fw-bold py-2 text-center">Días restantes:</span> ${dias}
+                </div>
+                <div class="border-caution-1 text-caution rounded-8 bg-white p-2">
+                    Expira el ${detalle.fechaVigencia}</span>
+                </div>
+            </div>`;
     }
     
     function mostrarMetodosPagoPaquete(detalle){
@@ -734,7 +741,7 @@
         var estaPagada = false
         // console.log(value.detallesOrden)
         $.each(value.detallesOrden, function(k,v) {
-            if(v.estaFacturado){
+            if(v.estaFacturado || estadosVigentes.includes(v.codigoEstado)){
                 estaPagada = true;
             }
         });
@@ -932,22 +939,36 @@
                 let nombreServicio = ``;
                 if(value.tipoServicio == "ORDEN_MEDICA"){
                     nombreServicio = value.nombreServicioNivel1.toLowerCase()
+                    if( value.nombreServicioNivel1 == "PROCEDIMIENTOS"){
+                        nombreServicio = value.detallesOrden[0].nombreServicio.toLowerCase()
+                    }
                 }else{
                     nombreServicio = value.tipoOrdenApoyo.toLowerCase()
                 }
-                elem += `<div class="row d-flex align-items-center mb-3">
-                    <div class="col-12 col-md-7">
+                elem += `<div class="row d-flex align-items-start mb-3">
+                    <div class="col-12 col-md-8">
                         <h4 class="fw-bold title-servicio text-capitalize position-relative">
                             ${nombreServicio}
                             <!--span class="text-veris fw-medium "> agendada</span-->
                         </h4>
                     </div>
-                    <div class="col-12 col-md-5 mt-2 mt-md-0 d-flex flex-column align-items-start align-items-md-end">
+                    <div class="col-12 col-md-4 mt-2 mt-md-0 d-flex flex-column align-items-start align-items-md-end">
                         ${ sectionStatusPagoOrdenes(value) }
                     </div>
                 </div>`;
                 if(!ordenPagada){
                     elem += `${ mostrarMetodosPagoOrden(value) }`;
+                }
+
+                elem += `<div class="row d-flex justify-content-between align-items-center mt-2 p-2 fs-18 line-height-18">
+                        <div class="col-12 text-center fw-bold text-veris-dark">
+                        Fecha de Orden emitida: ${ (value.fechaOrden.split(' '))[0] }
+                        </div>
+                    </div>`;
+
+                let nombreEspecialidad = ``;
+                if(value.nombreEspecialidad && value.nombreEspecialidad != null){
+                    nombreEspecialidad = `<p class="mb-1"><span class="text-veris fw-medium me-2">Especialidad:</span> ${ value.nombreEspecialidad }</p>`;
                 }
                 if(value.doctorAtencion != null){
                     elem += `<div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
@@ -957,70 +978,13 @@
                             <div class="info-doctor ms-2 flex-grow-1">
                                 <p class="mb-1">Doctor</p>
                                 <p class="mb-1 fw-medium">${value.doctorAtencion}</p>
+                                ${ nombreEspecialidad }
                                 <p class="mb-1"><span class="text-veris fw-medium me-2">Beneficio:</span> ${obtenerBeneficio(value.beneficio)}</p>
                             </div>
                         </div>
                     </div>`;
                 }
             break;
-            /*case 'ORDENES_APOYO_PENDIENTE_BK':
-                elem += `<div class="row d-flex align-items-center">
-                    <div class="col-12 col-md-7">
-                        <h4 class="fw-bold title-servicio position-relative">
-                            Laboratorio 
-                            <span class="text-veris fw-medium ">clínico</span>
-                        </h4>
-                    </div>
-                    <div class="col-12 col-md-5 d-flex flex-column align-items-start align-items-md-end">
-                        <span class="badge bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                            <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
-                            Pagada
-                        </span>
-                        <button data-rel='${ JSON.stringify(value) }' class="btn badge bg-veris btn-notificar-llegada text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Notificar llegada</button>
-                    </div>
-                </div>
-                <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
-                    <div class="col-12 col-md-6 d-flex justify-content-between align-items-center mb-3">
-                        <div class="avatar-doctor border-veris-1" style="background: url(images/doctor.png) no-repeat top center;background-size: cover;">
-                        </div>
-                        <div class="info-doctor ms-2 flex-grow-1">
-                            <p class="mb-1 text-veris fw-medium fw-medium">Remitente</p>
-                            <p class="mb-1">Doctor</p>
-                            <p class="mb-1">Manuel Andrade Saenz</p>
-                            <p class="mb-1 text-veris fw-medium">Medicina General</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="info-orden d-md-flex justify-content-between align-items-center d-none">
-                            <div>
-                                <p class="mb-1 fw-medium text-veris">Escanea
-                                <p class="mb-1">Para ver la orden completa</p>
-                            </div>
-                            <img class="qr-orden" src="images/qr.svg" alt="">
-                        </div>
-                        <div class="info-orden d-flex justify-content-between align-items-center d-md-none text-center">
-                            <a href="https://www.akold.com/digiturno/orden.pdf" target="_blank" class="btn badge bg-veris text-white px-4 py-2 fs-6 rounded-8 border-0 d-block mt-2 mx-auto">Ver Orden</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
-                    <div class="col-12 col-md-6">
-                        <div class="info-doctor ms-2">
-                            <p class="mb-1"><span class="text-veris fw-medium ">Fecha:</span> 11:00 - 18/10/2024</p>
-                            <p class="mb-1"><span class="text-veris fw-medium ">Beneficio:</span> Salud S.A. N-4-C Plan Ideal 4 Costa</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 d-flex justify-content-between align-items-center">
-                        <div class="info-doctor ms-2 flex-grow-1">
-                            <p class="w-100 mb-1 fw-bold fs-4 text-start">
-                                <span class="text-veris fw-medium ">Ubicación:</span> LABORATORIO <span class="text-veris fw-medium ">|</span> 
-                                <img src="images/marker.svg">
-                            </p>
-                            <p class="mb-1"><span class="text-veris fw-medium ">Centro:</span> Veris Kennedy</p>
-                        </div>
-                    </div>
-                </div>`;
-            break;*/
             case 'PAQUETES_PROMOCIONALES':
                 let tiempoVigencia = obtenerDiferenciaDiasIntl(value.fechaVigencia);
                 //if(tiempoVigencia >= 0){

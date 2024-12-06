@@ -201,6 +201,7 @@
     --pendiente: #FFC107;
     --pendiente-light: #FFF8E1;
     --font: "Gotham Rounded", sans-serif;
+    --caution: #D84315;
 }
 
 
@@ -233,6 +234,10 @@ body, html {
 
 .fs-14{
     font-size: 14px;
+}
+
+.fs-16{
+    font-size: 16px;
 }
 
 .fs-20 {
@@ -271,10 +276,6 @@ body, html {
     line-height: 14px;
 }
 
-.fs-16{
-    font-size: 16px;
-}
-
 .line-height-16{
     line-height: 16px;
 }
@@ -302,6 +303,18 @@ body, html {
 
 .text-veris-dark{
     color: var(--veris-blue-dark);
+}
+
+.bg-caution{
+    background: var(--caution);
+}
+
+.text-caution{
+    color: var(--caution);
+}
+
+.border-caution-1{
+    border: 1px solid var(--caution);
 }
 
 .bg-veris-light{
