@@ -422,7 +422,7 @@
 
         $('body').on('click', '.btn-detalle-paquete', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
-            console.log(detalle)
+            // console.log(detalle)
             $('#tituloPaqueteDetalle').html(`${detalle.nombrePaquete}`);
             // si el detalle de cantidadDisponible > 0 Tiene la prestacion pendiente por activar
             // si el campo cantidadUtilizada == 0 y el campo estaRecepcionado == false significa que el paquete no ha sido utilizado en la atencion
@@ -451,7 +451,7 @@
             let dataChequeo = $(this).attr('data-rel');
             $('#dataChequeo').val(dataChequeo)
             let detalle = JSON.parse(dataChequeo);
-            console.log(detalle)
+            // console.log(detalle)
             $('#tituloChequeoDetalle').html(`${detalle.nombreTipoContrato} - ${detalle.nombreConvenio}`);
 
             let elem_header = ``;
@@ -548,7 +548,7 @@
         args["token"] = "{{ $accessToken }}";
 
         const data = await call(args);
-        console.log(data);
+        // console.log(data);
 
         if(data.code == 200){
             dataParametrosGenerales = data.data
@@ -600,7 +600,7 @@
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/inicializar?codigoEmpresa=1&tipoPreTransaccion=FACTURA`;
         let payload = {
-            "secuenciaUsuario": 968,
+            "secuenciaUsuario": dataParametrosGenerales.secuenciaUsuario,
             "idTurno": null,
             "caja": dataParametrosGenerales.caja,
             "nemonicoCanalFacturacion": "CAJA",
@@ -671,16 +671,16 @@
     }
 
     async function facturarChequeo(idPreTransaccion, detalle){
+        let idAgrupacion = [];
+
+        $.each(detalle, function(key, value){
+            idAgrupacion.push(parseInt(value.idAgrupacion));
+        })
+
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/agregar_item?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/facturar?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
         let payload = {
-            "secuenciaUsuario": 968,
-            "idTurno": null,
-            "caja": dataParametrosGenerales.caja,
-            "nemonicoCanalFacturacion": "CAJA",
-            "esFarmaciaDomicilio": false,
-            "codigoSolicitudServDomicilio": null,
-            "numSolicitudLabDomicilio": null
+            "idAgrupacion": idAgrupacion
         }
         args["method"] = "POST";
         args["token"] = accessToken;
@@ -689,8 +689,7 @@
         args["bodyType"] = "json";
         const data = await call(args);
         if(data.code == 200){
-            let idPreTransaccion = data.data.idPreTransaccion
-            await agregarItemChequeo(idPreTransaccion);
+            console.log(data);
         }
     }
 
@@ -1123,9 +1122,9 @@
         }
         if(value.tipoServicio == "ORDEN_MEDICA"){
             var ordenPagada = verificarEstadoOrden(value);
-            console.log(ordenPagada)
-            console.log(value)
-            console.log(value.nombreServicioNivel1 + ' - ' + value.numeroOrden)
+            // console.log(ordenPagada)
+            // console.log(value)
+            // console.log(value.nombreServicioNivel1 + ' - ' + value.numeroOrden)
             if(!ordenPagada){
                 classBorderPerdida = "border-pendiente-1";
             }
