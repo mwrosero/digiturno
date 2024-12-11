@@ -2,6 +2,24 @@
 @section('content')
 <link rel="stylesheet" href="{{ asset('assets/css/print.min.css?v=1.0')}}">
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/print.min.js"></script>
+{{-- Modal de pago --}}
+<div class="modal modal-top fade" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel">
+    <div class="modal-dialog modal modal-sm modal-dialog-centered mx-auto">
+        <form class="modal-content rounded-8">
+            <div class="modal-header d-none">
+                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3">{{ __('Pago en línea:') }}</h5>
+                <div class="w-100 text-center my-3" id="qrcode">
+                </div>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0">
+                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </form>
+    </div>
+</div>
 {{-- Modal turno generado --}}
 <div class="modal fade" id="turnoModal" aria-labelledby="turnoModalLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -346,6 +364,7 @@
         </div>
     </main>
 </div>
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/qrcode.js"></script>
 <script>
     let dataServicios;
     let dataParametrosGenerales;
@@ -511,7 +530,12 @@
 
         $('body').on('click', '.btn-activar', async function(){
             await activarPrestacionesChequeos();
-        })        
+        })
+
+        $('body').on('click', '.btn-link-pago', async function(){
+            let detalle = $(this).attr('data-rel');
+            await crearLinkpasarela(detalle);
+        })
 
         /*$('#btnPrint').on('click', function () {
             var htmlContent = $('#hiddenContent').html();
@@ -553,6 +577,49 @@
         if(data.code == 200){
             dataParametrosGenerales = data.data
         }
+    }
+
+    async function crearLinkpasarela(datos){
+        let detalle = JSON.parse(datos);
+        let codigoPrincipal;
+        if(detalle.tipoServicio == "ORDEN_MEDICA"){
+            codigoPrincipal = detalle.numeroOrden;
+        }else{
+            codigoPrincipal = detalle.codigoReserva;
+        }
+
+        // if(!isMobile()){}
+
+        let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+        let paciente = JSON.parse(dataAttr);
+
+        let args = [];
+
+        args["endpoint"] =  `${api_url}/${api_war}/notificaciones/enviar_link_pago?idPaciente=${paciente.idPaciente}&tipoServicio=${detalle.tipoServicio}&codigoPrincipal=${codigoPrincipal}&correoDestinatario=`;
+        //dataCita.paciente.numeroPaciente
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        const data = await call(args);
+        // console.log(data);
+        if(data.code == 200){
+            if(!isMobile()){
+                generarLinkQr(data.data);
+                $('#modalPago').modal('show');
+            }else{
+                window.open(data.data.urlLinkPago, '_blank')
+            }
+        }
+    }
+
+    async function generarLinkQr(data){
+        $('#qrcode').qrcode({
+            width: 200,
+            height: 200,
+            color: "#000",
+            bgColor: "#FFF",
+            text: data.urlLinkPago
+        });
     }
 
     async function printTurno(detalle){
@@ -1001,7 +1068,7 @@
             return ``;
         }
         const countdownId = `countdown-${Math.random().toString(36).substring(2, 9)}`;
-        return `<div class="row g-0 rounded-8 mt-2 bg-veris-sky p-3 px-2 fs-5">
+        let elem = `<div class="row g-0 rounded-8 mt-2 bg-veris-sky p-3 px-2 fs-5">
             <div class="col-8 offset-2 text-center fs-5 fw-bold ">
                 <div class="w-100 border-veris-1 rounded-8 mb-3 bg-white py-2">
                     <span class="text-veris fw-bold py-2 text-center">TIEMPO PARA PAGAR:</span> <span id="${countdownId}" class="countdown" data-rel='${detalle.horaInicio}'></span>
@@ -1009,20 +1076,26 @@
             </div>
             <div class="col-12 d-block d-md-flex justify-content-center align-items-center gap-2">
                 <span class="text-veris fw-medium -dark me-2 p-2 my-2 text-end">Método de pago</span>
-                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2 btn-turno">Pagar en caja</button>
-                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2">Link de pago</button>
-            </div>
-        </div>`;
+                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2 btn-turno">Pagar en caja</button>`;
+            if(detalle.permitePago){
+                elem += `<button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2 btn-link-pago" data-rel='${ JSON.stringify(detalle) }'>Link de pago</button>`;
+            }
+            elem += `</div>
+            </div>`;
+        return elem
     }
 
     function mostrarMetodosPagoOrden(detalle){
-        return `<div class="row g-0 rounded-8 mt-2 bg-veris-sky p-3 px-2 fs-5">
+        let elem = `<div class="row g-0 rounded-8 mt-2 bg-veris-sky p-3 px-2 fs-5">
             <div class="col-12 d-block d-md-flex justify-content-center align-items-center gap-2">
                 <span class="text-veris fw-medium -dark me-2 p-2 my-2 text-end">Método de pago</span>
-                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2 btn-turno">Pagar en caja</button>
-                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2">Link de pago</button>
-            </div>
-        </div>`;
+                <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2 btn-turno">Pagar en caja</button>`;
+        if(detalle.permitePago){
+            elem += `<button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2 btn-link-pago" data-rel='${ JSON.stringify(detalle) }'>Link de pago</button>`;
+        }
+        elem += `</div>
+            </div>`;
+        return elem
     }
 
     function iniciarCountdown(horaFin, elemento) {
