@@ -70,7 +70,18 @@
     }
 </style>
 <script>
+    let turnosEnAtencion = []
     setInterval(cargarTurnos, 5000);
+
+    function notificarNuevo(data){
+        $.each(data, function(key,value){
+            if(!turnosEnAtencion.includes(value.idorden)){
+                turnosEnAtencion.push(value.idorden);
+                //alert("Turno: "+value.turno)
+            }
+        })
+    }
+
     async function cargarTurnos(){
         let args = [];
         args["endpoint"] = `${api_url}/${api_war}/transaccion/turnos_asignados_caja?macAddress={{ $mac }}&estado=TURNO_ASIGNADO`;
@@ -81,7 +92,7 @@
         const data = await call(args);
         console.log(data);
         if(data.code == 200){
-            let maxIterations = 6;
+            notificarNuevo(data.data);
             let elem = `<div class="text-veris mb-3 fs-40">Siguiente turno</div>`;
             $.each(data.data, function(key, value){
                 if(key < 3){
