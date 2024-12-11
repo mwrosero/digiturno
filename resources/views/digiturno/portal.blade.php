@@ -376,10 +376,15 @@
     let local = localStorage.getItem('turno-{{ $portalToken }}');
     let dataTurno = JSON.parse(local);
 
-    $('.btn-salir').attr('href',`/ingreso/${ dataTurno.mac }`);
-
     $(document).ready(async function() {
         await parametrosGenerales();
+
+        let url_salir = `/${ dataTurno.mac }`;
+        if(isMobile()){
+            url_salir = `/ingreso/${ dataTurno.mac }`;
+        }
+        $('.btn-salir').attr('href',url_salir);
+
         $('#toggle-sidebar').on('click', function() {
             $('#sidebar').toggleClass('sidebar-collapsed sidebar-expanded');
             if ($('#sidebar').hasClass('sidebar-collapsed')) {
