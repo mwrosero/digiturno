@@ -2,6 +2,7 @@
 @section('content')
 <link rel="stylesheet" href="{{ asset('assets/css/print.min.css?v=1.0')}}">
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/print.min.js"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 {{-- Modal de pago --}}
 <div class="modal modal-top fade" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel">
     <div class="modal-dialog modal modal-sm modal-dialog-centered mx-auto">
@@ -11,7 +12,34 @@
             </div>
             <div class="modal-body p-3">
                 <h5 class="fs--20 line-height-24 mt-3 mb-3">{{ __('Pago en línea:') }}</h5>
-                <div class="w-100 text-center my-3" id="qrcode">
+                <ul class="nav nav-pills justify-content-between bg-white w-100 rounded-3 mb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item flex-fill" role="presentation">
+                        <button class="nav-link w-100 px-8 px-md-5 d-flex justify-content-center align-items-center active" id="pills-email-tab" data-bs-toggle="pill" data-bs-target="#pills-email" type="button" role="tab" aria-controls="pills-email" aria-selected="true">
+                            <i class="fa-regular fa-envelope icon-tab d-none d-md-inline-block me-2"></i>
+                            Email                                
+                        </button>
+                    </li>
+                    <li class="nav-item flex-fill" role="presentation">
+                        <button data-rel="N" class="nav-link w-100 px-8 px-md-5 d-flex justify-content-center align-items-center" id="pills-qr-tab" data-bs-toggle="pill" data-bs-target="#pills-qr" type="button" role="tab" aria-controls="pills-qr" aria-selected="false">
+                            <i class="fa-solid fa-qrcode me-2"></i>
+                            Código QR
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content bg-transparent w-100 pt-2" id="pills-tabContent">
+                    <div class="tab-pane fade mt-3 px-2 w-100 show active text-center" id="pills-email" role="tabpanel" aria-labelledby="pills-email-tab" tabindex="0">
+                        <input autofocus autocomplete="off" id="email_link_pago" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1">
+                        <div type="button" class="btn bg-veris-dark btn-enviar-mail text-white mx-auto mb-5 rounded-8 my-5 fs-20">
+                            ENVIAR LINK DE PAGO
+                            <i class="fa-regular fa-paper-plane ms-2 text-white"></i>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade mt-3 px-2 w-100" id="pills-qr" role="tabpanel" aria-labelledby="pills-qr-tab" tabindex="0">
+                        <div class="w-100 text-center my-3" id="qrcode"></div>
+                        <p class="text-veris-dark fw-medium fs-4 text-center mt-2">
+                            Escanea el Código QR con su celular<br>para realizar el pago.
+                        </p>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0">
@@ -63,14 +91,14 @@
     </div>
 </div>
 {{-- Modal luego notificar llegada dirigirse --}}
-<div class="modal modal-top fade" id="modalNotificarLlegadaDirigirLugar" tabindex="-1" aria-labelledby="modalNotificarLlegadaDirigirLugarLabel">
+<div class="modal modal-top fade" id="modalNotificarLlegadaDirigirLugar" tabindex="-1" aria-labelledby="modalNotificarLlegadaDirigirLugarLabel" data-bs-backdrop="static" data-bs-keyboard="true">
     <div class="modal-dialog modal modal-dialog-centered mx-auto">
         <form class="modal-content rounded-8">
             <div class="modal-header d-none">
                 <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
-                <h5 class="fs--20 line-height-24 mt-3 mb-3" id="direccionDirigirseLlegada">Dirigirse a</h5>
+                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-center" id="direccionDirigirseLlegada">Dirigirse a</h5>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0">
                 <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-salir">CERRAR</a>
@@ -364,12 +392,13 @@
         </div>
     </main>
 </div>
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js"></script>
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/qrcode.js"></script>
 <script>
     let dataServicios;
     let dataParametrosGenerales;
     let groupedData = [];
-    var estadosVigentes = ["REG", "ENTS", "FAC"];
+    var estadosVigentes = ["REG", "ENTS", "FAC","PFAC"];
 
     setInterval(actualizarFechaHora, 1000);
 
@@ -453,17 +482,19 @@
 
             let elem = ``;
             $.each(detalle.detallesDisponibles, function(key, value){
-                let icon = ``;
+                let badge = ``;
                 if(value.cantidadDisponible > 0 || (value.cantidadUtilizada == 0 && !value.estaRecepcionado)){
-                    icon = `<i class="fa-solid fa-triangle-exclamation text-warning"></i>`
+                    badge = `<span style="width: 30px;" class="badge bg-warning text-center badge-pill ms-2">
+                            <i class="fa-solid fa-triangle-exclamation text-white"></i>
+                        </span>`;
                 }else{
-                    icon = `<i class="fa-solid fa-circle-check text-success"></i>`
+                    badge = `<span style="width: 30px;" class="badge text-center bg-success badge-pill ms-2">
+                            <i class="fa-solid fa-check text-white"></i>
+                        </span>`
                 }
-                elem += `<li class="list-group-item bg-white border-0 mb-1 py-0 fs-16 line-height-16 d-flex justify-content-between align-items-start">
+                elem += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 line-height-16 d-flex justify-content-between align-items-start">
                     ${ value.nombrePrestacion }
-                    <span class="badge badge-pill bg-veris-sky ms-2">
-                        ${ icon }
-                    </span>
+                    ${ badge }
                 </li>`
                 // ${ value.nombreServicio }/${ value.nombrePrestacion }
             })
@@ -542,6 +573,11 @@
             await crearLinkpasarela(detalle);
         })
 
+        $('body').on('focus', '#email_link_pago', function(){
+            Keyboard.open();
+        });
+
+
         /*$('#btnPrint').on('click', function () {
             var htmlContent = $('#hiddenContent').html();
             var _htmlContent = `
@@ -608,16 +644,18 @@
         const data = await call(args);
         // console.log(data);
         if(data.code == 200){
-            if(!isMobile()){
-                generarLinkQr(data.data);
-                $('#modalPago').modal('show');
-            }else{
+            if(isMobile()){
                 window.open(data.data.urlLinkPago, '_blank')
+            }else{
+                generarLinkQr(data.data);
+                $('#email_link_pago').val(paciente.mail)
+                $('#modalPago').modal('show');
             }
         }
     }
 
     async function generarLinkQr(data){
+        $('#qrcode').empty();
         $('#qrcode').qrcode({
             width: 200,
             height: 200,
@@ -768,12 +806,21 @@
     async function mostrarPrestaciones(detalle){
         let elem = ``;
         $.each(detalle.detallesOrden, function(key,value){
+            console.log(value)
             //let class_estado_prestacion = (value.)
-            elem += `<li class="list-group-item bg-white border-0 mb-1 py-0 fs-16 line-height-16 d-flex justify-content-between align-items-center">
-                ${ value.nombreServicio }
-                <span class="badge bg-warning badge-pill">
-                    <i class="fa-solid fa-exclamation text-white"></i>
-                </span>
+            let badge = ``;
+            if(value.fechaRecepcion != null){
+                badge = `<span style="width: 30px;" class="badge text-center bg-success badge-pill ms-2">
+                    <i class="fa-solid fa-check text-white"></i>
+                </span>`
+            }else{
+                badge = `<span style="width: 30px;" class="badge bg-warning text-center badge-pill ms-2">
+                    <i class="fa-solid fa-triangle-exclamation text-white"></i>
+                </span>`;
+            }
+            elem += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 line-height-16 d-flex justify-content-between align-items-center">
+                ${ value.nombrePrestacion }
+                ${badge}
                 </li>`
         })
         $('#listaPrestaciones').html(elem);
@@ -784,13 +831,13 @@
         let args = [];
         args["endpoint"] =  `${api_url}/${api_war}/orden/activa_orden_laboratorio?macAddress=${ dataTurno.mac }&codigoOrdenApoyo=${ detalle.numeroOrden }`;
         //dataCita.paciente.numeroPaciente
-        args["method"] = "GET";
+        args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
         const data = await call(args);
         // console.log(data);
         if(data.code == 200){
-            $('#direccionDirigirseLlegada').html(`Dirigirse a: área de laboratorios`);
+            $('#direccionDirigirseLlegada').html(`Por favor, diríjase al área de laboratorio.`);
             $('#modalNotificarLlegadaDirigirLugar').modal('show');
         }
     }
@@ -1030,7 +1077,7 @@
     }
 
     function verificarEstadoOrden(detalle){
-        //console.log(detalle);
+        console.log(detalle);
         var estaPagada = true
         //console.log(detalle.detallesOrden)
         $.each(detalle.detallesOrden, function(k,v) {
@@ -1180,7 +1227,7 @@
 
     function obtenerBeneficio(beneficio){
         if(beneficio  == null){
-            return ``;
+            return `Particular`;
         }
         if(beneficio.convenio != null){
             return beneficio.convenio.nombreConvenio;
@@ -1198,9 +1245,9 @@
         if( value.tipoServicio == "RESERVA" && !tieneTiempo(value.horaInicio) ){
             classBorderPerdida = "border-perdida";
         }
-        if(value.tipoServicio == "ORDEN_MEDICA"){
+        if(value.tipoServicio == "ORDEN_MEDICA" || value.tipoServicio == "ORDENES_APOYO_PENDIENTE"){
             var ordenPagada = verificarEstadoOrden(value);
-            // console.log(ordenPagada)
+            console.log({ordenPagada})
             // console.log(value)
             // console.log(value.nombreServicioNivel1 + ' - ' + value.numeroOrden)
             if(!ordenPagada){
@@ -1405,11 +1452,14 @@
     }
 </script>
 <style>
+    .keyboard{
+        z-index: 99999;
+    }
     .name-selected-sidebar{
         line-height: 22px;
     }
     #listaPrestaciones {
-        max-height: 300px;
+        max-height: 400px;
         overflow-y: auto;
     }
     #detalleComponentesPaquete {
