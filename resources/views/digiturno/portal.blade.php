@@ -11,6 +11,7 @@
                 <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
+                <input type="hidden" id="detallePago">
                 <h5 class="fs--20 line-height-24 mt-3 mb-3">{{ __('Pago en línea:') }}</h5>
                 <ul class="nav nav-pills justify-content-between bg-white w-100 rounded-3 mb-3" id="pills-tab" role="tablist">
                     <li class="nav-item flex-fill" role="presentation">
@@ -404,8 +405,21 @@
 
     let local = localStorage.getItem('turno-{{ $portalToken }}');
     let dataTurno = JSON.parse(local);
+    let puedeEnviar = false;
+    buscarUsuarioFlag = false;
 
     $(document).ready(async function() {
+        const $keyboard = $(".keyboard");
+        const $inputField = $("#email_link_pago");
+
+        // Ocultar el teclado si se hace clic fuera de su contenedor
+        $(document).on("click", function (event) {
+            if (!$keyboard.is(event.target) && $keyboard.has(event.target).length === 0 &&
+                !$inputField.is(event.target)) {
+                puedeEnviar = false;
+                Keyboard.close();
+            }
+        });
         await parametrosGenerales();
 
         let url_salir = `/${ dataTurno.mac }`;
@@ -570,6 +584,7 @@
 
         $('body').on('click', '.btn-link-pago', async function(){
             let detalle = $(this).attr('data-rel');
+            $('#detallePago').val(detalle)
             await crearLinkpasarela(detalle);
         })
 
@@ -577,6 +592,9 @@
             Keyboard.open();
         });
 
+        $('body').on('click', '.btn-enviar-mail', async function(){
+            await enviarLinkMailPago();
+        })
 
         /*$('#btnPrint').on('click', function () {
             var htmlContent = $('#hiddenContent').html();
@@ -604,6 +622,43 @@
             });
         });*/
     });
+
+    async function enviarLinkMailPago(){
+        let email = $('#email_link_pago').val();
+        if(isValidEmailAddress(email)){
+            let detalle = JSON.parse($('#detallePago').val());
+            let codigoPrincipal;
+            if(detalle.tipoServicio == "ORDEN_MEDICA"){
+                codigoPrincipal = detalle.numeroOrden;
+            }else{
+                codigoPrincipal = detalle.codigoReserva;
+            }
+            let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+            let paciente = JSON.parse(dataAttr);
+
+            let args = [];
+
+            args["endpoint"] =  `${api_url}/${api_war}/notificaciones/enviar_link_pago?idPaciente=${paciente.idPaciente}&tipoServicio=${detalle.tipoServicio}&codigoPrincipal=${codigoPrincipal}&correoDestinatario=${email}`;
+            //dataCita.paciente.numeroPaciente
+            args["method"] = "POST";
+            args["token"] = accessToken;
+            args["showLoader"] = true;
+            const data = await call(args);
+            // console.log(data);
+            if(data.code == 200){
+                $('#modalPago').modal('hide');
+                $('#mensajeError').html(`Hemos enviado un correo.<br>Por favor, revisa tu bandeja de entrada para completar el pago.`);
+                $('#modalAlerta').modal('show');
+            }
+        }else{
+            toastr.warning('Atención', 'Email inválido', { timeOut: 5000 });
+            setTimeout(function(){
+                $('#email_link_pago').focus();
+            },1000);
+            // $('#mensajeError').html(`Email inválido`);
+            // $('#modalAlerta').modal('show');
+        }
+    }
 
     async function parametrosGenerales(){
         let args = [];
@@ -650,6 +705,7 @@
                 generarLinkQr(data.data);
                 $('#email_link_pago').val(paciente.mail)
                 $('#modalPago').modal('show');
+                puedeEnviar = true;
             }
         }
     }
@@ -800,6 +856,8 @@
         const data = await call(args);
         if(data.code == 200){
             console.log(data);
+            $('#direccionDirigirseLlegada').html(`Por favor, diríjase al área de chequeos.`);
+            $('#modalNotificarLlegadaDirigirLugar').modal('show');
         }
     }
 
@@ -837,7 +895,7 @@
         const data = await call(args);
         // console.log(data);
         if(data.code == 200){
-            $('#direccionDirigirseLlegada').html(`Por favor, diríjase al área de laboratorio.`);
+            $('#direccionDirigirseLlegada').html(`Por favor, diríjase al área de <span class="fw-bold text-capitalize text-veris-dark">${detalle.tipoOrdenApoyo.toLowerCase()}</span>.`);
             $('#modalNotificarLlegadaDirigirLugar').modal('show');
         }
     }
@@ -1077,7 +1135,7 @@
     }
 
     function verificarEstadoOrden(detalle){
-        console.log(detalle);
+        // console.log(detalle);
         var estaPagada = true
         //console.log(detalle.detallesOrden)
         $.each(detalle.detallesOrden, function(k,v) {
@@ -1247,7 +1305,7 @@
         }
         if(value.tipoServicio == "ORDEN_MEDICA" || value.tipoServicio == "ORDENES_APOYO_PENDIENTE"){
             var ordenPagada = verificarEstadoOrden(value);
-            console.log({ordenPagada})
+            // console.log({ordenPagada})
             // console.log(value)
             // console.log(value.nombreServicioNivel1 + ' - ' + value.numeroOrden)
             if(!ordenPagada){
@@ -1452,6 +1510,12 @@
     }
 </script>
 <style>
+    .toast-title {
+        color: #fff !important;!i;!;
+    }
+    #toast-container > .toast-warning{
+        background-image: url("{{ asset('assets/img/exclamation.svg')}}") !important;
+    }
     .keyboard{
         z-index: 99999;
     }

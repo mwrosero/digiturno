@@ -29,10 +29,12 @@
 
         <!-- Vendors CSS -->
         <link rel="stylesheet" href="{{ asset('assets/vendor/libs/swiper/swiper.css') }}" />
+        <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/vendor/libs/toastr/toastr.css" />
         @stack('css')
         
         <script>
-            const accessToken = "{{ $accessToken }}";
+            let buscarUsuarioFlag = true;
+            let accessToken = "{{ $accessToken }}";
             const api_url = "{{ \App\Models\Veris::BASE_URL }}";
             const api_url_digitales = "{{ \App\Models\Veris::BASE_URL_DIGITALES }}";
             const api_war = "{{ \App\Models\Veris::BASE_WAR }}";
@@ -42,6 +44,7 @@
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/block-ui@2.70.1/jquery.blockUI.min.js"></script> 
         <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/veris-helper.js"></script>
+        <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/vendor/libs/toastr/toastr.js"></script>
         @include('template.analytics')
     </head>
 
@@ -75,5 +78,46 @@
         
 
         @stack('scripts')
+        <script>
+            localStorage.removeItem('sessionTime');
+            $(document).ready(function() {
+                if (localStorage.getItem('sessionTime') === null) {
+                    localStorage.setItem('sessionTime', new Date().getTime());
+                }
+                setInterval(checkAndUpdateToken, 15 * 60 * 1000);
+            });
+
+            function checkAndUpdateToken() {
+                console.log("Verificar si existe una sesión y ha transcurrido al menos 15 minutos");
+                var sessionTime = localStorage.getItem('sessionTime');
+                
+                // Verificar si existe una sesión y ha transcurrido al menos 25 minutos
+                if (sessionTime && new Date().getTime() - sessionTime >= 15 * 60 * 1000) {
+                    // Actualizar el token
+                    updateToken();
+                    // Reiniciar la hora de sesión
+                    localStorage.setItem('sessionTime', new Date().getTime());
+                }
+            }
+
+            async function updateToken() {
+                // Realizar una solicitud para actualizar el token
+                console.log("Realizar una solicitud para actualizar el token");
+                let args = [];
+                args["endpoint"] = location.origin+"/refreshToken";
+                args["method"] = "GET";
+                args["bodyType"] = "json";
+                args["showLoader"] = false;
+
+                const data = await call(args);
+                console.log(data);
+                if(!data || data.code != 200){
+                    console.log("ERROR DE RENOVACION DE TOKEN")
+                }else{
+                    accessToken = data.idToken;
+                }
+            }
+            //update token bearer accessToken
+        </script>
     </body>
 </html>

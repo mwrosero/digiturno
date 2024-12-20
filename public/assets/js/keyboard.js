@@ -89,7 +89,7 @@ _createKeys() {
       "m",
       ",",
       ".",
-      "?",
+      "@",
       "space"
     ];
 
@@ -99,7 +99,7 @@ _createKeys() {
 
     keyLayout.forEach((key) => {
         const keyElement = document.createElement("button");
-        const insertLineBreak = ["backspace", "p", "done", "?"].indexOf(key) !== -1;
+        const insertLineBreak = ["backspace", "p", "done", "@"].indexOf(key) !== -1;
 
         keyElement.classList.add("keyboard-key");
 
@@ -193,7 +193,14 @@ _createKeys() {
     this.eventHandlers.oninput = oninput;
     this.eventHandlers.onclose = onclose;
     this.elements.main.classList.add("keyboard-hidden");
-    await buscarUsuario();
+    console.log(7);
+    if(buscarUsuarioFlag){
+        await buscarUsuario();
+    }else{
+        if(puedeEnviar){
+            await enviarLinkMailPago();
+        }
+    }
   }
 };
 
