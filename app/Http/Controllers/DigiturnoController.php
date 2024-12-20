@@ -55,4 +55,22 @@ class DigiturnoController extends Controller
                ->with('accessToken',$token)
                 ->with('mac',$mac);
     }
+
+    public function refreshToken(){
+        $token = Veris::getToken();
+        if($token != ""){
+            $msg = [
+                "code" => 200,
+                "message" => "",
+                "idToken" => $token
+            ];
+        }else{
+            $msg = [
+                "code" => 400,
+                "message" => "No se pudo generar el token"
+            ];
+        }
+
+        return response()->json($msg);
+    }
 }
