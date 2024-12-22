@@ -11,36 +11,26 @@ class Veris extends Model
 {
     use HasFactory;
     //DEV
-    public const BASE_URL = 'https://desa-turnero.phantomx.com.ec';
-    public const BASE_URL_DIGITALES = 'https://api-phantomx.veris.com.ec';
-    public const BASE_WAR = 'turnero/v2';
-    public const SEGURIDADES_WAR = 'seguridadtest/v1';
-    public const CANAL_ORIGEN = 'MVE_CMV';
-    public const APPLICATION = 'UEhBTlRPTVhfQkFDS0VORA==';//UEhBTlRPTVhfRU1QUkVTQVJJQUw=
-    public const IDORGANIZACION = 'adf4e264-cd20-4653-9a44-025b13050992';
-    public const AMPLITUDE = "1cbd8baed97a6c8abf6b8e398b77cf6f";
-    public const BASICAUTHDIGITALES = 'QkFDS0VORFBIQU5UT006Q2xAdmUxMjM0';
+    // public const BASE_URL = 'https://desa-turnero.phantomx.com.ec';
+    // public const BASE_URL_DIGITALES = 'https://api-phantomx.veris.com.ec';
+    // public const BASE_WAR = 'turnero/v2';
+    // public const SEGURIDADES_WAR = 'seguridadtest/v1';
+    // public const CANAL_ORIGEN = 'MVE_CMV';
+    // public const APPLICATION = 'UEhBTlRPTVhfQkFDS0VORA==';//UEhBTlRPTVhfRU1QUkVTQVJJQUw=
+    // public const IDORGANIZACION = 'adf4e264-cd20-4653-9a44-025b13050992';
+    // public const AMPLITUDE = "1cbd8baed97a6c8abf6b8e398b77cf6f";
+    // public const BASICAUTHDIGITALES = 'QkFDS0VORFBIQU5UT006Q2xAdmUxMjM0';
 
     //PROD
-    // public const BASE_URL = 'https://api.phantomx.com.ec';
-    // public const BASE_WAR = 'digitales';
-    // public const FACTURACION_WAR = 'seguridad';
-    // public const CANAL_ORIGEN = 'MVE_CMV';
-    // public const APPLICATION = 'UEhBTlRPTVhfQkFDS0VORA==';
-    // public const IDORGANIZACION = '365509c8-9596-4506-a5b3-487782d5876e';
-    // public const IDORGANIZACIONRESULTADOSLAB = '365509c8-9596-4506-a5b3-487782d5876e';
-    // public const KUSHKI_MERCHANT_ID = '1012311620855990918315314280226';
-    // public const IS_KUSHKI_TEST_ENVIRONMENT = false;
-    // public const ENVIRONMENT_NUVEI = "prod";
-    // public const TEST_ENVIRONMENT_KUSHKI = false;
-    // public const AMPLITUDE = "93127ac840f734cdcc8bf469f8bc95d5";
-    // public const BASICAUTHDIGITALES = 'd3NhcHBjZW50cmljbzpDQVM1Nzg5Yjg2TWRyNUMzbnRyMWMw';
-    // public const BASICAUTHFACTURACION = 'YmFja2VuZHBoYW50b206QmFja1BAbnRoMG1QQHNzMjAyMQ==';
-    // public const NEMONICO_FLUJO_PAGO = 'PRE_TRANSACCIONES';
-    // public const NEMONICO_FARMACIA = 'FARMACIA_DOMICILIO';
-    // public const URL_EPI = 'https://phantom-wsexternos.phantomx.com.ec/Verisrest/v1/formularioepi1';
-    // public const BASICAUTHEPI = 'd3Nmb3JtdWxhcmlvZXBpMTpDQVM1Nzg5Yjg2TWRyNUYwcm11bGFyMTAzcGkxKg==';
-    // public const CONTIENE_DESARROLLO = false;
+    public const BASE_URL = 'https://api.phantomx.com.ec';
+    public const BASE_URL_DIGITALES = 'https://api.phantomx.com.ec';
+    public const BASE_WAR = 'turnero/v2';
+    public const SEGURIDADES_WAR = 'seguridad/v1';
+    public const CANAL_ORIGEN = 'MVE_CMV';
+    public const APPLICATION = 'UEhBTlRPTVhfQkFDS0VORA==';
+    public const IDORGANIZACION = '365509c8-9596-4506-a5b3-487782d5876e';
+    public const AMPLITUDE = "93127ac840f734cdcc8bf469f8bc95d5";
+    public const BASICAUTHDIGITALES = 'YmFja2VuZHBoYW50b206QmFja1BAbnRoMG1QQHNzMjAyMQ==';
 
     static function call(Array $config)
     {
@@ -136,6 +126,10 @@ class Veris extends Model
             'basic' => self::BASICAUTHDIGITALES,
             'method'   => 'POST'
         ]);
+
+        // echo self::BASE_URL_DIGITALES.'/'.self::SEGURIDADES_WAR.$method;
+        // dd($response);
+        
         session(['accessToken' => $response->data->idToken]);
         return $response->data->idToken;
     }
