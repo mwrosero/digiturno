@@ -128,6 +128,8 @@ class Veris extends Model
         ]);
 
         echo self::BASE_URL_DIGITALES.'/'.self::SEGURIDADES_WAR.$method;
+        echo "<br>";
+        echo self::BASICAUTHDIGITALES;
         dd($response);
         
         session(['accessToken' => $response->data->idToken]);
