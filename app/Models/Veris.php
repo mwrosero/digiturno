@@ -127,8 +127,8 @@ class Veris extends Model
             'method'   => 'POST'
         ]);
 
-        // echo self::BASE_URL_DIGITALES.'/'.self::SEGURIDADES_WAR.$method;
-        // dd($response);
+        echo self::BASE_URL_DIGITALES.'/'.self::SEGURIDADES_WAR.$method;
+        dd($response);
         
         session(['accessToken' => $response->data->idToken]);
         return $response->data->idToken;
