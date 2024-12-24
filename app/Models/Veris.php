@@ -22,7 +22,7 @@ class Veris extends Model
     // public const BASICAUTHDIGITALES = 'QkFDS0VORFBIQU5UT006Q2xAdmUxMjM0';
 
     //PROD
-    public const BASE_URL = 'https://api.phantomx.com.ec';
+    public const BASE_URL = 'https://turnero.phantomx.com.ec';
     public const BASE_URL_DIGITALES = 'https://api.phantomx.com.ec';
     public const BASE_WAR = 'turnero/v2';
     public const SEGURIDADES_WAR = 'seguridad/v1';

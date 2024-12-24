@@ -6,7 +6,7 @@
 		<div class="container-fluid g-0">
 			<div class="row">
 				<div class="col-12 col-sm-2 col-md-3">
-					<img class="w-100 logo" src="{{ asset('assets/img/veris-large.png') }}" alt="">
+					<img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
 				</div>
 				<div class="col-12 col-sm-10 col-md-9 d-flex justify-content-end align-items-center">
 					<div class="time-box badge bg-veris-dark text-center p-3 rounded-8">

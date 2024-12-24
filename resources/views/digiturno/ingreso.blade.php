@@ -15,7 +15,7 @@
             <div class="modal-body p-3">
                 <h5 class="fs--20 line-height-24 mt-3 mb--20">{{ __('Coincidencias') }}</h5>
                 <div class="d-flex bg-light mb-3 justify-content-between align-items-center w-100 rounded-8 text-center bg-white text-veris-dark my-2">
-	        		<img class="ms-2" src="{{ asset('assets/img/info-ico') }}.svg" alt="">
+	        		<img class="ms-2" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/info-ico.svg" alt="">
 	        		<span class="ms-2 text-start flex-grow-1">Por favor verifica la información<br>correcta para continuar.</span>
 	        	</div>
                 <div class="row gx-2 justify-content-between align-items-center">
@@ -35,7 +35,7 @@
 		<div class="container-fluid g-0">
 			<div class="row">
 				<div class="col-12 col-md-3 text-center text-md-start">
-					<img class="w-100 logo" src="{{ asset('assets/img/veris-large.png') }}" alt="">
+					<img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
 				</div>
 				<div class="col-9 col-md-9 d-md-flex justify-content-end align-items-center d-none d-md-block">
 					<div class="time-box badge bg-veris-dark text-center p-3 rounded-8">
