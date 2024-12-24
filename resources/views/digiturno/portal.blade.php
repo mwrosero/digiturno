@@ -1,6 +1,6 @@
 @extends('template.app-template')
 @section('content')
-<link rel="stylesheet" href="{{ asset('assets/css/print.min.css?v=1.0')}}">
+<link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/print.min.css">
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/print.min.js"></script>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 {{-- Modal de pago --}}
@@ -159,7 +159,7 @@
         <div class="container-fluid g-0">
             <div class="row">
                 <div class="col-8 col-sm-2 col-md-3">
-                    <img class="w-100 logo" src="{{ asset('assets/img/veris-large.png') }}" alt="">
+                    <img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
                 </div>
                 <div class="col-12 col-sm-8 col-md-7 d-flex justify-content-end align-items-center d-none d-md-block text-end">
                     <div class="time-box badge bg-veris-dark text-center p-3 rounded-8">
@@ -169,7 +169,7 @@
                 </div>
                 <div class="col-4 col-sm-2 col-md-2">
                     <a href="#" class="btn btn-salir border-veris-1 rounded-8 text-veris w-100 p-2 d-flex justify-content-center align-items-center h-100 fw-bold">
-                        <img class="me-2" src="{{ asset('assets/img/exit-icon.svg') }}" alt="">Salir
+                        <img class="me-2" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/exit-icon.svg" alt="">Salir
                     </a>
                 </div>
             </div>
@@ -182,10 +182,10 @@
             <div class="row h-100">
                 <div id="sidebar" class="col-12 col-md-3 mb-3 mb-md-0 bg-silver sidebar-expanded h-100 overflow-auto"> <!-- Sidebar content here -->
                     <div id="toggle-sidebar" class="header-sidebar cursor-pointer w-100 d-flex justify-content-between align-items-center py-3 title-servicio position-relative">
-                        <img class="me-2" src="{{ asset('assets/img/circulo-familiar.svg') }}" alt="">
+                        <img class="me-2" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/circulo-familiar.svg" alt="">
                         <h4 class="mb-0 me-2 d-none d-md-block text-center">Circulo Familiar</h4>
                         <p class="name-selected-sidebar d-block d-md-none m-0 text-veris fw-medium fs-3 mx-2"></p>
-                        <img class="arrow-ico" src="{{ asset('assets/img/arrow.svg') }}" alt="">
+                        <img class="arrow-ico" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/arrow.svg" alt="">
                     </div>
                     <div class="w-100 mt-3 py-3" id="list-familiares">
                         {{-- <div class="item-coincidencia item-coincidencia-selected rounded-8 border-veris-2 p-2 text-center bg-veris-sky mb-2 text-veris fw-medium d-flex justify-content-between align-items-center fs-16">
@@ -205,10 +205,10 @@
                 <div id="content" class="col-12 col-md-9 p-0 m-0 h-100"> <!-- Main content here --> 
                     <div id="box-servicios" class="bg-silver ms-0 ms-md-2 p-3 h-100">
                         <div class="d-block d-md-flex bg-light mb-3 justify-content-between align-items-center w-100 rounded-8 text-center bg-white text-veris-dark my-2 p-3">
-                            <img class="ms-2" src="{{ asset('assets/img/info-ico.svg') }}" alt="">
+                            <img class="ms-2" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/info-ico.svg" alt="">
                             <span class="label-info ms-4 text-start flex-grow-1">Por favor verifica la información<br>correcta para continuar.</span>
                             {{-- <div id="hiddenContent" class="d-none" style="width: 300px;">
-                                <img class="w-50 logo my-3" src="{{ asset('assets/img/veris-large.png') }}" alt="">
+                                <img class="w-50 logo my-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
                                 <div class="w-100 d-flex justify-content-end align-items-center text-end">
                                     <h2 class="mb-1 fs-3 fw-bold text-veris-dark">Tu turno será en</h2>
                                         <h2 class="fs-4 fw-bold text-center text-veris mb-1">00:10:00</h2>
@@ -241,7 +241,7 @@
                                         </div>
                                         <div class="col-5 d-flex flex-column align-items-end">
                                             <span class="badge bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                                                <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
+                                                <img class="me-1" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/icon-pagada.svg" alt="">
                                                 Pagada
                                             </span>
                                         </div>
@@ -252,12 +252,12 @@
                                         </div>
                                         <div class="col-12 col-md-6 fw-bold fs-4 text-start text-md-end">
                                             <span class="text-veris fw-medium ">Ve al consultorio:</span> 13 <span class="text-veris fw-medium ">|</span> 
-                                            <img src="{{ asset('assets/img/marker.svg') }}">
+                                            <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/marker.svg">
                                         </div>
                                     </div>
                                     <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
                                         <div class="col-12 col-md-6 d-flex justify-content-between align-items-center mb-2">
-                                            <div class="avatar-doctor border-veris-1" style="background: url({{ asset('assets/img/doctor.png') }}) no-repeat top center;background-size: cover;">
+                                            <div class="avatar-doctor border-veris-1" style="background: url({{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/doctor.png') }}) no-repeat top center;background-size: cover;">
                                             </div>
                                             <div class="info-doctor ms-2 flex-grow-1">
                                                 <p class="mb-1">Doctor</p>
@@ -283,7 +283,7 @@
                                         </div>
                                         <div class="col-5 d-flex flex-column align-items-end">
                                             <span class="badge bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                                                <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
+                                                <img class="me-1" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/icon-pagada.svg" alt="">
                                                 Pagada
                                             </span>
                                             <button class="btn badge bg-veris text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Notificar llegada</button>
@@ -291,7 +291,7 @@
                                     </div>
                                     <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
                                         <div class="col-12 col-md-6 d-flex justify-content-between align-items-center mb-3">
-                                            <div class="avatar-doctor border-veris-1" style="background: url({{ asset('assets/img/doctor.png') }}) no-repeat top center;background-size: cover;">
+                                            <div class="avatar-doctor border-veris-1" style="background: url({{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/doctor.png') }}) no-repeat top center;background-size: cover;">
                                             </div>
                                             <div class="info-doctor ms-2 flex-grow-1">
                                                 <p class="mb-1 text-veris fw-medium fw-medium">Remitente</p>
@@ -306,7 +306,7 @@
                                                     <p class="mb-1 fw-medium text-veris">Escanea
                                                     <p class="mb-1">Para ver la orden completa</p>
                                                 </div>
-                                                <img class="qr-orden" src="{{ asset('assets/img/qr.svg') }}" alt="">
+                                                <img class="qr-orden" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/qr.svg" alt="">
                                             </div>
                                             <div class="info-orden d-flex justify-content-between align-items-center d-md-none text-center">
                                                 <a href="https://www.akold.com/digiturno/orden.pdf" target="_blank" class="btn badge bg-veris text-white px-4 py-2 fs-6 rounded-8 border-0 d-block mt-2 mx-auto">Ver Orden</a>
@@ -324,7 +324,7 @@
                                             <div class="info-doctor ms-2 flex-grow-1">
                                                 <p class="w-100 mb-1 fw-bold fs-4 text-start">
                                                     <span class="text-veris fw-medium ">Ubicación:</span> LABORATORIO <span class="text-veris fw-medium ">|</span> 
-                                                    <img src="{{ asset('assets/img/marker.svg') }}">
+                                                    <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/marker.svg">
                                                 </p>
                                                 <p class="mb-1"><span class="text-veris fw-medium ">Centro:</span> Veris Kennedy</p>
                                             </div>
@@ -341,7 +341,7 @@
                                         </div>
                                         <div class="col-5 d-flex flex-column align-items-end">
                                             <span class="badge bg-pendiente-light text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                                                <img class="me-1" src="{{ asset('assets/img/icon-pendiente.svg') }}" alt="">
+                                                <img class="me-1" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/icon-pendiente.svg" alt="">
                                                 Por pagar
                                             </span>
                                         </div>
@@ -364,12 +364,12 @@
                                         </div>
                                         <div class="col-12 col-md-6 fw-bold fs-4 text-start text-md-end">
                                             <span class="text-veris fw-medium ">Ve al consultorio:</span> 13 <span class="text-veris fw-medium ">|</span> 
-                                            <img src="{{ asset('assets/img/marker.svg') }}">
+                                            <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/marker.svg">
                                         </div>
                                     </div>
                                     <div class="row d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5">
                                         <div class="col-12 col-md-6 d-flex justify-content-between align-items-center mb-2">
-                                            <div class="avatar-doctor border-veris-1" style="background: url({{ asset('assets/img/doctor.png') }}) no-repeat top center;background-size: cover;">
+                                            <div class="avatar-doctor border-veris-1" style="background: url({{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/doctor.png') }}) no-repeat top center;background-size: cover;">
                                             </div>
                                             <div class="info-doctor ms-2 flex-grow-1">
                                                 <p class="mb-1">Doctor</p>
@@ -737,11 +737,11 @@
             <head>
                 <!-- Incluye Bootstrap o tu CSS personalizado -->
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-                <link rel="stylesheet" href="{{ asset('assets/css/theme-veris-digiturno.css?v=1.0')}}">
-                <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-icons.min.css?v=1.0')}}">
+                <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/theme-veris-digiturno.css?v=1.0">
+                <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/bootstrap-icons.min.css?v=1.0">
             </head>
             <body>
-                <img class="logo mx-auto my-3" src="{{ asset('assets/img/veris-large.png') }}" alt="">
+                <img class="logo mx-auto my-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
                 ${content}
             </body>
             </html>
@@ -1056,18 +1056,18 @@
     function sectionStatusPago(detalle){
         if(!tieneTiempo(detalle.horaInicio)){
             return `<span class="badge d-flex align-items-center bg-perdida text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                <img class="me-1" src="{{ asset('assets/img/icon-cita-perdida.svg') }}" alt="">
+                <img class="me-1" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/icon-cita-perdida.svg" alt="">
                 No asistió a tiempo
             </span>`;
         }
         if(detalle.estaPagado){
             return `<span class="badge d-flex align-items-center bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
+                <img class="me-1" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/icon-pagada.svg" alt="">
                 Pagada
             </span>`;
         }else{
             return `<span class="badge d-flex align-items-center bg-pendiente-light text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                <img class="me-1" src="{{ asset('assets/img/icon-pendiente.svg') }}" alt="">
+                <img class="me-1" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/icon-pendiente.svg" alt="">
                 Por pagar
             </span>`;
         }
@@ -1077,18 +1077,18 @@
         if(estadosVigentes.includes(detalle.codigoEstado)){
             if(obtenerDiferenciaDiasIntl(detalle.fechaVigencia) >= 0){
                 return `<span class="badge d-flex align-items-center bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                    <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
+                    <img class="me-1" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/icon-pagada.svg" alt="">
                     Vigente
                 </span>`;
             }else{
                 return `<span class="badge d-flex align-items-center bg-pendiente-light text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                    <img class="me-1" src="{{ asset('assets/img/icon-pendiente.svg') }}" alt="">
+                    <img class="me-1" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/icon-pendiente.svg" alt="">
                     Caducado
                 </span>`;
             }
         }else{
             return `<span class="badge d-flex align-items-center bg-pendiente-light text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                <img class="me-1" src="{{ asset('assets/img/icon-pendiente.svg') }}" alt="">
+                <img class="me-1" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/icon-pendiente.svg" alt="">
                 Por pagar
             </span>`;
         }
@@ -1097,12 +1097,12 @@
     function sectionStatusPagoChequeo(detalle){
         if(obtenerDiferenciaDiasIntl(detalle.fechaCoberturaHasta) >= 0){
             return `<span class="badge d-flex align-items-center bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
+                <img class="me-1" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/icon-pagada.svg" alt="">
                 Vigente
             </span>`;
         }else{
             return `<span class="badge d-flex align-items-center bg-pendiente-light text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                <img class="me-1" src="{{ asset('assets/img/icon-pendiente.svg') }}" alt="">
+                <img class="me-1" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/icon-pendiente.svg" alt="">
                 Caducado
             </span>`;
         }
@@ -1161,13 +1161,13 @@
                 notificar = `<button data-rel='${ JSON.stringify(detalle) }' class="btn badge bg-veris btn-notificar-llegada text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Notificar llegada</button>`
             }
             return `<span class="badge d-flex align-items-center bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                <img class="me-1" src="{{ asset('assets/img/icon-pagada.svg') }}" alt="">
+                <img class="me-1" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/icon-pagada.svg" alt="">
                 Pagada
             </span>
             ${ notificar }`;
         }else{
             return `<span class="badge d-flex align-items-center bg-pendiente-light text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
-                <img class="me-1" src="{{ asset('assets/img/icon-pendiente.svg') }}" alt="">
+                <img class="me-1" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/icon-pendiente.svg" alt="">
                 Por pagar
             </span>`;
         }
@@ -1254,7 +1254,7 @@
                 </div>
                 <div class="col-12 col-md-6 fw-bold fs-5 text-start text-md-end">
                     <span class="text-veris fw-medium ">Ve al ${(detalle.nombreSitioConsultorio.split(' '))[0].toLowerCase()}:</span> ${(detalle.nombreSitioConsultorio.split(' '))[1]} <!--span class="text-veris fw-medium ">|</span--> 
-                    <!--img src="{{ asset('assets/img/marker.svg') }}"-->
+                    <!--img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/marker.svg"-->
                 </div>
             </div>`;
         }
@@ -1514,7 +1514,7 @@
         color: #fff !important;!i;!;
     }
     #toast-container > .toast-warning{
-        background-image: url("{{ asset('assets/img/exclamation.svg')}}") !important;
+        background-image: url("{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/exclamation.svg')}}") !important;
     }
     .keyboard{
         z-index: 99999;
