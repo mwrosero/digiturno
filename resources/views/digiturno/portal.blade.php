@@ -826,6 +826,7 @@
     }
 
     async function printTurno(detalle){
+        console.log(detalle);
         // {
         //     "turno": "TG-008",
         //     "mensajeLlegada": "WOOOW!! ERES EL NUMERO 3 PRONTO TOCA TU TURNO",
@@ -1629,7 +1630,7 @@
             $('#turnoModalLabel').html(`Turno - ${data.data.nombreSucursalTurnero}`);
             $('.turno-codigo').html(`${data.data.turno}`);
             $('.info-box').html(`<p class="turno-prioridad">${data.data.nemonicoPrioridad}</p>
-                    <p><strong>Paciente:</strong> ${data.data.nombreCompleo}</p>`);
+                    <p class="text-wrap"><strong>Paciente:</strong> ${data.data.nombreCompleo}</p>`);
             $('#turnoModal').modal('show')
             // console.log("iniciar conteo para enviar a home")
             if(!isMobile()){
