@@ -74,7 +74,7 @@
         <div class="modal modal-top fade" id="modalEstasAhi" tabindex="-1" aria-labelledby="modalEstasAhiLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1">
             <div class="modal-dialog modal modal-sm modal-dialog-centered mx-auto">
                 <div class="modal-content">
-                    <div class="modal-body" id="turnoDisplay">
+                    <div class="modal-body">
                         <h5 class="modal-title text-center my-2 text-uppercase">¿Estás ahí?</h5>
                     </div>
                     <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
