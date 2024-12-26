@@ -861,17 +861,15 @@
                         margin: 0; /* Elimina márgenes adicionales */
                     }
                     body {
-                        font-size: 14px; /* Ajusta el tamaño de fuente */
-                        margin: 0; /* Elimina márgenes */
-                        padding: 0; /* Elimina relleno */
-                        width: 100%; /* Asegura que el contenido ocupe todo el ancho */
-                        height: 100%; /* Evita que el contenido se corte */
-                        overflow: hidden; /* Previene desbordamientos */
+                        font-size: 14px;
+                        margin: 0;
+                        padding: 0;
+                        width: auto;
+                        height: auto;
                     }
                 }
             `
         });
-
     }
 
     async function activarPrestacionesChequeos(){
