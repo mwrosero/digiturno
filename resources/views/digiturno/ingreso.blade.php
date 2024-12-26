@@ -421,10 +421,10 @@
                 <h3>${detalle.nombreSucursalTurnero.toUpperCase()}</h3>
                 <h1>Turno: ${detalle.turno}</h1>
                 <p class="fs-14 text-wrap" style="margin:0px;"><strong>Paciente: </strong>${detalle.nombreCompleo}</p>
-        		<p class="fs-14 text-wrap" style="margin:0px;"><strong>Fecha emisión: </strong>${obtenerFechaHoraEnCurso()}</p>
             </body>
             </html>
         `;
+        //<p class="fs-14 text-wrap" style="margin:0px;"><strong>Fecha emisión: </strong>${obtenerFechaHoraEnCurso()}</p>
 
         printJS({
             printable: htmlContent,

@@ -850,10 +850,10 @@
                 <h3>${detalle.nombreSucursalTurnero.toUpperCase()}</h3>
                 <h1>Turno: ${detalle.turno}</h1>
                 <p class="fs-14 text-wrap"><strong>Paciente: </strong>${detalle.nombreCompleo}</p>
-                <p class="fs-14 text-wrap"><strong>Fecha emisión: </strong>${obtenerFechaHoraEnCurso()}</p>
             </body>
             </html>
         `;
+        //<p class="fs-14 text-wrap"><strong>Fecha emisión: </strong>${obtenerFechaHoraEnCurso()}</p>
 // @page {
 //                         size: 80mm 100mm; /* Define el tamaño exacto del papel */
 //                         margin: 0; /* Elimina márgenes adicionales */
