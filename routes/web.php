@@ -26,3 +26,21 @@ Route::get('/turnero/laboratorio/{mac}', [DigiturnoController::class, 'turneroLa
 Route::get('/test', function () {
     return response('welcome Akold');
 });
+
+
+Route::get('/git-pull', function () {
+    if (request()->header('X-Git-Token') !== '**Ecu@dor123') {
+        return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+    }
+
+    $output = [];
+    $returnCode = null;
+
+    exec('cd /var/www/html/digiturno/digiturno && git pull 2>&1', $output, $returnCode);
+
+    if ($returnCode === 0) {
+        return response()->json(['status' => 'success', 'message' => 'Git pull executed successfully', 'output' => $output]);
+    }
+
+    return response()->json(['status' => 'error', 'message' => 'Failed to execute git pull', 'output' => $output], 500);
+});
