@@ -845,7 +845,7 @@
                 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/bootstrap-icons.min.css?v=1.0">
             </head>
             <body>
-                <img class="logo mx-auto my-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
+                <img style="width:220px" class="logo mx-auto my-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
                 ${content}
             </body>
             </html>
@@ -856,10 +856,16 @@
             type: 'raw-html',
             style: `
                 @media print {
+                    @page {
+                        size: 80mm 100mm; /* Define el tamaño exacto del papel */
+                        margin: 0; /* Elimina márgenes adicionales */
+                    }
                     body {
                         font-size: 14px;
                         margin: 0;
                         padding: 0;
+                        width: auto;
+                        height: auto;
                     }
                 }
             `
