@@ -13,21 +13,6 @@ use App\Http\Controllers\DigiturnoController;
 |
 */
 
-Route::get('/refreshToken', [DigiturnoController::class, 'refreshToken'])->name('refreshToken');
-Route::get('/{mac}', [DigiturnoController::class, 'index'])->name('index');
-Route::get('/ingreso/{mac}', [DigiturnoController::class, 'ingreso'])->name('ingreso');
-Route::get('/ingreso2/{mac}', [DigiturnoController::class, 'ingreso2'])->name('ingreso2');
-Route::get('/portal/{portalToken}', [DigiturnoController::class, 'portal'])->name('portal');
-Route::get('/turno/{portalToken}', [DigiturnoController::class, 'turno'])->name('turno');
-Route::get('/turnero/{mac}', [DigiturnoController::class, 'turnero'])->name('turnero');
-Route::get('/turnero/laboratorio/{mac}', [DigiturnoController::class, 'turneroLaboratorio'])->name('turneroLaboratorio');
-
-
-Route::get('/test', function () {
-    return response('welcome Akold');
-});
-
-
 Route::get('/git-pull', function () {
     if (request()->header('X-Git-Token') !== '**Ecu@dor123') {
         return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
@@ -43,4 +28,18 @@ Route::get('/git-pull', function () {
     }
 
     return response()->json(['status' => 'error', 'message' => 'Failed to execute git pull', 'output' => $output], 500);
+});
+
+Route::get('/refreshToken', [DigiturnoController::class, 'refreshToken'])->name('refreshToken');
+Route::get('/{mac}', [DigiturnoController::class, 'index'])->name('index');
+Route::get('/ingreso/{mac}', [DigiturnoController::class, 'ingreso'])->name('ingreso');
+Route::get('/ingreso2/{mac}', [DigiturnoController::class, 'ingreso2'])->name('ingreso2');
+Route::get('/portal/{portalToken}', [DigiturnoController::class, 'portal'])->name('portal');
+Route::get('/turno/{portalToken}', [DigiturnoController::class, 'turno'])->name('turno');
+Route::get('/turnero/{mac}', [DigiturnoController::class, 'turnero'])->name('turnero');
+Route::get('/turnero/laboratorio/{mac}', [DigiturnoController::class, 'turneroLaboratorio'])->name('turneroLaboratorio');
+
+
+Route::get('/test', function () {
+    return response('welcome Akold');
 });
