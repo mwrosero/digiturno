@@ -953,6 +953,18 @@ function capitalizarElemento(elemento) {
     }
 }
 
+function obtenerFechaHoraEnCurso(){
+    const date = new Date();
+
+    // Configurar el formateador para UTC-5
+    const options = { timeZone: 'America/Bogota', hour12: false };
+    const dateFormatter = new Intl.DateTimeFormat('es-EC', { ...options, year: 'numeric', month: '2-digit', day: '2-digit' });
+    const timeFormatter = new Intl.DateTimeFormat('es-EC', { ...options, hour: '2-digit', minute: '2-digit' });
+
+    // Formatear fecha y hora
+    return dateFormatter.format(date) + " " +timeFormatter.format(date);
+}
+
 function actualizarFechaHora() {
     // Crear la fecha actual
     const date = new Date();
