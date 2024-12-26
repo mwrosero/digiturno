@@ -859,7 +859,6 @@
             type: 'raw-html',
             style: `
                 @media print {
-                    
                     body {
                         font-size: 14px;
                         margin: 0;

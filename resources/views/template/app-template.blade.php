@@ -94,7 +94,7 @@
                     <div class="modal-body" id="turnoDisplay">
                         <h5 class="modal-title text-center my-2 text-uppercase" id="turnoModalLabel"></h5>
                         <!-- Código del turno -->
-                        <div class="turno-codigo fs-70 text-center p-2 w-75 rounded-8 border-veris-5 text-veris border-veris-3 mx-auto"></div>
+                        <div class="turno-codigo text-center p-2 w-75 rounded-8 border-veris-5 text-veris border-veris-3 mx-auto" style="font-size: 35px;"></div>
                         <!-- Información adicional -->
                         <div class="info-box my-0 text-center">
                             
