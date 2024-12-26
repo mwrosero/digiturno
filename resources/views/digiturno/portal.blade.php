@@ -845,27 +845,25 @@
                 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/theme-veris-digiturno.css?v=1.0">
                 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/bootstrap-icons.min.css?v=1.0">
             </head>
-            <body>
+            <body style="width: 80mm; height: 100mm;">
                 ${content}
             </body>
             </html>
         `;
-
+// @page {
+//                         size: 80mm 100mm; /* Define el tamaño exacto del papel */
+//                         margin: 0; /* Elimina márgenes adicionales */
+//                     }
         printJS({
             printable: htmlContent,
             type: 'raw-html',
             style: `
                 @media print {
-                    @page {
-                        size: 80mm 100mm; /* Define el tamaño exacto del papel */
-                        margin: 0; /* Elimina márgenes adicionales */
-                    }
+                    
                     body {
                         font-size: 14px;
                         margin: 0;
                         padding: 0;
-                        width: auto;
-                        height: auto;
                     }
                 }
             `
