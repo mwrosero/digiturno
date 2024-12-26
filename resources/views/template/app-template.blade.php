@@ -35,6 +35,7 @@
         <script>
             let buscarUsuarioFlag = true;
             let accessToken = "{{ $accessToken }}";
+            let web_url = "{{ \App\Models\Veris::WEBURL }}";
             const api_url = "{{ \App\Models\Veris::BASE_URL }}";
             const api_url_digitales = "{{ \App\Models\Veris::BASE_URL_DIGITALES }}";
             const api_war = "{{ \App\Models\Veris::BASE_WAR }}";
