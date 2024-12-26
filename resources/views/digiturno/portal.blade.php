@@ -835,6 +835,7 @@
         //     "prioridad": 0,
         //     "nemonicoPrioridad": "NORMAL"
         // }
+        //<img style="width:220px" class="logo mx-auto my-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
         var content = $('#turnoDisplay').html();
         var htmlContent = `
             <html>
@@ -845,7 +846,6 @@
                 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/bootstrap-icons.min.css?v=1.0">
             </head>
             <body>
-                <img style="width:220px" class="logo mx-auto my-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
                 ${content}
             </body>
             </html>
