@@ -8,7 +8,7 @@
         <div class="container-fluid h-100">
         <div class="row flex-row align-items-start h-100">
             <div class="col-3 h-100 d-flex flex-column justify-content-between">
-                <img class="w-75 mb-3" src="{{ asset('assets/img/veris-large.png') }}" alt="">
+                <img class="w-50 mb-2" src="{{ asset('assets/img/veris-large.png') }}" alt="">
                 <div class="mt-auto" id="next-turno">
                     <!-- <h1 class="text-veris mb-3">Siguiente turno</h1>
                     <div class="card rounded-8 bg-veris-dark">
@@ -108,7 +108,7 @@
                     if(value.nemonicoPrioridad != "NORMAL"){
                         icon = `<img style="width: 50px;" class="mx-2 ms-4" src="{{ asset('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">`;
                     }
-                    elem += `<div class="card rounded-8 bg-veris-dark">
+                    elem += `<div class="card rounded-8 bg-veris-dark mb-1">
                         <div class="card-content text-center p-2 d-flex justify-content-around align-items-center">
                             ${icon}
                             <div class="info">

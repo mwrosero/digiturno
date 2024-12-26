@@ -3,8 +3,30 @@
 @php
     $tokenTurno = base64_encode(uniqid());
 @endphp
+<link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/print.min.css">
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/print.min.js"></script>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+<!-- Modal usuario turno -->
+<div class="modal fade" id="modalIngresarNombres" tabindex="-1" aria-labelledby="modalIngresarNombresLabel">
+    <div class="modal-dialog modal-sm modal-dialog-top modal-dialog-scrollable mx-auto">
+        <div class="modal-content rounded-8">
+            <div class="modal-body text-center p-3 pb-2">
+                <h1 class="modal-title fs--20 line-height-24 fw-medium mb-3">Veris</h1>
+                <p class="fs--16 fw-normal text-veris mb-3" id="mensajeErrorUsuario"></p>
+                <input autocomplete="off" class="w-100 onlyLetters text-uppercase keyboard-input p-1 rounded-8 text-center fs-1 mb-2" id="nombresTM" type="text" placeholder="Ingresa nombres" />
+			    <input autocomplete="off" class="w-100 onlyLetters text-uppercase keyboard-input p-1 text-center fs-1 rounded-8" id="apellidosTM" type="text" placeholder="Ingresa apellidos" />
+			    <div onclick="crearTurno();" class="btn bg-veris btn-crear-turno text-white mx-auto mb-5 rounded-8 my-5">CREAR TURNO</div>
+	    		{{-- <button onclick="buscarUsuario();" class="btn bg-veris text-white mt-2 mx-auto">BUSCAR</button> --}}
+	    		<div class="w-100 d-none d-md-block">
+			    	<div class="keyboardContainer w-100"></div>
+			    </div>
+            </div>
+            {{-- <div class="modal-footer pt-0 pb-3 px-3 border-0">
+                <button type="button" class="btn bg-veris btn-ingresar text-white mx-auto rounded-8 mt-3" data-bs-dismiss="modal">Entiendo</button>
+            </div> --}}
+        </div>
+    </div>
+</div>
 {{-- Modal coincidencias --}}
 <div class="modal modal-top fade" id="modalCoincidencias" tabindex="-1" aria-labelledby="modalCoincidenciasLabel" aria-hidden="true">
     <div class="modal-dialog modal modal-dialog-centered mx-auto">
@@ -146,7 +168,7 @@
 		if(tipo == "C"){
 			return esValidaCedula($('#cedula').val())
 		}else if(tipo == "P"){
-			return ($('#pasaporte').val().length > 8 );
+			return ($('#pasaporte').val().length > 6 );
 		}else{
 			return ($('#nombres').val() != "" && $('#apellidos').val() != "")
 		}
@@ -156,24 +178,29 @@
 		let tipo = $('.tipoIdentificacion.active').attr('data-rel');
 		let tipoFiltro = ``;
 		let valorFiltro = ``;
+		let msg = ``;
 		switch(tipo){
 			case 'C':
 				tipoFiltro = `CEDULA`;
 				valorFiltro = $('#cedula').val();
+				msg = `Cédula inválida`;
 			break;
 			case 'P':
 				tipoFiltro = `PASAPORTE`;
 				valorFiltro = $('#pasaporte').val();
+				msg = `Pasaporte inválido`;
 			break;
 			case 'N':
 				tipoFiltro = `NOMBRES`;
 				valorFiltro = `${ $('#apellidos').val().toUpperCase() } ${ $('#nombres').val().toUpperCase() }`;
+				msg = `Debe ingresar al menos un Nombre y una Apellido`;
 			break;
 		}
 		let valid = await validarCampos(tipo);
 		if(!valid){
-			$('#mensajeError').html(`Datos erróneos`)
+			$('#mensajeError').html(`${msg}`)
       		$('#modalAlerta').modal('show');
+      		Keyboard.open();
       		return;
 		}
 		let args = [];
@@ -186,8 +213,15 @@
         console.log(data);
       	if(data.code == 200){
       		if(data.data.length == 0){
-      			$('#mensajeError').html(`Usuario no encontrado, verifique sus datos ingresados.`)
-      			$('#modalAlerta').modal('show');
+      			if(tipo == "N"){
+	      			$('#mensajeError').html(`Usuario no encontrado, verifique sus datos ingresados.`)
+	      			$('#modalAlerta').modal('show');
+	      			$('.keyboard').css('z-index','initial');
+	      		}else{
+	      			$('#mensajeErrorUsuario').html(`Usuario no encontrado, ingrese los siguientes datos para generar un turno.`)
+	      			$('.keyboard').css('z-index',99999);
+	      			$('#modalIngresarNombres').modal('show');
+	      		}
       		}else if(data.data.length == 1 && (tipo == "C" || tipo == "P")){
       			storeData(data.data[0]);
       			location.href = "/portal/{{ $tokenTurno }}";
@@ -269,9 +303,149 @@
 				$('input').val("");
 			}
 		})
+
+		let url_salir = `/{{ $mac }}`;
+        if(isMobile()){
+            url_salir = `/ingreso/{{ $mac }}`;
+        }
+        $('.btn-salir').attr('href',url_salir);
+
+        const tiempoInactividad = 45; // Tiempo de inactividad en segundos
+        const tiempoMaximoRespuesta = 15; // Tiempo máximo de respuesta al modal en segundos
+
+        let temporizadorInactividad;
+        let temporizadorRespuesta;
+
+        // Función para mostrar el modal
+        function mostrarModal() {
+            // Mostrar el modal
+            $("#modalEstasAhi").modal("show");
+
+            // Iniciar temporizador para esperar respuesta
+            temporizadorRespuesta = setTimeout(() => {
+                $("#modalEstasAhi").modal("hide");
+                console.log("No hubo respuesta a tiempo.");
+                location.href = url_salir;
+            }, tiempoMaximoRespuesta * 1000);
+        }
+
+        // Función para reiniciar el conteo de inactividad
+        function reiniciarConteo() {
+            clearTimeout(temporizadorInactividad);
+            temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
+        }
+
+        // Detectar interacción del usuario
+        $(document).on("mousemove keydown click scroll", function () {
+            reiniciarConteo();
+        });
+
+        // Manejar clic en el botón "Sí"
+        $("#btnSi").on("click", function () {
+            clearTimeout(temporizadorRespuesta);
+            $("#modalEstasAhi").fadeOut();
+            console.log("El usuario sigue presente.");
+            reiniciarConteo();
+        });
+
+        if(!isMobile()){
+            console.log("Iniciando conteo")
+            // Iniciar el conteo inicial
+            reiniciarConteo();
+        }
     });
+
+    async function crearTurno(){
+    	let tipo = $('.tipoIdentificacion.active').attr('data-rel');
+        let paciente = `${ $('#nombresTM').val().toUpperCase() } ${ $('#apellidosTM').val().toUpperCase() }`;
+
+		if($('#nombresTM').val() == "" || $('#apellidosTM').val() == ""){
+			showMessage('warning','Debe llenar los campos solicitados');
+			Keyboard.open();
+			return;
+		}
+
+        let args = [];
+        let numeroIdentificacion;
+        let tipoIdentificacion;
+        if(tipo == "C"){
+        	numeroIdentificacion = $('#cedula').val();
+        	tipoIdentificacion = "CEDULA";
+        }else{
+        	numeroIdentificacion = $('#pasaporte').val();
+        	tipoIdentificacion = "PASAPORTE";
+        }
+        args["endpoint"] =  `${api_url}/${api_war}/transaccion/generar_ticket?macAddress={{ $mac }}&tipoIdentificacion=${tipoIdentificacion}&numeroIdentificacion=${numeroIdentificacion}&nombreCompleto=${ paciente }`;
+        //dataCita.paciente.numeroPaciente
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        const data = await call(args);
+        // console.log(data);
+        if(data.code == 200){
+            $('#turnoModalLabel').html(`Turno - ${data.data.nombreSucursalTurnero}`);
+            $('.turno-codigo').html(`${data.data.turno}`);
+            $('.info-box').html(`<p class="turno-prioridad">${data.data.nemonicoPrioridad}</p>
+                    <p><strong>Paciente:</strong> ${data.data.nombreCompleo}</p>`);
+            $('#turnoModal').modal('show')
+            // console.log("iniciar conteo para enviar a home")
+            if(!isMobile()){
+                printTurno(data.data)
+            }
+        }else{
+            $('#mensajeError').html(`${data.message}`)
+            $('#modalAlerta').modal('show');
+        }
+    }
+
+    async function printTurno(detalle){
+        // {
+        //     "turno": "TG-008",
+        //     "mensajeLlegada": "WOOOW!! ERES EL NUMERO 3 PRONTO TOCA TU TURNO",
+        //     "nombreCompleo": "ROSENBERG MIRANDA DENISSE ALEXANDRA",
+        //     "nombreMuestraTurnero": "Veris",
+        //     "nombreSucursalTurnero": "Veris Kennedy",
+        //     "prioridad": 0,
+        //     "nemonicoPrioridad": "NORMAL"
+        // }
+        var content = $('#turnoDisplay').html();
+        var htmlContent = `
+            <html>
+            <head>
+                <!-- Incluye Bootstrap o tu CSS personalizado -->
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+                <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/theme-veris-digiturno.css?v=1.0">
+                <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/bootstrap-icons.min.css?v=1.0">
+            </head>
+            <body>
+                <img class="logo mx-auto my-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
+                ${content}
+            </body>
+            </html>
+        `;
+
+        printJS({
+            printable: htmlContent,
+            type: 'raw-html',
+            style: `
+                @media print {
+                    body {
+                        font-size: 14px;
+                        margin: 0;
+                        padding: 0;
+                    }
+                }
+            `
+        });
+    }
 </script>
 <style>
+	.toast-title {
+        color: #fff !important;
+    }
+    #toast-container > .toast-warning{
+        background-image: url("{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/exclamation.svg") !important;
+    }
 	.nav-pills{
 		background: #EBF6FE !important;
 		border: 2px solid #0071CE;

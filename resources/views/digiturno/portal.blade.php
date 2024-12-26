@@ -49,28 +49,6 @@
         </form>
     </div>
 </div>
-{{-- Modal turno generado --}}
-<div class="modal fade" id="turnoModal" aria-labelledby="turnoModalLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            {{-- <div class="modal-header">
-            </div> --}}
-            <div class="modal-body" id="turnoDisplay">
-                <h5 class="modal-title text-center my-2 text-uppercase" id="turnoModalLabel"></h5>
-                <!-- Código del turno -->
-                <div class="turno-codigo fs-70 text-center p-2 w-75 rounded-8 border-veris-5 text-veris border-veris-3 mx-auto"></div>
-
-                <!-- Información adicional -->
-                <div class="info-box my-3 text-center">
-                    
-                </div>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-salir">CERRAR</a>
-            </div>
-        </div>
-    </div>
-</div>
 {{-- Modal notificar llegada --}}
 <div class="modal modal-top fade" id="modalNotificarLlegada" tabindex="-1" aria-labelledby="modalNotificarLlegadaLabel">
     <div class="modal-dialog modal modal-dialog-centered mx-auto">
@@ -83,10 +61,13 @@
                 <div class="row gx-2 justify-content-between align-items-center">
                     <ul class="list-group border-0 p-0" id="listaPrestaciones">
                     </ul>
+                    <div class="my-2 box-info-detalle-orden-apoyo p-2 bg-silver">
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer pt-0 pb-3 px-3 border-0">
-                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-print-notificar-llegada" data-bs-dismiss="modal">Aceptar</button>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
+                <button type="button" class="btn fw-normal text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-print-notificar-llegada" data-bs-dismiss="modal">Notificar</button>
+                <a href="#" class="btn fw-normal fs--16 badge bg-veris px-4 py-2 mx-2 fs-4 btn-salir text-white" data-bs-dismiss="modal">CERRAR</a>
             </div>
         </form>
     </div>
@@ -118,6 +99,8 @@
                 <h5 class="fs--20 line-height-24 mt-3 mb-3" id="tituloPaqueteDetalle"></h5>
                 <ul class="list-group border-0 p-0 my-2" id="detalleComponentesPaquete">
                 </ul>
+                <div class="my-2 box-info-detalle p-2 bg-silver">
+                </div>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0">
                 <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4" data-bs-dismiss="modal">CERRAR</a>
@@ -146,8 +129,8 @@
 
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
-                <a href="#" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-2 fs-4" data-bs-dismiss="modal">CERRAR</a>
-                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4 btn-activar" data-bs-dismiss="modal">ACTIVAR</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-2 fs-4 btn-activar" data-bs-dismiss="modal">ACTIVAR</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4" data-bs-dismiss="modal">CERRAR</a>
             </div>
         </form>
     </div>
@@ -412,6 +395,56 @@
         const $keyboard = $(".keyboard");
         const $inputField = $("#email_link_pago");
 
+        let url_salir = `/${ dataTurno.mac }`;
+        if(isMobile()){
+            url_salir = `/ingreso/${ dataTurno.mac }`;
+        }
+        $('.btn-salir').attr('href',url_salir);
+
+        const tiempoInactividad = 45; // Tiempo de inactividad en segundos
+        const tiempoMaximoRespuesta = 15; // Tiempo máximo de respuesta al modal en segundos
+
+        let temporizadorInactividad;
+        let temporizadorRespuesta;
+
+        // Función para mostrar el modal
+        function mostrarModal() {
+            // Mostrar el modal
+            $("#modalEstasAhi").modal("show");
+
+            // Iniciar temporizador para esperar respuesta
+            temporizadorRespuesta = setTimeout(() => {
+                $("#modalEstasAhi").modal("hide");
+                console.log("No hubo respuesta a tiempo.");
+                location.href = url_salir;
+            }, tiempoMaximoRespuesta * 1000);
+        }
+
+        // Función para reiniciar el conteo de inactividad
+        function reiniciarConteo() {
+            clearTimeout(temporizadorInactividad);
+            temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
+        }
+
+        // Detectar interacción del usuario
+        $(document).on("mousemove keydown click scroll", function () {
+            reiniciarConteo();
+        });
+
+        // Manejar clic en el botón "Sí"
+        $("#btnSi").on("click", function () {
+            clearTimeout(temporizadorRespuesta);
+            $("#modalEstasAhi").fadeOut();
+            console.log("El usuario sigue presente.");
+            reiniciarConteo();
+        });
+
+        if(!isMobile()){
+            console.log("Iniciando conteo")
+            // Iniciar el conteo inicial
+            reiniciarConteo();
+        }
+
         // Ocultar el teclado si se hace clic fuera de su contenedor
         $(document).on("click", function (event) {
             if (!$keyboard.is(event.target) && $keyboard.has(event.target).length === 0 &&
@@ -421,12 +454,6 @@
             }
         });
         await parametrosGenerales();
-
-        let url_salir = `/${ dataTurno.mac }`;
-        if(isMobile()){
-            url_salir = `/ingreso/${ dataTurno.mac }`;
-        }
-        $('.btn-salir').attr('href',url_salir);
 
         $('#toggle-sidebar').on('click', function() {
             $('#sidebar').toggleClass('sidebar-collapsed sidebar-expanded');
@@ -487,22 +514,95 @@
             await notificarLlegada(detalle);
         })
 
+        $('body').on('click', '.btn-detalle-orden', async function(){
+            let detalle = JSON.parse($(this).attr('data-rel'));
+            console.log(detalle)
+            $('#tituloPaqueteDetalle').html(`Detall de Orden Médica: ${detalle.numeroOrden}`);
+            
+            $('.box-info-detalle').html(`<div class="d-flex align-items-center mb-1">
+                    <span style="width: 25px;" class="badge bg-pendiente text-center badge-pill me-2">
+                        <i class="fa-solid fa-triangle-exclamation text-white"></i>
+                    </span>
+                    <p class="text-900 fs-12 mb-0"> Pendiente de pago</p>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                    <span style="width: 25px;" class="badge text-center bg-success badge-pill me-2">
+                        <i class="fa-solid fa-check text-white"></i>
+                    </span>
+                    <p class="text-900 fs-12 mb-0"> Muestra recepcionada</p>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                    <span style="width: 25px;" class="badge bg-veris-light text-center badge-pill me-2">
+                        <i class="fa-solid fa-stopwatch text-veris-dark"></i>
+                    </span>
+                    <p class="text-900 fs-12 mb-0"> Muestra pendiente de entrega</p>
+                </div>
+            `);
+
+            let elem = ``;
+            $.each(detalle.detallesOrden, function(key, value){
+                let badge = ``;
+                if(estadosVigentes.includes(value.codigoEstado)){
+                    if(value.fechaRecepcion == null){
+                        badge = `<span style="width: 25px;" class="badge bg-veris-light text-center badge-pill ms-2">
+                                <i class="fa-solid fa-stopwatch text-veris-dark"></i>
+                            </span>`;
+                    }else{
+                        badge = `<span style="width: 25px;" class="badge text-center bg-success badge-pill ms-2">
+                                <i class="fa-solid fa-check text-white"></i>
+                            </span>`
+                    }
+                }else{
+                    badge = `<span style="width: 25px;" class="badge bg-pendiente text-center badge-pill ms-2">
+                            <i class="fa-solid fa-triangle-exclamation text-white"></i>
+                        </span>`;
+                }
+                elem += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 line-height-16 d-flex justify-content-between align-items-start">
+                    ${ value.nombrePrestacion }
+                    ${ badge }
+                </li>`
+                // ${ value.nombreServicio }/${ value.nombrePrestacion }
+            })
+            $('#detalleComponentesPaquete').html(elem);
+            $('#modalDetallePaquete').modal('show');
+        })
+
         $('body').on('click', '.btn-detalle-paquete', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
-            // console.log(detalle)
+            console.log(detalle)
             $('#tituloPaqueteDetalle').html(`${detalle.nombrePaquete}`);
             // si el detalle de cantidadDisponible > 0 Tiene la prestacion pendiente por activar
             // si el campo cantidadUtilizada == 0 y el campo estaRecepcionado == false significa que el paquete no ha sido utilizado en la atencion
+
+            $('.box-info-detalle').html(`<div class="d-flex align-items-center mb-1">
+                    <span style="width: 25px;" class="badge bg-pendiente text-center badge-pill me-2">
+                        <i class="fa-solid fa-triangle-exclamation text-white"></i>
+                    </span>
+                    <p class="text-900 fs-12 mb-0"> Pendiente de pago</p>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                    <span style="width: 25px;" class="badge text-center bg-success badge-pill me-2">
+                        <i class="fa-solid fa-check text-white"></i>
+                    </span>
+                    <p class="text-900 fs-12 mb-0"> Muestra recepcionada</p>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                    <span style="width: 25px;" class="badge bg-veris-light text-center badge-pill me-2">
+                        <i class="fa-solid fa-stopwatch text-veris-dark"></i>
+                    </span>
+                    <p class="text-900 fs-12 mb-0"> Muestra pendiente de entrega</p>
+                </div>
+            `);
 
             let elem = ``;
             $.each(detalle.detallesDisponibles, function(key, value){
                 let badge = ``;
                 if(value.cantidadDisponible > 0 || (value.cantidadUtilizada == 0 && !value.estaRecepcionado)){
-                    badge = `<span style="width: 30px;" class="badge bg-warning text-center badge-pill ms-2">
-                            <i class="fa-solid fa-triangle-exclamation text-white"></i>
+                    badge = `<span style="width: 25px;" class="badge bg-veris-light text-center badge-pill ms-2">
+                            <i class="fa-solid fa-stopwatch text-veris-dark"></i>
                         </span>`;
                 }else{
-                    badge = `<span style="width: 30px;" class="badge text-center bg-success badge-pill ms-2">
+                    badge = `<span style="width: 25px;" class="badge text-center bg-success badge-pill ms-2">
                             <i class="fa-solid fa-check text-white"></i>
                         </span>`
                 }
@@ -520,7 +620,7 @@
             let dataChequeo = $(this).attr('data-rel');
             $('#dataChequeo').val(dataChequeo)
             let detalle = JSON.parse(dataChequeo);
-            // console.log(detalle)
+            console.log(detalle)
             $('#tituloChequeoDetalle').html(`${detalle.nombreTipoContrato} - ${detalle.nombreConvenio}`);
 
             let elem_header = ``;
@@ -548,9 +648,13 @@
                     </div>
                 </div>`;
                 $.each(value.items, function(k,v){
+                    let disabledAttr = ``;
+                    if(v.requiereAgendamiento && v.cantidadUtilizada == 0 && v.cantidadDisponible != v.cantidadUtilizada){
+                        disabledAttr = `disabled`;
+                    }
                     elem_content += `<div class="d-flex justify-content-start align-items-start fs-16 line-height-16 mb-2">
                             <div class="form-check flex-grow-1">
-                                <input class="form-check-input my-0" type="checkbox" value="" id="item-prestacion-${ v.codigoPrestacion }" codigoServicio-rel="${ value.codigoServicioNivel1 }" data-rel='${ JSON.stringify(v) }'>
+                                <input ${disabledAttr} class="form-check-input my-0" type="checkbox" value="" id="item-prestacion-${ v.codigoPrestacion }" codigoServicio-rel="${ value.codigoServicioNivel1 }" data-rel='${ JSON.stringify(v) }'>
                                 <label class="form-check-label" for="item-prestacion-${ v.codigoPrestacion }">
                                 ${ v.nombrePrestacion }
                                 </label>
@@ -570,12 +674,12 @@
 
         $('body').on('click', '.select-all', function(){
             let id = $(this).attr('codigoServicio-rel');
-            $('.pane-items-' + id).find('input').prop('checked', true);
+            $('.pane-items-' + id).find('input:not(:disabled)').prop('checked', true);
         })
 
         $('body').on('click', '.unselect-all', function(){
             let id = $(this).attr('codigoServicio-rel');
-            $('.pane-items-' + id).find('input').prop('checked', false);
+            $('.pane-items-' + id).find('input:not(:disabled)').prop('checked', false);
         })
 
         $('body').on('click', '.btn-activar', async function(){
@@ -863,18 +967,39 @@
 
     async function mostrarPrestaciones(detalle){
         let elem = ``;
+        $('.box-info-detalle-orden-apoyo').html(`
+            <div class="d-flex align-items-center mb-1">
+                <span style="width: 25px;" class="badge text-center bg-success badge-pill me-2">
+                    <i class="fa-solid fa-check text-white"></i>
+                </span>
+                <p class="text-900 fs-12 mb-0"> Muestra recepcionada</p>
+            </div>
+            <div class="d-flex align-items-center mb-1">
+                <span style="width: 25px;" class="badge bg-veris-light text-center badge-pill me-2">
+                    <i class="fa-solid fa-stopwatch text-veris-dark"></i>
+                </span>
+                <p class="text-900 fs-12 mb-0"> Muestra pendiente de entrega</p>
+            </div>
+        `);
+
         $.each(detalle.detallesOrden, function(key,value){
             console.log(value)
             //let class_estado_prestacion = (value.)
             let badge = ``;
-            if(value.fechaRecepcion != null){
-                badge = `<span style="width: 30px;" class="badge text-center bg-success badge-pill ms-2">
-                    <i class="fa-solid fa-check text-white"></i>
-                </span>`
+            if(estadosVigentes.includes(value.codigoEstado)){
+                if(value.fechaRecepcion == null){
+                    badge = `<span style="width: 25px;" class="badge bg-veris-light text-center badge-pill ms-2">
+                            <i class="fa-solid fa-stopwatch text-veris-dark"></i>
+                        </span>`;
+                }else{
+                    badge = `<span style="width: 25px;" class="badge text-center bg-success badge-pill ms-2">
+                            <i class="fa-solid fa-check text-white"></i>
+                        </span>`
+                }
             }else{
-                badge = `<span style="width: 30px;" class="badge bg-warning text-center badge-pill ms-2">
-                    <i class="fa-solid fa-triangle-exclamation text-white"></i>
-                </span>`;
+                badge = `<span style="width: 25px;" class="badge bg-pendiente text-center badge-pill ms-2">
+                        <i class="fa-solid fa-triangle-exclamation text-white"></i>
+                    </span>`;
             }
             elem += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 line-height-16 d-flex justify-content-between align-items-center">
                 ${ value.nombrePrestacion }
@@ -919,9 +1044,7 @@
             }
         });
     }
-    function isMobile() {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    }
+
     async function drawListFamiliares(){
         let elem = ``;
         elem += `<div data-rel='${JSON.stringify(dataTurno.paciente)}' class="item-coincidencia item-coincidencia-selected rounded-8 border-veris-2 p-2 text-center bg-veris-sky mb-2 text-veris fw-medium d-flex justify-content-between align-items-center fs-16">
@@ -1376,9 +1499,15 @@
                     elem += `${ mostrarMetodosPagoOrden(value) }`;
                 }
 
+                let detallesOrden = ``;
+                if(value.tipoServicio == "ORDEN_MEDICA"){
+                    detallesOrden += `<button data-rel='${ JSON.stringify(value) }' class="btn btn-detalle-orden badge bg-veris-dark text-white p-2 fs-14 rounded-8 border-0 d-block ms-2">Ver detalles</button>`
+                }
+
                 elem += `<div class="row d-flex justify-content-between align-items-center mt-2 p-2 fs-18 line-height-18">
-                        <div class="col-12 text-center fw-bold text-veris-dark">
+                        <div class="col-12 text-center fw-bold text-veris-dark d-flex justify-content-center align-items-center">
                         Fecha de Orden emitida: ${ (value.fechaOrden.split(' '))[0] }
+                        ${ detallesOrden }
                         </div>
                     </div>`;
 
@@ -1496,7 +1625,7 @@
         if(data.code == 200){
             $('#turnoModalLabel').html(`Turno - ${data.data.nombreSucursalTurnero}`);
             $('.turno-codigo').html(`${data.data.turno}`);
-            $('.info-box').html(`<p class="turno-prioridad">${data.data.mensajeLlegada}</p>
+            $('.info-box').html(`<p class="turno-prioridad">${data.data.nemonicoPrioridad}</p>
                     <p><strong>Paciente:</strong> ${data.data.nombreCompleo}</p>`);
             $('#turnoModal').modal('show')
             // console.log("iniciar conteo para enviar a home")
@@ -1514,7 +1643,7 @@
         color: #fff !important;!i;!;
     }
     #toast-container > .toast-warning{
-        background-image: url("{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/exclamation.svg')}}") !important;
+        background-image: url("{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/exclamation.svg") !important;
     }
     .keyboard{
         z-index: 99999;
