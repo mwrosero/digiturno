@@ -1,0 +1,32 @@
+Crear tamaño de papel:
+Abrir Impresoras y Scanners en panel de control
+Preferencias de impresión
+Configuraciones avanzadas
+Nuevamente en el botón Configuraciones avanzadas
+Used defined paper
+Paper name, escribir Digiturno
+Abajo en paper size: width: 80mm y height: 100mm y dar click en registrar
+Aplicar y Aceptar
+Volvemos a abrir las preferencias
+Papel/Calidad seleccionamos Top
+Click en el botón Avanzado
+En paper size seleccionar Digiturno
+Click en OK
+Click en aplicar y aceptar
+
+Instalar Firefox
+Abrir e imprimir una hoja de prueba: 
+Seleccionar la impresora destino la Epson que este conectada
+Seleccionar tamaño de Hoja Digiturno, con márgenes mínimos
+Deshabilitar imprimir headers and footers
+
+En el url escribir: about:support
+Buscar Carpeta del perfil y dar click en Abrir Carpeta
+En esa ruta que se abre se debe crear un archivo llamado user.js con el siguiente contenido:
+user_pref("print.always_print_silent", true);
+user_pref("print.show_print_progress", false);
+
+Para crear el acceso directo:
+"C:\Program Files\Mozilla Firefox\firefox.exe" --kiosk "http://127.0.0.1:3000/24-2F-FA-07-13-0A"
+ó
+"C:\Program Files (x86)\Mozilla Firefox\firefox.exe" --kiosk "http://127.0.0.1:3000/24-2F-FA-07-13-0A"
