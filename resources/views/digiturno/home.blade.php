@@ -62,7 +62,7 @@
             height: 200,
             color: "#000",
             bgColor: "#FFF",
-            text: "https://digiturno.akold.com/ingreso/{{ $mac }}"
+            text: `${web_url}/ingreso/{{ $mac }}`
 		});
 	})
 </script>

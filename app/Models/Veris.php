@@ -20,6 +20,7 @@ class Veris extends Model
     // public const IDORGANIZACION = 'adf4e264-cd20-4653-9a44-025b13050992';
     // public const AMPLITUDE = "1cbd8baed97a6c8abf6b8e398b77cf6f";
     // public const BASICAUTHDIGITALES = 'QkFDS0VORFBIQU5UT006Q2xAdmUxMjM0';
+    // public const WEBURL = 'https://digiturno.akold.com';
 
     //PROD
     public const BASE_URL = 'https://turnero.phantomx.com.ec';
@@ -31,6 +32,7 @@ class Veris extends Model
     public const IDORGANIZACION = '365509c8-9596-4506-a5b3-487782d5876e';
     public const AMPLITUDE = "93127ac840f734cdcc8bf469f8bc95d5";
     public const BASICAUTHDIGITALES = 'YmFja2VuZHBoYW50b206QmFja1BAbnRoMG1QQHNzMjAyMQ==';
+    public const WEBURL = 'https://digiturno.veris.com.ec';
 
     static function call(Array $config)
     {
