@@ -205,8 +205,8 @@
                                         </div>
                                 </div>
                             </div> --}}
-                            <div id="btnPrint" class="btn bg-veris d-none d-md-block text-white p-2 px-5 fs-5 fw-bold rounded-8 mt-3 mt-md-0 btn-turno">Generar turno</div>
-                            <div id="btn-redirect-turno" url-rel="/turno/{{ $portalToken }}" class="btn d-blocl d-md-none bg-veris text-white p-2 px-5 fs-5 fw-bold rounded-8 mt-3 mt-md-0">Generar turno</div>
+                            <div id="btnPrint" class="btn bg-veris text-white p-2 px-5 fs-5 fw-bold rounded-8 mt-3 mt-md-0 btn-turno">Generar turno</div>
+                            {{-- <div id="btn-redirect-turno" url-rel="/turno/{{ $portalToken }}" class="btn d-blocl d-md-none bg-veris text-white p-2 px-5 fs-5 fw-bold rounded-8 mt-3 mt-md-0">Generar turno</div> --}}
                         </div>
                         <div class="row row-servicios overflow-auto">
                             {{-- <div class="col-12 mb-2">
@@ -846,8 +846,10 @@
                 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/theme-veris-digiturno.css?v=1.0">
                 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/bootstrap-icons.min.css?v=1.0">
             </head>
-            <body style="width: 80mm; height: 100mm;">
-                ${content}
+            <body>
+                <h3>${detalle.nombreSucursalTurnero.toUpperCase()}</h3>
+                <h1>Turno: ${detalle.turno}</h1>
+                <p class="fs-14 text-wrap"><strong>Paciente: </strong>${detalle.nombreCompleo}</p>
             </body>
             </html>
         `;
@@ -860,6 +862,7 @@
             type: 'raw-html',
             style: `
                 @media print {
+                    header, footer { display: none; }
                     body {
                         font-size: 14px;
                         margin: 0;

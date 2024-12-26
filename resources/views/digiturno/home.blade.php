@@ -27,7 +27,7 @@
 						<h2 class="fw-bold">Genera <span class="text-veris">tu turno</span><br><span class="text-veris">desde el celular</span></h2>
 					</div>
 					<div class="p-3 m-3">
-						<h5 class="fw-normal"><span class="fw-bold">Escanea el código QR, o también puedes aplasta<br>en “continuar”</span> para ingresar y genera tu turno.</h5>
+						<h5 class="fw-normal">Escanea el código QR, o también puedes <span class="fw-bold">seleccionar en<br> el botón “continuar”</span> para ingresar y genera tu turno.</h5>
 					</div>
 				</div>
 				<div class="col-12 d-flex flex-column justify-content-center align-items-center">
