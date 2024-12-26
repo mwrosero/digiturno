@@ -69,6 +69,44 @@
             </div>
         </div>
 
+        {{-- Modal consulta inactividad --}}
+        <div class="modal modal-top fade" id="modalEstasAhi" tabindex="-1" aria-labelledby="modalEstasAhiLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1">
+            <div class="modal-dialog modal modal-sm modal-dialog-centered mx-auto">
+                <div class="modal-content">
+                    <div class="modal-body" id="turnoDisplay">
+                        <h5 class="modal-title text-center my-2 text-uppercase">¿Estás ahí?</h5>
+                    </div>
+                    <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
+                        <a id="btnSi" href="#" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-2 fs-4" data-bs-dismiss="modal">Si</a>
+                        <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4 btn-salir" data-bs-dismiss="modal">SALIR</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Modal turno generado --}}
+        <div class="modal fade" id="turnoModal" aria-labelledby="turnoModalLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    {{-- <div class="modal-header">
+                    </div> --}}
+                    <div class="modal-body" id="turnoDisplay">
+                        <h5 class="modal-title text-center my-2 text-uppercase" id="turnoModalLabel"></h5>
+                        <!-- Código del turno -->
+                        <div class="turno-codigo fs-70 text-center p-2 w-75 rounded-8 border-veris-5 text-veris border-veris-3 mx-auto"></div>
+
+                        <!-- Información adicional -->
+                        <div class="info-box my-3 text-center">
+                            
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-salir">CERRAR</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Core JS -->
         <!-- build:js assets/vendor/js/core.js -->
         <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/vendor/libs/i18n/i18n.js"></script>
