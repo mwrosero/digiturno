@@ -1635,8 +1635,8 @@
         if(data.code == 200){
             $('#turnoModalLabel').html(`Turno - ${data.data.nombreSucursalTurnero}`);
             $('.turno-codigo').html(`${data.data.turno}`);
-            $('.info-box').html(`<p class="turno-prioridad">${data.data.nemonicoPrioridad}</p>
-                    <p class="text-wrap"><strong>Paciente:</strong> ${data.data.nombreCompleo}</p>`);
+            // <p class="turno-prioridad">${data.data.nemonicoPrioridad}</p>
+            $('.info-box').html(`<p class="text-wrap"><strong>Paciente:</strong> ${data.data.nombreCompleo}</p>`);
             $('#turnoModal').modal('show')
             // console.log("iniciar conteo para enviar a home")
             if(!isMobile()){
