@@ -116,16 +116,16 @@
 						<div class="tab-pane fade mt-3 px-2 w-100 show active" id="pills-cedula" role="tabpanel" aria-labelledby="pills-cedula-tab" tabindex="0">
 						    <div class="row">
 						    	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center">
-						    		<input autocomplete="off" id="cedula" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1 onlyNumber" maxlength="10">
-						    		<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8 my-5">INGRESAR</div>
+						    		<input autocomplete="off" id="cedula" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1 onlyNumber" maxlength="10" placeholder="Ingresar número de cédula">
+						    		<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto fs-1 p-3 mb-5 rounded-8 my-5">CONTINUAR</div>
 						    	</div>
 						    </div>
 						</div>
 						<div class="tab-pane fade mt-3 px-2 w-100" id="pills-pasaporte" role="tabpanel" aria-labelledby="pills-pasaporte-tab" tabindex="0">
 						    <div class="d-row">
 						    	<div class="col-12 col-md-8 offset-md-2 mt-2 mb-4 text-center">
-						    		<input autocomplete="off" id="pasaporte" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1">
-						    		<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8 my-5">INGRESAR</div>
+						    		<input autocomplete="off" id="pasaporte" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1" placeholder="Ingresar número de pasaporte">
+						    		<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto fs-1 p-3 mb-5 rounded-8 my-5">CONTINUAR</div>
 						    	</div>
 						    </div>
 						</div>
@@ -134,7 +134,7 @@
 						        <div class="col-12 col-md-8 offset-md-2 mt-2 mb-4 text-center">
 						    		<input autocomplete="off" class="w-100 onlyLetters text-uppercase keyboard-input p-1 rounded-8 text-center fs-1 mb-2" id="nombres" type="text" placeholder="Ingresa nombres" />
 								    <input autocomplete="off" class="w-100 onlyLetters text-uppercase keyboard-input p-1 text-center fs-1 rounded-8" id="apellidos" type="text" placeholder="Ingresa apellidos" />
-								    <div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8 my-5 ">BUSCAR</div>
+								    <div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto fs-1 p-3 mb-5 rounded-8 my-5 ">BUSCAR</div>
 						    		{{-- <button onclick="buscarUsuario();" class="btn bg-veris text-white mt-2 mx-auto">BUSCAR</button> --}}
 						    		<div class="w-100 d-none d-md-block">
 								    	<div class="keyboardContainer w-100"></div>
@@ -388,8 +388,9 @@
         if(data.code == 200){
             $('#turnoModalLabel').html(`Turno - ${data.data.nombreSucursalTurnero}`);
             $('.turno-codigo').html(`${data.data.turno}`);
-            $('.info-box').html(`<p class="turno-prioridad"><strong>Priodidad:</strong> ${data.data.nemonicoPrioridad}</p>
-                    <p class="text-wrap"><strong>Paciente:</strong> ${data.data.nombreCompleo}</p>`);
+            // <p class="turno-prioridad"><strong>Priodidad:</strong> ${data.data.nemonicoPrioridad}</p>
+                    
+            $('.info-box').html(`<p class="text-wrap"><strong>Paciente:</strong> ${data.data.nombreCompleo}</p>`);
             $('#turnoModal').modal('show')
             // console.log("iniciar conteo para enviar a home")
             if(!isMobile()){
