@@ -29,6 +29,7 @@
 					<div class="p-3 m-3">
 						<h5 class="fw-normal">Escanea el código QR, o también puedes <span class="fw-bold">seleccionar en<br> el botón “continuar”</span> para ingresar y genera tu turno.</h5>
 					</div>
+					<a href="/ingreso/{{ $mac }}" class="btn bg-veris text-white p-4 fs-2 rounded-8">Continuar</a>
 				</div>
 				<div class="col-12 d-flex flex-column justify-content-center align-items-center">
 					{{-- <img src="{{ asset('assets/img/qr-inicio.png') }}" alt="" style="width: 250px"> --}}
@@ -42,7 +43,7 @@
 	</main>
 
 	<!-- Footer -->
-	<footer class="footer p-3">
+	{{-- <footer class="footer p-3">
 		<div class="container-fluid text-center g-0">
 			<div class="row">
 				<div class="col-12 d-flex justify-content-end align-items-center">
@@ -51,7 +52,7 @@
 				</div>
 			</div>
 		</div>
-	</footer>
+	</footer> --}}
 </div>
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/qrcode.js"></script>
 <script>
