@@ -116,8 +116,8 @@
 						<div class="tab-pane fade mt-3 px-2 w-100 show active" id="pills-cedula" role="tabpanel" aria-labelledby="pills-cedula-tab" tabindex="0">
 						    <div class="row">
 						    	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center">
-						    		<input autofocus autocomplete="off" id="cedula" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1 onlyNumber" maxlength="10">
-						    		<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8 my-5 d-block d-md-none">INGRESAR</div>
+						    		<input autocomplete="off" id="cedula" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1 onlyNumber" maxlength="10">
+						    		<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8 my-5">INGRESAR</div>
 						    	</div>
 						    </div>
 						</div>
@@ -125,7 +125,7 @@
 						    <div class="d-row">
 						    	<div class="col-12 col-md-8 offset-md-2 mt-2 mb-4 text-center">
 						    		<input autocomplete="off" id="pasaporte" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1">
-						    		<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8 my-5 d-block d-md-none">INGRESAR</div>
+						    		<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8 my-5">INGRESAR</div>
 						    	</div>
 						    </div>
 						</div>
@@ -134,7 +134,7 @@
 						        <div class="col-12 col-md-8 offset-md-2 mt-2 mb-4 text-center">
 						    		<input autocomplete="off" class="w-100 onlyLetters text-uppercase keyboard-input p-1 rounded-8 text-center fs-1 mb-2" id="nombres" type="text" placeholder="Ingresa nombres" />
 								    <input autocomplete="off" class="w-100 onlyLetters text-uppercase keyboard-input p-1 text-center fs-1 rounded-8" id="apellidos" type="text" placeholder="Ingresa apellidos" />
-								    <div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8 my-5 d-block d-md-none">BUSCAR</div>
+								    <div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto mb-5 rounded-8 my-5 ">BUSCAR</div>
 						    		{{-- <button onclick="buscarUsuario();" class="btn bg-veris text-white mt-2 mx-auto">BUSCAR</button> --}}
 						    		<div class="w-100 d-none d-md-block">
 								    	<div class="keyboardContainer w-100"></div>
@@ -283,8 +283,12 @@
       	}
     }
 
+    let canSearch = true;
 	document.addEventListener("DOMContentLoaded", () => {
-		Keyboard.open();
+		// Keyboard.open();
+		$('body').on('click', '.nav-item.flex-fill', async function(){
+			//Keyboard.close();
+		})
 		
         $('body').on('click', '.item-coincidencia', async function(){
         	let data = JSON.parse($(this).attr("data-rel"));
@@ -299,7 +303,6 @@
 
 		$('body').on('click', '.nav-link', function(){
 			if(!$(this).hasClass('active')){
-				console.log(1)
 				$('input').val("");
 			}
 		})
