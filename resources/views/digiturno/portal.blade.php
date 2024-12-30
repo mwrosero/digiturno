@@ -190,7 +190,7 @@
                         {{-- <div class="d-block d-md-flex bg-light mb-3 justify-content-between align-items-center w-100 rounded-8 text-center bg-white text-veris-dark my-2 p-3 box-with-data"> --}}
                         <div class="d-none bg-light mb-3 justify-content-between align-items-center w-100 rounded-8 text-center bg-white text-veris-dark my-2 p-3 box-with-data">
                             <img class="ms-2" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/info-ico.svg" alt="">
-                            <span class="label-info ms-4 text-start flex-grow-1">Por favor verifica la información<br>correcta para continuar.</span>
+                            <span class="label-info ms-4 text-start flex-grow-1">Genera tu turno en caja para <br>atención específica.</span>
                             <div id="btnPrint" class="btn bg-veris text-white p-2 px-5 fs-1 fw-bold rounded-8 mt-3 mt-md-0 btn-turno">Generar turno</div>
                         </div>
                         <div class="d-none h-100 bg-light mb-3 w-100 rounded-8 text-center bg-white text-veris-dark my-2 p-3 box-without-data justify-content-center align-items-center">
