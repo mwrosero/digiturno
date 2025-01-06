@@ -97,16 +97,18 @@
             $.each(data.data, function(key, value){
                 if(key < 3){
                     let modulo = ``;
-                        modulo = `<p class="text-veris-sky fs-1 mb-0">Módulo ${value.idcaja}</p>`;
+                        modulo = `<p class="text-veris-sky fs-1 mb-0">Módulo ${value.cajaatiende}</p>`;
 
                     let modulo_wait = ``;
-                    if(value.idcaja != null){
-                        modulo = `<p class="text-veris-sky fs-1 mb-0">Módulo ${value.idcaja}</p>`;
-                        modulo_wait = `<p class="text-veris fs-1 mb-0">Módulo ${value.idcaja}</p>`;
+                    if(value.cajaatiende != null){
+                        modulo = `<p class="text-veris-sky fs-1 mb-0">Módulo ${value.cajaatiende}</p>`;
+                        modulo_wait = `<p class="text-veris fs-1 mb-0">Módulo ${value.cajaatiende}</p>`;
                     }
                     let icon = ``;
                     if(value.nemonicoPrioridad != "NORMAL"){
-                        icon = `<img style="width: 50px;" class="mx-2 ms-4" src="{{ asset('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">`;
+                        if(value.nemonicoPrioridad != null){
+                            icon = `<img style="width: 50px;" class="mx-2 ms-4" src="{{ asset('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">`;
+                        }
                     }
                     elem += `<div class="card rounded-8 bg-veris-dark mb-1">
                         <div class="card-content text-center p-2 d-flex justify-content-around align-items-center">
@@ -139,13 +141,15 @@
                 if(key < 6){
                     let modulo = ``;
                     let modulo_wait = ``;
-                    if(value.idcaja != null){
-                        modulo = `<p class="text-veris-sky fs-1 mb-0">Módulo ${value.idcaja}</p>`;
-                        modulo_wait = `<p class="text-veris fs-1 mb-0">Módulo ${value.idcaja}</p>`;
+                    if(value.cajaatiende != null){
+                        modulo = `<p class="text-veris-sky fs-1 mb-0">Módulo ${value.cajaatiende}</p>`;
+                        modulo_wait = `<p class="text-veris fs-1 mb-0">Módulo ${value.cajaatiende}</p>`;
                     }
                     let icon = ``;
                     if(value.nemonicoPrioridad != "NORMAL"){
-                        icon = `<img style="width: 50px;" class="mx-2 ms-4" src="{{ asset('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">`;
+                        if(value.nemonicoPrioridad != null){
+                            icon = `<img style="width: 50px;" class="mx-2 ms-4" src="{{ asset('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">`;
+                        }
                     }
                     elem += `<div class="col-2 h-75 p-3">
                             <div class="d-flex justify-content-start align-items-center text-start fs-50 line-height-50 h-100 rounded-8 border-veris-1 bg-veris-sky">
@@ -184,9 +188,9 @@
                 }
                 let modulo = ``;
                 let modulo_wait = ``;
-                if(value.idcaja != null){
-                    modulo = `<p class="text-veris-sky fs-1 mb-0">Módulo ${value.idcaja}</p>`;
-                    modulo_wait = `<p class="text-veris fs-1 mb-0">Módulo ${value.idcaja}</p>`;
+                if(value.cajaatiende != null){
+                    modulo = `<p class="text-veris-sky fs-1 mb-0">Módulo ${value.cajaatiende}</p>`;
+                    modulo_wait = `<p class="text-veris fs-1 mb-0">Módulo ${value.cajaatiende}</p>`;
                 }
                 if(key == 0){
                     let elem_0 = `<h1 class="text-veris mb-3">Siguiente turno</h1>
