@@ -70,8 +70,9 @@
             height: 200,
             color: "#000",
             bgColor: "#FFF",
-            text: `${web_url}/ingreso/{{ $mac }}?utm_source=PC&utm_medium=CENTRAL&utm_campaign=lanzamiento_digiturno`
-            //https://digiturno.veris.com.ec/ingreso/E0-D5-5E-DB-42-36?utm_source=HOJA&utm_medium=CENTRAL&utm_campaign=lanzamiento_digiturno
+            text: `${web_url}/ingreso/{{ $mac }}?utm_source=PC&utm_medium=CENTRAL&utm_campaign=lanzamiento_digiturno&utm_id={{ $mac }}`
+            // text: `${web_url}/ingreso/{{ $mac }}?utm_source=HOJA&utm_medium=CENTRAL_CEIBOS&utm_campaign=lanzamiento_digiturno`
+            //`${web_url}/ingreso/{{ $mac }}?utm_source=HOJA&utm_medium=CENTRAL_CEIBOS&utm_campaign=lanzamiento_digiturno`
 		});
 	})
 </script>
