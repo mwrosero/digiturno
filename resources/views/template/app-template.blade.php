@@ -122,7 +122,8 @@
                 if (localStorage.getItem('sessionTime') === null) {
                     localStorage.setItem('sessionTime', new Date().getTime());
                 }
-                setInterval(checkAndUpdateToken, 15 * 60 * 1000);
+                // setInterval(checkAndUpdateToken, 15 * 60 * 1000);
+                setInterval(checkAndUpdateToken, 10 * 60 * 1000);
             });
 
             function checkAndUpdateToken() {
