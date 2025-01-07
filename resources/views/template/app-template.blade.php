@@ -96,7 +96,7 @@
                         <!-- Código del turno -->
                         <div class="turno-codigo text-center p-2 w-75 rounded-8 border-veris-5 text-veris border-veris-3 mx-auto" style="font-size: 35px;"></div>
                         <!-- Información adicional -->
-                        <div class="info-box my-0 text-center">
+                        <div class="info-box my-0 mt-3 text-center">
                             
                         </div>
                     </div>
