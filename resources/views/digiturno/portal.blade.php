@@ -135,7 +135,6 @@
         </form>
     </div>
 </div>
-
 <div class="wrapper">
     <!-- Header -->
     <header class="header p-3">
@@ -146,7 +145,8 @@
                     @if (in_array($mac, \App\Models\Veris::MACS_PARAMI))
                     @else
                     @endif --}}
-                    <img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
+                    {{-- <img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt=""> --}}
+                    <img class="w-100 logo" src="" alt="">
                 </div>
                 <div class="col-12 col-sm-8 col-md-7 d-flex justify-content-end align-items-center d-none d-md-block text-end">
                     <div class="time-box badge bg-veris-dark text-center p-3 rounded-8">
@@ -390,6 +390,14 @@
     $(document).ready(async function() {
         const $keyboard = $(".keyboard");
         const $inputField = $("#email_link_pago");
+
+        const macsParami = @json(\App\Models\Veris::MACS_PARAMI);
+
+        if(macsParami.includes(dataTurno.mac)){
+            $('.logo').attr('src',`{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/parami-large.png`);
+        }else{
+            $('.logo').attr('src',`{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png`);
+        }
 
         let url_salir = `/${ dataTurno.mac }`;
         if(isMobile()){
