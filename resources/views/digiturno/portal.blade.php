@@ -142,10 +142,10 @@
         <div class="container-fluid g-0">
             <div class="row">
                 <div class="col-8 col-sm-2 col-md-3">
+                    {{-- <img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/parami-large.png" alt="">
                     @if (in_array($mac, \App\Models\Veris::MACS_PARAMI))
-                    <img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/parami-large.png" alt="">
                     @else
-                    @endif
+                    @endif --}}
                     <img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
                 </div>
                 <div class="col-12 col-sm-8 col-md-7 d-flex justify-content-end align-items-center d-none d-md-block text-end">
