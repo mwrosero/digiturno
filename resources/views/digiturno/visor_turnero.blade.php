@@ -8,7 +8,11 @@
         <div class="container-fluid h-100">
         <div class="row flex-row align-items-start h-100">
             <div class="col-3 h-100 d-flex flex-column justify-content-between">
-                <img class="w-50 mb-2" src="{{ asset('assets/img/veris-large.png') }}" alt="">
+                @if (in_array($mac, \App\Models\Veris::MACS_PARAMI))
+                <img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/parami-large.png" alt="">
+                @else
+                <img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
+                @endif
                 <div class="mt-auto" id="next-turno">
                     <!-- <h1 class="text-veris mb-3">Siguiente turno</h1>
                     <div class="card rounded-8 bg-veris-dark">

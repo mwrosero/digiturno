@@ -6,7 +6,11 @@
 		<div class="container-fluid g-0">
 			<div class="row">
 				<div class="col-12 col-sm-2 col-md-3">
+					@if (in_array($mac, \App\Models\Veris::MACS_PARAMI))
+					<img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/parami-large.png" alt="">
+					@else
 					<img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
+					@endif
 				</div>
 				<div class="col-12 col-sm-10 col-md-9 d-flex justify-content-end align-items-center">
 					<div class="time-box badge bg-veris-dark text-center p-3 rounded-8">
@@ -71,7 +75,7 @@
             color: "#000",
             bgColor: "#FFF",
             text: `${web_url}/ingreso/{{ $mac }}?utm_source=PC&utm_medium=CENTRAL&utm_campaign=lanzamiento_digiturno&utm_id={{ $mac }}`
-            // text: `${web_url}/ingreso/{{ $mac }}?utm_source=HOJA&utm_medium=CENTRAL_CEIBOS&utm_campaign=lanzamiento_digiturno`
+            // text: `${web_url}/ingreso/{{ $mac }}?utm_source=HOJA&utm_medium=CENTRAL_SAN_LUIS&utm_campaign=lanzamiento_digiturno`
             //`${web_url}/ingreso/{{ $mac }}?utm_source=HOJA&utm_medium=CENTRAL_CEIBOS&utm_campaign=lanzamiento_digiturno`
 		});
 	})
