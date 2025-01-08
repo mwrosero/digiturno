@@ -57,7 +57,11 @@
 		<div class="container-fluid g-0">
 			<div class="row">
 				<div class="col-12 col-md-3 text-center text-md-start">
+					@if (in_array($mac, \App\Models\Veris::MACS_PARAMI))
+					<img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/parami-large.png" alt="">
+					@else
 					<img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
+					@endif
 				</div>
 				<div class="col-9 col-md-9 d-md-flex justify-content-end align-items-center d-none d-md-block">
 					<div class="time-box badge bg-veris-dark text-center p-3 rounded-8">
@@ -87,7 +91,13 @@
 							<h2 class="fw-bold p-1 p-md-3 m-1 m-md-3">Datos <span class="text-veris">del paciente</span></h2>
 						</div>
 						<div class="col-12 col-md-7 text-end">
-							<h5 class="fw-normal p-1 p-md-3 m-1 m-md-3 text-start d-inline-block"><span class="fw-bold">Ingresa tu cédula o pasaporte y genera tu turno.</span> <br class="d-none d-md-block">Además, si eres paciente Mi Veris puedes ver <br class="d-none d-md-block">información de tu grupo familiar en un solo lugar.</h5>
+							<h5 class="fw-normal p-1 p-md-3 m-1 m-md-3 text-start d-inline-block"><span class="fw-bold">Ingresa tu cédula o pasaporte y genera tu turno.</span> <br class="d-none d-md-block">Además, si eres paciente 
+								@if (in_array($mac, \App\Models\Veris::MACS_PARAMI))
+								ParaMi 
+								@else
+								Mi Veris 
+								@endif
+							puedes ver <br class="d-none d-md-block">información de tu grupo familiar en un solo lugar.</h5>
 						</div>
 					</div>
 				</div>

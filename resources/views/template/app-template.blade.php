@@ -79,7 +79,7 @@
                     </div>
                     <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
                         <a id="btnSi" href="#" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-2 fs-4" data-bs-dismiss="modal">Si</a>
-                        <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4 btn-salir" data-bs-dismiss="modal">SALIR</a>
+                        <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4 btn-salir">SALIR</a>
                     </div>
                 </div>
             </div>

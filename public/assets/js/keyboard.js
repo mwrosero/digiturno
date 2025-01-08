@@ -103,7 +103,7 @@ _createKeys() {
 
         keyElement.classList.add("keyboard-key");
 
-        keyElement.addEventListener("click", () => {
+        keyElement.addEventListener("pointerdown", () => {
             // Validar restricciones según la clase del input activo
             if (this.activeInput) {
                 const isOnlyNumber = this.activeInput.classList.contains("onlyNumber");
