@@ -832,14 +832,14 @@
 
     async function printTurno(detalle){
         console.log(detalle);
-        let args = [];
+        /*let args = [];
         args["endpoint"] = `http://localhost:3002/printer-ticket/v1/turnero?turno=${detalle.turno}&sucursal=${detalle.nombreSucursalTurnero.toUpperCase()}&paciente=${detalle.nombreCompleo}&fechaTicket=${detalle.fechaEmision}&nombreMuestraTurnero=${dataParametrosGenerales.nombreMuestraTurnero}`;
         args["method"] = "GET";
         const data = await call(args);
         if(data.code == 200){
             console.log(data)
         }
-        return;
+        return;*/
         // {
         //     "turno": "TG-008",
         //     "mensajeLlegada": "WOOOW!! ERES EL NUMERO 3 PRONTO TOCA TU TURNO",
