@@ -27,15 +27,15 @@
                 </div>
             </div>
             <div class="col-9 h-100 overflow-hidden">
+                @if (in_array($mac, \App\Models\Veris::MACS_PARAMI))
+                {{-- <div class="w-100 h-100" style="background: url({{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/preview_parami.png) no-repeat center center;background-size: cover;"></div> --}}
+                <video src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/video/parami.mp4" autoplay loop muted playsinline style="width:100%; height:auto;"></video>
+                @else
                 <div class="ratio ratio-16x9">
-                    <!-- <iframe class="rounded-8" 
-                        src="https://www.youtube.com/embed/xyq36cCP92E?list=PLhHmuSWjQz6q_SgoAIqeRjfuwGXGsb8Vz&autoplay=1&mute=1" 
-                        title="YouTube playlist" 
-                        allowfullscreen>
-                    </iframe> -->
-                    <iframe class="rounded-8" src="https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6q_SgoAIqeRjfuwGXGsb8Vz&autoplay=1&mute=1&controls=0&loop=1&playlist=PLhHmuSWjQz6q_SgoAIqeRjfuwGXGsb8Vz" allow="autoplay; fullscreen" allowfullscreen>
+                    <iframe class="rounded-8" src="https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6rRzJbZmaLutrK9po3379Zh&autoplay=1&mute=1&controls=0&loop=1&playlist=PLhHmuSWjQz6rRzJbZmaLutrK9po3379Zh" allow="autoplay; fullscreen" allowfullscreen>
                     </iframe>
                 </div>
+                @endif
             </div>
         </div>
     </main>

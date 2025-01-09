@@ -45,7 +45,7 @@
 					<span class="fs-40 mt-5">ó</span>
 				</div>
 				<div class="col-5 d-flex flex-column justify-content-center align-items-center">
-					<h4	 class="text-center me-3 mb-4"><span class="text-veris"></span> también lo puedes generar<br>un turno desde aquí</h4	>
+					<h4	 class="text-center me-3 mb-4"><span class="text-veris"></span> también puedes generar<br>un turno desde aquí</h4>
 					<a href="/ingreso/{{ $mac }}" class="btn bg-veris text-white p-5 px-5 fs-1 rounded-8">Continuar</a>
 				</div>
 			</div>
@@ -58,7 +58,7 @@
 		<div class="container-fluid text-center g-0">
 			<div class="row">
 				<div class="col-12 d-flex justify-content-end align-items-center">
-					<h4	 class="text-end me-3"><span class="text-veris">¡Hola!</span> también lo puedes generar<br>un turno desde aquí</h4	>
+					<h4	 class="text-end me-3"><span class="text-veris">¡Hola!</span> también lo puedes generar<br>un turno desde aquí</h4>
 					<a href="/ingreso/{{ $mac }}" class="btn bg-veris text-white p-3 px-5 fs-4 rounded-8">Continuar</a>
 				</div>
 			</div>
