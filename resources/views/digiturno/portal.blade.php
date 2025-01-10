@@ -830,16 +830,19 @@
         });
     }
 
-    async function printTurno(detalle){
-        console.log(detalle);
-        /*let args = [];
+    async function printTurnoAPI(detalle){
+        let args = [];
         args["endpoint"] = `http://localhost:3002/printer-ticket/v1/turnero?turno=${detalle.turno}&sucursal=${detalle.nombreSucursalTurnero.toUpperCase()}&paciente=${detalle.nombreCompleo}&fechaTicket=${detalle.fechaEmision}&nombreMuestraTurnero=${dataParametrosGenerales.nombreMuestraTurnero}`;
         args["method"] = "GET";
         const data = await call(args);
         if(data.code == 200){
             console.log(data)
         }
-        return;*/
+        return;
+    }
+
+    async function printTurno(detalle){
+        console.log(detalle);
         // {
         //     "turno": "TG-008",
         //     "mensajeLlegada": "WOOOW!! ERES EL NUMERO 3 PRONTO TOCA TU TURNO",
@@ -1660,7 +1663,11 @@
             $('#turnoModal').modal('show')
             // console.log("iniciar conteo para enviar a home")
             if(!isMobile()){
-                printTurno(data.data)
+                if(dataTurno.mac == "E0-D5-5E-DB-42-36"){
+                    printTurnoAPI(data.data)
+                }else{
+                    printTurno(data.data)
+                }
             }
         }else{
             $('#mensajeError').html(`${data.message}`)
