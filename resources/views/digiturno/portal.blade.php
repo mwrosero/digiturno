@@ -1663,12 +1663,12 @@
             $('#turnoModal').modal('show')
             // console.log("iniciar conteo para enviar a home")
             if(!isMobile()){
-                printTurno(data.data)
-                // if(dataTurno.mac == "E0-D5-5E-DB-42-36"){
-                //     printTurnoAPI(data.data)
-                // }else{
-                //     printTurno(data.data)
-                // }
+                // printTurno(data.data)
+                if(dataTurno.mac == "E0-D5-5E-DB-42-36"){
+                    printTurnoAPI(data.data)
+                }else{
+                    printTurno(data.data)
+                }
             }
         }else{
             $('#mensajeError').html(`${data.message}`)
