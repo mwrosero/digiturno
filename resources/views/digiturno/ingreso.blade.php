@@ -312,6 +312,7 @@
 		})
 
 		$('body').on('click', '.nav-link', function(){
+			Keyboard.close('none');
 			if(!$(this).hasClass('active')){
 				$('input').val("");
 			}
@@ -524,7 +525,7 @@
 	    padding: 30px !important;!i;!;
 	}
 
-	button.keyboard-key.keyboard-wide.keyboard-dark {
+	button.keyboard-key.keyboard-dark {
 	    background: #0071CE;
 	}
 
