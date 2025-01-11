@@ -1686,6 +1686,9 @@
     .keyboard{
         z-index: 99999;
     }
+    button.keyboard-key.keyboard-dark {
+        background: #0071CE;
+    }
     .name-selected-sidebar{
         line-height: 22px;
     }
