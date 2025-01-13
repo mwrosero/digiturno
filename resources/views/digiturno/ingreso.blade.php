@@ -197,7 +197,7 @@
 			break;
 			case 'P':
 				tipoFiltro = `PASAPORTE`;
-				valorFiltro = $('#pasaporte').val();
+				valorFiltro = $('#pasaporte').val().toUpperCase();
 				msg = `Pasaporte inválido`;
 			break;
 			case 'N':
