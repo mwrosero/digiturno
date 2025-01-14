@@ -1678,7 +1678,7 @@
 </script>
 <style>
     .toast-title {
-        color: #fff !important;!i;!;
+        color: #fff !important;
     }
     #toast-container > .toast-warning{
         background-image: url("{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/exclamation.svg") !important;
