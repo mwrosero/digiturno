@@ -1664,10 +1664,10 @@
             // console.log("iniciar conteo para enviar a home")
             if(!isMobile()){
                 // printTurno(data.data)
-                if(dataTurno.mac == "E0-D5-5E-DB-42-36" || dataTurno.mac == "90-FB-A6-02-02-27"){
-                    printTurnoAPI(data.data)
-                }else{
+                if(dataTurno.mac == "00-22-4D-7B-2A-F5"){
                     printTurno(data.data)
+                }else{
+                    printTurnoAPI(data.data)
                 }
             }
         }else{
