@@ -76,9 +76,9 @@ const Keyboard = {
       const eventType = "ontouchstart" in window ? "touchstart" : "click";
 
       keyElement.addEventListener(eventType, (event) => {
-          event.preventDefault(); // Evitar que se dispare otro evento como click
-          event.stopPropagation(); // Evitar propagación
-          this._handleKeyPress(key); // Manejar la tecla presionada
+        event.preventDefault(); // Evitar que se dispare otro evento como click
+        event.stopPropagation(); // Evitar propagación
+        this._handleKeyPress(key); // Manejar la tecla presionada
       });
       
       // Asignar contenido de la tecla

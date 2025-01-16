@@ -378,7 +378,7 @@
     let dataServicios;
     let dataParametrosGenerales;
     let groupedData = [];
-    var estadosVigentes = ["REG", "ENTS", "FAC","PFAC"];
+    var estadosVigentes = ["REG", "ENTS", "FAC","PFAC","AUT","EXC"];
 
     setInterval(actualizarFechaHora, 1000);
 
