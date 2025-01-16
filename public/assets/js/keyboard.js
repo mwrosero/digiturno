@@ -1,4 +1,3 @@
-ORIGINAL
 const Keyboard = {
   elements: {
     main: null,
@@ -13,21 +12,16 @@ const Keyboard = {
 
   properties: {
     value: "",
-    capsLock: false
+    capsLock: false,
+    cursorPosition: 0
   },
 
   init() {
     this.elements.main = document.createElement("div");
     this.elements.keysContainer = document.createElement("div");
 
-    this.elements.main.classList.add("keyboard", "keyboard-hidden","d-none","d-md-block");
+    this.elements.main.classList.add("keyboard", "keyboard-hidden", "d-none", "d-md-block");
     this.elements.keysContainer.classList.add("keyboard-keys");
-    this.elements.keysContainer.appendChild(this._createKeys());
-
-    this.elements.keys = this.elements.keysContainer.querySelectorAll(
-        ".keyboard-key"
-    );
-
     this.elements.main.appendChild(this.elements.keysContainer);
     document.body.appendChild(this.elements.main);
 
@@ -35,134 +29,130 @@ const Keyboard = {
     this.activeInput = null;
 
     document.querySelectorAll(".keyboard-input").forEach((element) => {
-        element.addEventListener("focus", () => {
-            this.activeInput = element; // Guardar el input activo
-            this.open(element.value, (currentValue) => {
-                element.value = currentValue;
-            });
-        });
+      element.addEventListener("focus", () => {
+        this._handleFocus(element)
+        // this.activeInput = element; // Guardar el input activo
+        // this.properties.value = element.value; // Sincronizar valor
+        // this.properties.cursorPosition = element.selectionStart; // Posición del cursor
+        // this._renderKeys();
+        // this.open(element.value, (currentValue) => {
+        //   element.value = currentValue;
+        // });
+      });
+
+      element.addEventListener("click", () => {
+        if (this.activeInput) {
+          this.properties.cursorPosition = element.selectionStart; // Actualizar posición del cursor
+        }
+      });
     });
-},
+  },
 
-_createKeys() {
-    const fragment = document.createDocumentFragment();
-    const keyLayout = [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "0",
-      "backspace",
-      "q",
-      "w",
-      "e",
-      "r",
-      "t",
-      "y",
-      "u",
-      "i",
-      "o",
-      "p",
-      // "caps",
-      "a",
-      "s",
-      "d",
-      "f",
-      "g",
-      "h",
-      "j",
-      "k",
-      "l",
-      // "enter",
-      "ñ",
-      "done",
-      "z",
-      "x",
-      "c",
-      "v",
-      "b",
-      "n",
-      "m",
-      ",",
-      ".",
-      "@",
-      "space"
-    ];
+  _renderKeys() {
+    this.elements.keysContainer.innerHTML = ""; // Limpiar teclas existentes
 
-    const createIconHTML = (icon_name) => {
-        return `<i class="material-icons">${icon_name}</i>`;
-    };
+    const keyLayout = this.activeInput?.classList.contains("onlyNumber")
+      ? ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "backspace", "done"]
+      : [
+          "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "backspace",
+          "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "+",
+          "a", "s", "d", "f", "g", "h", "j", "k", "l",
+          "ñ", "done", "z", "x", "c", "v", "b", "n", "m", ".", "-", "_", "@", "space"
+        ];
 
     keyLayout.forEach((key) => {
-        const keyElement = document.createElement("button");
-        const insertLineBreak = ["backspace", "p", "done", "@"].indexOf(key) !== -1;
+      const keyElement = document.createElement("button");
+      const insertLineBreak = this.activeInput?.classList.contains("onlyNumber") 
+      ? ["3", "6", "9"].indexOf(key) !== -1 
+      : ["backspace", "+", "done", "@"].indexOf(key) !== -1;
 
-        keyElement.classList.add("keyboard-key");
+      keyElement.classList.add("keyboard-key");
 
-        keyElement.addEventListener("pointerdown", () => {
-            // Validar restricciones según la clase del input activo
-            if (this.activeInput) {
-                const isOnlyNumber = this.activeInput.classList.contains("onlyNumber");
-                const isOnlyLetters = this.activeInput.classList.contains("onlyLetters");
+      // pointerdown
+      // keyElement.addEventListener("touchstart", () => {
+      //   this._handleKeyPress(key);
+      // });
 
-                // Verificar condiciones para números y letras
-                if (isOnlyNumber && !key.match(/^\d$/) && key !== "backspace" && key !== "done") {
-                    return; // Permitir solo números
-                }
+      const eventType = "ontouchstart" in window ? "touchstart" : "click";
 
-                if (isOnlyLetters && !key.match(/^[a-zA-ZñÑ]$/) && key !== "done" && key !== "backspace" && key !== "space") {
-                    return; // Permitir solo letras y espacio
-                }
-            }
-
-            // Procesar tecla presionada
-            switch (key) {
-                case "backspace":
-                    this.properties.value = this.properties.value.slice(0, -1);
-                    break;
-                case "space":
-                    this.properties.value += " ";
-                    break;
-                case "done":
-                    this.close();
-                    this._triggerEvent("onclose");
-                    break;
-                default:
-                    this.properties.value += key;
-                    break;
-            }
-
-            this._triggerEvent("oninput");
-        });
-
-        // Asignar contenido de la tecla
-        if (key === "backspace") {
-            keyElement.innerHTML = createIconHTML("backspace");
+      keyElement.addEventListener(eventType, (event) => {
+        event.preventDefault(); // Evitar que se dispare otro evento como click
+        event.stopPropagation(); // Evitar propagación
+        this._handleKeyPress(key); // Manejar la tecla presionada
+      });
+      
+      // Asignar contenido de la tecla
+      if (key === "backspace") {
+        keyElement.innerHTML = `<i class="material-icons">backspace</i>`;
+        if(!this.activeInput?.classList.contains("onlyNumber")){
             keyElement.classList.add("keyboard-wide");
-        } else if (key === "space") {
-            keyElement.innerHTML = createIconHTML("space_bar");
-            keyElement.classList.add("keyboard-extrawide");
-        } else if (key === "done") {
-            keyElement.innerHTML = createIconHTML("check_circle");
+        }
+      } else if (key === "space") {
+        keyElement.innerHTML = `<i class="material-icons">space_bar</i>`;
+        keyElement.classList.add("keyboard-extrawide");
+      } else if (key === "done") {
+        keyElement.innerHTML = `<i class="material-icons">check_circle</i>`;
+        if(!this.activeInput?.classList.contains("onlyNumber")){
             keyElement.classList.add("keyboard-wide", "keyboard-dark");
-        } else {
-            keyElement.textContent = key;
+        }else{
+            keyElement.classList.add("keyboard-dark");
         }
+      } else {
+        keyElement.textContent = key;
+      }
 
-        fragment.appendChild(keyElement);
+      this.elements.keysContainer.appendChild(keyElement);
 
-        if (insertLineBreak) {
-            fragment.appendChild(document.createElement("br"));
-        }
+      if (insertLineBreak) {
+        this.elements.keysContainer.appendChild(document.createElement("br"));
+      }
     });
+  },
 
-    return fragment;
-},
+  _simulateFocus(inputId) {
+    const element = document.getElementById(inputId); // Obtener el input por ID
+    if (element) {
+      element.focus(); // Forzar el enfoque en el input
+      this._handleFocus(element); // Llamar a la función que maneja el evento focus
+    } else {
+      console.error(`No se encontró el elemento con ID: ${inputId}`);
+    }
+  },
+
+  _handleKeyPress(key) {
+    if (this.activeInput) {
+      const start = this.properties.cursorPosition;
+      const end = this.properties.cursorPosition;
+
+      switch (key) {
+        case "backspace":
+          if (start > 0) {
+            this.properties.value =
+              this.properties.value.slice(0, start - 1) + this.properties.value.slice(end);
+            this.properties.cursorPosition = start - 1;
+          }
+          break;
+        case "space":
+          this.properties.value =
+            this.properties.value.slice(0, start) + " " + this.properties.value.slice(end);
+          this.properties.cursorPosition = start + 1;
+          break;
+        case "done":
+          this.close();
+          this._triggerEvent("onclose");
+          return;
+        default:
+          this.properties.value =
+            this.properties.value.slice(0, start) + key + this.properties.value.slice(end);
+          this.properties.cursorPosition = start + 1;
+          break;
+      }
+
+      this.activeInput.value = this.properties.value;
+      this.activeInput.setSelectionRange(this.properties.cursorPosition, this.properties.cursorPosition);
+      this._triggerEvent("oninput");
+    }
+  },
 
   _triggerEvent(name) {
     if (typeof this.eventHandlers[name] === "function") {
@@ -170,16 +160,15 @@ _createKeys() {
     }
   },
 
-  _toggleCapsLock() {
-    this.properties.capsLock = !this.properties.capsLock;
-
-    for (const key of this.elements.keys) {
-      if (key.childElementCount === 0) {
-        key.textContent = this.properties.capsLock
-          ? key.textContent.toUpperCase()
-          : key.textContent.toLowerCase();
-      }
-    }
+  _handleFocus(element) {
+    console.log(99); // Para verificar que el evento focus se activó
+    this.activeInput = element; // Guardar el input activo
+    this.properties.value = element.value; // Sincronizar valor
+    this.properties.cursorPosition = element.selectionStart; // Posición del cursor
+    this._renderKeys();
+    this.open(element.value, (currentValue) => {
+      element.value = currentValue;
+    });
   },
 
   open(initialValue, oninput, onclose) {
@@ -189,18 +178,23 @@ _createKeys() {
     this.elements.main.classList.remove("keyboard-hidden");
   },
 
-  async close() {
+  async close(type = null) {
     this.properties.value = "";
-    this.eventHandlers.oninput = oninput;
-    this.eventHandlers.onclose = onclose;
+    this.properties.cursorPosition = 0;
+    this.activeInput = null;
+    this.eventHandlers.oninput = null;
+    this.eventHandlers.onclose = null;
     this.elements.main.classList.add("keyboard-hidden");
-    console.log(7);
-    if(buscarUsuarioFlag){
-        await buscarUsuario();
-    }else{
-        if(puedeEnviar){
-            await enviarLinkMailPago();
+    if(type == null){
+        if(buscarUsuarioFlag){
+            await buscarUsuario();
+        }else{
+            if(puedeEnviar){
+                await enviarLinkMailPago();
+            }
         }
+    }else{
+        console.log('do nothing but close keyboard');
     }
   }
 };
