@@ -372,7 +372,7 @@
         </div>
     </main>
 </div>
-<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js?v=1.0.2"></script>
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js?v=1.0.3"></script>
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/qrcode.js"></script>
 <script>
     let dataServicios;
@@ -1357,7 +1357,7 @@
                 <span class="text-veris fw-medium -dark me-2 p-2 my-2 text-end">Método de pago</span>
                 <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2 btn-turno">Pagar en caja</button>`;
         if(detalle.permitePago){
-            elem += `<button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2 btn-link-pago" data-rel='${ JSON.stringify(detalle) }'>Link de pago</button>`;
+            // elem += `<button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2 btn-link-pago" data-rel='${ JSON.stringify(detalle) }'>Link de pago</button>`;
         }
         elem += `</div>
             </div>`;
