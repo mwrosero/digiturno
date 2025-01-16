@@ -126,7 +126,7 @@
 						<div class="tab-pane fade mt-3 px-2 w-100 show active" id="pills-cedula" role="tabpanel" aria-labelledby="pills-cedula-tab" tabindex="0">
 						    <div class="row">
 						    	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center">
-						    		<input autocomplete="off" id="cedula" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1 onlyNumber" maxlength="10" placeholder="Ingresar número de cédula" autofocus>
+						    		<input autocomplete="off" id="cedula" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1 onlyNumber" maxlength="10" placeholder="Ingresar número de cédula">
 						    		<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto fs-1 p-3 mb-5 rounded-8 my-5">CONTINUAR</div>
 						    	</div>
 						    </div>
@@ -171,14 +171,14 @@
 		</div>
 	</main>
 </div>
-<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/bk_ajustes_keyboard.js?v=1.0.3"></script>
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js?v=1.0.2"></script>
 
 <script>
 	async function validarCampos(tipo){
 		if(tipo == "C"){
 			return esValidaCedula($('#cedula').val())
 		}else if(tipo == "P"){
-			return ($('#pasaporte').val().length > 0 );
+			return ($('#pasaporte').val().length > 6 );
 		}else{
 			return ($('#nombres').val() != "" && $('#apellidos').val() != "")
 		}
@@ -197,7 +197,7 @@
 			break;
 			case 'P':
 				tipoFiltro = `PASAPORTE`;
-				valorFiltro = $('#pasaporte').val().toUpperCase();
+				valorFiltro = $('#pasaporte').val();
 				msg = `Pasaporte inválido`;
 			break;
 			case 'N':
@@ -315,29 +315,6 @@
 			Keyboard.close('none');
 			if(!$(this).hasClass('active')){
 				$('input').val("");
-				console.log(0)
-			}else{
-				let tipo = $('.tipoIdentificacion.active').attr('data-rel');
-				switch(tipo){
-					case 'C':
-						$('#pasaporte').removeAttr('autofocus');
-						$('#nombres').removeAttr('autofocus');
-						$('#cedula').attr('autofocus', true).focus();
-						Keyboard._simulateFocus('cedula')
-					break;
-					case 'P':
-						$('#cedula').removeAttr('autofocus');
-						$('#nombres').removeAttr('autofocus');
-						$('#pasaporte').attr('autofocus', true).focus();
-						Keyboard._simulateFocus('pasaporte')
-					break;
-					case 'N':
-						$('#cedula').removeAttr('autofocus');
-						$('#pasaporte').removeAttr('autofocus');
-						$('#nombres').attr('autofocus', true).focus();
-						Keyboard._simulateFocus('nombres')
-					break;
-				}
 			}
 		})
 
@@ -391,42 +368,6 @@
             reiniciarConteo();
         }
     });
-
-    // Simular el llamado a `open` externamente
-function simulateOpen(inputId) {
-  const element = document.getElementById(inputId); // Obtener el input por ID
-
-  if (element) {
-    console.log(99); // Simular el log del evento focus
-
-    // Valores simulados que se usan en el código original
-    const activeInput = element; // Guardar el input activo
-    const value = element.value; // Sincronizar valor
-    const cursorPosition = element.selectionStart; // Posición del cursor
-
-    // Simular comportamiento previo de `_renderKeys` si aplica (aquí solo un log)
-    console.log("Renderizando teclas...");
-
-    // Llamar a la función `open` como se hace en el evento focus
-    const openFunction = (value, callback) => {
-      // Simular la lógica de `open`
-      console.log(`Abriendo teclado con valor inicial: ${value}`);
-      // Simular una actualización del valor desde el teclado
-      setTimeout(() => {
-        const newValue = `${value} Simulado`;
-        callback(newValue); // Actualizar valor del input
-      }, 1000); // Simulación de 1 segundo para la interacción
-    };
-
-    openFunction(value, (currentValue) => {
-      element.value = currentValue; // Actualizar el valor del input
-      console.log(`Nuevo valor del input: ${currentValue}`);
-    });
-  } else {
-    console.error(`No se encontró el elemento con ID: ${inputId}`);
-  }
-}
-
 
     async function crearTurno(){
     	let tipo = $('.tipoIdentificacion.active').attr('data-rel');
