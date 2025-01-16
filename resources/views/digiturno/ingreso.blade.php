@@ -171,7 +171,7 @@
 		</div>
 	</main>
 </div>
-<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js?v=1.0.1"></script>
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js?v=1.0.2"></script>
 
 <script>
 	async function validarCampos(tipo){
