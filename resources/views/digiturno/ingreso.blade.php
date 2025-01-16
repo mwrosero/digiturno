@@ -126,7 +126,7 @@
 						<div class="tab-pane fade mt-3 px-2 w-100 show active" id="pills-cedula" role="tabpanel" aria-labelledby="pills-cedula-tab" tabindex="0">
 						    <div class="row">
 						    	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center">
-						    		<input autocomplete="off" id="cedula" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1 onlyNumber" maxlength="10" placeholder="Ingresar número de cédula" autofocus>
+						    		<input autocomplete="off" id="cedula" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1 onlyNumber" maxlength="10" placeholder="Ingresar número de cédula">
 						    		<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto fs-1 p-3 mb-5 rounded-8 my-5">CONTINUAR</div>
 						    	</div>
 						    </div>
@@ -171,7 +171,7 @@
 		</div>
 	</main>
 </div>
-<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js?v=1.0.1"></script>
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js?v=1.0.2"></script>
 
 <script>
 	async function validarCampos(tipo){
@@ -197,7 +197,7 @@
 			break;
 			case 'P':
 				tipoFiltro = `PASAPORTE`;
-				valorFiltro = $('#pasaporte').val().toUpperCase();
+				valorFiltro = $('#pasaporte').val();
 				msg = `Pasaporte inválido`;
 			break;
 			case 'N':
@@ -315,7 +315,6 @@
 			Keyboard.close('none');
 			if(!$(this).hasClass('active')){
 				$('input').val("");
-				console.log(0)
 			}
 		})
 
