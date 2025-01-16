@@ -55,23 +55,32 @@ const Keyboard = {
       ? ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "backspace", "done"]
       : [
           "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "backspace",
-          "q", "w", "e", "r", "t", "y", "u", "i", "o", "p",
+          "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "+",
           "a", "s", "d", "f", "g", "h", "j", "k", "l",
-          "ñ", "done", "z", "x", "c", "v", "b", "n", "m", ",", ".", "@", "space"
+          "ñ", "done", "z", "x", "c", "v", "b", "n", "m", "-", "-", "@", "space"
         ];
 
     keyLayout.forEach((key) => {
       const keyElement = document.createElement("button");
       const insertLineBreak = this.activeInput?.classList.contains("onlyNumber") 
       ? ["3", "6", "9"].indexOf(key) !== -1 
-      : ["backspace", "p", "done", "@"].indexOf(key) !== -1;
+      : ["backspace", "+", "done", "@"].indexOf(key) !== -1;
 
       keyElement.classList.add("keyboard-key");
 
-      keyElement.addEventListener("touchstart", () => {
-        this._handleKeyPress(key);
-      });
+      // pointerdown
+      // keyElement.addEventListener("touchstart", () => {
+      //   this._handleKeyPress(key);
+      // });
 
+      const eventType = "ontouchstart" in window ? "touchstart" : "click";
+
+      keyElement.addEventListener(eventType, (event) => {
+          event.preventDefault(); // Evitar que se dispare otro evento como click
+          event.stopPropagation(); // Evitar propagación
+          this._handleKeyPress(key); // Manejar la tecla presionada
+      });
+      
       // Asignar contenido de la tecla
       if (key === "backspace") {
         keyElement.innerHTML = `<i class="material-icons">backspace</i>`;
