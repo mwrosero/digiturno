@@ -171,7 +171,7 @@
 		</div>
 	</main>
 </div>
-<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js?v=1.0.2"></script>
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js?v=1.0.1"></script>
 
 <script>
 	async function validarCampos(tipo){
@@ -316,28 +316,6 @@
 			if(!$(this).hasClass('active')){
 				$('input').val("");
 				console.log(0)
-			}else{
-				/*let tipo = $('.tipoIdentificacion.active').attr('data-rel');
-				switch(tipo){
-					case 'C':
-						$('#pasaporte').removeAttr('autofocus');
-						$('#nombres').removeAttr('autofocus');
-						$('#cedula').attr('autofocus', true).focus();
-						Keyboard._simulateFocus('cedula')
-					break;
-					case 'P':
-						$('#cedula').removeAttr('autofocus');
-						$('#nombres').removeAttr('autofocus');
-						$('#pasaporte').attr('autofocus', true).focus();
-						Keyboard._simulateFocus('pasaporte')
-					break;
-					case 'N':
-						$('#cedula').removeAttr('autofocus');
-						$('#pasaporte').removeAttr('autofocus');
-						$('#nombres').attr('autofocus', true).focus();
-						Keyboard._simulateFocus('nombres')
-					break;
-				}*/
 			}
 		})
 
@@ -391,42 +369,6 @@
             reiniciarConteo();
         }
     });
-
-    // Simular el llamado a `open` externamente
-function simulateOpen(inputId) {
-  const element = document.getElementById(inputId); // Obtener el input por ID
-
-  if (element) {
-    console.log(99); // Simular el log del evento focus
-
-    // Valores simulados que se usan en el código original
-    const activeInput = element; // Guardar el input activo
-    const value = element.value; // Sincronizar valor
-    const cursorPosition = element.selectionStart; // Posición del cursor
-
-    // Simular comportamiento previo de `_renderKeys` si aplica (aquí solo un log)
-    console.log("Renderizando teclas...");
-
-    // Llamar a la función `open` como se hace en el evento focus
-    const openFunction = (value, callback) => {
-      // Simular la lógica de `open`
-      console.log(`Abriendo teclado con valor inicial: ${value}`);
-      // Simular una actualización del valor desde el teclado
-      setTimeout(() => {
-        const newValue = `${value} Simulado`;
-        callback(newValue); // Actualizar valor del input
-      }, 1000); // Simulación de 1 segundo para la interacción
-    };
-
-    openFunction(value, (currentValue) => {
-      element.value = currentValue; // Actualizar el valor del input
-      console.log(`Nuevo valor del input: ${currentValue}`);
-    });
-  } else {
-    console.error(`No se encontró el elemento con ID: ${inputId}`);
-  }
-}
-
 
     async function crearTurno(){
     	let tipo = $('.tipoIdentificacion.active').attr('data-rel');
