@@ -390,6 +390,8 @@
             // Iniciar el conteo inicial
             reiniciarConteo();
         }
+
+        Keyboard._simulateFocus('cedula')
     });
 
     // Simular el llamado a `open` externamente
