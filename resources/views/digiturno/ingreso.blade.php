@@ -317,7 +317,7 @@
 				$('input').val("");
 				console.log(0)
 			}else{
-				let tipo = $('.tipoIdentificacion.active').attr('data-rel');
+				/*let tipo = $('.tipoIdentificacion.active').attr('data-rel');
 				switch(tipo){
 					case 'C':
 						$('#pasaporte').removeAttr('autofocus');
@@ -337,7 +337,7 @@
 						$('#nombres').attr('autofocus', true).focus();
 						Keyboard._simulateFocus('nombres')
 					break;
-				}
+				}*/
 			}
 		})
 
