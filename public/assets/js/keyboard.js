@@ -30,14 +30,13 @@ const Keyboard = {
 
     document.querySelectorAll(".keyboard-input").forEach((element) => {
       element.addEventListener("focus", () => {
-        this._handleFocus(element)
-        // this.activeInput = element; // Guardar el input activo
-        // this.properties.value = element.value; // Sincronizar valor
-        // this.properties.cursorPosition = element.selectionStart; // Posición del cursor
-        // this._renderKeys();
-        // this.open(element.value, (currentValue) => {
-        //   element.value = currentValue;
-        // });
+        this.activeInput = element; // Guardar el input activo
+        this.properties.value = element.value; // Sincronizar valor
+        this.properties.cursorPosition = element.selectionStart; // Posición del cursor
+        this._renderKeys();
+        this.open(element.value, (currentValue) => {
+          element.value = currentValue;
+        });
       });
 
       element.addEventListener("click", () => {
@@ -68,7 +67,7 @@ const Keyboard = {
 
       keyElement.classList.add("keyboard-key");
 
-      keyElement.addEventListener("touchstart", () => {
+      keyElement.addEventListener("pointerdown", () => {
         this._handleKeyPress(key);
       });
 
@@ -98,16 +97,6 @@ const Keyboard = {
         this.elements.keysContainer.appendChild(document.createElement("br"));
       }
     });
-  },
-
-  _simulateFocus(inputId) {
-    const element = document.getElementById(inputId); // Obtener el input por ID
-    if (element) {
-      element.focus(); // Forzar el enfoque en el input
-      this._handleFocus(element); // Llamar a la función que maneja el evento focus
-    } else {
-      console.error(`No se encontró el elemento con ID: ${inputId}`);
-    }
   },
 
   _handleKeyPress(key) {
@@ -149,17 +138,6 @@ const Keyboard = {
     if (typeof this.eventHandlers[name] === "function") {
       this.eventHandlers[name](this.properties.value);
     }
-  },
-
-  _handleFocus(element) {
-    console.log(99); // Para verificar que el evento focus se activó
-    this.activeInput = element; // Guardar el input activo
-    this.properties.value = element.value; // Sincronizar valor
-    this.properties.cursorPosition = element.selectionStart; // Posición del cursor
-    this._renderKeys();
-    this.open(element.value, (currentValue) => {
-      element.value = currentValue;
-    });
   },
 
   open(initialValue, oninput, onclose) {
