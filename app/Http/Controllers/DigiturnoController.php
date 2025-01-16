@@ -73,4 +73,12 @@ class DigiturnoController extends Controller
 
         return response()->json($msg);
     }
+
+    public function testIngreso($mac) {
+        $token = Veris::getToken();
+        //dd($token);
+        return view('digiturno.test')
+                ->with('accessToken',$token)
+                ->with('mac',$mac);
+    }
 }
