@@ -15,7 +15,8 @@
 				<div class="col-12 col-sm-10 col-md-9 d-flex justify-content-end align-items-center">
 					<div class="time-box badge bg-veris-dark text-center p-3 rounded-8">
 						<span class="fs-4">Fecha:</span><span class="ms-1 fs-4 text-veris-light" id="fecha"></span>
-						<span class="fs-4 ms-5">Hora:</span><span class="ms-1 fs-4 text-veris-light" id="hora"></span>
+						<span class="fs-4 ms-5 d-none">Hora:</span><span class="ms-1 fs-4 text-veris-light d-none" id="hora"></span>
+                        <span class="fs-4 ms-5">Central:</span><span class="ms-1 fs-4 text-veris-light" id="central"></span>
 					</div>
 				</div>
 			</div>
@@ -77,6 +78,8 @@
             text: `${web_url}/ingreso/{{ $mac }}?utm_source=PC&utm_medium=CENTRAL&utm_campaign=lanzamiento_digiturno&utm_id={{ $mac }}`
             // text: `${web_url}/ingreso/{{ $mac }}?utm_source=HOJA&utm_medium=CENTRAL_TUMBACO&utm_campaign=lanzamiento_digiturno`
 		});
+
+		await parametrosGenerales("{{ $mac }}");
 	})
 </script>
 @endsection
