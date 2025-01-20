@@ -73,12 +73,16 @@ const Keyboard = {
       //   this._handleKeyPress(key);
       // });
 
-      const eventType = "ontouchstart" in window ? "touchstart" : "click";
+      /*const eventType = "ontouchstart" in window ? "touchstart" : "click";
 
       keyElement.addEventListener(eventType, (event) => {
-        event.preventDefault(); // Evitar que se dispare otro evento como click
-        event.stopPropagation(); // Evitar propagación
-        this._handleKeyPress(key); // Manejar la tecla presionada
+        event.preventDefault();
+        event.stopPropagation();
+        this._handleKeyPress(key);
+      });*/
+
+      keyElement.addEventListener("pointerdown", () => {
+        this._handleKeyPress(key);
       });
       
       // Asignar contenido de la tecla

@@ -5,6 +5,7 @@
         {{-- <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" /> --}}
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
+
         <title>Digiturno - Veris</title>
         <meta name="description" content="" />
         <!-- Favicon -->
@@ -177,5 +178,10 @@
             }
             //update token bearer accessToken
         </script>
+        <style>
+            html, body {
+                touch-action: pan-x pan-y; /* Permite solo desplazamiento horizontal y vertical */
+            }
+        </style>    
     </body>
 </html>
