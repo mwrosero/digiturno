@@ -1,5 +1,6 @@
 @extends('template.app-template')
 @section('content')
+
 <div class="wrapper">
 	<!-- Header -->
 	<header class="header p-3">
