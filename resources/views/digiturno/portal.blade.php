@@ -38,7 +38,7 @@
                     <div class="tab-pane fade mt-3 px-2 w-100" id="pills-qr" role="tabpanel" aria-labelledby="pills-qr-tab" tabindex="0">
                         <div class="w-100 text-center my-3" id="qrcode"></div>
                         <p class="text-veris-dark fw-medium fs-4 text-center mt-2">
-                            Escanea el Código QR con su celular<br>para realizar el pago.
+                            Escanea el Código QR con tu celular<br>para realizar el pago.
                         </p>
                     </div>
                 </div>
@@ -57,7 +57,8 @@
                 <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
-                <h5 class="fs--20 line-height-24 mt-3 mb-3">{{ __('Detalle la orden:') }}</h5>
+                {{-- <h5 class="fs--20 line-height-24 mt-3 mb-3">{{ __('Detalle la orden:') }}</h5> --}}
+                <h5 class="fs--20 line-height-24 mt-3 mb-3" id="tituloPaqueteDetalleNotificar"></h5>
                 <div class="row gx-2 justify-content-between align-items-center">
                     <ul class="list-group border-0 p-0" id="listaPrestaciones">
                     </ul>
@@ -66,7 +67,7 @@
                 </div>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
-                <button type="button" class="btn fw-normal text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-print-notificar-llegada" data-bs-dismiss="modal">Notificar</button>
+                <button type="button" class="btn fw-normal text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-print-notificar-llegada" data-bs-dismiss="modal">Activar</button>
                 <a href="#" class="btn fw-normal fs--16 badge bg-veris px-4 py-2 mx-2 fs-4 btn-salir text-white" data-bs-dismiss="modal">CERRAR</a>
             </div>
         </form>
@@ -151,7 +152,8 @@
                 <div class="col-12 col-sm-8 col-md-7 d-flex justify-content-end align-items-center d-none d-md-block text-end">
                     <div class="time-box badge bg-veris-dark text-center p-3 rounded-8">
                         <span class="fs-4">Fecha:</span><span class="ms-1 fs-4 text-veris-light" id="fecha"></span>
-                        <span class="fs-4 ms-5">Hora:</span><span class="ms-1 fs-4 text-veris-light" id="hora"></span>
+                        <span class="fs-4 ms-5 d-none">Hora:</span><span class="ms-1 fs-4 text-veris-light d-none" id="hora"></span>
+                        <span class="fs-4 ms-5">Central:</span><span class="ms-1 fs-4 text-veris-light" id="central"></span>
                     </div>
                 </div>
                 <div class="col-4 col-sm-2 col-md-2">
@@ -334,7 +336,7 @@
                                         <div class="col-12 d-block d-md-flex justify-content-center align-items-center gap-2">
                                             <span class="text-veris fw-medium -dark me-2 p-2 my-2 w-100 w-md-auto">Método de pago</span>
                                             <button class="btn badge bg-veris text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block me-2 p-2 my-2 w-100 w-md-auto">Pagar en caja</button>
-                                            <button class="btn badge bg-veris text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block p-2 my-2 w-100 w-md-auto">Link de pago</button>
+                                            <button class="btn badge bg-veris text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block p-2 my-2 w-100 w-md-auto">Paga aquí</button>
                                         </div>
                                     </div>
                                     <div class="row g-0 rounded-8 d-flex justify-content-between align-items-center mt-2 p-3 px-2 fs-5 mb-2 border-veris-light-1">
@@ -376,7 +378,6 @@
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/qrcode.js"></script>
 <script>
     let dataServicios;
-    let dataParametrosGenerales;
     let groupedData = [];
     var estadosVigentes = ["REG", "ENTS", "FAC","PFAC","AUT","EXC"];
 
@@ -457,7 +458,8 @@
                 Keyboard.close();
             }
         });
-        await parametrosGenerales();
+        
+        await parametrosGenerales(dataTurno.mac);
 
         $('#toggle-sidebar').on('click', function() {
             $('#sidebar').toggleClass('sidebar-collapsed sidebar-expanded');
@@ -521,7 +523,7 @@
         $('body').on('click', '.btn-detalle-orden', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             console.log(detalle)
-            $('#tituloPaqueteDetalle').html(`Detall de Orden Médica: ${detalle.numeroOrden}`);
+            $('#tituloPaqueteDetalle').html(`Detalle de Orden Médica: ${detalle.numeroOrden}`);
             
             $('.box-info-detalle').html(`<div class="d-flex align-items-center mb-1">
                     <span style="width: 25px;" class="badge bg-pendiente text-center badge-pill me-2">
@@ -658,7 +660,7 @@
                     }
                     elem_content += `<div class="d-flex justify-content-start align-items-start fs-16 line-height-16 mb-2">
                             <div class="form-check flex-grow-1">
-                                <input ${disabledAttr} class="form-check-input my-0" type="checkbox" value="" id="item-prestacion-${ v.codigoPrestacion }" codigoServicio-rel="${ value.codigoServicioNivel1 }" data-rel='${ JSON.stringify(v) }'>
+                                <input ${disabledAttr} class="form-check-input my-0" type="checkbox" value="" id="item-prestacion-${ v.codigoPrestacion }" codigoServicio-rel="${ value.codigoServicioNivel1 }" nombreServicio-rel="${ value.nombreServicioNivel1 }" data-rel='${ JSON.stringify(v) }'>
                                 <label class="form-check-label" for="item-prestacion-${ v.codigoPrestacion }">
                                 ${ v.nombrePrestacion }
                                 </label>
@@ -765,21 +767,6 @@
             },1000);
             // $('#mensajeError').html(`Email inválido`);
             // $('#modalAlerta').modal('show');
-        }
-    }
-
-    async function parametrosGenerales(){
-        let args = [];
-        args["endpoint"] = `${api_url}/${api_war}/util/parametros_generales?macAddress=${ dataTurno.mac }`;
-        args["method"] = "GET";
-        args["showLoader"] = false;
-        args["token"] = "{{ $accessToken }}";
-
-        const data = await call(args);
-        // console.log(data);
-
-        if(data.code == 200){
-            dataParametrosGenerales = data.data
         }
     }
 
@@ -965,6 +952,7 @@
     }
 
     async function facturarChequeo(idPreTransaccion, detalle){
+        console.log(detalle);
         let idAgrupacion = [];
 
         $.each(detalle, function(key, value){
@@ -984,12 +972,32 @@
         const data = await call(args);
         if(data.code == 200){
             console.log(data);
-            $('#direccionDirigirseLlegada').html(`Por favor, diríjase al área de chequeos.`);
+            // $('#direccionDirigirseLlegada').html(`Por favor, diríjase al área de chequeos.`);
+            let lugares = await labelLugaresChequeos();
+            $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris-dark">${lugares.join(", ").toLowerCase()}</span>. Y espera a ser llamado.`);
             $('#modalNotificarLlegadaDirigirLugar').modal('show');
         }
     }
 
+    async function labelLugaresChequeos(){
+        let lugares = [];
+        $('#v-pills-tabContent').find('input:checked').each(function(index, element) {
+            let prestacion = JSON.parse($(this).attr('data-rel'))
+            let nombreServicio = $(this).attr("nombreServicio-rel")
+            // console.log(nombreServicio)
+            // console.log(prestacion)
+            if(nombreServicio != "PROCEDIMIENTOS"){
+                lugares.push(nombreServicio);
+            }else{
+                lugares.push(prestacion.nombreServicio);
+            }
+        });
+        const uniqueArray = [...new Set(lugares)];
+        return uniqueArray;
+    }
+
     async function mostrarPrestaciones(detalle){
+        $('#tituloPaqueteDetalleNotificar').html(`Detalle de Orden Médica: ${detalle.numeroOrden}`);
         let elem = ``;
         $('.box-info-detalle-orden-apoyo').html(`
             <div class="d-flex align-items-center mb-1">
@@ -1044,7 +1052,8 @@
         const data = await call(args);
         // console.log(data);
         if(data.code == 200){
-            $('#direccionDirigirseLlegada').html(`Por favor, diríjase al área de <span class="fw-bold text-capitalize text-veris-dark">${detalle.tipoOrdenApoyo.toLowerCase()}</span>.`);
+            //$('#direccionDirigirseLlegada').html(`Por favor, diríjase al área de <span class="fw-bold text-capitalize text-veris-dark">${detalle.tipoOrdenApoyo.toLowerCase()}</span> .`);
+            $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris-dark">${detalle.tipoOrdenApoyo.toLowerCase()}</span> y espera a ser llamado.`);
             $('#modalNotificarLlegadaDirigirLugar').modal('show');
         }
     }
@@ -1154,9 +1163,14 @@
     }
 
     async function drawServicioAgrupado(){
+        const prioridad = ['RESERVA','ORDENES_APOYO_PENDIENTE','BATERIA_PRESTACIONES','PAQUETES_PROMOCIONALES','ORDEN_MEDICA'];
+        groupedData.sort((a, b) => {
+            return prioridad.indexOf(a.tipoServicio) - prioridad.indexOf(b.tipoServicio);
+        });
+
         let elem = ``;
         $.each(groupedData, function(key, value){
-            //if(value.tipoServicio != "BATERIA_PRESTACIONES"){
+            // if(value.tipoServicio != "ORDEN_MEDICA"){
                 elem += `<h3>${ nombreComercialServicio(value.tipoServicio) }</h3>`;
                 elem += `<div class="swiper swiper-servicio swiper-servicio-${key} position-relative pb-4 mb-3">
                     <div class="swiper-wrapper py-2" id="contenedorServicios${key}">`;
@@ -1169,7 +1183,7 @@
                     <button type="button" class="mt-n4 btn btn-prev rounded-circle"></button>
                     <button type="button" class="mt-n4 btn btn-next rounded-circle"></button>
                 </div>`;
-            //}
+            // }
         })
         $('#list-servicios').html(elem);
         swiper = new Swiper('.swiper-servicio', {
@@ -1284,7 +1298,7 @@
                 <div class="col-12 d-block d-md-flex justify-content-center align-items-center gap-2">
                     <span class="text-veris fw-medium -dark me-2 p-2 my-2 text-end">Método de pago</span>
                     <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2 btn-turno">Pagar en caja</button>
-                    <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2">Link de pago</button>
+                    <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2">Paga aquí</button>
                 </div>
             </div>`;
         }
@@ -1314,7 +1328,7 @@
         if(estaPagado){
             let notificar = `<button data-rel='${ JSON.stringify(detalle) }' class="btn badge bg-veris btn-notificar-llegada text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2 btn-turno">Generar turno</button>`;
             if(detalle.tipoServicio == 'ORDENES_APOYO_PENDIENTE'){
-                notificar = `<button data-rel='${ JSON.stringify(detalle) }' class="btn badge bg-veris btn-notificar-llegada text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Notificar llegada</button>`
+                notificar = `<button data-rel='${ JSON.stringify(detalle) }' class="btn badge bg-veris btn-notificar-llegada text-white px-2 px-md-4 py-2 fs-6 rounded-8 border-0 d-block mt-2">Activar orden</button>`
             }
             return `<span class="badge d-flex align-items-center bg-pagada text-veris-dark px-2 px-md-4 py-2 fs-6 rounded-8">
                 <img class="me-1" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/icon-pagada.svg" alt="">
@@ -1344,7 +1358,7 @@
                 <span class="text-veris fw-medium -dark me-2 p-2 my-2 text-end">Método de pago</span>
                 <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2 btn-turno">Pagar en caja</button>`;
             if(detalle.permitePago){
-                elem += `<button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2 btn-link-pago" data-rel='${ JSON.stringify(detalle) }'>Link de pago</button>`;
+                elem += `<button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2 btn-link-pago" data-rel='${ JSON.stringify(detalle) }'>Paga aquí</button>`;
             }
             elem += `</div>
             </div>`;
@@ -1357,7 +1371,7 @@
                 <span class="text-veris fw-medium -dark me-2 p-2 my-2 text-end">Método de pago</span>
                 <button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 me-2 my-2 btn-turno">Pagar en caja</button>`;
         if(detalle.permitePago){
-            // elem += `<button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2 btn-link-pago" data-rel='${ JSON.stringify(detalle) }'>Link de pago</button>`;
+            // elem += `<button class="btn badge bg-veris text-white px-2 px-md-4 py-3 fs-6 rounded-8 border-0 my-2 btn-link-pago" data-rel='${ JSON.stringify(detalle) }'>Paga aquí</button>`;
         }
         elem += `</div>
             </div>`;
@@ -1408,7 +1422,7 @@
                 <div class="col-12 col-md-6">
                     <span class="text-veris fw-medium ">Centro:</span> ${detalle.nombreSucursal}
                 </div>
-                <div class="col-12 col-md-6 fw-bold fs-5 text-start text-md-end">
+                <div class="col-12 col-md-6 fw-bold fs-2 text-start text-md-end">
                     <span class="text-veris fw-medium ">Ve al ${(detalle.nombreSitioConsultorio.split(' '))[0].toLowerCase()}:</span> ${(detalle.nombreSitioConsultorio.split(' '))[1]} <!--span class="text-veris fw-medium ">|</span--> 
                     <!--img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/marker.svg"-->
                 </div>
@@ -1523,6 +1537,7 @@
                             ${nombreServicio}
                             <!--span class="text-veris fw-medium "> agendada</span-->
                         </h4>
+                        <h6 class="text-veris">Nro. Orden: ${ value.numeroOrden }</h6>
                     </div>
                     <div class="col-12 col-md-4 mt-2 mt-md-0 d-flex flex-column align-items-start align-items-md-end">
                         ${ sectionStatusPagoOrdenes(value) }

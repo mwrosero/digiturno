@@ -119,14 +119,31 @@
 
         @stack('scripts')
         <script>
+            let dataParametrosGenerales;
             localStorage.removeItem('sessionTime');
-            $(document).ready(function() {
+            $(document).ready(async function() {
                 if (localStorage.getItem('sessionTime') === null) {
                     localStorage.setItem('sessionTime', new Date().getTime());
                 }
                 // setInterval(checkAndUpdateToken, 15 * 60 * 1000);
                 setInterval(checkAndUpdateToken, 10 * 60 * 1000);
             });
+
+            async function parametrosGenerales(_mac){
+                let args = [];
+                args["endpoint"] = `${api_url}/${api_war}/util/parametros_generales?macAddress=${ _mac }`;
+                args["method"] = "GET";
+                args["showLoader"] = false;
+                args["token"] = "{{ $accessToken }}";
+
+                const data = await call(args);
+                // console.log(data);
+
+                if(data.code == 200){
+                    dataParametrosGenerales = data.data
+                    $('#central').html(`${ dataParametrosGenerales.nombreSucursalTurnero }`)
+                }
+            }
 
             function checkAndUpdateToken() {
                 console.log("Verificar si existe una sesión y ha transcurrido al menos 15 minutos");

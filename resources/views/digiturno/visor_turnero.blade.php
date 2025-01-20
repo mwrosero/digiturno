@@ -2,6 +2,67 @@
 @section('content')
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+@php
+    switch($mac){
+        case "70-85-C2-91-96-4E":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6pqwLjkSPi8_173NIq7jgSL&playlist=PLhHmuSWjQz6pqwLjkSPi8_173NIq7jgSL&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "C4-34-6B-57-E9-ED":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6rH7kOJEi_XeadSWxTJmU_5&playlist=PLhHmuSWjQz6rH7kOJEi_XeadSWxTJmU_5&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "E0-D5-5E-DB-42-36":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6pJgnfhIfttX2lvtrL86cRu&playlist=PLhHmuSWjQz6pJgnfhIfttX2lvtrL86cRu&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "1C-69-7A-AD-5F-C2":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6roN2VplVDH1sAJaLiqsVZ5&playlist=PLhHmuSWjQz6roN2VplVDH1sAJaLiqsVZ5&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "90-FB-A6-0A-9B-0C":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6olE6mjae4ZW5g27uZ4wc_d&playlist=PLhHmuSWjQz6olE6mjae4ZW5g27uZ4wc_d&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "C4-34-6B-5F-06-0C":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6qDNd8XHmun-5-MRjPvA-ta&playlist=PLhHmuSWjQz6qDNd8XHmun-5-MRjPvA-ta&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "90-FB-A6-0A-97-97":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6qF4Jg03AvEy_UG4JzJoDnC&playlist=PLhHmuSWjQz6qF4Jg03AvEy_UG4JzJoDnC&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "0C-9D-92-64-C3-34":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6qE4lN3s9OtRX5Bc_7s9uhv&playlist=PLhHmuSWjQz6qE4lN3s9OtRX5Bc_7s9uhv&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "24-2F-FA-07-17-3E":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6pV8vEtsjZW9zzrGXYKNfOY&playlist=PLhHmuSWjQz6pV8vEtsjZW9zzrGXYKNfOY&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "90-FB-A6-02-02-27":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6qS0Y-Zub7cX4faAovSsimp&playlist=PLhHmuSWjQz6qS0Y-Zub7cX4faAovSsimp&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "1C-69-7A-63-EF-BF":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6pWUPft54XZruCE6KFDWbY9&playlist=PLhHmuSWjQz6pWUPft54XZruCE6KFDWbY9&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "00-22-4D-7B-2A-F5":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6qYVO84L4AN0DHcIwgNhmo0&playlist=PLhHmuSWjQz6qYVO84L4AN0DHcIwgNhmo0&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "04-D4-C4-AC-8C-72":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6qmJVbRViwd3-1taZ0w-5D1&playlist=PLhHmuSWjQz6qmJVbRViwd3-1taZ0w-5D1&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "1C-69-7A-6A-CF-95":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLfkN66gdZWCyZXmE0yXWeQXWqrJWDzFEt&playlist=PLfkN66gdZWCyZXmE0yXWeQXWqrJWDzFEt&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "1C-69-7A-AE-99-3D":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLfkN66gdZWCxMliqWgBukx9XWfvXkA0jY&playlist=PLfkN66gdZWCxMliqWgBukx9XWfvXkA0jY&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "48-21-0B-2D-28-8F":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLfkN66gdZWCzEHEePlXJ9s0Bj0Dde6_VI&playlist=PLfkN66gdZWCzEHEePlXJ9s0Bj0Dde6_VI&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "48-21-0B-2D-1F-3C":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLfkN66gdZWCwN9FGIE5vn0KxFpGSJQ-42&playlist=PLfkN66gdZWCwN9FGIE5vn0KxFpGSJQ-42&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        case "48-21-0B-2D-2F-04":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLfkN66gdZWCxR9jdOcaml_dkvqC4CYYGS&playlist=PLfkN66gdZWCxR9jdOcaml_dkvqC4CYYGS&autoplay=1&mute=1&controls=0&loop=1";
+        break;
+        default:
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6rRzJbZmaLutrK9po3379Zh&autoplay=1&mute=1&controls=0&loop=1&playlist=PLhHmuSWjQz6rRzJbZmaLutrK9po3379Zh";
+    }
+@endphp
+
 <div class="wrapper">
     <!-- Content -->
     <main class="content p-3">
@@ -32,7 +93,7 @@
                 <video src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/video/parami.mp4" autoplay loop muted playsinline style="width:100%; height:auto;"></video>
                 @else
                 <div class="ratio ratio-16x9">
-                    <iframe class="rounded-8" src="https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6rRzJbZmaLutrK9po3379Zh&autoplay=1&mute=1&controls=0&loop=1&playlist=PLhHmuSWjQz6rRzJbZmaLutrK9po3379Zh" allow="autoplay; fullscreen" allowfullscreen>
+                    <iframe class="rounded-8" src="{{ $playlist }}" allow="autoplay; fullscreen" allowfullscreen>
                     </iframe>
                 </div>
                 @endif
