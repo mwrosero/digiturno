@@ -527,7 +527,7 @@ button:active {
 }
 
 #KioskBoard-VirtualKeyboard {
-    max-width: 100%;
+    max-width: 100% !important;
 }
 
 @media (min-width: 576px) {
