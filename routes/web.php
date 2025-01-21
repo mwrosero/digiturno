@@ -35,6 +35,7 @@ Route::get('/{mac}', [DigiturnoController::class, 'index'])->name('index');
 Route::get('/ingreso/{mac}', [DigiturnoController::class, 'ingreso'])->name('ingreso');
 Route::get('/test/{mac}', [DigiturnoController::class, 'testIngreso'])->name('ingreso2');
 Route::get('/portal/{portalToken}', [DigiturnoController::class, 'portal'])->name('portal');
+Route::get('/portal2/{portalToken}', [DigiturnoController::class, 'portal2'])->name('portal2');
 Route::get('/turno/{portalToken}', [DigiturnoController::class, 'turno'])->name('turno');
 Route::get('/turnero/{mac}', [DigiturnoController::class, 'turnero'])->name('turnero');
 Route::get('/turnero/laboratorio/{mac}', [DigiturnoController::class, 'turneroLaboratorio'])->name('turneroLaboratorio');

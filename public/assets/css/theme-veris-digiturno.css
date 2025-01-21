@@ -225,7 +225,8 @@ body, html {
 }
 
 .logo{
-    max-width: 200px;
+    max-width: 125px;
+/*    max-width: 200px;*/
 }
 
 .fs-12{

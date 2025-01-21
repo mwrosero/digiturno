@@ -34,6 +34,16 @@ class DigiturnoController extends Controller
                 ->with('portalToken',$portalToken);
     }
 
+    public function portal2($portalToken, Request $request) {
+        $token = Veris::getToken();
+        $data = $request->all();
+        $mac = $data['mac'];
+        return view('digiturno.portal2')
+                ->with('mac',$mac)
+                ->with('accessToken',$token)
+                ->with('portalToken',$portalToken);
+    }
+
     public function turno($portalToken) {
         $token = Veris::getToken();
         //dd($token);
