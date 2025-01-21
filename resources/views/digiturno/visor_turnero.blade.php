@@ -158,7 +158,7 @@
         console.log(data);
         if(data.code == 200){
             notificarNuevo(data.data);
-            let elem = `<div class="text-veris mb-3 fs-40">Siguiente turno</div>`;
+            let elem = `<div class="text-veris mb-3 fs-40">Turnos en atención</div>`;
             $.each(data.data, function(key, value){
                 if(key < 3){
                     let modulo = ``;
@@ -199,7 +199,7 @@
         if(dataWait.code == 200){
             let elem = `<div class="col-12">
                 <div class="d-flex justify-content-start align-items-center text-start fs-40 line-height-50 h-100 fs-20 text-veris">
-                    Turnos en atención
+                    Próximos turnos
                 </div>
             </div>`;
             $.each(dataWait.data, function(key, value){
