@@ -138,32 +138,7 @@
 </div>
 <div class="wrapper">
     <!-- Header -->
-    <header class="header p-3">
-        <div class="container-fluid g-0">
-            <div class="row">
-                <div class="col-8 col-sm-2 col-md-3">
-                    {{-- <img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/parami-large.png" alt="">
-                    @if (in_array($mac, \App\Models\Veris::MACS_PARAMI))
-                    @else
-                    @endif --}}
-                    {{-- <img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt=""> --}}
-                    <img class="w-100 logo" src="" alt="">
-                </div>
-                <div class="col-12 col-sm-8 col-md-7 d-flex justify-content-end align-items-center d-none d-md-block text-end">
-                    <div class="time-box badge bg-veris-dark text-center p-3 rounded-8">
-                        <span class="fs-4">Fecha:</span><span class="ms-1 fs-4 text-veris-light" id="fecha"></span>
-                        <span class="fs-4 ms-5 d-none">Hora:</span><span class="ms-1 fs-4 text-veris-light d-none" id="hora"></span>
-                        <span class="fs-4 ms-5">Central:</span><span class="ms-1 fs-4 text-veris-light" id="central"></span>
-                    </div>
-                </div>
-                <div class="col-4 col-sm-2 col-md-2">
-                    <a href="#" class="btn btn-salir border-veris-1 rounded-8 text-veris w-100 p-2 d-flex justify-content-center align-items-center h-100 fw-bold">
-                        <img class="me-2" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/exit-icon.svg" alt="">Salir
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
+    @include('template.header', ['showInfo' => false])
 
     <!-- Content -->
     <main class="content p-0 p-md-3">
@@ -433,7 +408,7 @@
 
         // Detectar interacción del usuario
         $(document).on("mousemove keydown click scroll", function () {
-            reiniciarConteo();
+            // reiniciarConteo();
         });
 
         // Manejar clic en el botón "Sí"
@@ -441,13 +416,13 @@
             clearTimeout(temporizadorRespuesta);
             $("#modalEstasAhi").fadeOut();
             console.log("El usuario sigue presente.");
-            reiniciarConteo();
+            // reiniciarConteo();
         });
 
         if(!isMobile()){
             console.log("Iniciando conteo")
             // Iniciar el conteo inicial
-            reiniciarConteo();
+            // reiniciarConteo();
         }
 
         // Ocultar el teclado si se hace clic fuera de su contenedor
@@ -985,8 +960,8 @@
         }
     }
 
-    async function activarLaboratorioChequeo(detalle){
-        let numeroTransaccion = detalle.numeroTransaccion;
+    async function activarLaboratorioChequeo(data){
+        let numeroTransaccion = data.numeroTransaccion;
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/transacciones/genera_atencion_pac_laboratorio?codigoEmpresa=1&nemonicoCanalFacturacion=CAJA`;
         let payload = {
@@ -1022,7 +997,7 @@
         let lugares = [];
         $('#v-pills-tabContent').find('input:checked').each(function(index, element) {
             let prestacion = JSON.parse($(this).attr('data-rel'))
-            let nombreServicio = $(this).attr("nombreServicio-rel")
+            let nombreServicio = $(this).attr("nombreServicio-rel");
             // console.log(nombreServicio)
             // console.log(prestacion)
             if(nombreServicio != "PROCEDIMIENTOS"){
@@ -1097,6 +1072,12 @@
         }
     }
 
+    async function drawTabs(){
+        $.each(groupedData, function(key, value){
+            console.log(value.tipoServicio)
+        })
+    }
+
     async function agruparDatos(){
         $.each(dataServicios, (index, item) => {
             const existingGroup = groupedData.find(group => group.tipoServicio === item.tipoServicio);
@@ -1152,6 +1133,7 @@
             if(data.data.length > 0){
                 groupedData = [];
                 await agruparDatos();
+                await drawTabs();
                 await drawServicioAgrupado(data.data);
                 $('.box-with-data').removeClass('d-none');
                 $('.box-with-data').addClass('d-block d-md-flex');
@@ -1731,6 +1713,9 @@
     }
 </script>
 <style>
+    body{
+        overflow: hidden;
+    }
     .toast-title {
         color: #fff !important;
     }
