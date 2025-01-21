@@ -139,6 +139,43 @@
 <div class="wrapper">
     <!-- Header -->
     @include('template.header', ['showInfo' => false])
+    <main class="familia p-0 p-md-3">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 px-0">
+                    <h4 class="mb-0">Elegir paciente</h4>
+                </div>
+                <div class="col-12 px-0">
+                    <!-- ESPECIALIDAD -->
+                    <div class="modal modal-top fade" id="pacienteModal" tabindex="-1" aria-labelledby="pacienteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-sm modal-dialog-centered mx-auto">
+                            <form class="modal-content rounded-4">
+                                <div class="modal-header d-none">
+                                    <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body p-3 pb-2">
+                                    <h4 class="mb-2">Elegir paciente</h4>
+                                    <div class="row gx-2 justify-content-between align-items-center">
+                                        <div class="list-group list-group-checkable d-grid gap-2 border-0" id="listaPacientes">
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- <div class="modal-footer pt-0 pb-3 px-3">
+                                    <button type="button" class="btn w-100 fw-medium fs--16 waves-effect line-height-20 m-0 p-3" style="color: #0071CE;" data-bs-dismiss="modal">Cancelar</button>
+                                </div> --}}
+                            </form>
+                        </div>
+                    </div>
+                    <div class="my-2 box-btn-familia border-veris-1 rounded-8">
+                        <div class="btn w-100 btn-sm d-flex justify-content-between align-items-center pt-3 pb-3 border-veris-1" data-bs-toggle="modal" data-bs-target="#pacienteModal" id="btn-paciente" data-rel="">
+                            <p class="fw-light fs-20 line-height-20 mb-0 text-truncate nombrePacienteElegido"></p>
+                            <i class="fa-solid fa-chevron-right mx-2 text-veris fs-20 fw-bold"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <!-- Content -->
     <main class="content p-0 p-md-3">
@@ -462,6 +499,14 @@
                 }
             }
         });
+
+        await drawListFamiliaresModal();
+        $('body').on('click','.paciente-item', function(){
+            let detalle = JSON.parse($(this).attr('data-rel'))
+            $(`.nombrePacienteElegido`).html(`${ detalle.nombreCompleto }`);
+            $('.paciente-item').removeClass('paciente-item-selected');
+            $(this).addClass('paciente-item-selected');
+        })
 
         await drawListFamiliares();
         await cargarServicios();
@@ -960,8 +1005,8 @@
         }
     }
 
-    async function activarLaboratorioChequeo(data){
-        let numeroTransaccion = data.numeroTransaccion;
+    async function activarLaboratorioChequeo(detalle){
+        let numeroTransaccion = detalle.numeroTransaccion;
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/transacciones/genera_atencion_pac_laboratorio?codigoEmpresa=1&nemonicoCanalFacturacion=CAJA`;
         let payload = {
@@ -997,7 +1042,7 @@
         let lugares = [];
         $('#v-pills-tabContent').find('input:checked').each(function(index, element) {
             let prestacion = JSON.parse($(this).attr('data-rel'))
-            let nombreServicio = $(this).attr("nombreServicio-rel");
+            let nombreServicio = $(this).attr("nombreServicio-rel")
             // console.log(nombreServicio)
             // console.log(prestacion)
             if(nombreServicio != "PROCEDIMIENTOS"){
@@ -1096,6 +1141,35 @@
                 });
             }
         });
+    }
+
+    async function drawListFamiliaresModal(){
+        $(`.nombrePacienteElegido`).html(`${ dataTurno.paciente.nombreCompleto }`);
+        let elem = ``;
+        elem += `<div data-rel='${JSON.stringify(dataTurno.paciente)}' class="paciente-item mb-2 paciente-item-selected shadow border-veris-1 rounded-8 my-2 p-2" data-bs-dismiss="modal">
+            <div class="list-group-item border-0 d-flex justify-content-between align-items-center">
+                <div class="box-check text-start me-2">
+                    <i class="fa-solid fs-25 fa-check text-veris fw-bold"></i>
+                </div>
+                <label class="text-veris-dark fs-20 fw-bold line-height-20 cursor-pointer flex-grow-1">
+                    ${ dataTurno.paciente.nombreCompleto }
+                </label> 
+            </div>
+        </div>`;
+        $.each(dataTurno.paciente.lsGrupoFamiliar, function(key, value){
+            elem += `<div data-rel='${JSON.stringify(value)}' class="paciente-item mb-2 shadow border-veris-1 rounded-8 my-2 p-2" data-bs-dismiss="modal">
+                <div class="list-group-item border-0 d-flex justify-content-between align-items-center">
+                    <div class="box-check text-start me-2">
+                        <i class="fa-solid fs-25 fa-check text-veris fw-bold"></i>
+                    </div>
+                    <label class="text-veris-dark fs-20 fw-bold line-height-20 cursor-pointer flex-grow-1">
+                        ${ value.nombreCompleto }
+                    </label> 
+                </div>
+            </div>`;
+        })
+
+        $('#listaPacientes').html(elem);
     }
 
     async function drawListFamiliares(){
@@ -1716,6 +1790,12 @@
     body{
         overflow: hidden;
     }
+    .paciente-item i{
+        visibility: hidden;
+    }
+    .paciente-item-selected i{
+        visibility: visible;
+    }
     .toast-title {
         color: #fff !important;
     }
@@ -1730,6 +1810,9 @@
     }
     .name-selected-sidebar{
         line-height: 22px;
+    }
+    .box-check{
+        width: 50px;
     }
     #listaPrestaciones {
         max-height: 400px;

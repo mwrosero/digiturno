@@ -1208,10 +1208,11 @@
         });
 
         let elem = ``;
+        
         $.each(groupedData, function(key, value){
             // if(value.tipoServicio != "ORDEN_MEDICA"){
-                elem += `<h3>${ nombreComercialServicio(value.tipoServicio) }</h3>`;
-                elem += `<div class="swiper swiper-servicio swiper-servicio-${key} position-relative pb-4 mb-3">
+                elem += `<h3 class="section-${value.tipoServicio}">${ nombreComercialServicio(value.tipoServicio) }</h3>`;
+                elem += `<div class="section-${value.tipoServicio} swiper swiper-servicio swiper-servicio-${key} position-relative pb-4 mb-3">
                     <div class="swiper-wrapper py-2" id="contenedorServicios${key}">`;
                 $.each(value.items, function(k, v){
                     elem += `<div class="swiper-slide">
@@ -1225,6 +1226,14 @@
             // }
         })
         $('#list-servicios').html(elem);
+
+        /*let hideOrdenes = false;
+        if(value.items.length == 0 &&  value.tipoServicio == "ORDEN_MEDICA"){
+            hideOrdenes = true;
+        }
+        if(hideOrdenes){
+            $('.section-ORDEN_MEDICA').addClass('d-none');
+        }*/
         swiper = new Swiper('.swiper-servicio', {
             spaceBetween: 8,
             navigation: {
