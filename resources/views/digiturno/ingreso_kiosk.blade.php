@@ -305,6 +305,7 @@
             language: 'es',          // Idioma (ejemplo: 'es' para español)
             theme: 'light',          // Tema del teclado ('light' o 'dark')
             allowMobileKeyboard: false,
+            keysEnterText: '<i class="material-icons enter-key-icon">check_circle</i>',
         });
 
         // Activa el teclado virtual en los inputs con la clase 'virtual-keyboard'
@@ -319,7 +320,7 @@
             keysSpacebarText: 'Espacio',
             allowMobileKeyboard: false,
             capsLockActive: true,
-            // keysEnterText: 'Aceptar',
+            keysEnterText: '<i class="material-icons enter-key-icon">check_circle</i>',
         });
 
         KioskBoard.run('.virtual-keyboard-all', {});
@@ -549,6 +550,9 @@ function simulateOpen(inputId) {
     }
 </script>
 <style>
+	.enter-key-icon{
+		font-size: 30px !important;
+	}
 	.toast-title {
         color: #fff !important;
     }
