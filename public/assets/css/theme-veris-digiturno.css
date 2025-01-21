@@ -225,8 +225,8 @@ body, html {
 }
 
 .logo{
-/*    max-width: 125px;*/
-    max-width: 200px;
+    max-width: 125px;
+/*    max-width: 200px;*/
 }
 
 .fs-12{
@@ -495,6 +495,35 @@ button:active {
 
 ::-webkit-scrollbar-thumb:active {
   background-color: #19408F;
+}
+
+.kioskboard-key, 
+.kioskboard-key-backspace,
+.kioskboard-key-enter,
+.kioskboard-key-space,
+.kioskboard-key-specialcharacter,
+.kioskboard-key-capslock
+{
+    font-size: 30px !important; /* Tamaño del texto en las teclas */
+    width: 80px;     /* Ancho de cada tecla */
+    height: 80px;    /* Altura de cada tecla */
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* Ajusta el tamaño del contenedor del teclado */
+.kioskboard-container {
+    padding: 200px; /* Espaciado interno del teclado */
+}
+
+/* Ajusta el tamaño de las teclas especiales (como borrar o espacio) */
+.kioskboard-key[data-special] {
+    width: 1000px; /* Ancho de las teclas especiales */
+}
+
+.kioskboard-key-backspace svg{
+    top:25px !important;
+    left: 50px !important;
 }
 
 @media (min-width: 576px) {

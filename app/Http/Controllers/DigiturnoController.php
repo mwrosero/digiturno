@@ -22,7 +22,7 @@ class DigiturnoController extends Controller
     public function ingreso($mac) {
         $token = Veris::getToken();
         //dd($token);
-        return view('digiturno.ingreso')
+        return view('digiturno.ingreso_kiosk')
                 ->with('accessToken',$token)
                 ->with('mac',$mac);
     }
