@@ -199,7 +199,7 @@
         if(dataWait.code == 200){
             let elem = `<div class="col-12">
                 <div class="d-flex justify-content-start align-items-center text-start fs-40 line-height-50 h-100 fs-20 text-veris">
-                    Próximos turnos
+                    Turnos en atención
                 </div>
             </div>`;
             $.each(dataWait.data, function(key, value){
