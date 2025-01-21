@@ -225,8 +225,8 @@ body, html {
 }
 
 .logo{
-    max-width: 125px;
-/*    max-width: 200px;*/
+/*    max-width: 125px;*/
+    max-width: 200px;
 }
 
 .fs-12{
@@ -247,6 +247,10 @@ body, html {
 
 .line-height-20{
     line-height: 20px;
+}
+
+.fs-25 {
+    font-size: 25px;
 }
 
 .fs-40 {
