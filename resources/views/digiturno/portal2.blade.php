@@ -204,24 +204,61 @@
                             </button>
                         </li>
                     </ul>
-                    <div class="tab-content bg-transparent w-100 pt-2" id="pills-tabContent">
-                        <div class="tab-pane row fade mt-3 px-2 w-100 show active" id="pills-servicio1" role="tabpanel" aria-labelledby="pills-servicio1-tab" tabindex="0">
-                            <div class="col-12 col-md-4">
-                                aa1
+                    {{-- <div class="container-fluid">
+                        <div class="row"> --}}
+                            <div class="tab-content bg-transparent pt-2" id="pills-tabContent">
+                                <div class="tab-pane fade mt-3 px-2 gap-2 show active" id="pills-servicio1" role="tabpanel" aria-labelledby="pills-servicio1-tab" tabindex="0">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-12 col-md-4">
+                                                aa1
+                                            </div>
+                                            <div class="col-12 col-md-4">
+                                                bb1
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade mt-3 px-2 w-100" id="pills-servicio2" role="tabpanel" aria-labelledby="pills-servicio2-tab" tabindex="0">
+                                    <div class="accordion" id="accordionPanelsStayOpenExample">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                                                <div class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                                                    Accordion Item #1
+                                                </div>
+                                            </h2>
+                                            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                                                <div class="accordion-body">
+                                                    <div class="container-fluid">
+                                                        <div class="row">
+                                                            <div class="col-12 col-md-4">
+                                                                aa1
+                                                            </div>
+                                                            <div class="col-12 col-md-4">
+                                                                bb1
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                                                <div class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                                                    Accordion Item #2
+                                                </div>
+                                            </h2>
+                                            <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingTwo">
+                                                <div class="accordion-body">
+                                                    <strong>This is the second item's accordion body.</strong> It is hidden by.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-12 col-md-4">
-                                bb1
-                            </div>
-                        </div>
-                        <div class="tab-pane row fade mt-3 px-2 w-100" id="pills-servicio2" role="tabpanel" aria-labelledby="pills-servicio2-tab" tabindex="0">
-                            <div class="col-12 col-md-4">
-                                aa2
-                            </div>
-                            <div class="col-12 col-md-4">
-                                bb2
-                            </div>
-                        </div>
-                    </div>
+                        {{-- </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
