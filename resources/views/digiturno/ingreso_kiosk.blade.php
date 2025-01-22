@@ -129,7 +129,7 @@
 						<div class="tab-pane fade mt-3 px-2 w-100 show active" id="pills-cedula" role="tabpanel" aria-labelledby="pills-cedula-tab" tabindex="0">
 						    <div class="row">
 						    	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center">
-						    		<input autocomplete="off" id="cedula" type="text" class="w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-center fs-1 onlyNumber" maxlength="10" placeholder="Ingresar número de cédula" data-kioskboard-type="numpad" type="number" readonly="readonly">
+						    		<input autocomplete="off" id="cedula" type="text" class="w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-center fs-1 onlyNumber" maxlength="10" placeholder="Ingresar número de cédula" data-kioskboard-type="numpad" type="number">
 						    		<div onclick="buscarUsuario();" class="btn bg-veris btn-ingresar text-white mx-auto fs-1 p-3 mb-5 rounded-8 my-5">CONTINUAR</div>
 						    	</div>
 						    </div>
@@ -298,33 +298,35 @@
 
     let canSearch = true;
     document.addEventListener('DOMContentLoaded', async function () {
-        KioskBoard.init({
-        	keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
-        	keysNumeric: true,
-            //keysArrayOfObjects: null, // Usa el teclado QWERTY predeterminado
-            language: 'es',          // Idioma (ejemplo: 'es' para español)
-            theme: 'light',          // Tema del teclado ('light' o 'dark')
-            allowMobileKeyboard: false,
-            keysEnterText: '<i class="material-icons enter-key-icon">check_circle</i>',
-        });
+    	if(!isMobile()){
+	        KioskBoard.init({
+	        	keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
+	        	keysNumeric: true,
+	            //keysArrayOfObjects: null, // Usa el teclado QWERTY predeterminado
+	            language: 'es',          // Idioma (ejemplo: 'es' para español)
+	            theme: 'light',          // Tema del teclado ('light' o 'dark')
+	            allowMobileKeyboard: false,
+	            keysEnterText: '<i class="material-icons enter-key-icon">check_circle</i>',
+	        });
 
-        // Activa el teclado virtual en los inputs con la clase 'virtual-keyboard'
-        KioskBoard.run('.virtual-keyboard-numpad', {});
+	        // Activa el teclado virtual en los inputs con la clase 'virtual-keyboard'
+	        KioskBoard.run('.virtual-keyboard-numpad', {});
 
-        KioskBoard.init({
-        	keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
-        	// keysNumeric: true,
-            //keysArrayOfObjects: null, // Usa el teclado QWERTY predeterminado
-            language: 'es',          // Idioma (ejemplo: 'es' para español)
-            theme: 'light',          // Tema del teclado ('light' o 'dark')
-            keysSpacebarText: 'Espacio',
-            allowMobileKeyboard: false,
-            capsLockActive: true,
-            keysEnterText: '<i class="material-icons enter-key-icon">check_circle</i>',
-        });
+	        KioskBoard.init({
+	        	keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
+	        	// keysNumeric: true,
+	            //keysArrayOfObjects: null, // Usa el teclado QWERTY predeterminado
+	            language: 'es',          // Idioma (ejemplo: 'es' para español)
+	            theme: 'light',          // Tema del teclado ('light' o 'dark')
+	            keysSpacebarText: 'Espacio',
+	            allowMobileKeyboard: false,
+	            capsLockActive: true,
+	            keysEnterText: '<i class="material-icons enter-key-icon">check_circle</i>',
+	        });
 
-        KioskBoard.run('.virtual-keyboard-all', {});
-    
+	        KioskBoard.run('.virtual-keyboard-all', {});
+    	}
+
 		// Keyboard.open();
 		$('body').on('click', '.nav-item.flex-fill', async function(){
 			//Keyboard.close();
