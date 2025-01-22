@@ -220,7 +220,7 @@ body, html {
 
 /* Estilos para el Header */
 .header {
-    background-color: #f8f9fa;
+    /* background-color: #f8f9fa;*/ 
     flex: 0 0 auto;
 }
 
@@ -318,6 +318,10 @@ body, html {
     color: var(--caution);
 }
 
+.border-silver-1{
+    border: 1px solid #CED3D9
+}
+
 .border-caution-1{
     border: 1px solid var(--caution);
 }
@@ -356,6 +360,11 @@ body, html {
 
 .rounded-8{
     border-radius: 8px;
+}
+
+.rounded-t-8{
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 
 .bg-silver{
@@ -530,9 +539,28 @@ button:active {
     max-width: 100% !important;
 }
 
+/*REDISENO*/
+
+#pills-tab-servicios li:first-child,
+#pills-tab-servicios li:first-child button{
+    border-top-left-radius: 8px;
+}
+
+#pills-tab-servicios li:last-child,
+#pills-tab-servicios li:last-child button{
+    border-top-right-radius: 8px;
+}
+
+
 @media (min-width: 576px) {
     .modal-dialog {
         max-width: 700px;
+    }
+}
+
+@media (max-width: 768px) {
+    #KioskBoard-VirtualKeyboard {
+        display: none !important;
     }
 }
 

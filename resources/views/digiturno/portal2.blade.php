@@ -139,11 +139,11 @@
 <div class="wrapper">
     <!-- Header -->
     @include('template.header', ['showInfo' => false])
-    <main class="familia p-0 p-md-3">
+    <main class="familia p-2 p-md-2">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12 px-0">
-                    <h4 class="mb-0">Elegir paciente</h4>
+                    <h4 class="mb-0">Tu círculo familiar</h4>
                 </div>
                 <div class="col-12 px-0">
                     <!-- ESPECIALIDAD -->
@@ -153,8 +153,8 @@
                                 <div class="modal-header d-none">
                                     <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <div class="modal-body p-3 pb-2">
-                                    <h4 class="mb-2">Elegir paciente</h4>
+                                <div class="modal-body p-4">
+                                    <h4 class="mb-3">Elegir paciente</h4>
                                     <div class="row gx-2 justify-content-between align-items-center">
                                         <div class="list-group list-group-checkable d-grid gap-2 border-0" id="listaPacientes">
                                         </div>
@@ -167,7 +167,7 @@
                         </div>
                     </div>
                     <div class="my-2 box-btn-familia border-veris-1 rounded-8">
-                        <div class="btn w-100 btn-sm d-flex justify-content-between align-items-center pt-3 pb-3 border-veris-1" data-bs-toggle="modal" data-bs-target="#pacienteModal" id="btn-paciente" data-rel="">
+                        <div class="btn w-100 btn-sm d-flex justify-content-between align-items-center pt-3 pb-3 border-veris-1 rounded-8" data-bs-toggle="modal" data-bs-target="#pacienteModal" id="btn-paciente" data-rel="">
                             <p class="fw-light fs-20 line-height-20 mb-0 text-truncate nombrePacienteElegido"></p>
                             <i class="fa-solid fa-chevron-right mx-2 text-veris fs-20 fw-bold"></i>
                         </div>
@@ -178,7 +178,57 @@
     </main>
 
     <!-- Content -->
-    <main class="content p-0 p-md-3">
+    <main class="content p-2 p-md-2">
+        <div class="container-fluid h-100">
+            <div class="row h-100">
+                <div class="col-12 h-100 px-0 rounded-t-8 border-silver-1">
+                    <ul class="nav nav-pills justify-content-between bg-white w-100 rounded-t-8 border-silver-1 border-start-0 border-start-0" id="pills-tab-servicios" role="tablist">
+                        <li class="nav-item flex-fill" role="presentation">
+                            <button data-rel="C" class="nav-link tipoServicio w-100 px-8 px-md-5 d-flex justify-content-center align-items-center text-veris-dark fs-20 active" id="pills-servicio1-tab" data-bs-toggle="pill" data-bs-target="#pills-servicio1" type="button" role="tab" aria-controls="pills-servicio1" aria-selected="true">
+                                Para hoy
+                            </button>
+                        </li>
+                        <li class="nav-item flex-fill" role="presentation">
+                            <button data-rel="P" class="nav-link tipoServicio w-100 px-8 px-md-5 d-flex justify-content-center align-items-center text-veris-dark fs-20" id="pills-servicio2-tab" data-bs-toggle="pill" data-bs-target="#pills-servicio2" type="button" role="tab" aria-controls="pills-servicio2" aria-selected="false">
+                                Laboratorio
+                            </button>
+                        </li>
+                        <li class="nav-item flex-fill" role="presentation">
+                            <button data-rel="N" class="nav-link tipoServicio w-100 px-8 px-md-5 d-flex justify-content-center align-items-center text-veris-dark fs-20" id="pills-servicio3-tab" data-bs-toggle="pill" data-bs-target="#pills-servicio3" type="button" role="tab" aria-controls="pills-servicio3" aria-selected="false">
+                                Chequeos
+                            </button>
+                        </li>
+                        <li class="nav-item flex-fill" role="presentation">
+                            <button data-rel="N" class="nav-link tipoServicio w-100 px-8 px-md-5 d-flex justify-content-center align-items-center text-veris-dark fs-20" id="pills-servicio3-tab" data-bs-toggle="pill" data-bs-target="#pills-servicio3" type="button" role="tab" aria-controls="pills-servicio3" aria-selected="false">
+                                Mis Paquetes
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content bg-transparent w-100 pt-2" id="pills-tabContent">
+                        <div class="tab-pane row fade mt-3 px-2 w-100 show active" id="pills-servicio1" role="tabpanel" aria-labelledby="pills-servicio1-tab" tabindex="0">
+                            <div class="col-12 col-md-4">
+                                aa1
+                            </div>
+                            <div class="col-12 col-md-4">
+                                bb1
+                            </div>
+                        </div>
+                        <div class="tab-pane row fade mt-3 px-2 w-100" id="pills-servicio2" role="tabpanel" aria-labelledby="pills-servicio2-tab" tabindex="0">
+                            <div class="col-12 col-md-4">
+                                aa2
+                            </div>
+                            <div class="col-12 col-md-4">
+                                bb2
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Content -->
+    <main class="content p-0 p-md-3 d-none">
         <div class="container-fluid h-100">
             <div class="row h-100">
                 <div id="sidebar" class="col-12 col-md-3 mb-3 mb-md-0 bg-silver sidebar-expanded h-100 overflow-auto"> <!-- Sidebar content here -->
@@ -1146,9 +1196,9 @@
     async function drawListFamiliaresModal(){
         $(`.nombrePacienteElegido`).html(`${ dataTurno.paciente.nombreCompleto }`);
         let elem = ``;
-        elem += `<div data-rel='${JSON.stringify(dataTurno.paciente)}' class="paciente-item mb-2 paciente-item-selected shadow border-veris-1 rounded-8 my-2 p-2" data-bs-dismiss="modal">
-            <div class="list-group-item border-0 d-flex justify-content-between align-items-center">
-                <div class="box-check text-start me-2">
+        elem += `<div data-rel='${JSON.stringify(dataTurno.paciente)}' class="paciente-item mb-2 paciente-item-selected shadow-sm border-veris-1 rounded-8 p-2" data-bs-dismiss="modal">
+            <div class="list-group-item bg-transparent border-0 d-flex justify-content-between align-items-center">
+                <div class="box-check text-start me-3">
                     <i class="fa-solid fs-25 fa-check text-veris fw-bold"></i>
                 </div>
                 <label class="text-veris-dark fs-20 fw-bold line-height-20 cursor-pointer flex-grow-1">
@@ -1157,9 +1207,9 @@
             </div>
         </div>`;
         $.each(dataTurno.paciente.lsGrupoFamiliar, function(key, value){
-            elem += `<div data-rel='${JSON.stringify(value)}' class="paciente-item mb-2 shadow border-veris-1 rounded-8 my-2 p-2" data-bs-dismiss="modal">
-                <div class="list-group-item border-0 d-flex justify-content-between align-items-center">
-                    <div class="box-check text-start me-2">
+            elem += `<div data-rel='${JSON.stringify(value)}' class="paciente-item mb-2 shadow-sm border-veris-1 rounded-8 p-2" data-bs-dismiss="modal">
+                <div class="list-group-item bg-transparent border-0 d-flex justify-content-between align-items-center">
+                    <div class="box-check text-start me-3">
                         <i class="fa-solid fs-25 fa-check text-veris fw-bold"></i>
                     </div>
                     <label class="text-veris-dark fs-20 fw-bold line-height-20 cursor-pointer flex-grow-1">
@@ -1785,6 +1835,9 @@
             $('#modalAlerta').modal('show');
         }
     }
+    /*
+    Para buscar paquetes: https://api.phantomx.com.ec/digitales/v1/comercial/detallePaquete?canalOrigen=MVE_CMV&codigoEmpresa=1&secuenciaPaquetePaciente=4680170
+    */
 </script>
 <style>
     body{
@@ -1795,6 +1848,9 @@
     }
     .paciente-item-selected i{
         visibility: visible;
+    }
+    .paciente-item-selected{
+        background: var(--veris-blue-sky);
     }
     .toast-title {
         color: #fff !important;
@@ -1990,7 +2046,7 @@
         background-color: #0071ce;
     }
     .nav-pills .nav-link {
-        background: #ebebeb;
+/*        background: #ebebeb;*/
         border-radius: 0;
         color: var(--veris-blue-dark);
     }
