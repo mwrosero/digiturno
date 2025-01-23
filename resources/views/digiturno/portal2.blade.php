@@ -138,7 +138,7 @@
 </div>
 <div class="wrapper">
     <!-- Header -->
-    @include('template.header', ['showInfo' => false])
+    @include('template.header', ['showInfo' => true])
     <main class="familia p-2 p-md-2">
         <div class="container-fluid">
             <div class="row">
@@ -181,8 +181,8 @@
     <main class="content p-2 p-md-2">
         <div class="container-fluid h-100">
             <div class="row h-100">
-                <div class="col-12 h-100 px-0 rounded-t-8 border-silver-1">
-                    <ul class="nav nav-pills justify-content-between bg-white w-100 rounded-t-8 border-silver-1 border-start-0 border-start-0" id="pills-tab-servicios" role="tablist">
+                <div class="col-12 h-100 px-0 rounded-t-8 border-silver-light-1 bg-silver-light">
+                    <ul class="nav nav-pills justify-content-between bg-white w-100 rounded-t-8 border-silver-light-1 border-start-0 border-start-0" id="pills-tab-servicios" role="tablist">
                         <li class="nav-item flex-fill" role="presentation">
                             <button data-rel="C" class="nav-link tipoServicio w-100 px-8 px-md-5 d-flex justify-content-center align-items-center text-veris-dark fs-20 active" id="pills-servicio1-tab" data-bs-toggle="pill" data-bs-target="#pills-servicio1" type="button" role="tab" aria-controls="pills-servicio1" aria-selected="true">
                                 Para hoy
@@ -204,61 +204,92 @@
                             </button>
                         </li>
                     </ul>
-                    {{-- <div class="container-fluid">
-                        <div class="row"> --}}
-                            <div class="tab-content bg-transparent pt-2" id="pills-tabContent">
-                                <div class="tab-pane fade mt-3 px-2 gap-2 show active" id="pills-servicio1" role="tabpanel" aria-labelledby="pills-servicio1-tab" tabindex="0">
-                                    <div class="container-fluid">
-                                        <div class="row">
-                                            <div class="col-12 col-md-4">
-                                                aa1
+                    <div class="tab-content bg-transparent pt-2" id="pills-tabContent">
+                        <div class="tab-pane fade mt-3 px-3 gap-2 show active" id="pills-servicio1" role="tabpanel" aria-labelledby="pills-servicio1-tab" tabindex="0">
+                            <div class="row row-flex align-items-stretch">
+                                <div class="col-12 col-lg-6 col-xxl-4 d-flex">
+                                    <div class="w-100">
+                                        <div class="tab-card bg-citas d-inline-block py-2 px-3 rounded-t-8">
+                                            <span class="fs-16 fw-medium text-veris-dark">Citas</span>
+                                        </div>
+                                        <div class="card rounded-8 p-2 border-citas-1 rounded-ts-0 h-100">
+                                            <div class="card-header p-0 bg-transparent border-0 d-flex justify-content-start align-items-center">
+                                                <img class="me-2" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg" alt="">
+                                                <span class="fs-16 fw-medium text-veris me-2 flex-grow-1">Cita Médica</span>
+                                                <div class="text-silver-dark fw-medium fs-14 me-4">
+                                                    <i class="fa-regular fa-calendar-check me-1"></i>
+                                                    Por realizar
+                                                </div>
+                                                <span class="text-verde fw-medium fs-14">
+                                                    <i class="fa-solid fa-circle me-1"></i>
+                                                    Pagado
+                                                </span>
                                             </div>
-                                            <div class="col-12 col-md-4">
-                                                bb1
+                                            <div class="card-body p-0 bg-transparent border-0">
+                                                <div class="d-flex justify-content-center align-items-center fw-bold text-dark fs-18 bg-silver-light py-2 rounded-8 my-2">
+                                                    Ve al consultorio <span class="text-veris ms-2 fs-40">13</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade mt-3 px-2 w-100" id="pills-servicio2" role="tabpanel" aria-labelledby="pills-servicio2-tab" tabindex="0">
-                                    <div class="accordion" id="accordionPanelsStayOpenExample">
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                                                <div class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                                                    Accordion Item #1
-                                                </div>
-                                            </h2>
-                                            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
-                                                <div class="accordion-body">
-                                                    <div class="container-fluid">
-                                                        <div class="row">
-                                                            <div class="col-12 col-md-4">
-                                                                aa1
-                                                            </div>
-                                                            <div class="col-12 col-md-4">
-                                                                bb1
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                <div class="col-12 col-lg-6 col-xxl-4 d-flex">
+                                    <div class="w-100">
+                                        <div class="tab-card bg-chequeos d-inline-block py-2 px-3 rounded-t-8">
+                                            <span class="fs-16 fw-medium text-veris-dark">Chequeo Empresarial</span>
                                         </div>
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-                                                <div class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-                                                    Accordion Item #2
-                                                </div>
-                                            </h2>
-                                            <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingTwo">
-                                                <div class="accordion-body">
-                                                    <strong>This is the second item's accordion body.</strong> It is hidden by.
-                                                </div>
-                                            </div>
+                                        <div class="card rounded-8 p-2 border-chequeos-1 rounded-ts-0 h-100">
+                                            <!-- Content -->
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        {{-- </div>
-                    </div> --}}
+                        </div>
+                        <div class="tab-pane fade mt-3 px-2 w-100" id="pills-servicio2" role="tabpanel" aria-labelledby="pills-servicio2-tab" tabindex="0">
+                            <div class="accordion" id="accordionPanelsStayOpenExample">
+                                <div class="accordion-item bg-transparent border-0">
+                                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                                        <div class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                                            Accordion Item #1
+                                        </div>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                                        <div class="accordion-body px-2">
+                                            <div class="row">
+                                                <div class="col-12 col-md-6 col-lg-4">
+                                                    <div class="card rounded-8 p-2">
+                                                        AA1
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-6 col-lg-4">
+                                                    <div class="card rounded-8 p-2">
+                                                        AA1
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-6 col-lg-4">
+                                                    <div class="card rounded-8 p-2">
+                                                        AA1
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item bg-transparent border-0">
+                                    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                                        <div class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                                            Accordion Item #2
+                                        </div>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingTwo">
+                                        <div class="accordion-body px-2">
+                                            <strong>This is the second item's accordion body.</strong> It is hidden by.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1879,6 +1910,11 @@
 <style>
     body{
         overflow: hidden;
+    }
+    .row-flex {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
     }
     .paciente-item i{
         visibility: hidden;

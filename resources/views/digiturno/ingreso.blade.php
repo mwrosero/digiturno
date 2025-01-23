@@ -215,7 +215,7 @@
       		return;
 		}
 		let args = [];
-        args["endpoint"] = `${api_url}/${api_war}/paciente/validar_datos?tipoFiltro=${ tipoFiltro }&valor=${ encodeURIComponent(valorFiltro) }`;
+        args["endpoint"] = `${api_url}/${api_war}/paciente/validar_datos?tipoFiltro=${ tipoFiltro }&valor=${ encodeURIComponent(valorFiltro) }&macAddress={{ $mac }}`;
         //dataCita.paciente.numeroPaciente
         args["method"] = "GET";
         args["token"] = accessToken;
