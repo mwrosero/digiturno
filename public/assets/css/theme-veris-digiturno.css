@@ -197,11 +197,16 @@
     --veris-blue-sky: #EBF6FE;
     --pink-light: #fbe9e8;
     --silver: #F3F4F5;
+    --silverLight: #CED3D9;
+    --silverDark: #6C7A8C;
     --pagado: #B9F6CA;
     --pendiente: #FFC107;
     --pendiente-light: #FFF8E1;
     --font: "Gotham Rounded", sans-serif;
     --caution: #D84315;
+    --colorChequeos: #00A0AF;
+    --colorCitas: #7CC8E6;
+    --colorVerde: #00C853;
 }
 
 
@@ -239,6 +244,10 @@ body, html {
 
 .fs-16{
     font-size: 16px;
+}
+
+.fs-18{
+    font-size: 18px;
 }
 
 .fs-20 {
@@ -298,6 +307,10 @@ body, html {
     flex: 0 0 auto;
 }
 
+.text-verde{
+    color: var(--colorVerde);
+}
+
 .bg-veris-dark{
     background: var(--veris-blue-dark);
 }
@@ -318,8 +331,28 @@ body, html {
     color: var(--caution);
 }
 
-.border-silver-1{
-    border: 1px solid #CED3D9
+.text-silver-light{
+    color: var(--silverLight);;
+}
+
+.bg-silver-light{
+    background: var(--silverLight);;
+}
+
+.border-silver-light-1{
+    border: 1px solid var(--silverLight);
+}
+
+.text-silver-dark{
+    color: var(--silverDark);;
+}
+
+.bg-silver-dark{
+    background: var(--silverDark);;
+}
+
+.border-silver-dark-1{
+    border: 1px solid var(--silverDark);
 }
 
 .border-caution-1{
@@ -365,6 +398,26 @@ body, html {
 .rounded-t-8{
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
+}
+
+.rounded-ts-0{
+    border-top-left-radius: 0px;
+}
+
+.bg-chequeos{
+    background-color: var(--colorChequeos);
+}
+
+.border-chequeos-1{
+    border: 1px solid var(--colorChequeos);
+}
+
+.bg-citas{
+    background-color: var(--colorCitas);
+}
+
+.border-citas-1{
+    border: 1px solid var(--colorCitas);
 }
 
 .bg-silver{
