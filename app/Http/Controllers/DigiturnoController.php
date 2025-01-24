@@ -21,7 +21,7 @@ class DigiturnoController extends Controller
 
     public function ingreso($mac, Request $request) {
         $data = $request->all();
-        if($data['utm_medium'] == 'CENTRAL'){
+        if(isset($data['utm_medium']) && $data['utm_medium'] == 'CENTRAL'){
             $mac = 'E0-D5-5E-DB-42-36';
             return redirect()->route('ingreso', ['mac' => $mac, 'utm_source' => 'HOJA', 'utm_medium' => 'DORADO']);
         }
