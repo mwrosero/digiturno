@@ -19,7 +19,13 @@ class DigiturnoController extends Controller
                 ->with('mac',$mac);
     }
 
-    public function ingreso($mac) {
+    public function ingreso($mac, Request $request) {
+        $data = $request->all();
+        if($data['utm_medium'] == 'CENTRAL'){
+            $mac = 'E0-D5-5E-DB-42-36';
+            return redirect()->route('ingreso', ['mac' => $mac, 'utm_source' => 'HOJA', 'utm_medium' => 'DORADO']);
+        }
+
         $token = Veris::getToken();
         //dd($token);
         return view('digiturno.ingreso_kiosk')
