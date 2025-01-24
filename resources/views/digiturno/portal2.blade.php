@@ -183,67 +183,71 @@
             <div class="row h-100">
                 <div class="col-12 h-100 px-0 rounded-t-8 border-silver-light-1 bg-silver-light">
                     <ul class="nav nav-pills justify-content-between bg-white w-100 rounded-t-8 border-silver-light-1 border-start-0 border-start-0" id="pills-tab-servicios" role="tablist">
-                        <li class="nav-item flex-fill" role="presentation">
+                        {{-- <li class="nav-item flex-fill" role="presentation">
                             <button data-rel="C" class="nav-link tipoServicio w-100 px-8 px-md-5 d-flex justify-content-center align-items-center text-veris-dark fs-20 active" id="pills-servicio1-tab" data-bs-toggle="pill" data-bs-target="#pills-servicio1" type="button" role="tab" aria-controls="pills-servicio1" aria-selected="true">
                                 Para hoy
-                            </button>
-                        </li>
-                        <li class="nav-item flex-fill" role="presentation">
-                            <button data-rel="P" class="nav-link tipoServicio w-100 px-8 px-md-5 d-flex justify-content-center align-items-center text-veris-dark fs-20" id="pills-servicio2-tab" data-bs-toggle="pill" data-bs-target="#pills-servicio2" type="button" role="tab" aria-controls="pills-servicio2" aria-selected="false">
-                                Laboratorio
-                            </button>
-                        </li>
-                        <li class="nav-item flex-fill" role="presentation">
-                            <button data-rel="N" class="nav-link tipoServicio w-100 px-8 px-md-5 d-flex justify-content-center align-items-center text-veris-dark fs-20" id="pills-servicio3-tab" data-bs-toggle="pill" data-bs-target="#pills-servicio3" type="button" role="tab" aria-controls="pills-servicio3" aria-selected="false">
-                                Chequeos
                             </button>
                         </li>
                         <li class="nav-item flex-fill" role="presentation">
                             <button data-rel="N" class="nav-link tipoServicio w-100 px-8 px-md-5 d-flex justify-content-center align-items-center text-veris-dark fs-20" id="pills-servicio3-tab" data-bs-toggle="pill" data-bs-target="#pills-servicio3" type="button" role="tab" aria-controls="pills-servicio3" aria-selected="false">
                                 Mis Paquetes
                             </button>
-                        </li>
+                        </li> --}}
                     </ul>
-                    <div class="tab-content bg-transparent pt-2" id="pills-tabContent">
-                        <div class="tab-pane fade mt-3 px-3 gap-2 show active" id="pills-servicio1" role="tabpanel" aria-labelledby="pills-servicio1-tab" tabindex="0">
-                            <div class="row row-flex align-items-stretch">
-                                <div class="col-12 col-lg-6 col-xxl-4 d-flex">
-                                    <div class="w-100">
-                                        <div class="tab-card bg-citas d-inline-block py-2 px-3 rounded-t-8">
+                    <div class="tab-content bg-transparent pt-2" id="pills-tabContent-servicios">
+                        <div class="tab-pane fade mt-3 px-3 show active" id="pills-servicio1" role="tabpanel" aria-labelledby="pills-servicio1-tab" tabindex="0">
+                            {{-- <div class="row row-flex mb-3 pb-3" style="max-height: 75vh;">
+                                <div class="col-12 col-lg-6 col-xxl-4 d-flex mb-5 mt-0">
+                                    <div class="w-100 mt-1">
+                                        <div class="tab-card bg-citas d-inline-block py-2 px-4 rounded-t-8">
                                             <span class="fs-16 fw-medium text-veris-dark">Citas</span>
                                         </div>
-                                        <div class="card rounded-8 p-2 border-citas-1 rounded-ts-0 h-100">
+                                        <div class="card d-flex flex-column content-card rounded-8 p-2 border-citas-1 rounded-ts-0">
                                             <div class="card-header p-0 bg-transparent border-0 d-flex justify-content-start align-items-center">
                                                 <img class="me-2" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg" alt="">
                                                 <span class="fs-16 fw-medium text-veris me-2 flex-grow-1">Cita Médica</span>
-                                                <div class="text-silver-dark fw-medium fs-14 me-4">
-                                                    <i class="fa-regular fa-calendar-check me-1"></i>
-                                                    Por realizar
+                                                <div class="text-end ms-2">
+                                                    <div class="text-verde fw-medium fs-14">
+                                                        <i class="fa-solid fa-circle me-1"></i>
+                                                        Pagado
+                                                    </div>
+                                                    <div class="text-silver-dark fw-medium fs-14">
+                                                        <i class="fa-regular fa-calendar-check me-1"></i>
+                                                        Por realizar
+                                                    </div>
                                                 </div>
-                                                <span class="text-verde fw-medium fs-14">
-                                                    <i class="fa-solid fa-circle me-1"></i>
-                                                    Pagado
-                                                </span>
                                             </div>
                                             <div class="card-body p-0 bg-transparent border-0">
                                                 <div class="d-flex justify-content-center align-items-center fw-bold text-dark fs-18 bg-silver-light py-2 rounded-8 my-2">
-                                                    Ve al consultorio <span class="text-veris ms-2 fs-40">13</span>
+                                                    Ve al consultorio <span class="text-veris ms-2 fs-25">13</span>
                                                 </div>
+                                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                                    <div class="avatar-doctor border-veris-1" style="background: url(https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg) no-repeat top center;background-size: cover;">
+                                                    </div>
+                                                    <div class="info-doctor text-veris-dark mx-2">
+                                                        <p class="mb-1 fw-medium">Dr(a) Moreno Obando Jaime Roberto</p>
+                                                        <p class="mb-1">Medicina General</p>
+                                                    </div>
+                                                    <div class="info-doctor ms-2">
+                                                        <p class="mb-1 fw-bold text-veris">Agendado</p>
+                                                        <p class="mb-1">AGO 09, 2025 <span class="text-veris">11:20 AM</span></p>
+                                                        <p class="mb-1">Veris Alborada</p>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex justify-content-start align-items-start mt-2">
+                                                    <p class="text-veris-dark fw-medium mb-1">Beneficio:</p>
+                                                    <p class="mb-1 ms-2">SALUDSA-PLANSMART</p>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer mt-auto p-0 bg-transparent border-0">
+                                                <button type="button" class="btn w-100 d-flex bg-veris text-white justify-content-center align-items-center p-2 py-3 mt-3">
+                                                    Confirmar cita
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-lg-6 col-xxl-4 d-flex">
-                                    <div class="w-100">
-                                        <div class="tab-card bg-chequeos d-inline-block py-2 px-3 rounded-t-8">
-                                            <span class="fs-16 fw-medium text-veris-dark">Chequeo Empresarial</span>
-                                        </div>
-                                        <div class="card rounded-8 p-2 border-chequeos-1 rounded-ts-0 h-100">
-                                            <!-- Content -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="tab-pane fade mt-3 px-2 w-100" id="pills-servicio2" role="tabpanel" aria-labelledby="pills-servicio2-tab" tabindex="0">
                             <div class="accordion" id="accordionPanelsStayOpenExample">
@@ -1236,9 +1240,147 @@
     }
 
     async function drawTabs(){
-        $.each(groupedData, function(key, value){
+        let elem = `<li class="nav-item flex-fill" role="presentation">
+            <button data-rel="Hoy" class="nav-link tipoServicio w-100 px-8 px-md-5 d-flex justify-content-center align-items-center text-veris-dark fs-20 active" id="pills-Hoy-tab" data-bs-toggle="pill" data-bs-target="#pills-Hoy" type="button" role="tab" aria-controls="pills-Hoy" aria-selected="true">
+                Para hoy
+            </button>
+        </li>`;
+        let elemContent = `<div class="tab-pane fade mt-3 px-3 show active" id="pills-Hoy" role="tabpanel" aria-labelledby="pills-Hoy-tab" tabindex="0"></div>`;
+        $.each(groupedData2, function(key, value){
             console.log(value.tipoServicio)
+            console.log(value.labelServicio)
+            elem += `<li class="nav-item flex-fill" role="presentation">
+                <button data-rel="${value.tipoServicio}" class="nav-link tipoServicio w-100 px-8 px-md-5 d-flex justify-content-center align-items-center text-veris-dark fs-20" id="pills-${value.tipoServicio}-tab" data-bs-toggle="pill" data-bs-target="#pills-${value.tipoServicio}" type="button" role="tab" aria-controls="pills-${value.tipoServicio}" aria-selected="false">
+                    ${value.labelServicio}
+                </button>
+            </li>`;
+            elemContent += `<div class="tab-pane fade mt-3 px-3 show active" id="pills-${value.tipoServicio}" role="tabpanel" aria-labelledby="pills-${value.tipoServicio}-tab" tabindex="0"></div>`;
         })
+        $('#pills-tab-servicios').html(elem);
+        $('#pills-tabContent-servicios').html(elemContent);
+    }
+
+    async function drawServicioAgrupadoTabs(){
+        drawHoy();
+        let elem = ``;
+        $.each(groupedData2, function(key, value){
+            $.each(groupedData2, function(k, v){
+                console.log(value.tipoServicio);
+                console.log(v);
+            })
+        })
+    }
+
+    async function drawHoy(){
+        let elem = `<div class="row row-flex mb-3 pb-3" style="max-height: 75vh;">
+            <div class="col-12 col-lg-6 col-xxl-4 d-flex mb-5 mt-0">
+                <div class="w-100 mt-1">
+                    <div class="tab-card bg-citas d-inline-block py-2 px-4 rounded-t-8">
+                        <span class="fs-16 fw-medium text-veris-dark">Citas</span>
+                    </div>
+                    <div class="card d-flex flex-column content-card rounded-8 p-2 border-citas-1 rounded-ts-0">
+                        <div class="card-header p-0 bg-transparent border-0 d-flex justify-content-start align-items-center">
+                            <img class="me-2" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg" alt="">
+                            <span class="fs-16 fw-medium text-veris me-2 flex-grow-1">Cita Médica</span>
+                            <div class="text-end ms-2">
+                                <div class="text-verde fw-medium fs-14">
+                                    <i class="fa-solid fa-circle me-1"></i>
+                                    Pagado
+                                </div>
+                                <div class="text-silver-dark fw-medium fs-14">
+                                    <i class="fa-regular fa-calendar-check me-1"></i>
+                                    Por realizar
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0 bg-transparent border-0">
+                            <div class="d-flex justify-content-center align-items-center fw-bold text-dark fs-18 bg-silver-light py-2 rounded-8 my-2">
+                                Ve al consultorio <span class="text-veris ms-2 fs-25">13</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div class="avatar-doctor border-veris-1" style="background: url(https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg) no-repeat top center;background-size: cover;">
+                                </div>
+                                <div class="info-doctor text-veris-dark mx-2">
+                                    <p class="mb-1 fw-medium">Dr(a) Moreno Obando Jaime Roberto</p>
+                                    <p class="mb-1">Medicina General</p>
+                                </div>
+                                <div class="info-doctor ms-2">
+                                    <p class="mb-1 fw-bold text-veris">Agendado</p>
+                                    <p class="mb-1">AGO 09, 2025 <span class="text-veris">11:20 AM</span></p>
+                                    <p class="mb-1">Veris Alborada</p>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-start align-items-start mt-2">
+                                <p class="text-veris-dark fw-medium mb-1">Beneficio:</p>
+                                <p class="mb-1 ms-2">SALUDSA-PLANSMART</p>
+                            </div>
+                        </div>
+                        <div class="card-footer mt-auto p-0 bg-transparent border-0">
+                            <button type="button" class="btn w-100 d-flex bg-veris text-white justify-content-center align-items-center p-2 py-3 mt-3">
+                                Confirmar cita
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        $('#pills-Hoy').html(elem);
+    }
+
+    let groupedData2 = [];
+    let tipoServicioFilter = ['Citas','Laboratorio','Imagenes','Procedimientos','OrdenesApoyo','Odontologia','Promociones','Chequeos'];
+    async function agruparDatos2(){
+        $.each(dataServicios, (index, item) => {
+            let tipoServicioItem;
+            let labelServicio;
+            switch(item.tipoServicio){
+                case 'ORDEN_MEDICA':
+                    if(item.nombreServicioNivel1 == "PROCEDIMIENTOS"){
+                        tipoServicioItem = 'Procedimientos';
+                        labelServicio = 'Procedimientos';
+                    }else if(item.nombreServicioNivel1 == "IMAGENES"){
+                        tipoServicioItem = 'Imagenes';
+                        labelServicio = 'Imágenes';
+                    }else if(item.nombreServicioNivel1 == "LABORATORIO"){
+                        tipoServicioItem = 'Laboratorio';
+                        labelServicio = 'Laboratorio';
+                    }
+                break;
+                case 'ORDENES_APOYO_PENDIENTE':
+                    tipoServicioItem = 'Laboratorio';
+                    labelServicio = 'Laboratorio';
+                break;
+                case 'RESERVA':
+                    tipoServicioItem = 'Citas';
+                    labelServicio = 'Citas';
+                break;
+                case 'BATERIA_PRESTACIONES':
+                    tipoServicioItem = 'Chequeos';
+                    labelServicio = 'Chequeo Empresarial';
+                break;
+                case 'PAQUETES_PROMOCIONALES':
+                    tipoServicioItem = 'Promociones';
+                    labelServicio = 'Promociones';
+                break;
+            }
+
+            const existingGroup = groupedData2.find(group => group.tipoServicio === tipoServicioItem);
+
+            if (existingGroup) {
+                // Si el grupo ya existe, agrega el item a "items"
+                existingGroup.items.push(
+                    $.extend({}, item, { tipoServicio: undefined }) // Eliminar tipoServicio de los items
+                );
+            } else {
+                // Si no existe, crea el grupo con el primer item
+                groupedData2.push({
+                    tipoServicio: tipoServicioItem,
+                    labelServicio: labelServicio,
+                    nombreServicioNivel1: item.nombreServicioNivel1,
+                    items: [$.extend({}, item, { tipoServicio: undefined })] // Eliminar tipoServicio de los items
+                });
+            }
+        });
     }
 
     async function agruparDatos(){
@@ -1325,7 +1467,9 @@
             if(data.data.length > 0){
                 groupedData = [];
                 await agruparDatos();
+                await agruparDatos2();
                 await drawTabs();
+                await drawServicioAgrupadoTabs();
                 await drawServicioAgrupado(data.data);
                 $('.box-with-data').removeClass('d-none');
                 $('.box-with-data').addClass('d-block d-md-flex');
@@ -1911,10 +2055,18 @@
     body{
         overflow: hidden;
     }
+    .avatar-doctor{
+        width: 60px !important;
+        height: 60px !important;
+    }
     .row-flex {
         display: flex;
         flex-wrap: wrap;
         align-items: stretch;
+        overflow-y: auto;
+    }
+    .content-card {
+        height: 100%;
     }
     .paciente-item i{
         visibility: hidden;
@@ -2109,11 +2261,12 @@
         height: auto;
     }
 
-    .tab-pane {
+    #pills-tabContent .tab-pane {
         min-height: 300px;
         max-height: 450px;
         overflow-y: auto;
     }
+    
     .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
         color: #fff;
         background-color: #0071ce;
