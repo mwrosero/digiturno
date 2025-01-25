@@ -168,7 +168,7 @@
                     </div>
                     <div class="my-2 box-btn-familia border-veris-1 rounded-8">
                         <div class="btn w-100 btn-sm d-flex justify-content-between align-items-center pt-3 pb-3 border-veris-1 rounded-8" data-bs-toggle="modal" data-bs-target="#pacienteModal" id="btn-paciente" data-rel="">
-                            <p class="fw-light fs-20 line-height-20 mb-0 text-truncate nombrePacienteElegido"></p>
+                            <p class="fw-light fs-20 line-height-20 mb-0 text-truncate nombrePacienteElegido ms-3"></p>
                             <i class="fa-solid fa-chevron-right mx-2 text-veris fs-20 fw-bold"></i>
                         </div>
                     </div>
@@ -1241,20 +1241,45 @@
 
     async function drawTabs(){
         let elem = `<li class="nav-item flex-fill" role="presentation">
-            <button data-rel="Hoy" class="nav-link tipoServicio w-100 px-8 px-md-5 d-flex justify-content-center align-items-center text-veris-dark fs-20 active" id="pills-Hoy-tab" data-bs-toggle="pill" data-bs-target="#pills-Hoy" type="button" role="tab" aria-controls="pills-Hoy" aria-selected="true">
+            <button data-rel="Hoy" class="nav-link tipoServicio w-100 px-8 px-2 d-flex justify-content-center align-items-center text-veris-dark fs-20 active" id="pills-Hoy-tab" data-bs-toggle="pill" data-bs-target="#pills-Hoy" type="button" role="tab" aria-controls="pills-Hoy" aria-selected="true">
                 Para hoy
             </button>
         </li>`;
         let elemContent = `<div class="tab-pane fade mt-3 px-3 show active" id="pills-Hoy" role="tabpanel" aria-labelledby="pills-Hoy-tab" tabindex="0"></div>`;
         $.each(groupedData2, function(key, value){
-            console.log(value.tipoServicio)
-            console.log(value.labelServicio)
             elem += `<li class="nav-item flex-fill" role="presentation">
-                <button data-rel="${value.tipoServicio}" class="nav-link tipoServicio w-100 px-8 px-md-5 d-flex justify-content-center align-items-center text-veris-dark fs-20" id="pills-${value.tipoServicio}-tab" data-bs-toggle="pill" data-bs-target="#pills-${value.tipoServicio}" type="button" role="tab" aria-controls="pills-${value.tipoServicio}" aria-selected="false">
+                <button data-rel="${value.tipoServicio}" class="nav-link tipoServicio w-100 px-8 px-2 d-flex justify-content-center align-items-center text-veris-dark fs-20" id="pills-${value.tipoServicio}-tab" data-bs-toggle="pill" data-bs-target="#pills-${value.tipoServicio}" type="button" role="tab" aria-controls="pills-${value.tipoServicio}" aria-selected="false">
                     ${value.labelServicio}
                 </button>
             </li>`;
-            elemContent += `<div class="tab-pane fade mt-3 px-3 show active" id="pills-${value.tipoServicio}" role="tabpanel" aria-labelledby="pills-${value.tipoServicio}-tab" tabindex="0"></div>`;
+            elemContent += `<div class="tab-pane fade mt-3 px-3" id="pills-${value.tipoServicio}" role="tabpanel" aria-labelledby="pills-${value.tipoServicio}-tab" tabindex="0">
+                <div class="accordion" id="accordion-${value.tipoServicio}">
+                    <div class="accordion-item bg-transparent border-0">
+                        <h2 class="accordion-header" id="panelsStayOpen-pagadas-${value.tipoServicio}">
+                            <div class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-pagadas-${value.tipoServicio}-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-pagadas-${value.tipoServicio}-collapseOne">
+                                Pagadas
+                            </div>
+                        </h2>
+                        <div id="panelsStayOpen-pagadas-${value.tipoServicio}-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-pagadas-${value.tipoServicio}">
+                            <div class="accordion-body px-2">
+                                <div class="row" id="row-pagadas-${value.tipoServicio}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-transparent border-0">
+                        <h2 class="accordion-header" id="panelsStayOpen-porpagar-${value.tipoServicio}">
+                            <div class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-porpagar-${value.tipoServicio}-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-porpagar-${value.tipoServicio}-collapseTwo">
+                                Por pagar
+                            </div>
+                        </h2>
+                        <div id="panelsStayOpen-porpagar-${value.tipoServicio}-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-porpagar-${value.tipoServicio}">
+                            <div class="accordion-body px-2">
+                                <div class="row" id="row-porpagar-${value.tipoServicio}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
         })
         $('#pills-tab-servicios').html(elem);
         $('#pills-tabContent-servicios').html(elemContent);
@@ -1264,11 +1289,86 @@
         drawHoy();
         let elem = ``;
         $.each(groupedData2, function(key, value){
-            $.each(groupedData2, function(k, v){
-                console.log(value.tipoServicio);
-                console.log(v);
+            $.each(value.items, function(k, v){
+                drawCardItem(value.tipoServicio, v);
             })
         })
+    }
+
+    async function drawCardItem(tipoServicio, detalle){
+        let elem = `<div class="col-12 col-lg-6 col-xxl-4 d-flex mb-5 mt-0">
+                <div class="w-100 mt-1">
+                    <div class="card d-flex flex-column content-card rounded-8 p-2 border-citas-1 rounded-ts-0">
+                        <div class="card-header p-0 bg-transparent border-0 d-flex justify-content-start align-items-center">
+                            <img class="me-2" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg" alt="">
+                            <span class="fs-16 fw-medium text-veris me-2 flex-grow-1">Cita Médica</span>
+                            <div class="text-end ms-2">
+                                <div class="text-verde fw-medium fs-14">
+                                    <i class="fa-solid fa-circle me-1"></i>
+                                    Pagado
+                                </div>
+                                <div class="text-silver-dark fw-medium fs-14">
+                                    <i class="fa-regular fa-calendar-check me-1"></i>
+                                    Por realizar
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0 bg-transparent border-0">
+                            <div class="d-flex justify-content-center align-items-center fw-bold text-dark fs-18 bg-silver-light py-2 rounded-8 my-2">
+                                Ve al consultorio <span class="text-veris ms-2 fs-25">13</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div class="avatar-doctor border-veris-1" style="background: url(https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg) no-repeat top center;background-size: cover;">
+                                </div>
+                                <div class="info-doctor text-veris-dark mx-2">
+                                    <p class="mb-1 fw-medium">Dr(a) Moreno Obando Jaime Roberto</p>
+                                    <p class="mb-1">Medicina General</p>
+                                </div>
+                                <div class="info-doctor ms-2">
+                                    <p class="mb-1 fw-bold text-veris">Agendado</p>
+                                    <p class="mb-1">AGO 09, 2025 <span class="text-veris">11:20 AM</span></p>
+                                    <p class="mb-1">Veris Alborada</p>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-start align-items-start mt-2">
+                                <p class="text-veris-dark fw-medium mb-1">Beneficio:</p>
+                                <p class="mb-1 ms-2">SALUDSA-PLANSMART</p>
+                            </div>
+                        </div>
+                        <div class="card-footer mt-auto p-0 bg-transparent border-0">
+                            <button type="button" class="btn w-100 d-flex bg-veris text-white justify-content-center align-items-center p-2 py-3 mt-3">
+                                Confirmar cita
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        let sectionEstadoPago = `pagadas`;
+        switch(tipoServicio){
+            case 'ORDEN_MEDICA':
+                if(item.nombreServicioNivel1 == "PROCEDIMIENTOS"){
+                }else if(item.nombreServicioNivel1 == "IMAGENES"){
+                }else if(item.nombreServicioNivel1 == "LABORATORIO"){
+                }
+            break;
+            case 'ORDENES_APOYO_PENDIENTE':
+                
+            break;
+            case 'RESERVA':
+                if(!detalle.estaPagado){
+                    sectionEstadoPago = `porpagar`
+                };
+            break;
+            case 'BATERIA_PRESTACIONES':
+                
+            break;
+            case 'PAQUETES_PROMOCIONALES':
+                
+            break;
+        }
+        $(`#row-${sectionEstadoPago}-${tipoServicio}`).html(elem);
+
     }
 
     async function drawHoy(){
