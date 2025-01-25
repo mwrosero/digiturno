@@ -86,7 +86,7 @@
             height: 300,
             color: "#000",
             bgColor: "#FFF",
-            text: `${web_url}/ingreso/{{ $mac }}?utm_source=PC&utm_medium=CENTRAL&utm_campaign=lanzamiento_digiturno&utm_id={{ $mac }}`
+            text: `${web_url}/ingreso/{{ $mac }}?utm_source=PC&utm_medium=CENTRAL_&utm_campaign=lanzamiento_digiturno&utm_id={{ $mac }}`
             // text: `${web_url}/ingreso/{{ $mac }}?utm_source=HOJA&utm_medium=CENTRAL_TUMBACO&utm_campaign=lanzamiento_digiturno`
 		});
 
