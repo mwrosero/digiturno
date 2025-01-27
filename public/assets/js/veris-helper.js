@@ -1104,3 +1104,24 @@ function obtenerDiferenciaDiasIntl(fechaStr) {
 function isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
+
+function formatearFechaMesDia(horaInicio) {
+    // Crear un objeto Date a partir de la cadena
+    const fecha = new Date(horaInicio.replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$2/$1/$3'));
+
+    // Definir los nombres abreviados de los meses
+    const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+
+    // Obtener los componentes de la fecha
+    const mes = meses[fecha.getMonth()]; // Mes abreviado
+    const dia = fecha.getDate(); // Día
+    const anio = fecha.getFullYear(); // Año
+    let horas = fecha.getHours(); // Horas
+    const minutos = String(fecha.getMinutes()).padStart(2, '0'); // Minutos con dos dígitos
+
+    // Determinar AM/PM y ajustar la hora
+    const periodo = fecha.getHours() >= 12 ? "PM" : "AM";
+
+    // Formatear la fecha final
+    return `${mes} ${dia}, ${anio}|${horas}:${minutos} ${periodo}`;
+}

@@ -207,6 +207,7 @@
     --colorChequeos: #00A0AF;
     --colorCitas: #7CC8E6;
     --colorVerde: #00C853;
+    --greenDark: #669600;
 }
 
 
@@ -305,6 +306,10 @@ body, html {
 .footer {
     background-color: #f8f9fa;
     flex: 0 0 auto;
+}
+
+.text-green-dark{
+    color: var(--greenDark);
 }
 
 .text-verde{

@@ -1,11 +1,13 @@
 @extends('template.app-template')
 @section('content')
+<link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/kioskboard-2.3.0.min.css">
 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/print.min.css">
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-2.3.0.min.js"></script>
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/print.min.js"></script>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 {{-- Modal de pago --}}
-<div class="modal modal-top fade" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel">
-    <div class="modal-dialog modal modal-sm modal-dialog-centered mx-auto">
+<div class="modal fade mt-4" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel">
+    <div class="modal-dialog modal-sm modal-dialog-top modal-dialog-scrollable mx-auto">
         <form class="modal-content rounded-8">
             <div class="modal-header d-none">
                 <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -29,7 +31,7 @@
                 </ul>
                 <div class="tab-content bg-transparent w-100 pt-2" id="pills-tabContent">
                     <div class="tab-pane fade mt-3 px-2 w-100 show active text-center" id="pills-email" role="tabpanel" aria-labelledby="pills-email-tab" tabindex="0">
-                        <input autofocus autocomplete="off" id="email_link_pago" type="text" class="w-100 keyboard-input p-1 rounded-8 text-center fs-1">
+                        <input autofocus autocomplete="off" id="email_link_pago" type="text" class="w-100 keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1" data-kioskboard-specialcharacters="true">
                         <div type="button" class="btn bg-veris-dark btn-enviar-mail text-white mx-auto mb-5 rounded-8 my-5 fs-20">
                             ENVIAR LINK DE PAGO
                             <i class="fa-regular fa-paper-plane ms-2 text-white"></i>
@@ -69,6 +71,28 @@
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
                 <button type="button" class="btn fw-normal text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-print-notificar-llegada" data-bs-dismiss="modal">Activar</button>
                 <a href="#" class="btn fw-normal fs--16 badge bg-veris px-4 py-2 mx-2 fs-4 btn-salir text-white" data-bs-dismiss="modal">CERRAR</a>
+            </div>
+        </form>
+    </div>
+</div>
+{{-- Modal Confirmar Cita --}}
+<div class="modal modal-top fade" id="modalConfirmarCita" tabindex="-1" aria-labelledby="modalConfirmarCitaLabel">
+    <div class="modal-dialog modal modal-sm modal-dialog-centered mx-auto">
+        <form class="modal-content rounded-8">
+            <div class="modal-header d-none">
+                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3 text-center">
+                {{-- <h5 class="fs--20 line-height-24 mt-3 mb-3">{{ __('Detalle la orden:') }}</h5> --}}
+                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-start">Cita confirmada</h5>
+                <div class="box-info-consultorio d-flex justify-content-center align-items-center fw-bold text-dark fs-25 bg-silver-light py-2 rounded-8 my-2">
+                </div>
+                <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/confirmar-cita.svg" alt="" style="min-width: 350px;">
+                <h3 class="fw-medium text-veris-dark">¿Deseas gestionar algo más?</h3>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
+                <button type="button" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-salir" data-bs-dismiss="modal">No</button>
+                <a href="#" class="btn fw-normal fs--16 badge bg-white px-4 py-2 mx-2 fs-4 btn-salir text-veris border-veris-1" data-bs-dismiss="modal">Si</a>
             </div>
         </form>
     </div>
@@ -508,7 +532,7 @@
         </div>
     </main>
 </div>
-<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js?v=1.0.8"></script>
+{{-- <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js?v=1.0.8"></script> --}}
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/qrcode.js"></script>
 <script>
     let dataServicios;
@@ -523,9 +547,21 @@
     buscarUsuarioFlag = false;
 
     $(document).ready(async function() {
-        const $keyboard = $(".keyboard");
-        const $inputField = $("#email_link_pago");
+        if(!isMobile()){
+            KioskBoard.init({
+                keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
+                // keysNumeric: true,
+                //keysArrayOfObjects: null, // Usa el teclado QWERTY predeterminado
+                language: 'es',          // Idioma (ejemplo: 'es' para español)
+                theme: 'light',          // Tema del teclado ('light' o 'dark')
+                keysSpacebarText: 'Espacio',
+                allowMobileKeyboard: false,
+                capsLockActive: true,
+                keysEnterText: '<i class="material-icons enter-key-icon">check_circle</i>',
+            });
 
+            KioskBoard.run('.virtual-keyboard-all', {});
+        }
         const macsParami = @json(\App\Models\Veris::MACS_PARAMI);
 
         if(macsParami.includes(dataTurno.mac)){
@@ -578,20 +614,18 @@
             // reiniciarConteo();
         });
 
+        $('body').on('click','.btn-confirmar-cita', function(){
+            let detalle = JSON.parse($(this).attr('data-rel'));
+            console.log(detalle);
+            $('.box-info-consultorio').html(`Ve al ${(detalle.nombreSitioConsultorio.split(' '))[0].toLowerCase()} <span class="text-veris ms-2 fs-40">${(detalle.nombreSitioConsultorio.split(' '))[1]}</span>`);
+            $('#modalConfirmarCita').modal('show')
+        })
+
         if(!isMobile()){
             console.log("Iniciando conteo")
             // Iniciar el conteo inicial
             // reiniciarConteo();
         }
-
-        // Ocultar el teclado si se hace clic fuera de su contenedor
-        $(document).on("click", function (event) {
-            if (!$keyboard.is(event.target) && $keyboard.has(event.target).length === 0 &&
-                !$inputField.is(event.target)) {
-                puedeEnviar = false;
-                Keyboard.close();
-            }
-        });
         
         await parametrosGenerales(dataTurno.mac);
 
@@ -840,9 +874,9 @@
             await crearLinkpasarela(detalle);
         })
 
-        $('body').on('focus', '#email_link_pago', function(){
-            Keyboard.open();
-        });
+        // $('body').on('focus', '#email_link_pago', function(){
+        //     Keyboard.open();
+        // });
 
         $('body').on('click', '.btn-enviar-mail', async function(){
             await enviarLinkMailPago();
@@ -890,7 +924,7 @@
 
             let args = [];
 
-            args["endpoint"] =  `${api_url}/${api_war}/notificaciones/enviar_link_pago?idPaciente=${paciente.idPaciente}&tipoServicio=${detalle.tipoServicio}&codigoPrincipal=${codigoPrincipal}&correoDestinatario=${email}`;
+            args["endpoint"] =  `${api_url}/${api_war}/notificaciones/enviar_link_pago?idPaciente=${paciente.idPaciente}&tipoServicio=${detalle.tipoServicio}&codigoPrincipal=${codigoPrincipal}&correoDestinatario=${email}&macAddress={{ $mac }}`;
             //dataCita.paciente.numeroPaciente
             args["method"] = "POST";
             args["token"] = accessToken;
@@ -928,7 +962,7 @@
 
         let args = [];
 
-        args["endpoint"] =  `${api_url}/${api_war}/notificaciones/enviar_link_pago?idPaciente=${paciente.idPaciente}&tipoServicio=${detalle.tipoServicio}&codigoPrincipal=${codigoPrincipal}&correoDestinatario=`;
+        args["endpoint"] =  `${api_url}/${api_war}/notificaciones/enviar_link_pago?idPaciente=${paciente.idPaciente}&tipoServicio=${detalle.tipoServicio}&codigoPrincipal=${codigoPrincipal}&correoDestinatario=&macAddress={{ $mac }}`;
         //dataCita.paciente.numeroPaciente
         args["method"] = "POST";
         args["token"] = accessToken;
@@ -1252,7 +1286,7 @@
                     ${value.labelServicio}
                 </button>
             </li>`;
-            elemContent += `<div class="tab-pane fade mt-3 px-3" id="pills-${value.tipoServicio}" role="tabpanel" aria-labelledby="pills-${value.tipoServicio}-tab" tabindex="0">
+            elemContent += `<div class="tab-pane bg-silver-light fade mt-3 px-3" id="pills-${value.tipoServicio}" role="tabpanel" aria-labelledby="pills-${value.tipoServicio}-tab" tabindex="0">
                 <div class="accordion" id="accordion-${value.tipoServicio}">
                     <div class="accordion-item bg-transparent border-0">
                         <h2 class="accordion-header" id="panelsStayOpen-pagadas-${value.tipoServicio}">
@@ -1290,84 +1324,203 @@
         let elem = ``;
         $.each(groupedData2, function(key, value){
             $.each(value.items, function(k, v){
-                drawCardItem(value.tipoServicio, v);
+                drawCardItem(value.tipoServicio, value.labelServicio, v);
             })
         })
     }
 
-    async function drawCardItem(tipoServicio, detalle){
-        let elem = `<div class="col-12 col-lg-6 col-xxl-4 d-flex mb-5 mt-0">
+    async function drawCardItem(tipoServicio, labelServicio, detalle){
+        let detalleRel = JSON.stringify(detalle);
+        let icon_service_name = ``;
+        let sectionEstadoPago = `pagadas`;
+        let labelEstadoItem = `Pagado`;
+        let classEstadoItem = `text-verde`;
+
+        let textColorServicio = `text-veris`;
+        
+        let iconEstadoItemReserva = `<i class="fa-regular fa-calendar-check me-1"></i>`;
+        let classEstadoItemReserva = `text-veris`;
+        let strEstadoItemReserva = `Por realizar`;
+
+        let numeroOrden = ``;
+        
+        let elemHeaderCard = ``;
+        let elemBodyCard = ``;
+        let elemFooterCard = ``;
+
+        switch(detalle.tipoServicio){
+            case 'ORDEN_MEDICA':
+            case 'ORDENES_APOYO_PENDIENTE':
+                textColorServicio = `text-green-dark`;
+                var ordenPagada = verificarEstadoOrden(groupedData2[1].items[0]);
+                numeroOrden = detalle.numeroOrden;
+                if(!ordenPagada){
+                    sectionEstadoPago = `porpagar`;
+                    labelEstadoItem = `Por pagar`;
+                    classEstadoItem = `text-pendiente`;
+                    classEstadoItem = `text-pendiente`;
+                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
+                            Pagar aquí
+                        </button>
+                        <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                            Quiero un cajero
+                        </button>`;
+                }else{
+                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
+                            Pagar aquí
+                        </button>
+                        <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                            Quiero un cajero
+                        </button>`;
+                }
+                if(detalle.nombreServicioNivel1 == "PROCEDIMIENTOS"){
+                    icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/procedimiento-ico.svg`;
+                }else if(detalle.nombreServicioNivel1 == "IMAGENES"){
+                    icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/imagenes-ico.svg`;
+                }else if(detalle.nombreServicioNivel1 == "LABORATORIO"){
+                    icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/laboratorio-ico.svg`;
+                }else if(detalle.tipoServicio == 'ORDENES_APOYO_PENDIENTE'){
+                    icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/laboratorio-ico.svg`;  
+                }
+
+                let infoMedico = ``;
+                if(detalle.doctorAtencion !== null){
+                    infoMedico += `<div class="avatar-doctor border-veris-1" style="background: url(${ (detalle.fotoMedicoApp != null) ? detalle.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
+                    </div>
+                    <div class="info-doctor text-veris-dark mx-2 me-2">
+                        <p class="mb-1 fs-18 fw-bold text-capitalize">Dr(a) ${detalle.doctorAtencion.toLowerCase()}</p>
+                        <p class="mb-1 text-capitalize">${detalle.nombreEspecialidad.toLowerCase()}</p>
+                    </div>`;
+                }
+
+                // let fechaHoraAgenda = (formatearFechaMesDia(detalle.horaInicio)).split('|');
+                elemBodyCard += `<div class="d-flex justify-content-between align-items-center mt-3">
+                    ${infoMedico}
+                    <div class="info-doctor">
+                        <p class="mb-1 fw-bold text-veris">Orden emitida:</p>
+                        <p class="mb-1 text-capitalize">${detalle.fechaOrden}</p>
+                        <p class="mb-1 text-capitalize">${detalle.nombreSucursal.toLowerCase()}</p>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-start align-items-start mt-2">
+                    <p class="text-veris-dark fw-bold mb-1">Beneficio:</p>
+                    <p class="mb-1 ms-2 text-capitalize">${obtenerBeneficio(detalle.beneficio).toLowerCase()}</p>
+                </div>`
+            break;
+            // case 'ORDENES_APOYO_PENDIENTE':
+            //     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/laboratorio-ico.svg`;                
+            // break;
+            case 'RESERVA':
+                let fechaHoraAgenda = (formatearFechaMesDia(detalle.horaInicio)).split('|');
+                
+                icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg`;
+                
+                if(!detalle.estaPagado){
+                    iconEstadoItemReserva = ``;
+                    strEstadoItemReserva = ``;
+                    sectionEstadoPago = `porpagar`;
+                    labelEstadoItem = `Por pagar`;
+                    classEstadoItem = `text-pendiente`;
+                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
+                            Pagar aquí
+                        </button>
+                        <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                            Quiero un cajero
+                        </button>`;
+                }else{
+                    elemBodyCard += `<div class="d-flex justify-content-center align-items-center fw-bold text-dark fs-18 bg-silver-light py-2 rounded-8 my-2">
+                        Ve al ${(detalle.nombreSitioConsultorio.split(' '))[0].toLowerCase()} <span class="text-veris ms-2 fs-25">${(detalle.nombreSitioConsultorio.split(' '))[1]}</span>
+                    </div>`;
+                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-confirmar-cita p-2 py-3 mt-3">
+                            Confirmar cita
+                        </button>`;
+                }
+
+                let classHoraAgendada = `text-veris`;
+                
+                if(!tieneTiempo(detalle.horaInicioTiempoEspera)){
+                    iconEstadoItemReserva = `<i class="fa-regular fa-calendar-xmark me-1"></i>`;
+                    classEstadoItemReserva = `text-caution`;
+                    strEstadoItemReserva = `Atrasada`;
+                    classHoraAgendada = `text-caution`
+                }
+
+                if(detalle.nombreServicio == "TERAPIA FISICA"){
+                    icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/terapia-ico.svg`;
+                    labelServicio = `Terapia Física`;
+                }
+
+                elemBodyCard += `<div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="avatar-doctor border-veris-1" style="background: url(${ (detalle.fotoMedicoApp != null) ? detalle.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
+                    </div>
+                    <div class="info-doctor text-veris-dark mx-2">
+                        <p class="mb-1 fs-18 fw-bold text-capitalize">Dr(a) ${detalle.nombreMedico.toLowerCase()}</p>
+                        <p class="mb-1 text-capitalize">${detalle.nombreEspecialidad.toLowerCase()}</p>
+                    </div>
+                    <div class="info-doctor ms-2">
+                        <p class="mb-1 fw-bold text-veris">Agendado para:</p>
+                        <p class="mb-1 text-capitalize">${fechaHoraAgenda[0].toLowerCase()} <span class="${classHoraAgendada}">${fechaHoraAgenda[1]}</span></p>
+                        <p class="mb-1 text-capitalize">${detalle.nombreSucursal.toLowerCase()}</p>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-start align-items-start mt-2">
+                    <p class="text-veris-dark fw-bold mb-1">Beneficio:</p>
+                    <p class="mb-1 ms-2 text-capitalize">${obtenerBeneficio(detalle.beneficio).toLowerCase()}</p>
+                </div>`;
+            break;
+            case 'BATERIA_PRESTACIONES':
+                icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg`;
+            break;
+            case 'PAQUETES_PROMOCIONALES':
+                icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/promocion-ico.svg`;
+
+                if(!estadosVigentes.includes(detalle.codigoEstado)){
+                    sectionEstadoPago = `porpagar`;
+                    labelEstadoItem = `Por pagar`;
+                    classEstadoItem = `text-pendiente`;
+                }else{
+                    if(obtenerDiferenciaDiasIntl(detalle.fechaVigencia) >= 0){
+                        labelEstadoItem = `Vigente`;
+                    }else{
+                        labelEstadoItem = `Caducado`;
+                        classEstadoItem = `text-caution`;
+                    }
+                }
+            break;
+        }
+
+        let elem = `<div class="col-12 col-lg-6 col-xxl-4 d-flex mb-3 mt-0">
                 <div class="w-100 mt-1">
-                    <div class="card d-flex flex-column content-card rounded-8 p-2 border-citas-1 rounded-ts-0">
+                    <div class="card d-flex flex-column content-card rounded-8 p-2 px-3 border-citas-1 rounded-ts-0">
                         <div class="card-header p-0 bg-transparent border-0 d-flex justify-content-start align-items-center">
-                            <img class="me-2" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg" alt="">
-                            <span class="fs-16 fw-medium text-veris me-2 flex-grow-1">Cita Médica</span>
+                            <img class="me-2" src="${icon_service_name}" alt="">
+                            <div class="me-2 flex-grow-1"">
+                                <span class="fs-16 fw-medium ${textColorServicio} d-block">${labelServicio}</span>
+                                <span class="d-block ${textColorServicio}">${numeroOrden}</span>
+                            </div>
                             <div class="text-end ms-2">
-                                <div class="text-verde fw-medium fs-14">
+                                <div class="${classEstadoItem} fw-medium fs-14">
                                     <i class="fa-solid fa-circle me-1"></i>
-                                    Pagado
+                                    ${labelEstadoItem}
                                 </div>
-                                <div class="text-silver-dark fw-medium fs-14">
-                                    <i class="fa-regular fa-calendar-check me-1"></i>
-                                    Por realizar
+                                <div class="${classEstadoItemReserva} fw-medium fs-14">
+                                    ${iconEstadoItemReserva}
+                                    ${strEstadoItemReserva}
                                 </div>
                             </div>
                         </div>
                         <div class="card-body p-0 bg-transparent border-0">
-                            <div class="d-flex justify-content-center align-items-center fw-bold text-dark fs-18 bg-silver-light py-2 rounded-8 my-2">
-                                Ve al consultorio <span class="text-veris ms-2 fs-25">13</span>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <div class="avatar-doctor border-veris-1" style="background: url(https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg) no-repeat top center;background-size: cover;">
-                                </div>
-                                <div class="info-doctor text-veris-dark mx-2">
-                                    <p class="mb-1 fw-medium">Dr(a) Moreno Obando Jaime Roberto</p>
-                                    <p class="mb-1">Medicina General</p>
-                                </div>
-                                <div class="info-doctor ms-2">
-                                    <p class="mb-1 fw-bold text-veris">Agendado</p>
-                                    <p class="mb-1">AGO 09, 2025 <span class="text-veris">11:20 AM</span></p>
-                                    <p class="mb-1">Veris Alborada</p>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-start align-items-start mt-2">
-                                <p class="text-veris-dark fw-medium mb-1">Beneficio:</p>
-                                <p class="mb-1 ms-2">SALUDSA-PLANSMART</p>
-                            </div>
+                            ${elemBodyCard}
                         </div>
-                        <div class="card-footer mt-auto p-0 bg-transparent border-0">
-                            <button type="button" class="btn w-100 d-flex bg-veris text-white justify-content-center align-items-center p-2 py-3 mt-3">
-                                Confirmar cita
-                            </button>
+                        <div class="card-footer d-flex flex-wrap w-100 justify-content-between align-items-center mt-auto p-0 bg-transparent border-0 gap-2">
+                            ${elemFooterCard}
                         </div>
                     </div>
                 </div>
             </div>
         </div>`;
-        let sectionEstadoPago = `pagadas`;
-        switch(tipoServicio){
-            case 'ORDEN_MEDICA':
-                if(item.nombreServicioNivel1 == "PROCEDIMIENTOS"){
-                }else if(item.nombreServicioNivel1 == "IMAGENES"){
-                }else if(item.nombreServicioNivel1 == "LABORATORIO"){
-                }
-            break;
-            case 'ORDENES_APOYO_PENDIENTE':
-                
-            break;
-            case 'RESERVA':
-                if(!detalle.estaPagado){
-                    sectionEstadoPago = `porpagar`
-                };
-            break;
-            case 'BATERIA_PRESTACIONES':
-                
-            break;
-            case 'PAQUETES_PROMOCIONALES':
-                
-            break;
-        }
-        $(`#row-${sectionEstadoPago}-${tipoServicio}`).html(elem);
+
+        $(`#row-${sectionEstadoPago}-${tipoServicio}`).append(elem);
 
     }
 
@@ -1921,7 +2074,7 @@
         }else if(beneficio.tarjeta != null){
             return beneficio.tarjeta.nombreTarjeta;
         }else{
-            return ``;
+            return `Particular`;
         }
     }
 
