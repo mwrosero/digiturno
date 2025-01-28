@@ -1385,6 +1385,9 @@
                             labelEstadoItem = `Pagado parcialmente`;
                             let cantidadPagados = ` (${ordenParcial}) <span class="text-veris-dark fw-medium">${ (ordenParcial == 1) ? `Examen pagado` : `Exámenes pagados` }</span>`
                             strEstadoItemReserva = `Por realizar ${cantidadPagados}`;
+                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris-dark text-white btn-notificar-llegada p-2 py-3 mt-3">
+                                Activar orden parcial
+                            </button>`;
                         }else{
                             labelEstadoItem = `Por pagar`;
                         }
@@ -1519,18 +1522,42 @@
             case 'PAQUETES_PROMOCIONALES':
                 icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/promocion-ico.svg`;
 
+                labelServicio = `${detalle.nombrePaquete.toLowerCase()}`;
+                
+                iconEstadoItemReserva = ``;
+                strEstadoItemReserva = ``;
+
+                let dias = obtenerDiferenciaDiasIntl(detalle.fechaVigencia);
+                
                 if(!estadosVigentes.includes(detalle.codigoEstado)){
                     sectionEstadoPago = `porpagar`;
                     labelEstadoItem = `Por pagar`;
                     classEstadoItem = `text-pendiente`;
                 }else{
-                    if(obtenerDiferenciaDiasIntl(detalle.fechaVigencia) >= 0){
+                    if(dias >= 0){
                         labelEstadoItem = `Vigente`;
                     }else{
                         labelEstadoItem = `Caducado`;
                         classEstadoItem = `text-caution`;
                     }
                 }
+
+                elemFooterCard += `<div class="col-12 text-center fs-16 line-height-16 mb-3 fw-bold">
+                    <div class="mt-4 mb-3 fs-16 line-height-18 d-flex justify-content-center align-items-center">
+                        <span class="fw-bold text-veris-dark">Válido hasta:</span>
+                        <span class="ms-2 ${ (dias < 0) ? `text-caution` : `text-veris` }">${detalle.fechaVigencia}</span>
+                    </div>
+                    <div class="mb-1 text-veris fs-16 line-height-18 d-flex justify-content-center align-items-center">
+                        <span class="fw-bold text-veris-dark">Días restantes:</span> <div class="rounded-8 bg-veris-sky border-veris-1 py-2 px-3 ms-2">${ (dias > 0) ? dias : `0` }</div>
+                    </div>
+                </div>`;
+
+                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-paquete p-2 py-3 mt-3">
+                        Ver detalle
+                    </button>
+                    <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3">
+                        Asistencia en caja
+                    </button>`;
             break;
         }
 
@@ -1539,11 +1566,11 @@
                     <div class="card d-flex flex-column content-card rounded-8 p-2 px-3 border-citas-1">
                         <div class="card-header p-0 bg-transparent border-0 d-flex justify-content-start align-items-center">
                             <img class="me-2" src="${icon_service_name}" alt="">
-                            <div class="me-2 flex-grow-1"">
-                                <span class="fs-16 fw-medium ${textColorServicio} d-block">${labelServicio}</span>
+                            <div class="me-2 flex-grow-1">
+                                <span class="fs-16 fw-medium ${textColorServicio} d-block text-capitalize">${labelServicio}</span>
                                 <span class="d-block ${textColorServicio}">${numeroOrden}</span>
                             </div>
-                            <div class="text-end ms-2">
+                            <div class="text-end ms-2" style="min-width: 100px;">
                                 <div class="${classEstadoItem} fw-medium fs-14">
                                     <i class="fa-solid fa-circle me-1"></i>
                                     ${labelEstadoItem}
