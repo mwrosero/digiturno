@@ -1406,10 +1406,12 @@
                     }else{
                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
                                 Ver detalle
-                            </button>
-                            <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-notificar-llegada p-2 py-3 mt-3">
+                            </button>`;
+                        if(detalle.tieneOrdenApoyoPendiente){
+                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-notificar-llegada p-2 py-3 mt-3">
                                 Activar orden
                             </button>`;
+                        }
                     }
                 }else{
                     sectionEstadoPago = `porpagar`;
