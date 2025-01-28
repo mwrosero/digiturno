@@ -207,6 +207,9 @@
     --colorChequeos: #00A0AF;
     --colorCitas: #7CC8E6;
     --colorVerde: #00C853;
+    --greenDark: #669600;
+    --purple: #4D4084;
+    --turquesa: #25A4D6;
 }
 
 
@@ -305,6 +308,18 @@ body, html {
 .footer {
     background-color: #f8f9fa;
     flex: 0 0 auto;
+}
+
+.text-purple{
+    color: var(--purple);
+}
+
+.text-turquesa{
+    color: var(--turquesa);
+}
+
+.text-green-dark{
+    color: var(--greenDark);
 }
 
 .text-verde{
