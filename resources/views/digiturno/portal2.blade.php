@@ -1351,35 +1351,53 @@
         switch(detalle.tipoServicio){
             case 'ORDEN_MEDICA':
             case 'ORDENES_APOYO_PENDIENTE':
-                textColorServicio = `text-green-dark`;
-                var ordenPagada = verificarEstadoOrden(groupedData2[1].items[0]);
+                var ordenPagada = verificarEstadoOrden(detalle);
                 numeroOrden = detalle.numeroOrden;
-                if(!ordenPagada){
+                var permiteAgendar = await verificarSiTienePrestacionAgendable(detalle);
+                if(permiteAgendar){
+                    classEstadoItemReserva = `text-silver-dark`;
+                    strEstadoItemReserva = `Por agendar`;
+                }
+                if(detalle.permitePago){
+                    if(!ordenPagada){
+                        sectionEstadoPago = `porpagar`;
+                        labelEstadoItem = `Por pagar`;
+                        classEstadoItem = `text-pendiente`;
+                        classEstadoItem = `text-pendiente`;
+                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3">
+                                Pagar aquí
+                            </button>
+                            <button type="button" data-rel='${detalleRel}' class="btn flex-fill  bg-veris text-white btn-turno p-2 py-3 mt-3">
+                                Quiero un cajero
+                            </button>`;
+                    }else{
+                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
+                                Ver detalle
+                            </button>
+                            <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-notificar-llegada p-2 py-3 mt-3">
+                                Activar orden
+                            </button>`;
+                    }
+                }else{
                     sectionEstadoPago = `porpagar`;
                     labelEstadoItem = `Por pagar`;
                     classEstadoItem = `text-pendiente`;
                     classEstadoItem = `text-pendiente`;
-                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
-                            Pagar aquí
-                        </button>
-                        <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
-                            Quiero un cajero
-                        </button>`;
-                }else{
-                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
-                            Pagar aquí
-                        </button>
-                        <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
-                            Quiero un cajero
-                        </button>`;
+                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
+                                Ver detalle
+                            </button>`;
                 }
+
                 if(detalle.nombreServicioNivel1 == "PROCEDIMIENTOS"){
                     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/procedimiento-ico.svg`;
                 }else if(detalle.nombreServicioNivel1 == "IMAGENES"){
+                    textColorServicio = `text-purple`;
                     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/imagenes-ico.svg`;
                 }else if(detalle.nombreServicioNivel1 == "LABORATORIO"){
+                    textColorServicio = `text-green-dark`;
                     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/laboratorio-ico.svg`;
                 }else if(detalle.tipoServicio == 'ORDENES_APOYO_PENDIENTE'){
+                    textColorServicio = `text-green-dark`;
                     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/laboratorio-ico.svg`;  
                 }
 
@@ -1491,7 +1509,7 @@
 
         let elem = `<div class="col-12 col-lg-6 col-xxl-4 d-flex mb-3 mt-0">
                 <div class="w-100 mt-1">
-                    <div class="card d-flex flex-column content-card rounded-8 p-2 px-3 border-citas-1 rounded-ts-0">
+                    <div class="card d-flex flex-column content-card rounded-8 p-2 px-3 border-citas-1">
                         <div class="card-header p-0 bg-transparent border-0 d-flex justify-content-start align-items-center">
                             <img class="me-2" src="${icon_service_name}" alt="">
                             <div class="me-2 flex-grow-1"">
@@ -1522,6 +1540,16 @@
 
         $(`#row-${sectionEstadoPago}-${tipoServicio}`).append(elem);
 
+    }
+
+    async function verificarSiTienePrestacionAgendable(detalle){
+        let permiteAgenda = false;
+        $.each(detalle.detallesOrden, function(k,v) {
+            if(v.esAgendable == "S"){
+                permiteAgenda = true;
+            }
+        });
+        return permiteAgenda;
     }
 
     async function drawHoy(){
