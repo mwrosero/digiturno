@@ -113,6 +113,44 @@
         </form>
     </div>
 </div>
+{{-- Modal detalle orden --}}
+<div class="modal modal-top fade" id="modalDetalleOrden" tabindex="-1" aria-labelledby="modalDetalleOrdenLabel">
+    <div class="modal-dialog modal modal-dialog-centered mx-auto">
+        <form class="modal-content rounded-8">
+            <div class="modal-header d-none">
+                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3" id="tituloOrdenDetalle"></h5>
+                <div class="bg-silver-light rounded-8 text-veris-dark text-center fs-16 fw-bold p-2 mb-2">Muestras</div>
+                <ul class="row border-0 p-0 my-2" id="detalleComponentesOrden">
+                    <div class="col-12 col-md-6 d-flex flex-fill flex-column prestaciones-pagadas">
+                        <ul class="list-group flex-grow-1"></ul>
+                    </div>
+                    <div class="col-12 col-md-6 d-flex flex-fill flex-column prestaciones-porpagar">
+                        <ul class="list-group flex-grow-1"></ul>
+                    </div>
+                </ul>
+                <div class="box-opciones-orden">
+                </div>
+            </div>
+            <div class="modal-footer d-block pt-0 pb-3 px-3 border-0">
+                <div class="d-flex align-items-center mb-1">
+                    <span style="width: 25px;" class="badge text-center badge-pill me-2">
+                        <i class="fa-solid fa-circle-check text-verde"></i>
+                    </span>
+                    <p class="text-900 fs-12 mb-0"> Muestra realizada y pagada.</p>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                    <span style="width: 25px;" class="badge text-center badge-pill me-2">
+                        <i class="fa-solid fa-triangle-exclamation text-pendiente"></i>
+                    </span>
+                    <p class="text-900 fs-12 mb-0"> Muestra pendiente por realizar o por pagar.</p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 {{-- Modal detalle paquete --}}
 <div class="modal modal-top fade" id="modalDetallePaquete" tabindex="-1" aria-labelledby="modalDetallePaqueteLabel">
     <div class="modal-dialog modal modal-dialog-centered mx-auto">
@@ -700,54 +738,79 @@
         $('body').on('click', '.btn-detalle-orden', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             console.log(detalle)
-            $('#tituloPaqueteDetalle').html(`Detalle de Orden Médica: ${detalle.numeroOrden}`);
+            $('#tituloOrdenDetalle').html(`Detalle de Orden Médica: <span class="text-veris fw-bold">${detalle.numeroOrden}</span>`);
             
-            $('.box-info-detalle').html(`<div class="d-flex align-items-center mb-1">
-                    <span style="width: 25px;" class="badge bg-pendiente text-center badge-pill me-2">
-                        <i class="fa-solid fa-triangle-exclamation text-white"></i>
-                    </span>
-                    <p class="text-900 fs-12 mb-0"> Pendiente de pago</p>
-                </div>
-                <div class="d-flex align-items-center mb-1">
-                    <span style="width: 25px;" class="badge text-center bg-success badge-pill me-2">
-                        <i class="fa-solid fa-check text-white"></i>
-                    </span>
-                    <p class="text-900 fs-12 mb-0"> Muestra recepcionada</p>
-                </div>
-                <div class="d-flex align-items-center mb-1">
-                    <span style="width: 25px;" class="badge bg-veris-light text-center badge-pill me-2">
-                        <i class="fa-solid fa-stopwatch text-veris-dark"></i>
-                    </span>
-                    <p class="text-900 fs-12 mb-0"> Muestra pendiente de entrega</p>
-                </div>
-            `);
-
+            //if(detalle.tieneOrdenApoyoPendiente || detalle.tipoServicio == "ORDENES_APOYO_PENDIENTE")
+            let qtyPrestacionesPagadas = 0;
+            let prestacionesPagadas = `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-18 fw-medium ms-1 p-0 line-height-18 d-flex justify-content-center align-items-start">Pagadas</li>`;
+            let qtyPrestacionesPorPagar = 0;
+            let prestacionesPorPagar = `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-18 fw-medium ms-1 p-0 line-height-18 d-flex justify-content-center align-items-start">Por pagar</li>`;
             let elem = ``;
             $.each(detalle.detallesOrden, function(key, value){
                 let badge = ``;
+
                 if(estadosVigentes.includes(value.codigoEstado)){
                     if(value.fechaRecepcion == null){
-                        badge = `<span style="width: 25px;" class="badge bg-veris-light text-center badge-pill ms-2">
-                                <i class="fa-solid fa-stopwatch text-veris-dark"></i>
+                        badge = `<span style="width: 25px;" class="badge text-center badge-pill ms-2">
+                                <i class="fa-solid fa-triangle-exclamation text-pendiente"></i>
                             </span>`;
+                        qtyPrestacionesPagadas++;
                     }else{
-                        badge = `<span style="width: 25px;" class="badge text-center bg-success badge-pill ms-2">
-                                <i class="fa-solid fa-check text-white"></i>
+                        badge = `<span style="width: 25px;" class="badge text-center badge-pill ms-2">
+                                <i class="fa-solid fa-circle-check text-verde"></i>
                             </span>`
                     }
+                    prestacionesPagadas += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start">
+                        ${ badge }
+                        ${ value.nombrePrestacion }
+                    </li>`
                 }else{
-                    badge = `<span style="width: 25px;" class="badge bg-pendiente text-center badge-pill ms-2">
-                            <i class="fa-solid fa-triangle-exclamation text-white"></i>
+                    qtyPrestacionesPorPagar++;
+                    badge = `<span style="width: 25px;" class="badge text-center badge-pill ms-2">
+                            <i class="fa-solid fa-triangle-exclamation text-pendiente"></i>
                         </span>`;
+                    prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start">
+                        ${ badge }
+                        ${ value.nombrePrestacion }
+                    </li>`
                 }
-                elem += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 line-height-16 d-flex justify-content-between align-items-start">
-                    ${ value.nombrePrestacion }
-                    ${ badge }
-                </li>`
                 // ${ value.nombreServicio }/${ value.nombrePrestacion }
             })
-            $('#detalleComponentesPaquete').html(elem);
-            $('#modalDetallePaquete').modal('show');
+            console.log({qtyPrestacionesPagadas})
+            console.log(detalle.tieneOrdenApoyoPendiente)
+            if(detalle.tieneOrdenApoyoPendiente && qtyPrestacionesPagadas > 0){
+                prestacionesPagadas += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start mt-auto">
+                        <div class="d-flex flex-wrap w-100 justify-content-between align-items-center mt-auto p-0 bg-transparent border-0 gap-2">
+                            <button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-notificar-llegada p-2 py-3 mt-3" data-bs-dismiss="modal">
+                                Activar orden
+                            </button>
+                        </div>
+                    </li>`
+            }
+            if(qtyPrestacionesPagadas > 0){
+                $('.prestaciones-pagadas').removeClass('d-none');
+            }else{
+                $('.prestaciones-pagadas').addClass('d-none');
+            }
+            
+            if(qtyPrestacionesPorPagar > 0){
+                prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start mt-auto">
+                        <div class="d-flex flex-wrap w-100 justify-content-between align-items-center mt-auto p-0 bg-transparent border-0 gap-2">
+                            <button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
+                                Pagar aquí
+                            </button>
+                            <button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
+                                Quiero un cajero
+                            </button>
+                        </div>
+                    </li>`
+                $('.prestaciones-porpagar').removeClass('d-none');
+            }else{
+                $('.prestaciones-porpagar').addClass('d-none');
+            }
+            $('.prestaciones-pagadas ul').html(prestacionesPagadas);
+            $('.prestaciones-porpagar ul').html(prestacionesPorPagar);
+            $('#modalDetalleOrden').modal('show');
         })
 
         $('body').on('click', '.btn-detalle-paquete', async function(){
@@ -1442,7 +1505,7 @@
                     </div>
                     <div class="info-doctor text-veris-dark mx-2 me-2">
                         <p class="mb-1 fs-18 fw-bold text-capitalize">Dr(a) ${detalle.doctorAtencion.toLowerCase()}</p>
-                        <p class="mb-1 text-capitalize">${detalle.nombreEspecialidad.toLowerCase()}</p>
+                        <p class="mb-1 text-capitalize">${(detalle.nombreEspecialidad !== null) ?? detalle.nombreEspecialidad.toLowerCase()}</p>
                     </div>`;
                 }
 
