@@ -1385,21 +1385,24 @@
                             labelEstadoItem = `Pagado parcialmente`;
                             let cantidadPagados = ` (${ordenParcial}) <span class="text-veris-dark fw-medium">${ (ordenParcial == 1) ? `Examen pagado` : `Exámenes pagados` }</span>`
                             strEstadoItemReserva = `Por realizar ${cantidadPagados}`;
-                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris-dark text-white btn-notificar-llegada p-2 py-3 mt-3">
-                                Activar orden parcial
-                            </button>`;
                         }else{
                             labelEstadoItem = `Por pagar`;
                         }
                         sectionEstadoPago = `porpagar`;
                         classEstadoItem = `text-pendiente`;
                         classEstadoItem = `text-pendiente`;
-                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3">
+                        if(ordenParcial > 0){
+                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
+                                Ver detalle
+                            </button>`;
+                        }else{
+                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3">
                                 Pagar aquí
                             </button>
-                            <button type="button" data-rel='${detalleRel}' class="btn flex-fill  bg-veris text-white btn-turno p-2 py-3 mt-3">
+                            <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3">
                                 Quiero un cajero
                             </button>`;
+                        }
                     }else{
                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
                                 Ver detalle
