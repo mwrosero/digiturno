@@ -1287,34 +1287,53 @@
                     ${value.labelServicio}
                 </button>
             </li>`;
-            elemContent += `<div class="tab-pane bg-silver-light fade mt-3 px-3" id="pills-${value.tipoServicio}" role="tabpanel" aria-labelledby="pills-${value.tipoServicio}-tab" tabindex="0">
-                <div class="accordion" id="accordion-${value.tipoServicio}">
-                    <div class="accordion-item bg-transparent border-0">
-                        <h2 class="accordion-header" id="panelsStayOpen-pagadas-${value.tipoServicio}">
-                            <div class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-pagadas-${value.tipoServicio}-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-pagadas-${value.tipoServicio}-collapseOne">
-                                Pagadas
-                            </div>
-                        </h2>
-                        <div id="panelsStayOpen-pagadas-${value.tipoServicio}-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-pagadas-${value.tipoServicio}">
-                            <div class="accordion-body px-2">
-                                <div class="row" id="row-pagadas-${value.tipoServicio}"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item bg-transparent border-0">
-                        <h2 class="accordion-header" id="panelsStayOpen-porpagar-${value.tipoServicio}">
-                            <div class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-porpagar-${value.tipoServicio}-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-porpagar-${value.tipoServicio}-collapseTwo">
-                                Por pagar
-                            </div>
-                        </h2>
-                        <div id="panelsStayOpen-porpagar-${value.tipoServicio}-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-porpagar-${value.tipoServicio}">
-                            <div class="accordion-body px-2">
-                                <div class="row" id="row-porpagar-${value.tipoServicio}"></div>
+            if(value.tipoServicio == "Promociones" || value.tipoServicio == "Chequeos"){
+                elemContent += `<div class="tab-pane bg-silver-light fade mt-3 px-3" id="pills-${value.tipoServicio}" role="tabpanel" aria-labelledby="pills-${value.tipoServicio}-tab" tabindex="0">
+                    <div class="accordion" id="accordion-${value.tipoServicio}">
+                        <div class="accordion-item bg-transparent border-0">
+                            <h2 class="accordion-header" id="panelsStayOpen-pagadas-${value.tipoServicio}">
+                                <div class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-pagadas-${value.tipoServicio}-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-pagadas-${value.tipoServicio}-collapseOne">
+                                    Mis ${value.tipoServicio}
+                                </div>
+                            </h2>
+                            <div id="panelsStayOpen-pagadas-${value.tipoServicio}-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-pagadas-${value.tipoServicio}">
+                                <div class="accordion-body px-2">
+                                    <div class="row" id="row-pagadas-${value.tipoServicio}"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>`;
+                </div>`;
+            }else{
+                elemContent += `<div class="tab-pane bg-silver-light fade mt-3 px-3" id="pills-${value.tipoServicio}" role="tabpanel" aria-labelledby="pills-${value.tipoServicio}-tab" tabindex="0">
+                    <div class="accordion" id="accordion-${value.tipoServicio}">
+                        <div class="accordion-item bg-transparent border-0">
+                            <h2 class="accordion-header" id="panelsStayOpen-pagadas-${value.tipoServicio}">
+                                <div class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-pagadas-${value.tipoServicio}-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-pagadas-${value.tipoServicio}-collapseOne">
+                                    Pagadas
+                                </div>
+                            </h2>
+                            <div id="panelsStayOpen-pagadas-${value.tipoServicio}-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-pagadas-${value.tipoServicio}">
+                                <div class="accordion-body px-2">
+                                    <div class="row" id="row-pagadas-${value.tipoServicio}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-transparent border-0">
+                            <h2 class="accordion-header" id="panelsStayOpen-porpagar-${value.tipoServicio}">
+                                <div class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-porpagar-${value.tipoServicio}-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-porpagar-${value.tipoServicio}-collapseTwo">
+                                    Por pagar
+                                </div>
+                            </h2>
+                            <div id="panelsStayOpen-porpagar-${value.tipoServicio}-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-porpagar-${value.tipoServicio}">
+                                <div class="accordion-body px-2">
+                                    <div class="row" id="row-porpagar-${value.tipoServicio}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
         })
         $('#pills-tab-servicios').html(elem);
         $('#pills-tabContent-servicios').html(elemContent);
@@ -1359,10 +1378,17 @@
                     classEstadoItemReserva = `text-silver-dark`;
                     strEstadoItemReserva = `Por agendar`;
                 }
-                if(detalle.permitePago){
+                if(detalle.permitePago || detalle.tipoServicio == "ORDENES_APOYO_PENDIENTE"){
                     if(!ordenPagada){
+                        let ordenParcial = await verificarEstadoOrdenParcialmente(detalle);
+                        if(ordenParcial > 0){
+                            labelEstadoItem = `Pagado parcialmente`;
+                            let cantidadPagados = ` (${ordenParcial}) <span class="text-veris-dark fw-medium">${ (ordenParcial == 1) ? `Examen pagado` : `Exámenes pagados` }</span>`
+                            strEstadoItemReserva = `Por realizar ${cantidadPagados}`;
+                        }else{
+                            labelEstadoItem = `Por pagar`;
+                        }
                         sectionEstadoPago = `porpagar`;
-                        labelEstadoItem = `Por pagar`;
                         classEstadoItem = `text-pendiente`;
                         classEstadoItem = `text-pendiente`;
                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3">
@@ -1381,12 +1407,12 @@
                     }
                 }else{
                     sectionEstadoPago = `porpagar`;
-                    labelEstadoItem = `Por pagar`;
-                    classEstadoItem = `text-pendiente`;
-                    classEstadoItem = `text-pendiente`;
-                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
-                                Ver detalle
-                            </button>`;
+                        labelEstadoItem = `Por pagar`;
+                        classEstadoItem = `text-pendiente`;
+                        classEstadoItem = `text-pendiente`;
+                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
+                                    Ver detalle
+                                </button>`;
                 }
 
                 if(detalle.nombreServicioNivel1 == "PROCEDIMIENTOS"){
@@ -1949,6 +1975,24 @@
                 </div>
             </div>`;
         }
+    }
+
+    function verificarEstadoOrdenParcialmente(detalle){
+        // console.log(detalle);
+        var qtyEstaPagadaParcialmente = 0
+        //console.log(detalle.detallesOrden)
+        $.each(detalle.detallesOrden, function(k,v) {
+            if(detalle.tipoServicio == 'ORDENES_APOYO_PENDIENTE'){
+                if(estadosVigentes.includes(v.codigoEstado)){
+                    qtyEstaPagadaParcialmente++;
+                }    
+            }else{
+                if(v.estaFacturado){
+                    qtyEstaPagadaParcialmente++;
+                }
+            }
+        });
+        return qtyEstaPagadaParcialmente;
     }
 
     function verificarEstadoOrden(detalle){
