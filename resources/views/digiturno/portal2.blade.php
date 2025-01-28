@@ -657,11 +657,12 @@
         });
 
         await drawListFamiliaresModal();
-        $('body').on('click','.paciente-item', function(){
+        $('body').on('click','.paciente-item', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'))
             $(`.nombrePacienteElegido`).html(`${ detalle.nombreCompleto }`);
             $('.paciente-item').removeClass('paciente-item-selected');
             $(this).addClass('paciente-item-selected');
+            await cargarServicios();
         })
 
         await drawListFamiliares();
@@ -1731,7 +1732,10 @@
         $('#list-familiares').html(elem);
     }
     async function cargarServicios(){
-        let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+        $('#pills-tab-servicios').empty();
+        // let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+        let dataAttr = $('.paciente-item-selected').attr("data-rel");
+
         let paciente = JSON.parse(dataAttr);
         $('.name-selected-sidebar').html(`${paciente.primerNombre} ${paciente.primerApellido}`);
         let args = [];
@@ -1742,26 +1746,31 @@
         args["showLoader"] = true;
         const data = await call(args);
         // console.log(data);
+        groupedData2 = [];
         $('#list-servicios').empty();
         if(data.code == 200){
             dataServicios = data.data;
+            await agruparDatos2();
             if(data.data.length > 0){
                 groupedData = [];
                 await agruparDatos();
-                await agruparDatos2();
                 await drawTabs();
                 await drawServicioAgrupadoTabs();
-                await drawServicioAgrupado(data.data);
-                $('.box-with-data').removeClass('d-none');
-                $('.box-with-data').addClass('d-block d-md-flex');
-                $('.box-without-data').addClass('d-none');
-                $('.box-without-data').removeClass('d-flex');
+                // await drawServicioAgrupado(data.data);
+                // $('.box-with-data').removeClass('d-none');
+                // $('.box-with-data').addClass('d-block d-md-flex');
+                // $('.box-without-data').addClass('d-none');
+                // $('.box-without-data').removeClass('d-flex');
             }else{
-                $('.box-with-data').removeClass('d-block d-md-flex');
-                $('.box-with-data').addClass('d-none');
-                $('.box-without-data').removeClass('d-none');
-                $('.box-without-data').addClass('d-flex');
-                // $('#list-servicios').html(`Sin servicios que mostrar`);
+                await drawTabs();
+                $('#pills-Hoy').html(`
+                    <div class="row row-flex mb-3 pb-3">
+                        <div class="col-10 col-md-6 mx-auto text-center mt-3">
+                            <img class="w-100 mb-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/empty-data.svg" />
+                            <button type="button" class="btn fw-normal text-white fs-25 badge bg-veris px-4 py-3 btn-turno">¿Deseas gestionar algo?</button>
+                        </div>
+                    </div>
+                `)
             }
         }else{
             $('#mensajeError').html(`${data.message}`)
