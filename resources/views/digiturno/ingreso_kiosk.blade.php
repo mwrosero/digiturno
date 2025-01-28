@@ -236,7 +236,7 @@
 	      			$('#modalIngresarNombres').modal('show');
 	      		}
       		}else if(data.data.length == 1 && (tipo == "C" || tipo == "P")){
-      			storeData(data.data[0]);
+      			storeData(data.data[0], data.trackId);
       			location.href = "/portal/{{ $tokenTurno }}?mac={{ $mac }}";
       		}else{
       			let elem = ``;
@@ -252,9 +252,10 @@
       	}
 	}
 
-	async function storeData(data){
+	async function storeData(data, trackId){
 		let arr = {};
 		arr.paciente = data;
+		arr.trackId = trackId;
 		arr.mac = "{{ $mac }}";
 		console.log(arr);
 		localStorage.setItem('turno-{{ $tokenTurno }}', JSON.stringify(arr));
@@ -288,10 +289,10 @@
         console.log(data);
       	if(data.code == 200){
       		paciente.lsGrupoFamiliar = data.data
-      		storeData(paciente);
+      		storeData(paciente,data.trackId);
       		location.href = "/portal/{{ $tokenTurno }}?mac={{ $mac }}";
       	}else{
-      		storeData(paciente);
+      		storeData(paciente,data.trackId);
       		location.href = "/portal/{{ $tokenTurno }}?mac={{ $mac }}";
       	}
     }
