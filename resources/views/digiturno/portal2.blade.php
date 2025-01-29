@@ -799,9 +799,9 @@
             if(qtyPrestacionesPorPagar > 0){
                 prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start mt-auto">
                         <div class="d-flex flex-wrap w-100 justify-content-between align-items-center mt-auto p-0 bg-transparent border-0 gap-2">
-                            <button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
+                            <!--button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
                                 Pagar aquí
-                            </button>
+                            </button-->
                             <button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
                                 Quiero un cajero
                             </button>
