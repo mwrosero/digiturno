@@ -723,10 +723,12 @@
         })
 
         $('body').on('click', '.btn-notificar-llegada', async function(){
-            let detalle = $(this).attr('data-rel');
-            mostrarPrestaciones(JSON.parse(detalle))
-            $('.btn-print-notificar-llegada').attr('data-rel',detalle)
-            $('#modalNotificarLlegada').modal('show');
+            let detalle = JSON.parse($(this).attr('data-rel'));
+            console.log(detalle);
+            await notificarLlegada(detalle)
+            // mostrarPrestaciones(JSON.parse(detalle))
+            // $('.btn-print-notificar-llegada').attr('data-rel',detalle)
+            // $('#modalNotificarLlegada').modal('show');
         })
 
         $('body').on('click', '.btn-print-notificar-llegada', async function(){
