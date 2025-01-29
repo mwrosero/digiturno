@@ -748,7 +748,7 @@
 
             let args = [];
 
-            args["endpoint"] =  `${api_url}/${api_war}/notificaciones/enviar_link_pago?idPaciente=${paciente.idPaciente}&tipoServicio=${detalle.tipoServicio}&codigoPrincipal=${codigoPrincipal}&correoDestinatario=${email}`;
+            args["endpoint"] =  `${api_url}/${api_war}/notificaciones/enviar_link_pago?idPaciente=${paciente.idPaciente}&tipoServicio=${detalle.tipoServicio}&codigoPrincipal=${codigoPrincipal}&correoDestinatario=${email}&macAddress={{ $mac }}`;
             //dataCita.paciente.numeroPaciente
             args["method"] = "POST";
             args["token"] = accessToken;
@@ -786,7 +786,7 @@
 
         let args = [];
 
-        args["endpoint"] =  `${api_url}/${api_war}/notificaciones/enviar_link_pago?idPaciente=${paciente.idPaciente}&tipoServicio=${detalle.tipoServicio}&codigoPrincipal=${codigoPrincipal}&correoDestinatario=`;
+        args["endpoint"] =  `${api_url}/${api_war}/notificaciones/enviar_link_pago?idPaciente=${paciente.idPaciente}&tipoServicio=${detalle.tipoServicio}&codigoPrincipal=${codigoPrincipal}&correoDestinatario=&macAddress={{ $mac }}`;
         //dataCita.paciente.numeroPaciente
         args["method"] = "POST";
         args["token"] = accessToken;
