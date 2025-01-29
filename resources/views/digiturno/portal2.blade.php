@@ -2798,6 +2798,11 @@
             max-width: 850px !important;
         }
     }
+    @media (max-width: 767.98px) {
+        body{
+            overflow: auto;
+        }
+    }
     @media print {
         body {
             margin: 0; /* Sin márgenes */
