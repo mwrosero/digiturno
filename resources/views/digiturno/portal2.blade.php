@@ -1544,6 +1544,7 @@
                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
                                 Pagar aquí
                             </button>`;
+                    }
                     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
                             Pagar en caja
                         </button>`;
