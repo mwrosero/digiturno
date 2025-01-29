@@ -88,10 +88,10 @@
                 <div class="box-info-consultorio d-flex justify-content-center align-items-center fw-bold text-dark fs-25 bg-silver-light py-2 rounded-8 my-2">
                 </div>
                 <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/confirmar-cita.svg" alt="" style="min-width: 350px;">
-                <h3 class="fw-medium text-veris-dark">¿Deseas gestionar algo más?</h3>
+                <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
-                <button type="button" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-salir" data-bs-dismiss="modal">No</button>
+                <a href="" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-salir" data-bs-dismiss="modal">No</a>
                 <a href="#" class="btn fw-normal fs--16 badge bg-white px-4 py-2 mx-2 fs-4 btn-salir text-veris border-veris-1" data-bs-dismiss="modal">Si</a>
             </div>
         </form>
