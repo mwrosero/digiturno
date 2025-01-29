@@ -642,7 +642,7 @@
 
         // Detectar interacción del usuario
         $(document).on("mousemove keydown click scroll", function () {
-            // reiniciarConteo();
+            reiniciarConteo();
         });
 
         // Manejar clic en el botón "Sí"
@@ -650,7 +650,7 @@
             clearTimeout(temporizadorRespuesta);
             $("#modalEstasAhi").fadeOut();
             console.log("El usuario sigue presente.");
-            // reiniciarConteo();
+            reiniciarConteo();
         });
 
         $('body').on('click','.btn-confirmar-cita', function(){
@@ -663,7 +663,7 @@
         if(!isMobile()){
             console.log("Iniciando conteo")
             // Iniciar el conteo inicial
-            // reiniciarConteo();
+            reiniciarConteo();
         }
         
         await parametrosGenerales(dataTurno.mac);
