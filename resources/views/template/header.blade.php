@@ -3,14 +3,14 @@
 	<div class="container-fluid g-0">
 		<div class="row">
 			@if (!empty($showInfo) && $showInfo)
-			<div class="col-4 order-2 order-md-1 col-sm-10 col-md-4 d-flex justify-content-start align-items-center">
+			<div class="col-4 order-2 order-md-1 col-sm-10 col-md-4 d-flex justify-content-start align-items-center mt-3 mt-md-0">
 				<a href="#" class="btn-salir text-decoration-none text-veris-dark fs-20 fw-medium">
 					<i class="fa-solid fa-arrow-left me-1"></i>
 					Salir
 				</a>
 			</div>
 			@endif
-			<div class="col-12 order-3 order-md-2 @if (!empty($showInfo) && $showInfo) col-sm-2 col-md-4 @endif text-center mt-4 mt-md-0">
+			<div class="col-12 order-1 order-md-2 @if (!empty($showInfo) && $showInfo) col-sm-2 col-md-4 @endif text-center my-3 my-md-0">
 				@if (in_array($mac, \App\Models\Veris::MACS_PARAMI))
 				<img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/parami-large.png" alt="">
 				@else
