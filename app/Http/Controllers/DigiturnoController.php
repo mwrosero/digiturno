@@ -37,7 +37,8 @@ class DigiturnoController extends Controller
         $token = Veris::getToken();
         $data = $request->all();
         $mac = $data['mac'];
-        if($mac == "24-2F-FA-07-17-3E"){
+
+        if($mac == "24-2F-FA-07-17-3E" || $mac == "90-FB-A6-02-01-F7" || $mac == "0C-9D-92-64-C3-34"){
             return view('digiturno.portal2')
                     ->with('accessToken',$token)
                     ->with('mac',$mac)
