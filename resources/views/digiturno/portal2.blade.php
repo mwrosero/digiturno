@@ -1323,7 +1323,7 @@
     }
 
     async function notificarLlegada(detalle){
-        // console.log(detalle);
+        console.log(detalle.codigoOrdApoyo);
         let args = [];
         args["endpoint"] =  `${api_url}/${api_war}/orden/activa_orden_laboratorio?macAddress=${ dataTurno.mac }&codigoOrdenApoyo=${ detalle.codigoOrdApoyo }`;
         //dataCita.paciente.numeroPaciente
@@ -1334,7 +1334,8 @@
         // console.log(data);
         if(data.code == 200){
             //$('#direccionDirigirseLlegada').html(`Por favor, diríjase al área de <span class="fw-bold text-capitalize text-veris-dark">${detalle.tipoOrdenApoyo.toLowerCase()}</span> .`);
-            $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris-dark">${detalle.tipoOrdenApoyo.toLowerCase()}</span> y espera a ser llamado.`);
+            let lugar = (detalle.tipoServicio == "ORDEN_MEDICA") ? detalle.nombreServicioNivel1.toLowerCase() : detalle.tipoOrdenApoyo.toLowerCase();
+            $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris-dark">${lugar}</span> y espera a ser llamado.`);
             $('#modalNotificarLlegadaDirigirLugar').modal('show');
         }
     }
@@ -1588,6 +1589,38 @@
             break;
             case 'BATERIA_PRESTACIONES':
                 icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg`;
+
+                labelServicio = `${detalle.nombreConvenio.toLowerCase()}`;
+                
+                iconEstadoItemReserva = ``;
+                strEstadoItemReserva = ``;
+
+                let diasCobertura = obtenerDiferenciaDiasIntl(detalle.fechaCoberturaHasta);
+                
+                if(diasCobertura >= 0){
+                    labelEstadoItem = `Vigente`;
+                }else{
+                    labelEstadoItem = `Caducado`;
+                    classEstadoItem = `text-caution`;
+                }
+
+                elemFooterCard += `<div class="col-12 text-center fs-16 line-height-16 mb-3 fw-bold">
+                    <div class="mt-4 mb-3 fs-16 line-height-18 d-flex justify-content-center align-items-center">
+                        <span class="fw-bold text-veris-dark">Válido hasta:</span>
+                        <span class="ms-2 ${ (diasCobertura < 0) ? `text-caution` : `text-veris` }">${detalle.fechaCoberturaHasta}</span>
+                    </div>
+                    <div class="mb-1 text-veris fs-16 line-height-18 d-flex justify-content-center align-items-center">
+                        <span class="fw-bold text-veris-dark">Días restantes:</span> <div class="rounded-8 bg-veris-sky border-veris-1 py-2 px-3 ms-2">${ (diasCobertura > 0) ? diasCobertura : `0` }</div>
+                    </div>
+                </div>`;
+
+                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-chequeo p-2 py-3 mt-3">
+                        Ver detalle
+                    </button>
+                    <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3">
+                        Asistencia en caja
+                    </button>`;
+
             break;
             case 'PAQUETES_PROMOCIONALES':
                 icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/promocion-ico.svg`;
