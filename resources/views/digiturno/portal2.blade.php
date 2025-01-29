@@ -895,7 +895,7 @@
                     if(v.requiereAgendamiento && v.cantidadUtilizada == 0 && v.cantidadDisponible != v.cantidadUtilizada){
                         disabledAttr = `disabled`;
                     }
-                    elem_content += `<div class="d-flex justify-content-start align-items-start fs-16 line-height-16 mb-2" style="min-height: 250px;">
+                    elem_content += `<div class="d-flex justify-content-start align-items-start fs-16 line-height-16 mb-2">
                             <div class="form-check flex-grow-1">
                                 <input ${disabledAttr} class="form-check-input my-0" type="checkbox" value="" id="item-prestacion-${ v.codigoPrestacion }" codigoServicio-rel="${ value.codigoServicioNivel1 }" nombreServicio-rel="${ value.nombreServicioNivel1 }" data-rel='${ JSON.stringify(v) }'>
                                 <label class="form-check-label" for="item-prestacion-${ v.codigoPrestacion }">
