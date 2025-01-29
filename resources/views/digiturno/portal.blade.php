@@ -385,6 +385,7 @@
 
     let local = localStorage.getItem('turno-{{ $portalToken }}');
     let dataTurno = JSON.parse(local);
+    trackId = dataTurno.trackId;
     let puedeEnviar = false;
     buscarUsuarioFlag = false;
 
