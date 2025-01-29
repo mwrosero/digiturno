@@ -1458,11 +1458,11 @@
                             </button>`;
                         }else{
                             labelEstadoItem = `Por pagar`;
-                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3">
+                            elemFooterCard += `<!--button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3">
                                 Pagar aquí
-                            </button>
+                            </button-->
                             <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3">
-                                Quiero un cajero
+                                Pagar en caja
                             </button>`;
                         }
                     }else{
