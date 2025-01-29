@@ -134,7 +134,7 @@
                 <div class="box-opciones-orden">
                 </div>
             </div>
-            <div class="modal-footer d-block pt-0 pb-3 px-3 border-0">
+            <div class="modal-footer d-block p-2 border-0 bg-silver m-3">
                 <div class="d-flex align-items-center mb-1">
                     <span style="width: 25px;" class="badge text-center badge-pill me-2">
                         <i class="fa-solid fa-circle-check text-verde"></i>
@@ -581,6 +581,7 @@
 
     let local = localStorage.getItem('turno-{{ $portalToken }}');
     let dataTurno = JSON.parse(local);
+    trackId = dataTurno.trackId;
     let puedeEnviar = false;
     buscarUsuarioFlag = false;
 
@@ -753,12 +754,12 @@
 
                 if(estadosVigentes.includes(value.codigoEstado)){
                     if(value.fechaRecepcion == null){
-                        badge = `<span style="width: 25px;" class="badge text-center badge-pill ms-2">
+                        badge = `<span style="width: 25px;" class="badge text-center badge-pill me-2">
                                 <i class="fa-solid fa-triangle-exclamation text-pendiente"></i>
                             </span>`;
                         qtyPrestacionesPagadas++;
                     }else{
-                        badge = `<span style="width: 25px;" class="badge text-center badge-pill ms-2">
+                        badge = `<span style="width: 25px;" class="badge text-center badge-pill me-2">
                                 <i class="fa-solid fa-circle-check text-verde"></i>
                             </span>`
                     }
@@ -823,22 +824,16 @@
             // si el campo cantidadUtilizada == 0 y el campo estaRecepcionado == false significa que el paquete no ha sido utilizado en la atencion
 
             $('.box-info-detalle').html(`<div class="d-flex align-items-center mb-1">
-                    <span style="width: 25px;" class="badge bg-pendiente text-center badge-pill me-2">
-                        <i class="fa-solid fa-triangle-exclamation text-white"></i>
+                    <span style="width: 25px;" class="badge text-center badge-pill me-2">
+                        <i class="fa-solid fa-circle-check text-verde"></i>
                     </span>
-                    <p class="text-900 fs-12 mb-0"> Pendiente de pago</p>
+                    <p class="text-900 fs-12 mb-0"> Muestra realizada y pagada.</p>
                 </div>
                 <div class="d-flex align-items-center mb-1">
-                    <span style="width: 25px;" class="badge text-center bg-success badge-pill me-2">
-                        <i class="fa-solid fa-check text-white"></i>
+                    <span style="width: 25px;" class="badge text-center badge-pill me-2">
+                        <i class="fa-solid fa-triangle-exclamation text-pendiente"></i>
                     </span>
-                    <p class="text-900 fs-12 mb-0"> Muestra recepcionada</p>
-                </div>
-                <div class="d-flex align-items-center mb-1">
-                    <span style="width: 25px;" class="badge bg-veris-light text-center badge-pill me-2">
-                        <i class="fa-solid fa-stopwatch text-veris-dark"></i>
-                    </span>
-                    <p class="text-900 fs-12 mb-0"> Muestra pendiente de entrega</p>
+                    <p class="text-900 fs-12 mb-0"> Muestra pendiente por realizar o por pagar.</p>
                 </div>
             `);
 
@@ -846,17 +841,17 @@
             $.each(detalle.detallesDisponibles, function(key, value){
                 let badge = ``;
                 if(value.cantidadDisponible > 0 || (value.cantidadUtilizada == 0 && !value.estaRecepcionado)){
-                    badge = `<span style="width: 25px;" class="badge bg-veris-light text-center badge-pill ms-2">
-                            <i class="fa-solid fa-stopwatch text-veris-dark"></i>
+                    badge = `<span style="width: 25px;" class="badge text-center badge-pill me-2">
+                            <i class="fa-solid fa-triangle-exclamation text-pendiente"></i>
                         </span>`;
                 }else{
-                    badge = `<span style="width: 25px;" class="badge text-center bg-success badge-pill ms-2">
-                            <i class="fa-solid fa-check text-white"></i>
+                    badge = `<span style="width: 25px;" class="badge text-center badge-pill me-2">
+                            <i class="fa-solid fa-circle-check text-verde"></i>
                         </span>`
                 }
-                elem += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 line-height-16 d-flex justify-content-between align-items-start">
-                    ${ value.nombrePrestacion }
+                elem += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-18 fw-medium ms-1 p-0 line-height-18 d-flex justify-content-start align-items-start">
                     ${ badge }
+                    ${ value.nombrePrestacion }
                 </li>`
                 // ${ value.nombreServicio }/${ value.nombrePrestacion }
             })
@@ -900,7 +895,7 @@
                     if(v.requiereAgendamiento && v.cantidadUtilizada == 0 && v.cantidadDisponible != v.cantidadUtilizada){
                         disabledAttr = `disabled`;
                     }
-                    elem_content += `<div class="d-flex justify-content-start align-items-start fs-16 line-height-16 mb-2">
+                    elem_content += `<div class="d-flex justify-content-start align-items-start fs-16 line-height-16 mb-2" style="min-height: 250px;">
                             <div class="form-check flex-grow-1">
                                 <input ${disabledAttr} class="form-check-input my-0" type="checkbox" value="" id="item-prestacion-${ v.codigoPrestacion }" codigoServicio-rel="${ value.codigoServicioNivel1 }" nombreServicio-rel="${ value.nombreServicioNivel1 }" data-rel='${ JSON.stringify(v) }'>
                                 <label class="form-check-label" for="item-prestacion-${ v.codigoPrestacion }">
@@ -1325,7 +1320,7 @@
     async function notificarLlegada(detalle){
         console.log(detalle.codigoOrdApoyo);
         let args = [];
-        args["endpoint"] =  `${api_url}/${api_war}/orden/activa_orden_laboratorio?macAddress=${ dataTurno.mac }&codigoOrdenApoyo=${ detalle.codigoOrdApoyo }`;
+        args["endpoint"] =  `${api_url}/${api_war}/orden/activa_orden_laboratorio?macAddress=${ dataTurno.mac }&codigoOrdenApoyo=${ detalle.codigoOrdApoyo }&macAddress={{ $mac }}`;
         //dataCita.paciente.numeroPaciente
         args["method"] = "POST";
         args["token"] = accessToken;
@@ -1346,7 +1341,9 @@
                 Para hoy
             </button>
         </li>`;
-        let elemContent = `<div class="tab-pane fade mt-3 px-3 show active" id="pills-Hoy" role="tabpanel" aria-labelledby="pills-Hoy-tab" tabindex="0"></div>`;
+        let elemContent = `<div class="tab-pane fade mt-3 px-3 show active" id="pills-Hoy" role="tabpanel" aria-labelledby="pills-Hoy-tab" tabindex="0">
+                <div class="row mb-3 pb-5" style="max-height: 75vh; overflow-y: auto;" id="lista-servicios-dia"></div>
+            </div>`;
         $.each(groupedData2, function(key, value){
             elem += `<li class="nav-item flex-fill" role="presentation">
                 <button data-rel="${value.tipoServicio}" class="nav-link tipoServicio w-100 px-8 px-2 d-flex justify-content-center align-items-center text-veris-dark fs-20" id="pills-${value.tipoServicio}-tab" data-bs-toggle="pill" data-bs-target="#pills-${value.tipoServicio}" type="button" role="tab" aria-controls="pills-${value.tipoServicio}" aria-selected="false">
@@ -1406,16 +1403,28 @@
     }
 
     async function drawServicioAgrupadoTabs(){
-        drawHoy();
+        // drawHoy();
         let elem = ``;
         $.each(groupedData2, function(key, value){
             $.each(value.items, function(k, v){
                 drawCardItem(value.tipoServicio, value.labelServicio, v);
             })
         })
+
+        if($(`#lista-servicios-dia`).html().length == 0){
+            $('#pills-Hoy').html(`
+                <div class="row row-flex mb-3 pb-3">
+                    <div class="col-10 col-md-6 mx-auto text-center mt-3">
+                        <img class="w-100 mb-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/empty-data.svg" />
+                        <button type="button" class="btn fw-normal text-white fs-25 badge bg-veris px-4 py-3 btn-turno">¿Deseas consultar algo?</button>
+                    </div>
+                </div>
+            `)
+        }
     }
 
     async function drawCardItem(tipoServicio, labelServicio, detalle){
+        let addForToday = false;
         let detalleRel = JSON.stringify(detalle);
         let icon_service_name = ``;
         let sectionEstadoPago = `pagadas`;
@@ -1447,21 +1456,19 @@
                 if(detalle.permitePago || detalle.tipoServicio == "ORDENES_APOYO_PENDIENTE"){
                     if(!ordenPagada){
                         let ordenParcial = await verificarEstadoOrdenParcialmente(detalle);
-                        if(ordenParcial > 0){
-                            labelEstadoItem = `Pagado parcialmente`;
-                            let cantidadPagados = ` (${ordenParcial}) <span class="text-veris-dark fw-medium">${ (ordenParcial == 1) ? `Examen pagado` : `Exámenes pagados` }</span>`
-                            strEstadoItemReserva = `Por realizar ${cantidadPagados}`;
-                        }else{
-                            labelEstadoItem = `Por pagar`;
-                        }
                         sectionEstadoPago = `porpagar`;
                         classEstadoItem = `text-pendiente`;
                         classEstadoItem = `text-pendiente`;
                         if(ordenParcial > 0){
+                            addForToday = true;
+                            labelEstadoItem = `Pagado parcialmente`;
+                            let cantidadPagados = ` (${ordenParcial}) <span class="text-veris-dark fw-medium">${ (ordenParcial == 1) ? `Examen pagado` : `Exámenes pagados` }</span>`
+                            strEstadoItemReserva = `Por realizar ${cantidadPagados}`;
                             elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
                                 Ver detalle
                             </button>`;
                         }else{
+                            labelEstadoItem = `Por pagar`;
                             elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3">
                                 Pagar aquí
                             </button>
@@ -1470,6 +1477,7 @@
                             </button>`;
                         }
                     }else{
+                        addForToday = true;
                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
                                 Ver detalle
                             </button>`;
@@ -1481,16 +1489,17 @@
                     }
                 }else{
                     sectionEstadoPago = `porpagar`;
-                        labelEstadoItem = `Por pagar`;
-                        classEstadoItem = `text-pendiente`;
-                        classEstadoItem = `text-pendiente`;
-                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
-                                    Ver detalle
-                                </button>`;
+                    labelEstadoItem = `Por pagar`;
+                    classEstadoItem = `text-pendiente`;
+                    classEstadoItem = `text-pendiente`;
+                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
+                                Ver detalle
+                            </button>`;
                 }
 
                 if(detalle.nombreServicioNivel1 == "PROCEDIMIENTOS"){
                     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/procedimiento-ico.svg`;
+                    labelServicio = `${detalle.detallesOrden[0].nombreServicio.toLowerCase()}`;
                 }else if(detalle.nombreServicioNivel1 == "IMAGENES"){
                     textColorServicio = `text-purple`;
                     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/imagenes-ico.svg`;
@@ -1508,7 +1517,7 @@
                     </div>
                     <div class="info-doctor text-veris-dark mx-2 me-2">
                         <p class="mb-1 fs-18 fw-bold text-capitalize">Dr(a) ${detalle.doctorAtencion.toLowerCase()}</p>
-                        <p class="mb-1 text-capitalize">${(detalle.nombreEspecialidad !== null) ?? detalle.nombreEspecialidad.toLowerCase()}</p>
+                        <p class="mb-1 text-capitalize">${(detalle.nombreEspecialidad != null) ? detalle.nombreEspecialidad.toLowerCase() : ``}</p>
                     </div>`;
                 }
 
@@ -1531,6 +1540,8 @@
             // break;
             case 'RESERVA':
                 let fechaHoraAgenda = (formatearFechaMesDia(detalle.horaInicio)).split('|');
+
+                addForToday = esDiaEnCurso(detalle.horaInicio);
                 
                 icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg`;
                 
@@ -1617,9 +1628,9 @@
                 elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-chequeo p-2 py-3 mt-3">
                         Ver detalle
                     </button>
-                    <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3">
+                    <!--button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3">
                         Asistencia en caja
-                    </button>`;
+                    </button-->`;
 
             break;
             case 'PAQUETES_PROMOCIONALES':
@@ -1657,10 +1668,12 @@
 
                 elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-paquete p-2 py-3 mt-3">
                         Ver detalle
-                    </button>
-                    <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3">
-                        Asistencia en caja
                     </button>`;
+                // if(dias < 0){
+                //     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3">
+                //         Asistencia en caja
+                //     </button>`
+                // }
             break;
         }
 
@@ -1696,6 +1709,43 @@
         </div>`;
 
         $(`#row-${sectionEstadoPago}-${tipoServicio}`).append(elem);
+
+        if(addForToday){
+            let elemToday = `<div class="col-12 col-lg-6 col-xxl-4 d-flex mb-5 mt-0">
+                    <div class="w-100 mt-1">
+                        <div class="tab-card bg-citas d-inline-block py-2 px-4 rounded-t-8 rounded-ts-0">
+                            <span class="fs-16 fw-medium text-veris-dark">${labelServicio}</span>
+                        </div>
+                        <div class="card d-flex flex-column content-card rounded-8 p-2 px-3 border-citas-1">
+                            <div class="card-header p-0 bg-transparent border-0 d-flex justify-content-start align-items-center">
+                                <img class="me-2" src="${icon_service_name}" alt="">
+                                <div class="me-2 flex-grow-1">
+                                    <span class="fs-16 fw-medium ${textColorServicio} d-block text-capitalize">${labelServicio}</span>
+                                    <span class="d-block ${textColorServicio}">${numeroOrden}</span>
+                                </div>
+                                <div class="text-end ms-2" style="min-width: 100px;">
+                                    <div class="${classEstadoItem} fw-medium fs-14">
+                                        <i class="fa-solid fa-circle me-1"></i>
+                                        ${labelEstadoItem}
+                                    </div>
+                                    <div class="${classEstadoItemReserva} fw-medium fs-14">
+                                        ${iconEstadoItemReserva}
+                                        ${strEstadoItemReserva}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0 bg-transparent border-0">
+                                ${elemBodyCard}
+                            </div>
+                            <div class="card-footer d-flex flex-wrap w-100 justify-content-between align-items-center mt-auto p-0 bg-transparent border-0 gap-2">
+                                ${elemFooterCard}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            $(`#lista-servicios-dia`).append(elemToday);
+        }
 
     }
 
@@ -1923,7 +1973,7 @@
                     <div class="row row-flex mb-3 pb-3">
                         <div class="col-10 col-md-6 mx-auto text-center mt-3">
                             <img class="w-100 mb-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/empty-data.svg" />
-                            <button type="button" class="btn fw-normal text-white fs-25 badge bg-veris px-4 py-3 btn-turno">¿Deseas gestionar algo?</button>
+                            <button type="button" class="btn fw-normal text-white fs-25 badge bg-veris px-4 py-3 btn-turno">¿Deseas consultar algo?</button>
                         </div>
                     </div>
                 `)

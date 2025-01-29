@@ -31,6 +31,9 @@ async function call(args){
     myHeaders.append("Authorization","Bearer "+ args.token);
     myHeaders.append("application", _application);
     myHeaders.append("idorganizacion", _idOrganizacion);
+    if(trackId != ''){
+        myHeaders.append("trackId", trackId);
+    }
     /*if(args.token){
         console.log(_idOrganizacion)
         myHeaders.append("Authorization","Bearer "+ args.token);
@@ -1124,4 +1127,25 @@ function formatearFechaMesDia(horaInicio) {
 
     // Formatear la fecha final
     return `${mes} ${dia}, ${anio}|${horas}:${minutos} ${periodo}`;
+}
+
+function esDiaEnCurso(horaInicio) {
+    // Convertir la fecha de "dd/MM/yyyy HH:mm" a un objeto Date
+    const [fecha, hora] = horaInicio.split(" ");
+    const [dia, mes, anio] = fecha.split("/").map(Number);
+    const [horas, minutos] = hora.split(":").map(Number);
+
+    // Crear objeto Date en UTC y ajustarlo a la zona horaria de Guayaquil
+    const fechaInicio = new Date(Date.UTC(anio, mes - 1, dia, horas, minutos));
+
+    // Obtener la fecha actual en la zona horaria de Guayaquil
+    const formatter = new Intl.DateTimeFormat("es-EC", { timeZone: "America/Guayaquil", year: "numeric", month: "2-digit", day: "2-digit" });
+    const hoy = new Date();
+    
+    // Obtener la fecha actual en Guayaquil sin la hora
+    const fechaHoyStr = formatter.format(hoy);
+    const [diaHoy, mesHoy, anioHoy] = fechaHoyStr.split("/").map(Number);
+
+    // Comparar si pertenece al día en curso
+    return anio === anioHoy && mes === mesHoy && dia === diaHoy;
 }

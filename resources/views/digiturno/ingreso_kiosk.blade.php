@@ -280,7 +280,7 @@
 
     async function buscarFamiliares(paciente){
     	let args = [];
-        args["endpoint"] = `${api_url}/${api_war}/paciente/grupo_familiar?idPaciente=${ paciente.idPaciente }`;
+        args["endpoint"] = `${api_url}/${api_war}/paciente/grupo_familiar?idPaciente=${ paciente.idPaciente }&macAddress={{ $mac }}`;
         //dataCita.paciente.numeroPaciente
         args["method"] = "GET";
         args["token"] = accessToken;
