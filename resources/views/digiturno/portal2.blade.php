@@ -1320,7 +1320,7 @@
     async function notificarLlegada(detalle){
         console.log(detalle.codigoOrdApoyo);
         let args = [];
-        args["endpoint"] =  `${api_url}/${api_war}/orden/activa_orden_laboratorio?macAddress=${ dataTurno.mac }&codigoOrdenApoyo=${ detalle.codigoOrdApoyo }&macAddress={{ $mac }}`;
+        args["endpoint"] =  `${api_url}/${api_war}/orden/activa_orden_laboratorio?macAddress=${ dataTurno.mac }&codigoOrdenApoyo=${ detalle.codigoOrdApoyo }`;
         //dataCita.paciente.numeroPaciente
         args["method"] = "POST";
         args["token"] = accessToken;
@@ -1405,22 +1405,11 @@
     async function drawServicioAgrupadoTabs(){
         // drawHoy();
         let elem = ``;
-        $.each(groupedData2, function(key, value){
-            $.each(value.items, function(k, v){
-                drawCardItem(value.tipoServicio, value.labelServicio, v);
+        $.each(groupedData2, async function(key, value){
+            $.each(value.items, async function(k, v){
+                await drawCardItem(value.tipoServicio, value.labelServicio, v);
             })
         })
-
-        if($(`#lista-servicios-dia`).html().length == 0){
-            $('#pills-Hoy').html(`
-                <div class="row row-flex mb-3 pb-3">
-                    <div class="col-10 col-md-6 mx-auto text-center mt-3">
-                        <img class="w-100 mb-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/empty-data.svg" />
-                        <button type="button" class="btn fw-normal text-white fs-25 badge bg-veris px-4 py-3 btn-turno">¿Deseas consultar algo?</button>
-                    </div>
-                </div>
-            `)
-        }
     }
 
     async function drawCardItem(tipoServicio, labelServicio, detalle){
@@ -1967,6 +1956,16 @@
                 // $('.box-with-data').addClass('d-block d-md-flex');
                 // $('.box-without-data').addClass('d-none');
                 // $('.box-without-data').removeClass('d-flex');
+                if($(`#lista-servicios-dia`).html().length == 0){
+                    $('#pills-Hoy').html(`
+                        <div class="row row-flex mb-3 pb-3">
+                            <div class="col-10 col-md-6 mx-auto text-center mt-3">
+                                <img class="w-100 mb-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/empty-data.svg" />
+                                <button type="button" class="btn fw-normal text-white fs-25 badge bg-veris px-4 py-3 btn-turno">¿Deseas consultar algo?</button>
+                            </div>
+                        </div>
+                    `)
+                }
             }else{
                 await drawTabs();
                 $('#pills-Hoy').html(`
