@@ -803,7 +803,7 @@
                                 Pagar aquí
                             </button-->
                             <button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
-                                Quiero un cajero
+                                Pagar en caja
                             </button>
                         </div>
                     </li>`
