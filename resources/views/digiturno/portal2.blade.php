@@ -1504,7 +1504,7 @@
                 if(detalle.doctorAtencion !== null){
                     infoMedico += `<div class="avatar-doctor border-veris-1" style="background: url(${ (detalle.fotoMedicoApp != null) ? detalle.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
                     </div>
-                    <div class="info-doctor text-veris-dark mx-2 me-2">
+                    <div class="info-doctor text-veris-dark mx-2 me-2 flex-fil">
                         <p class="mb-1 fs-18 fw-bold text-capitalize">Dr(a) ${detalle.doctorAtencion.toLowerCase()}</p>
                         <p class="mb-1 text-capitalize">${(detalle.nombreEspecialidad != null) ? detalle.nombreEspecialidad.toLowerCase() : ``}</p>
                     </div>`;
@@ -1574,7 +1574,7 @@
                 elemBodyCard += `<div class="d-flex justify-content-between align-items-center mt-3">
                     <div class="avatar-doctor border-veris-1" style="background: url(${ (detalle.fotoMedicoApp != null) ? detalle.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
                     </div>
-                    <div class="info-doctor text-veris-dark mx-2">
+                    <div class="info-doctor text-veris-dark mx-2 flex-fil">
                         <p class="mb-1 fs-18 fw-bold text-capitalize">Dr(a) ${detalle.nombreMedico.toLowerCase()}</p>
                         <p class="mb-1 text-capitalize">${detalle.nombreEspecialidad.toLowerCase()}</p>
                     </div>
