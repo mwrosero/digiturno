@@ -19,7 +19,7 @@
 			</div>
 			@if (!empty($showInfo) && $showInfo)
 			<div class="col-8 order-2 order-md-3 col-sm-2 col-md-4 d-flex justify-content-end align-items-center">
-				<div id="btnPrint" class="btn bg-veris text-white p-2 px-5 fs-18 fw-bold rounded-8 mt-3 mt-md-0 btn-turno">Generar turno</div>
+				<div id="btnPrint" class="btn bg-veris text-white p-2 px-5 fs-25 fw-bold rounded-8 mt-3 mt-md-0 btn-turno">Generar turno</div>
 			</div>
 			@endif
 		</div>
