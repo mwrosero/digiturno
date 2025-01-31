@@ -14,16 +14,9 @@ class DigiturnoController extends Controller
     public function index($mac) {
         $token = Veris::getToken();
         // dd($token);
-        if($mac == "70-85-C2-91-96-4E"){
-            return view('digiturno.portalerror')
-                    ->with('accessToken',$token)
-                    ->with('mac',$mac)
-                    ->with('portalToken',$portalToken);
-        }else{
         return view('digiturno.home')
                 ->with('accessToken',$token)
                 ->with('mac',$mac);
-            }
     }
 
     public function ingreso($mac, Request $request) {
