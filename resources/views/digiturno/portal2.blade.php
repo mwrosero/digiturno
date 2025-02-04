@@ -2550,12 +2550,12 @@
             $('#turnoModal').modal('show')
             // console.log("iniciar conteo para enviar a home")
             if(!isMobile()){
-                // printTurno(data.data)
-                if(dataTurno.mac == "00-22-4D-7B-2A-F5"){
-                    printTurno(data.data)
-                }else{
-                    printTurnoAPI(data.data)
-                }
+                printTurnoAPI(data.data)
+                // if(dataTurno.mac == "00-22-4D-7B-2A-F5"){
+                //     printTurno(data.data)
+                // }else{
+                //     printTurnoAPI(data.data)
+                // }
             }
         }else{
             $('#mensajeError').html(`${data.message}`)
