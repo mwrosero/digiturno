@@ -1974,8 +1974,9 @@
                     $('#pills-Hoy').html(`
                         <div class="row row-flex mb-3 pb-3">
                             <div class="col-10 col-md-6 mx-auto text-center mt-3">
-                                <img class="w-100 mb-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/empty-data.svg" />
-                                <button type="button" class="btn fw-normal text-white fs-20 w-100 badge bg-veris px-4 py-3 btn-turno">¿Deseas consultar algo?</button>
+                                <img class="w-75 mb-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/empty-data.svg" />
+                                <h2 class="fs-40 my-3 fw-medium text-veris-dark">¿Deseas consultar algo?</h2>
+                                <button type="button" class="btn fw-normal text-white fs-70 badge bg-veris px-4 py-3 btn-turno rounded-8">Generar turno</button>
                             </div>
                         </div>
                     `)
@@ -1985,8 +1986,9 @@
                 $('#pills-Hoy').html(`
                     <div class="row row-flex mb-3 pb-3">
                         <div class="col-10 col-md-6 mx-auto text-center mt-3">
-                            <img class="w-100 mb-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/empty-data.svg" />
-                            <button type="button" class="btn fw-normal text-white fs-20 w-100 badge bg-veris px-4 py-3 btn-turno">¿Deseas consultar algo?</button>
+                            <img class="w-75 mb-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/empty-data.svg" />
+                            <h2 class="fs-40 my-3 fw-medium text-veris-dark">¿Deseas consultar algo?</h2>
+                            <button type="button" class="btn fw-normal text-white fs-70 badge bg-veris px-4 py-3 btn-turno rounded-8">Generar turno</button>
                         </div>
                     </div>
                 `)
@@ -2581,6 +2583,9 @@
 <style>
     body{
         overflow: hidden;
+    }
+    .logo{
+        max-width: 200px !important;
     }
     .avatar-doctor{
         width: 60px !important;

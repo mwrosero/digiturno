@@ -4,7 +4,7 @@
 		<div class="row">
 			@if (!empty($showInfo) && $showInfo)
 			<div class="col-4 order-2 order-md-1 col-sm-10 col-md-4 d-flex justify-content-start align-items-center mt-3 mt-md-0">
-				<a href="#" class="btn-salir text-decoration-none text-veris-dark fs-20 fw-medium">
+				<a href="#" class="btn-salir text-decoration-none text-veris-dark fs-25 fw-medium">
 					<i class="fa-solid fa-arrow-left me-1"></i>
 					Salir
 				</a>
@@ -19,7 +19,7 @@
 			</div>
 			@if (!empty($showInfo) && $showInfo)
 			<div class="col-8 order-2 order-md-3 col-sm-2 col-md-4 d-flex justify-content-end align-items-center">
-				<div id="btnPrint" class="btn bg-veris text-white p-2 px-5 fs-25 fw-bold rounded-8 mt-3 mt-md-0 btn-turno">Generar turno</div>
+				<div id="btnPrint" class="btn bg-veris text-white p-2 px-5 fs-40 fw-bold rounded-8 mt-3 mt-md-0 btn-turno">Generar turno</div>
 			</div>
 			@endif
 		</div>
