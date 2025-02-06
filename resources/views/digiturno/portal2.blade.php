@@ -1466,16 +1466,20 @@
                         }else{
                             labelEstadoItem = `Por pagar`;
                             if(detalle.nombreServicioNivel1 == "LABORATORIO"){
-                                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3">
+                                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                                    Pagar en caja
+                                </button>
+                                <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
                                     Pagar aquí
                                 </button>`;    
+                            }else{
+                                elemFooterCard += `<!--button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3">
+                                    Pagar aquí
+                                </button-->
+                                <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3">
+                                    Pagar en caja
+                                </button>`;
                             }
-                            elemFooterCard += `<!--button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3">
-                                Pagar aquí
-                            </button-->
-                            <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3">
-                                Pagar en caja
-                            </button>`;
                         }
                     }else{
                         addForToday = true;
