@@ -798,7 +798,7 @@
             
             if(qtyPrestacionesPorPagar > 0){
                 let btnPagar = ``;
-                if(detalle.tipoServicio == "ORDEN_MEDICA" && detalle.nombreServicioNivel1 == "LABORATORIO" && detalle.permitePago){
+                if(detalle.tipoServicio == "ORDEN_MEDICA" && (detalle.nombreServicioNivel1 == "LABORATORIO" || detalle.nombreServicioNivel1 == "IMAGENES" || detalle.nombreServicioNivel1 == "PROCEDIMIENTOS") && detalle.permitePago){
                     btnPagar += `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
                                 Pagar aquí
                             </button>`;
@@ -1465,7 +1465,7 @@
                             </button>`;
                         }else{
                             labelEstadoItem = `Por pagar`;
-                            if(detalle.nombreServicioNivel1 == "LABORATORIO"){
+                            if(detalle.nombreServicioNivel1 == "LABORATORIO" || detalle.nombreServicioNivel1 == "IMAGENES" || detalle.nombreServicioNivel1 == "PROCEDIMIENTOS"){
                                 elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
                                     Pagar en caja
                                 </button>
