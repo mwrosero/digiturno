@@ -122,7 +122,7 @@
             </div>
             <div class="modal-body p-3">
                 <h5 class="fs--20 line-height-24 mt-3 mb-3" id="tituloOrdenDetalle"></h5>
-                <div class="bg-silver-light rounded-8 text-veris-dark text-center fs-16 fw-bold p-2 mb-2">Muestras</div>
+                <div class="bg-silver-light rounded-8 text-veris-dark text-center fs-16 fw-bold p-2 mb-2">Muestras / Exámenes</div>
                 <ul class="row border-0 p-0 my-2" id="detalleComponentesOrden">
                     <div class="col-12 col-md-6 d-flex flex-fill flex-column prestaciones-pagadas">
                         <ul class="list-group flex-grow-1"></ul>
@@ -797,8 +797,15 @@
             }
             
             if(qtyPrestacionesPorPagar > 0){
+                let btnPagar = ``;
+                if(detalle.tipoServicio == "ORDEN_MEDICA" && detalle.nombreServicioNivel1 == "LABORATORIO" && detalle.permitePago){
+                    btnPagar += `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
+                                Pagar aquí
+                            </button>`;
+                }
                 prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start mt-auto">
                         <div class="d-flex flex-wrap w-100 justify-content-between align-items-center mt-auto p-0 bg-transparent border-0 gap-2">
+                            ${btnPagar}
                             <!--button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
                                 Pagar aquí
                             </button-->
