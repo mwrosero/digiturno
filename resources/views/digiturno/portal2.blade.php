@@ -191,9 +191,18 @@
                 </div>
 
             </div>
-            <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
-                <a href="#" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-2 fs-4 btn-activar" data-bs-dismiss="modal">ACTIVAR</a>
-                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4" data-bs-dismiss="modal">CERRAR</a>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-around align-items-center">
+                <div class="checkbox checkbox-primary fs-18 line-height-16 d-flex justify-content-between align-items-center me-2 box-aceptacion">
+                    <input type="hidden" id="secuenciaAfiliado">
+                    <input id="autorizacion" class="me-2" type="checkbox" style="height:25px; width: 25px;">
+                    <label for="autorizacion">
+                        Acepto que los resultados <br> serán entregados a la Empresa.
+                    </label>
+                </div>
+                <div>
+                    <a href="#" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-2 fs-4 btn-activar activar-disabled" data-bs-dismiss="modal">ACTIVAR</a>
+                    <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4" data-bs-dismiss="modal">CERRAR</a>
+                </div>
             </div>
         </form>
     </div>
@@ -765,7 +774,7 @@
                     }
                     prestacionesPagadas += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start">
                         ${ badge }
-                        ${ value.nombrePrestacion }
+                        ${ (detalle.tipoServicio == "ORDEN_MEDICA" && detalle.nombreServicioNivel1 == "CONSULTA") ? value.nombreServicio : value.nombrePrestacion }
                     </li>`
                 }else{
                     qtyPrestacionesPorPagar++;
@@ -774,7 +783,7 @@
                         </span>`;
                     prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start">
                         ${ badge }
-                        ${ value.nombrePrestacion }
+                        ${ (detalle.tipoServicio == "ORDEN_MEDICA" && detalle.nombreServicioNivel1 == "CONSULTA") ? value.nombreServicio : value.nombrePrestacion }
                     </li>`
                 }
                 // ${ value.nombreServicio }/${ value.nombrePrestacion }
@@ -821,6 +830,14 @@
             $('.prestaciones-pagadas ul').html(prestacionesPagadas);
             $('.prestaciones-porpagar ul').html(prestacionesPorPagar);
             $('#modalDetalleOrden').modal('show');
+        })
+
+        $('body').on('change', '#autorizacion', function(){
+            if($('#autorizacion').is(':checked')) {
+                $('.btn-activar').removeClass('activar-disabled');
+            } else {
+                $('.btn-activar').addClass('activar-disabled');
+            }
         })
 
         $('body').on('click', '.btn-detalle-paquete', async function(){
@@ -870,6 +887,14 @@
             let dataChequeo = $(this).attr('data-rel');
             $('#dataChequeo').val(dataChequeo)
             let detalle = JSON.parse(dataChequeo);
+            if(detalle.esAutorizadoEnvResultDg){
+                $('.box-aceptacion').addClass('d-none')
+                $('.btn-activar').removeClass('activar-disabled');
+            }else{
+                $('.box-aceptacion').removeClass('d-none')
+            }
+
+            $('#secuenciaAfiliado').val(detalle.secuenciaAfiliado);
             console.log(detalle)
             $('#tituloChequeoDetalle').html(`${detalle.nombreTipoContrato} - ${detalle.nombreConvenio}`);
 
@@ -933,6 +958,15 @@
         })
 
         $('body').on('click', '.btn-activar', async function(){
+            if($('#autorizacion').is(':checked')) {
+                let autorizar = await autorizarResultados();
+                if(!autorizar){
+                    toastr.error("", `Ha ocurrido un error`, {
+                        timeOut: 5000
+                    });
+                    return;
+                }
+            }
             await activarPrestacionesChequeos();
         })
 
@@ -1119,6 +1153,23 @@
                 }
             `
         });
+    }
+
+    async function autorizarResultados(){
+        let secuenciaAfiliado = $('#secuenciaAfiliado').val();
+        let args = [];
+        args["endpoint"] = `${api_url}/${api_war}/util/autorizar_envio_resultado_chequeo?macAddress=${ dataTurno.mac }&secuenciaAfiliado=${secuenciaAfiliado}`;
+        let payload = {}
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = false;
+        // args["data"] = JSON.stringify(payload);
+        // args["bodyType"] = "json";
+        const data = await call(args);
+        if(data.code == 200){
+            return true;
+        }
+        return false;
     }
 
     async function activarPrestacionesChequeos(){
@@ -1511,6 +1562,9 @@
                 }else if(detalle.nombreServicioNivel1 == "LABORATORIO"){
                     textColorServicio = `text-green-dark`;
                     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/laboratorio-ico.svg`;
+                }else if(detalle.nombreServicioNivel1 == "CONSULTA" || detalle.nombreServicioNivel1 == "CONSULTA NO MEDICA"){
+                    textColorServicio = `text-green-dark`;
+                    icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg`;
                 }else if(detalle.tipoServicio == 'ORDENES_APOYO_PENDIENTE'){
                     textColorServicio = `text-green-dark`;
                     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/laboratorio-ico.svg`;  
@@ -1839,6 +1893,9 @@
                     }else if(item.nombreServicioNivel1 == "LABORATORIO"){
                         tipoServicioItem = 'Laboratorio';
                         labelServicio = 'Laboratorio';
+                    }else if(item.nombreServicioNivel1 == "CONSULTA" || item.nombreServicioNivel1 =="CONSULTA NO MEDICA"){
+                        tipoServicioItem = 'Consulta';
+                        labelServicio = 'Consulta';
                     }
                 break;
                 case 'ORDENES_APOYO_PENDIENTE':
@@ -2816,6 +2873,10 @@
         margin-top: 0px;
         margin-bottom: 0px;
     }
+    .activar-disabled{
+        background: #bababa;
+        pointer-events: none;
+    }
     @media (min-width: 1200px) {
         .modal-lg {
             max-width: 850px !important;
@@ -2824,6 +2885,10 @@
     @media (max-width: 767.98px) {
         body{
             overflow: auto;
+        }
+        #btnPrint, .btn-turno.fs-70{
+            font-size: 35px !important;
+            line-height: 35px !important;
         }
     }
     @media print {

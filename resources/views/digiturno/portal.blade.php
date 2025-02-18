@@ -130,6 +130,12 @@
 
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
+                <div class="checkbox checkbox-primary">
+                    <input id="autorizacion" class="styled" type="checkbox" checked>
+                    <label for="autorizacion">
+                        Acepto que los resultados serán entregados a la Empresa.
+                    </label>
+                </div>
                 <a href="#" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-2 fs-4 btn-activar" data-bs-dismiss="modal">ACTIVAR</a>
                 <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4" data-bs-dismiss="modal">CERRAR</a>
             </div>
@@ -1940,6 +1946,7 @@
         margin-top: 0px;
         margin-bottom: 0px;
     }
+    
     @media (min-width: 1200px) {
         .modal-lg {
             max-width: 850px !important;
