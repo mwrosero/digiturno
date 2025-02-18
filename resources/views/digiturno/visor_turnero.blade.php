@@ -75,16 +75,52 @@
                 <img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
                 @endif
                 <div class="mt-auto" id="next-turno">
-                    <!-- <h1 class="text-veris mb-3">Siguiente turno</h1>
-                    <div class="card rounded-8 bg-veris-dark">
-                        <div class="card-content text-center p-4 px-2 d-flex justify-content-around align-items-center">
-                            <img style="width: 75px;" src="{{ asset('assets/img/NORMAL.svg') }}" alt="">
+                    {{-- <div class="text-veris mb-3 fs-40">Turnos en atención</div>
+                    <div class="card rounded-8 bg-veris-dark mb-1">
+                        <div class="card-content text-center p-2 d-flex justify-content-around align-items-center">
+                            
                             <div class="info">
-                                <span class="text-center fw-bold fs-70 text-white mb-2">TG 001</span>
+                                <span class="text-center fw-bold fs-50 line-height-50 text-white mb-0">TG-086</span>
                                 <p class="text-veris-sky fs-1 mb-0">Módulo 1</p>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
+                    <div class="card rounded-8 bg-veris-dark mb-1">
+                        <div class="card-content text-center p-2 d-flex justify-content-around align-items-center">
+                            
+                            <div class="info">
+                                <span class="text-center fw-bold fs-50 line-height-50 text-white mb-0">TG-086</span>
+                                <p class="text-veris-sky fs-1 mb-0">Módulo 1</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded-8 bg-veris-dark mb-1">
+                        <div class="card-content text-center p-2 d-flex justify-content-around align-items-center">
+                            <img style="width: 50px;" class="mx-2 ms-4" src="http://digiturno.veris.com.ec/assets/img/MAYOR_EDAD.svg" alt="">
+                            <div class="info">
+                                <span class="text-center fw-bold fs-50 line-height-50 text-white mb-0">A-019</span>
+                                <p class="text-veris-sky fs-1 mb-0">Módulo 3</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded-8 bg-veris-dark mb-1">
+                        <div class="card-content text-center p-2 d-flex justify-content-around align-items-center">
+                            <img style="width: 50px;" class="mx-2 ms-4" src="http://digiturno.veris.com.ec/assets/img/MAYOR_EDAD.svg" alt="">
+                            <div class="info">
+                                <span class="text-center fw-bold fs-50 line-height-50 text-white mb-0">A-019</span>
+                                <p class="text-veris-sky fs-1 mb-0">Módulo 3</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded-8 bg-veris-dark mb-1">
+                        <div class="card-content text-center p-2 d-flex justify-content-around align-items-center">
+                            <img style="width: 50px;" class="mx-2 ms-4" src="http://digiturno.veris.com.ec/assets/img/MAYOR_EDAD.svg" alt="">
+                            <div class="info">
+                                <span class="text-center fw-bold fs-50 line-height-50 text-white mb-0">A-019</span>
+                                <p class="text-veris-sky fs-1 mb-0">Módulo 3</p>
+                            </div>
+                        </div>
+                    </div> --}}
                 </div>
             </div>
             <div class="col-9 h-100 overflow-hidden">
@@ -160,7 +196,7 @@
             notificarNuevo(data.data);
             let elem = `<div class="text-veris mb-3 fs-40">Turnos en atención</div>`;
             $.each(data.data, function(key, value){
-                if(key < 3){
+                if(key < 5){
                     let modulo = ``;
                         modulo = `<p class="text-veris-sky fs-1 mb-0">Módulo ${value.cajaatiende}</p>`;
 
@@ -179,7 +215,7 @@
                         <div class="card-content text-center p-2 d-flex justify-content-around align-items-center">
                             ${icon}
                             <div class="info">
-                                <span class="text-center fw-bold fs-70 text-white mb-0">${value.turno}</span>
+                                <span class="text-center fw-bold fs-50 line-height-50 text-white mb-0">${value.turno}</span>
                                 ${modulo}
                             </div>
                         </div>
@@ -290,5 +326,13 @@
     document.addEventListener("DOMContentLoaded", async () => {
         await cargarTurnos();
     })
-</script>  
+</script>
+<style>
+    .fs-50{
+        font-size: 50px;
+    }
+    .line-height-50{
+        line-height: 50px;
+    }
+</style>
 @endsection
