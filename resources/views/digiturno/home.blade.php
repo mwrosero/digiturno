@@ -94,6 +94,8 @@
 			location.href = `/ingreso/{{ $mac }}`;
 		})
 
+		localStorage.clear();
+
 		await parametrosGenerales("{{ $mac }}");
 	})
 </script>
