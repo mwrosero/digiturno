@@ -48,7 +48,7 @@
                 </div>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0">
-                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto btn-print-notificar-llegada fs-4" data-bs-dismiss="modal">Aceptar</button>
+                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto btn-print-notificar-llegada fs-4" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </form>
     </div>

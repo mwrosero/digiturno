@@ -924,7 +924,8 @@
                 </div>`;
                 $.each(value.items, function(k,v){
                     let disabledAttr = ``;
-                    if(v.requiereAgendamiento && v.cantidadUtilizada == 0 && v.cantidadDisponible != v.cantidadUtilizada){
+                    //MARCOS: v.esAgendable &&
+                    if( v.requiereAgendamiento && v.cantidadUtilizada == 0 && v.cantidadDisponible != v.cantidadUtilizada ){
                         disabledAttr = `disabled`;
                     }
                     elem_content += `<div class="d-flex justify-content-start align-items-start fs-16 line-height-16 mb-2">
