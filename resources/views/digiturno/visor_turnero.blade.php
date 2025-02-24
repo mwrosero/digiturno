@@ -1,7 +1,8 @@
 @extends('template.app-template')
 @section('content')
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+{{-- <link href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/howler.min.js" rel="preload" as="script"> --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
 @php
     switch($mac){
         case "70-85-C2-91-96-4E":
@@ -164,6 +165,9 @@
             </div>
         </div>
     </footer>
+    <audio id="turno-sound" class="d-none">
+        <source src="{{ asset('assets/sound.mp3') }}" type="audio/mpeg">
+    </audio>
 </div>
 <style>
     .footer {
@@ -174,14 +178,26 @@
     let turnosEnAtencion = []
     setInterval(cargarTurnos, 5000);
 
-    function notificarNuevo(data){
-        $.each(data, function(key,value){
+    var sound = new Howl({
+        src: ['{{ asset('assets/sound.mp3') }}'],
+        volume: 1.0
+    });
+
+    async function notificarNuevo(data){
+        $.each(data, async function(key,value){
             if(!turnosEnAtencion.includes(value.idorden)){
                 turnosEnAtencion.push(value.idorden);
-                //alert("Turno: "+value.turno)
+                console.log("Turno: "+value.turno)
+                await playSound();
             }
         })
     }
+
+    async function playSound(){
+        // var sonido = $("#turno-sound")[0];
+        // sonido.play();
+        sound.play();
+    } 
 
     async function cargarTurnos(){
         let args = [];

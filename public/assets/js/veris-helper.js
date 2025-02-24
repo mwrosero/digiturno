@@ -28,9 +28,17 @@ async function call(args){
     if(args.bodyType == "json"){
         myHeaders.append("Content-Type", "application/json");
     }
-    myHeaders.append("Authorization","Bearer "+ args.token);
-    myHeaders.append("application", _application);
-    myHeaders.append("idorganizacion", _idOrganizacion);
+    
+    if(args.esLogin){
+        myHeaders.append("Authorization", "Basic " + args.basic);
+        myHeaders.append("Application", _applicationLogin);
+        myHeaders.append("IdOrganizacion", _idOrganizacionLogin);
+    }else{
+        myHeaders.append("Authorization","Bearer "+ args.token);
+        myHeaders.append("application", _application);
+        myHeaders.append("idorganizacion", _idOrganizacion);
+    }
+
     if(trackId != ''){
         myHeaders.append("trackId", trackId);
     }

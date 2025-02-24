@@ -41,9 +41,12 @@
             let web_url = "{{ \App\Models\Veris::WEBURL }}";
             const api_url = "{{ \App\Models\Veris::BASE_URL }}";
             const api_url_digitales = "{{ \App\Models\Veris::BASE_URL_DIGITALES }}";
+            const api_war_seguridad = "{{ \App\Models\Veris::SEGURIDADES_WAR }}";
             const api_war = "{{ \App\Models\Veris::BASE_WAR }}";
             const _application = "{{ \App\Models\Veris::APPLICATION }}";
             const _idOrganizacion = "{{ \App\Models\Veris::IDORGANIZACION }}";
+            const _applicationLogin = "{{ \App\Models\Veris::APPLICATION_LOGIN }}";
+            const _idOrganizacionLogin = "{{ \App\Models\Veris::IDORGANIZACION_LOGIN }}";
             let trackId = '';
         </script>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
