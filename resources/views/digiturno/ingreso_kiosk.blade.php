@@ -60,9 +60,9 @@
 			<div class="row">
 				<div class="col-12 col-md-3 text-center text-md-start">
 					@if (in_array($mac, \App\Models\Veris::MACS_PARAMI))
-					<img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/parami-large.png" alt="">
+					<img id="logo-digiturno" class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/parami-large.png" alt="">
 					@else
-					<img class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
+					<img id="logo-digiturno" class="w-100 logo" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png" alt="">
 					@endif
 				</div>
 				<div class="col-9 col-md-9 d-md-flex justify-content-end align-items-center d-none d-md-block">
@@ -177,6 +177,44 @@
 {{-- <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js?v=1.0.8"></script> --}}
 
 <script>
+	let clickCount = 0;
+	let logoutArea = document.getElementById("logo-digiturno"); // Elemento donde se hará la acción secreta
+	let timeout;
+
+	logoutArea.addEventListener("click", async function() {
+		console.log(999)
+	    clickCount++;
+
+	    // Reiniciar contador si no se completa la secuencia en 3 segundos
+	    clearTimeout(timeout);
+	    timeout = setTimeout(() => { clickCount = 0; }, 3000);
+
+	    if (clickCount === 6) {
+	        console.log("SALIR");
+	        await finalizar();
+	    }
+	});
+
+	let accion = "FINALIZAR";
+	async function finalizar(){
+		let userData = JSON.parse(localStorage.getItem('userVeris'));
+		let args = [];
+        args["endpoint"] =  `${api_url}/${api_war}/transaccion/session?macAddress={{ $mac }}&accion=${accion}&codigoUsuario=${ userData.secuenciaUsuario }`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+
+        const data = await call(args);
+        if(data.code == 200){
+            localStorage.clear();
+            let url_salir = `/{{ $mac }}`;
+            location.href = url_salir;
+        }else{
+        	alert(data.message);
+        }
+        return;
+	}
+
 	async function validarCampos(tipo){
 		if(tipo == "C"){
 			return esValidaCedula($('#cedula').val())
