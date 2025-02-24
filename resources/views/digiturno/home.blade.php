@@ -26,8 +26,8 @@
 			</div>
 		</div>
 		<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-5">
-    		<input autocomplete="off" class="w-100 onlyLetters text-uppercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1 mb-2" id="user" type="text" placeholder="Ingresar Usuario" />
-    		<input autocomplete="off" type="password" class="w-100 mt-3 onlyLetters keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1 mb-2" id="password" type="text" placeholder="Ingresar Clave" />
+    		<input autocomplete="off" class="w-100 onlyLetters keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1 mb-2" id="user" type="text" placeholder="Ingresar Usuario" />
+    		<input autocomplete="off" type="password" class="w-100 mt-3 onlyLetters keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1 mb-2" id="password" type="text" placeholder="Ingresar Clave" data-kioskboard-specialcharacters="true"/>
     		<div onclick="loginUser();" class="btn bg-veris btn-ingresar text-white mx-auto fs-1 p-3 mb-5 rounded-8 my-5">INICIALIZAR</div>
     	</div>
 	</main>
@@ -168,7 +168,7 @@
         args["method"] = "POST";
         args["token"] = accessToken;
         args["esLogin"] = true;
-        args["basic"] = btoa(user+":"+password);
+        args["basic"] = btoa(user.toUpperCase()+":"+password);
         args["showLoader"] = true;
         const data = await call(args);
         console.log(data);
