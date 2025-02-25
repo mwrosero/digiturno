@@ -1180,10 +1180,11 @@
             "secuenciaUsuario": dataParametrosGenerales.secuenciaUsuario,
             "idTurno": null,
             "caja": dataParametrosGenerales.caja,
-            "nemonicoCanalFacturacion": "CAJA",
+            "nemonicoCanalFacturacion": "DIGITURNOS",
             "esFarmaciaDomicilio": false,
             "codigoSolicitudServDomicilio": null,
-            "numSolicitudLabDomicilio": null
+            "numSolicitudLabDomicilio": null,
+            "esDigiturno": true
         }
         args["method"] = "POST";
         args["token"] = accessToken;
@@ -1284,7 +1285,7 @@
     async function activarLaboratorioChequeo(detalle){
         let numeroTransaccion = detalle.numeroTransaccion;
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/transacciones/genera_atencion_pac_laboratorio?codigoEmpresa=1&nemonicoCanalFacturacion=CAJA`;
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/transacciones/genera_atencion_pac_laboratorio?codigoEmpresa=1&nemonicoCanalFacturacion=DIGITURNOS`;
         let payload = {
             "enviaOrdenesLaboratorio": true,
             "numeroTransaccion": [

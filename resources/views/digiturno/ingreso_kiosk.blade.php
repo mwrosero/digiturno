@@ -191,7 +191,9 @@
 
 	    if (clickCount === 6) {
 	        console.log("SALIR");
-	        await finalizar();
+	        if(!isMobile()){
+	        	await finalizar();
+	        }
 	    }
 	});
 
@@ -199,7 +201,7 @@
 	async function finalizar(){
 		let userData = JSON.parse(localStorage.getItem('userVeris'));
 		let args = [];
-        args["endpoint"] =  `${api_url}/${api_war}/transaccion/session?macAddress={{ $mac }}&accion=${accion}&codigoUsuario=${ userData.secuenciaUsuario }`;
+        args["endpoint"] =  `${api_url}/${api_war}/transaccion/session?macAddress={{ $mac }}&accion=${accion}&codigoUsuario=${ userData.codigoUsuario }`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
