@@ -6,6 +6,23 @@
 <div class="wrapper">
 	<!-- Header -->
 	@include('template.header', ['showInfo' => false])
+	{{-- Modal coincidencias --}}
+	<div class="modal modal-top fade" id="modalConsultaUser" tabindex="-1" aria-labelledby="modalConsultaUserLabel" aria-hidden="true">
+	    <div class="modal-dialog modal modal-dialog-centered mx-auto">
+	        <form class="modal-content rounded-8">
+	            <div class="modal-header d-none">
+	                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+	            </div>
+	            <div class="modal-body p-3">
+	                <h5 class="fs--20 line-height-24 mt-3 mb--20" id="info-user">Existe una sesión iniciada, elija</h5>
+	            </div>
+	            <div class="modal-footer pt-0 pb-3 px-3 border-0">
+	                <button type="button" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-auto fs-4 w-100 my-2">Cerrar e Iniciar con: <span id="user-new"></span></button>
+	                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 w-100 my-2">Continuar con: <span id="user-active"></span></button>
+	            </div>
+	        </form>
+	    </div>
+	</div>
 
 	{{-- login user --}}
 	<main class="content p-2 not-logged d-none">
@@ -153,9 +170,20 @@
 
 
 		await parametrosGenerales("{{ $mac }}");
+
+		
+		$('body').on('click', '#user-new', async function(){
+			await finalizar($(this).attr('user-rel'));
+		})
+
+		$('body').on('click', '#user-active', async function(){
+			localStorage.setItem('userVeris', JSON.stringify(userLogged));
+            location.reload();
+		})
+		
 	})
 
-
+	let userLogged = [];
 	async function loginUser(){
 		let user = $('#user').val();
 		let password = $('#password').val();
@@ -173,17 +201,41 @@
         const data = await call(args);
         console.log(data);
       	if(data.code == 200){
-      		localStorage.setItem('userVeris', JSON.stringify(data.data));
-      		await inicializar();
+      		userLogged = data.data;
+      		await consultar()
       	}else{
       		alert(data.message)
       	}	
 	}
 
-	async function inicializar(){
-		let userData = JSON.parse(localStorage.getItem('userVeris'));
+	let user_consulta;
+	async function consultar(){
 		let args = [];
-        args["endpoint"] =  `${api_url}/${api_war}/transaccion/session?macAddress={{ $mac }}&accion=${accion}&codigoUsuario=${ userData.codigoUsuario }`;
+        args["endpoint"] =  `${api_url}/${api_war}/transaccion/session?macAddress={{ $mac }}&accion=CONSULTAR&codigoUsuario=AKOLD`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+
+        const data = await call(args);
+        if(data.code == 200){
+            if(data.data == null){
+            	await inicializar();
+            }else{
+            	user_consulta = data.data;
+            	$('#user-new').html(`${data.data.codigoUsuario}`).attr('user-rel',data.data.codigoUsuario);
+				$('#user-active').html(`${userLogged.codigoUsuario}`).attr('user-rel',userLogged.codigoUsuario);
+            	$('#modalConsultaUser').modal('show');
+            }
+        }else{
+        	alert(data.message);
+        }
+        return;
+	}
+
+	async function inicializar(){
+		// let userData = JSON.parse(localStorage.getItem('userVeris'));
+		let args = [];
+        args["endpoint"] =  `${api_url}/${api_war}/transaccion/session?macAddress={{ $mac }}&accion=${accion}&codigoUsuario=${ userLogged.codigoUsuario }`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
@@ -191,7 +243,24 @@
         const data = await call(args);
         if(data.code == 200){
             console.log(data)
+            localStorage.setItem('userVeris', JSON.stringify(userLogged));
             location.reload();
+        }else{
+        	alert(data.message);
+        }
+        return;
+	}
+
+	async function finalizar(user){
+		let args = [];
+        args["endpoint"] =  `${api_url}/${api_war}/transaccion/session?macAddress={{ $mac }}&accion=FINALIZAR&codigoUsuario=${ user }`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+
+        const data = await call(args);
+        if(data.code == 200){
+            await inicializar();
         }else{
         	alert(data.message);
         }
