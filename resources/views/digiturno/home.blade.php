@@ -112,13 +112,13 @@
 	$(document).ready(async function() {
 		const userVeris = localStorage.getItem('userVeris');
 		if (localStorage.getItem('userVeris') !== null) {
-			$('.logged').removeClass('d-none')
+			$('.logged').removeClass('d-none');
 
 			$('body').on('click touch', function(){
 				location.href = `/ingreso/{{ $mac }}`;
 			})	
 		}else{
-			$('.not-logged').removeClass('d-none')
+			$('.not-logged').removeClass('d-none');
 
 			KioskBoard.init({
 	        	keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
@@ -183,7 +183,7 @@
 	async function inicializar(){
 		let userData = JSON.parse(localStorage.getItem('userVeris'));
 		let args = [];
-        args["endpoint"] =  `${api_url}/${api_war}/transaccion/session?macAddress={{ $mac }}&accion=${accion}&codigoUsuario=${ userData.secuenciaUsuario }`;
+        args["endpoint"] =  `${api_url}/${api_war}/transaccion/session?macAddress={{ $mac }}&accion=${accion}&codigoUsuario=${ userData.codigoUsuario }`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
