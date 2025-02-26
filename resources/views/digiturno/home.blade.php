@@ -44,7 +44,12 @@
 		</div>
 		<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-5">
     		<input autocomplete="off" class="w-100 onlyLetters keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1 mb-2" id="user" type="text" placeholder="Ingresar Usuario" />
-    		<input autocomplete="off" type="password" class="w-100 mt-3 onlyLetters keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1 mb-2" id="password" type="text" placeholder="Ingresar Clave" data-kioskboard-specialcharacters="true"/>
+    		<div class="w-100 d-flex justify-content-between align-items-center">
+    			<input autocomplete="off" type="password" class="w-100 mt-3 onlyLetters keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1 mb-2" id="password" type="text" placeholder="Ingresar Clave" data-kioskboard-specialcharacters="true"/>
+    			<div class="box-ver-pass ms-3 fs-40 text-veris">
+    				<i class="fa-solid fa-eye"></i>
+    			</div>
+    		</div>
     		<div onclick="loginUser();" class="btn bg-veris btn-ingresar text-white mx-auto fs-1 p-3 mb-5 rounded-8 my-5">INICIAR SESIÓN</div>
     	</div>
     	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-3">
@@ -197,6 +202,17 @@
 		$('body').on('click', '#user-active', async function(){
 			localStorage.setItem('userVeris', JSON.stringify(userLogged));
             location.reload();
+		})
+
+		$('body').on('click', '.box-ver-pass', async function(){
+			console.log($('#password').attr('type'))
+			if($('#password').attr('type') == "text"){
+				$('#password').attr('type','password');
+				$('.box-ver-pass').html(`<i class="fa-solid fa-eye"></i>`);
+			}else{
+				$('#password').attr('type','text');
+				$('.box-ver-pass').html(`<i class="fa-solid fa-eye-slash"></i>`);
+			}
 		})
 		
 	})
