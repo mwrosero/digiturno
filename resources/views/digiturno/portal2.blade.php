@@ -4,6 +4,8 @@
 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/print.min.css">
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-2.3.0.min.js"></script>
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/print.min.js"></script>
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/html2canvas.min.js"></script>
+
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 {{-- Modal de pago --}}
 <div class="modal fade mt-4" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel">
@@ -2633,11 +2635,27 @@
                 // }else{
                 //     printTurnoAPI(data.data)
                 // }
+            }else{
+                setTimeout(async function(){
+                    await generateImg()
+                },500)
             }
         }else{
             $('#mensajeError').html(`${data.message}`)
             $('#modalAlerta').modal('show');
         }
+    }
+
+    async function generateImg(){
+        let modalContent = document.getElementById("turnoDisplay");
+        
+        html2canvas(modalContent).then(function (canvas) {
+            let image = canvas.toDataURL("image/png");
+            let link = document.createElement("a");
+            link.href = image;
+            link.download = "TURNO-VERIS.png";
+            link.click();
+        });
     }
     /*
     Para buscar paquetes: https://api.phantomx.com.ec/digitales/v1/comercial/detallePaquete?canalOrigen=MVE_CMV&codigoEmpresa=1&secuenciaPaquetePaciente=4680170
