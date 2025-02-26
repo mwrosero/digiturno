@@ -159,6 +159,9 @@
 		}
 		@else
 			$('.logged').removeClass('d-none');
+			$('body').on('click touch', function(){
+				location.href = `/ingreso/{{ $mac }}`;
+			})
 		@endif
 
 		$('#qrcode').qrcode({
