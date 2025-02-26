@@ -28,7 +28,7 @@ class Veris extends Model
     // public const APPLICATION_LOGIN = 'UEhBTlRPTVhfRU1QUkVTQVJJQUw=';
     // public const IDORGANIZACION_LOGIN = '365509c8-9596-4506-a5b3-487782d5876e';
 
-    //PROD
+    //PROD 
     public const BASE_URL = 'https://turnero.phantomx.com.ec';
     public const BASE_URL_DIGITALES = 'https://api.phantomx.com.ec';
     public const BASE_WAR = 'turnero/v2';
