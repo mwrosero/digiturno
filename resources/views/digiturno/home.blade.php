@@ -131,8 +131,9 @@
 	let accion = "INICIALIZAR";
 	$(document).ready(async function() {
 		@if($mac == "24-2F-FA-07-17-3E")
-		const userVeris = localStorage.getItem('userVeris');
-		const userAnonimo = localStorage.getItem('userAnonimo');
+		let userVeris = localStorage.getItem('userVeris');
+		let userAnonimo = localStorage.getItem('userAnonimo');
+
 		if (localStorage.getItem('userVeris') !== null || localStorage.getItem('userAnonimo') !== null) {
 			$('.logged').removeClass('d-none');
 
@@ -171,6 +172,7 @@
 
 		localStorage.clear();
 
+		@if($mac == "24-2F-FA-07-17-3E")
 		if (userVeris !== null) {
 			// Reescribe usuario
 		    localStorage.setItem('userVeris', userVeris);
@@ -180,11 +182,11 @@
 			// Reescribe usuario
 		    localStorage.setItem('userAnonimo', userAnonimo);
 		}
+		@endif
 
 
 		await parametrosGenerales("{{ $mac }}");
 
-		
 		$('body').on('click', '#user-new', async function(){
 			await finalizar($(this).attr('user-rel'));
 		})
