@@ -45,7 +45,10 @@
 		<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-5">
     		<input autocomplete="off" class="w-100 onlyLetters keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1 mb-2" id="user" type="text" placeholder="Ingresar Usuario" />
     		<input autocomplete="off" type="password" class="w-100 mt-3 onlyLetters keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1 mb-2" id="password" type="text" placeholder="Ingresar Clave" data-kioskboard-specialcharacters="true"/>
-    		<div onclick="loginUser();" class="btn bg-veris btn-ingresar text-white mx-auto fs-1 p-3 mb-5 rounded-8 my-5">INICIALIZAR</div>
+    		<div onclick="loginUser();" class="btn bg-veris btn-ingresar text-white mx-auto fs-1 p-3 mb-5 rounded-8 my-5">INICIAR SESIÓN</div>
+    	</div>
+    	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-3">
+    		<div onclick="loginAnonimo();" class="btn bg-veris-dark btn-anonimo text-white mx-auto fs-3 p-2 mb-5 rounded-8 my-3"><i class="fa-solid fa-user-secret me-2"></i>INGRESO ANÓNIMO</div>
     	</div>
 	</main>
 
@@ -127,8 +130,10 @@
 	setInterval(actualizarFechaHora, 1000);
 	let accion = "INICIALIZAR";
 	$(document).ready(async function() {
+		@if($mac == "24-2F-FA-07-17-3E")
 		const userVeris = localStorage.getItem('userVeris');
-		if (localStorage.getItem('userVeris') !== null) {
+		const userAnonimo = localStorage.getItem('userAnonimo');
+		if (localStorage.getItem('userVeris') !== null || localStorage.getItem('userAnonimo') !== null) {
 			$('.logged').removeClass('d-none');
 
 			$('body').on('click touch', function(){
@@ -151,6 +156,9 @@
 
 	        KioskBoard.run('.virtual-keyboard-all', {});
 		}
+		@else
+			$('.logged').removeClass('d-none');
+		@endif
 
 		$('#qrcode').qrcode({
 			width: 300,
@@ -168,6 +176,11 @@
 		    localStorage.setItem('userVeris', userVeris);
 		}
 
+		if (userAnonimo !== null) {
+			// Reescribe usuario
+		    localStorage.setItem('userAnonimo', userAnonimo);
+		}
+
 
 		await parametrosGenerales("{{ $mac }}");
 
@@ -182,6 +195,11 @@
 		})
 		
 	})
+
+	async function loginAnonimo(){
+		localStorage.setItem('userAnonimo', true);
+        location.reload();
+	}
 
 	let userLogged = [];
 	async function loginUser(){

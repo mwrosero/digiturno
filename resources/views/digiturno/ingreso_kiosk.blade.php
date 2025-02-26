@@ -7,6 +7,8 @@
 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/print.min.css">
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/print.min.js"></script>
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-2.3.0.min.js"></script>
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/html2canvas.min.js"></script>
+
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <!-- Modal usuario turno -->
 <div class="modal fade" id="modalIngresarNombres" tabindex="-1" aria-labelledby="modalIngresarNombresLabel">
@@ -199,6 +201,12 @@
 
 	let accion = "FINALIZAR";
 	async function finalizar(){
+		if(localStorage.getItem('userAnonimo') !== null){
+			localStorage.clear();
+            let url_salir = `/{{ $mac }}`;
+            location.href = url_salir;
+            return;
+		}
 		let userData = JSON.parse(localStorage.getItem('userVeris'));
 		let args = [];
         args["endpoint"] =  `${api_url}/${api_war}/transaccion/session?macAddress={{ $mac }}&accion=${accion}&codigoUsuario=${ userData.codigoUsuario }`;
@@ -542,11 +550,27 @@ function simulateOpen(inputId) {
             // console.log("iniciar conteo para enviar a home")
             if(!isMobile()){
                 printTurnoAPI(data.data)
+            }else{
+            	setTimeout(async function(){
+                    await generateImg()
+                },500)
             }
         }else{
             $('#mensajeError').html(`${data.message}`)
             $('#modalAlerta').modal('show');
         }
+    }
+
+    async function generateImg(){
+        let modalContent = document.getElementById("turnoDisplay");
+        
+        html2canvas(modalContent).then(function (canvas) {
+            let image = canvas.toDataURL("image/png");
+            let link = document.createElement("a");
+            link.href = image;
+            link.download = "TURNO-VERIS.png";
+            link.click();
+        });
     }
 
     async function printTurnoAPI(detalle){
