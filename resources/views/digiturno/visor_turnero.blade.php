@@ -166,7 +166,7 @@
         </div>
     </footer>
     <audio id="turno-sound" class="d-none">
-        <source src="{{ asset('assets/sound.mp3') }}" type="audio/mpeg">
+        <source src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/sound.mp3" type="audio/mpeg">
     </audio>
 </div>
 <style>
@@ -179,7 +179,7 @@
     setInterval(cargarTurnos, 5000);
 
     var sound = new Howl({
-        src: ['{{ asset('assets/sound.mp3') }}'],
+        src: ['{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/sound.mp3'],
         volume: 1.0
     });
 
@@ -196,6 +196,7 @@
     async function playSound(){
         // var sonido = $("#turno-sound")[0];
         // sonido.play();
+        console.log('ACTIVA SONIDO');
         sound.play();
     } 
 
@@ -224,7 +225,7 @@
                     let icon = ``;
                     if(value.nemonicoPrioridad != "NORMAL"){
                         if(value.nemonicoPrioridad != null){
-                            icon = `<img style="width: 50px;" class="mx-2 ms-4" src="{{ asset('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">`;
+                            icon = `<img style="width: 50px;" class="mx-2 ms-4" src="{{ secure_url('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">`;
                         }
                     }
                     elem += `<div class="card rounded-8 bg-veris-dark mb-1">
@@ -265,7 +266,7 @@
                     let icon = ``;
                     if(value.nemonicoPrioridad != "NORMAL"){
                         if(value.nemonicoPrioridad != null){
-                            icon = `<img style="width: 50px;" class="mx-2 ms-4" src="{{ asset('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">`;
+                            icon = `<img style="width: 50px;" class="mx-2 ms-4" src="{{ secure_url('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">`;
                         }
                     }
                     elem += `<div class="col-2 h-75 p-3">
@@ -313,7 +314,7 @@
                     let elem_0 = `<h1 class="text-veris mb-3">Siguiente turno</h1>
                         <div class="card rounded-8 bg-veris-dark">
                             <div class="card-content text-center p-4 px-2 d-flex justify-content-around align-items-center">
-                                <img style="width: 75px;" src="{{ asset('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">
+                                <img style="width: 75px;" src="{{ secure_url('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">
                                 <div class="info">
                                     <span class="text-center fw-bold fs-70 text-white mb-2">${value.turno}</span>
                                     ${modulo}
@@ -324,7 +325,7 @@
                 }else{
                     elem += `<div class="col-2 h-75 p-3">
                         <div class="d-flex justify-content-start align-items-center text-start fs-50 line-height-50 h-100 rounded-8 border-veris-1 bg-veris-sky">
-                            <img style="width: 50px;" class="mx-2" src="{{ asset('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">
+                            <img style="width: 50px;" class="mx-2" src="{{ secure_url('assets/img/${value.nemonicoPrioridad}.svg') }}" alt="">
                             <div class="text-center flex-grow-1">
                                 <p class="w-100 m-0 text-center text-veris">${value.turno}</p>
                                 ${modulo_wait}
