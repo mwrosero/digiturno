@@ -89,7 +89,7 @@
                 <h5 class="fs--20 line-height-24 mt-3 mb-3 text-start">Cita confirmada</h5>
                 <div class="box-info-consultorio d-flex justify-content-center align-items-center fw-bold text-dark fs-25 bg-silver-light py-2 rounded-8 my-2">
                 </div>
-                <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/confirmar-cita.svg" alt="" style="min-width: 350px;">
+                <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/confirmar-cita.svg" id="confimar-icon" alt="">
                 <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
@@ -2897,6 +2897,9 @@
         background: #bababa;
         pointer-events: none;
     }
+    #confimar-icon{
+        min-width: 350px;
+    }
     @media (min-width: 1200px) {
         .modal-lg {
             max-width: 850px !important;
@@ -2909,6 +2912,10 @@
         #btnPrint, .btn-turno.fs-70{
             font-size: 35px !important;
             line-height: 35px !important;
+        }
+        #confimar-icon{
+            min-width: 150px;
+            width: 60%;
         }
     }
     @media print {
