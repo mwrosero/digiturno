@@ -222,6 +222,12 @@
         location.reload();
 	}
 
+	function b64EncodeUnicode(str) {
+	    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+	    	return String.fromCharCode(parseInt(p1,16))
+	    }));
+	}
+
 	let userLogged = [];
 	async function loginUser(){
 		let user = $('#user').val();
@@ -235,7 +241,7 @@
         args["method"] = "POST";
         args["token"] = accessToken;
         args["esLogin"] = true;
-        args["basic"] = btoa(user.toUpperCase()+":"+password);
+        args["basic"] = b64EncodeUnicode(user.toUpperCase()+":"+password)//btoa("lzuÃ±iga:Andres34.*");//btoa(user.toUpperCase()+":"+password);
         args["showLoader"] = true;
         const data = await call(args);
         console.log(data);
