@@ -17,8 +17,8 @@
 	                <h5 class="fs--20 line-height-24 mt-3 mb--20" id="info-user">Existe una sesión iniciada, elija</h5>
 	            </div>
 	            <div class="modal-footer pt-0 pb-3 px-3 border-0">
-	                <button type="button" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-auto fs-4 w-100 my-2">Cerrar e Iniciar con: <span id="user-new"></span></button>
-	                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 w-100 my-2">Continuar con: <span id="user-active"></span></button>
+	                <button type="button" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-auto fs-4 w-100 my-2" id="btn-user-new">Cerrar e Iniciar con: <span id="user-new"></span></button>
+	                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 w-100 my-2" id="btn-user-active">Continuar con: <span id="user-active"></span></button>
 	            </div>
 	        </form>
 	    </div>
@@ -135,17 +135,18 @@
 	setInterval(actualizarFechaHora, 1000);
 	let accion = "INICIALIZAR";
 	$(document).ready(async function() {
-		@if($mac == "24-2F-FA-07-17-3E")
 		let userVeris = localStorage.getItem('userVeris');
 		let userAnonimo = localStorage.getItem('userAnonimo');
 
 		if (localStorage.getItem('userVeris') !== null || localStorage.getItem('userAnonimo') !== null) {
+			console.log(0)
 			$('.logged').removeClass('d-none');
 
 			$('body').on('click touch', function(){
 				location.href = `/ingreso/{{ $mac }}`;
 			})	
 		}else{
+			console.log(1)
 			$('.not-logged').removeClass('d-none');
 
 			KioskBoard.init({
@@ -162,12 +163,6 @@
 
 	        KioskBoard.run('.virtual-keyboard-all', {});
 		}
-		@else
-			$('.logged').removeClass('d-none');
-			$('body').on('click touch', function(){
-				location.href = `/ingreso/{{ $mac }}`;
-			})
-		@endif
 
 		$('#qrcode').qrcode({
 			width: 300,
@@ -180,7 +175,6 @@
 
 		localStorage.clear();
 
-		@if($mac == "24-2F-FA-07-17-3E")
 		if (userVeris !== null) {
 			// Reescribe usuario
 		    localStorage.setItem('userVeris', userVeris);
@@ -190,16 +184,15 @@
 			// Reescribe usuario
 		    localStorage.setItem('userAnonimo', userAnonimo);
 		}
-		@endif
 
 
 		await parametrosGenerales("{{ $mac }}");
 
-		$('body').on('click', '#user-new', async function(){
+		$('body').on('click', '#btn-user-new', async function(){
 			await finalizar($(this).attr('user-rel'));
 		})
 
-		$('body').on('click', '#user-active', async function(){
+		$('body').on('click', '#btn-user-active', async function(){
 			localStorage.setItem('userVeris', JSON.stringify(userLogged));
             location.reload();
 		})
@@ -236,12 +229,14 @@
 			alert("Debe ingresar sus credenciales");
 			return;
 		}
+		let basicData = b64EncodeUnicode(user.toUpperCase()+":"+password);
+		console.log(basicData);
 		let args = [];
 		args["endpoint"] = `${api_url_digitales}/${api_war_seguridad}/autenticacion/login`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["esLogin"] = true;
-        args["basic"] = b64EncodeUnicode(user.toUpperCase()+":"+password)//btoa("lzuÃ±iga:Andres34.*");//btoa(user.toUpperCase()+":"+password);
+        args["basic"] = basicData//btoa("lzuÃ±iga:Andres34.*");//btoa(user.toUpperCase()+":"+password);
         args["showLoader"] = true;
         const data = await call(args);
         console.log(data);
