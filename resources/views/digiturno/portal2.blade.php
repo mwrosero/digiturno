@@ -731,7 +731,13 @@
         })
 
         $('body').on('click', '.btn-turno', async function(){
-            await generarTurno();
+            let detalle = [];
+            // if (typeof $(this).attr("data-rel") === "undefined") {
+            if($(this).attr("data-rel") !== undefined){
+                detalle = JSON.parse($(this).attr("data-rel"));
+            }
+            // console.log(detalle);return;
+            await generarTurno(detalle);
         })
 
         $('body').on('click', '.btn-notificar-llegada', async function(){
@@ -1175,7 +1181,7 @@
         return false;
     }
 
-    async function activarPrestacionesChequeos(){
+    async function activarPrestacionesChequeos(origen = 'CHEQUEO', detalle = null){
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/inicializar?codigoEmpresa=1&tipoPreTransaccion=FACTURA`;
         let payload = {
@@ -1196,7 +1202,12 @@
         const data = await call(args);
         if(data.code == 200){
             let idPreTransaccion = data.data.idPreTransaccion
-            await agregarItemChequeo(idPreTransaccion);
+            if(origen == "CHEQUEO"){
+                await agregarItemChequeo(idPreTransaccion);
+            }else{
+                await agregarItemTurno(idPreTransaccion, detalle);
+                return idPreTransaccion;
+            }
         }
     }
 
@@ -1302,6 +1313,61 @@
         args["bodyType"] = "json";
         const data = await call(args);
         console.log(data);
+    }
+
+    async function agregarItemTurno(idPreTransaccion, detalle){
+        let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+        let paciente = JSON.parse(dataAttr);
+
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/agregar_item?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
+
+        let item = [];
+
+        let payload = {
+            "idPaciente": paciente.idPaciente,
+        }
+
+        if(detalle.tipoServicio == "RESERVA"){
+            payload.reservas = [{
+                "_id": generateUUIDv4(),
+                "beneficio": {
+                    "convenio": (detalle.beneficio.convenio != null) ? detalle.beneficio.convenio : null,
+                    "secuenciaTarjetaPaciente": (detalle.beneficio.tarjeta != null) ? detalle.beneficio.tarjeta.secuenciaTarjetaXPaciente : null,
+                    "secuenciaPaquetePaciente": (detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
+                },
+                "codigoReserva": detalle.codigoReserva,
+                "numeroOrden": detalle.numeroOrden,
+                "lineaDetalleOrden": detalle.lineaDetalleOrden
+            }]
+        }else if(detalle.tipoServicio == "PAQUETES_PROMOCIONALES"){
+            payload.paquetesPromocionales = [{
+                "_id": generateUUIDv4(),
+                "secuenciaPaquetePaciente": detalle.secuenciaPaquetePaciente
+            }]
+        }else{
+            payload.reservas = [{
+                "_id": generateUUIDv4(),
+                "beneficio": {
+                    "convenio": (detalle.beneficio.convenio != null) ? detalle.beneficio.convenio : null,
+                    "secuenciaTarjetaPaciente": (detalle.beneficio.tarjeta != null) ? detalle.beneficio.tarjeta.secuenciaTarjetaXPaciente : null,
+                    "secuenciaPaquetePaciente": (detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
+                },
+                "codigoReserva": detalle.codigoReserva,
+                "numeroOrden": detalle.numeroOrden,
+                "lineaDetalleOrden": detalle.lineaDetalleOrden
+            }]
+        }
+
+        args["method"] = "PUT";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify(payload);
+        args["bodyType"] = "json";
+        const data = await call(args);
+        if(data.code == 200){
+            return data.data;
+        }
     }
 
     async function validarActivarLaboratorioChequeos(){
@@ -1699,6 +1765,7 @@
 
             break;
             case 'PAQUETES_PROMOCIONALES':
+                console.log(99999)
                 icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/promocion-ico.svg`;
 
                 labelServicio = `${detalle.nombrePaquete.toLowerCase()}`;
@@ -2610,11 +2677,17 @@
         return elem;
     }
 
-    async function generarTurno(){
+    async function generarTurno(detalle){
+        let url_adicional = ``;
+        if(detalle.length > 0){
+            let pre_trx = await activarPrestacionesChequeos('TURNO',detalle);
+            url_adicional += `&idPreTransaccion=${pre_trx}`
+        }
+
         let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
         let args = [];
-        args["endpoint"] =  `${api_url}/${api_war}/transaccion/generar_ticket?macAddress=${ dataTurno.mac }&tipoIdentificacion=${paciente.nombreTipoIdentificacion}&numeroIdentificacion=${paciente.numeroIdentificacion}&nombreCompleto=${ paciente.nombreCompleto }`;
+        args["endpoint"] =  `${api_url}/${api_war}/transaccion/generar_ticket?macAddress=${ dataTurno.mac }&tipoIdentificacion=${paciente.nombreTipoIdentificacion}&numeroIdentificacion=${paciente.numeroIdentificacion}&nombreCompleto=${ paciente.nombreCompleto }${url_adicional}`;
         //dataCita.paciente.numeroPaciente
         args["method"] = "POST";
         args["token"] = accessToken;
