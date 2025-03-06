@@ -42,6 +42,11 @@ async function call(args){
     if(trackId != ''){
         myHeaders.append("trackId", trackId);
     }
+
+    if(JSON.parse(localStorage.getItem('userVeris')) != null){
+        myHeaders.append("usuarioSession", JSON.parse(localStorage.getItem('userVeris')).codigoUsuario);
+    }
+
     /*if(args.token){
         console.log(_idOrganizacion)
         myHeaders.append("Authorization","Bearer "+ args.token);
