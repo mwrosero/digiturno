@@ -1257,11 +1257,11 @@
         args["bodyType"] = "json";
         const data = await call(args);
         if(data.code == 200){
-            await facturarChequeo(idPreTransaccion, data.data);
+            await facturarChequeo(idPreTransaccion, data.data, payload);
         }
     }
 
-    async function facturarChequeo(idPreTransaccion, detalle){
+    async function facturarChequeo(idPreTransaccion, detalle, payloadRegistro){
         console.log(detalle);
         let idAgrupacion = [];
 
@@ -1282,6 +1282,7 @@
         const data = await call(args);
         if(data.code == 200){
             console.log(data);
+            await registrarTracking(payloadRegistro);
             // $('#direccionDirigirseLlegada').html(`Por favor, diríjase al área de chequeos.`);
             let debeActivar = await validarActivarLaboratorioChequeos();
             if(debeActivar){
@@ -1293,6 +1294,23 @@
             $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris-dark">${lugares.join(", ").toLowerCase()}</span>. Y espera a ser llamado.`);
             $('#modalNotificarLlegadaDirigirLugar').modal('show');
         }
+    }
+
+    async function registrarTracking(payloadRegistro){
+        let args = [];
+        args["endpoint"] = `${api_url}/${api_war}/util/registrar_tracking?macAddress=${ dataTurno.mac }`;
+        let payload = {
+            "idProceso": "ACTIVAR_CHEQUEO",
+            "parametros": payloadRegistro
+        }
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify(payload);
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log(data)
+        return data;
     }
 
     async function activarLaboratorioChequeo(detalle){
