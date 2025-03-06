@@ -63,8 +63,10 @@
             $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6rRzJbZmaLutrK9po3379Zh&autoplay=1&mute=1&controls=0&loop=1&playlist=PLhHmuSWjQz6rRzJbZmaLutrK9po3379Zh";
     }
 @endphp
-
-<div class="wrapper">
+<div class="wrapper iniciador d-flex justify-content-center align-items-center">
+    <button class="bg-veris text-white fs-1 p-3 rounded-8" onclick="iniciarTurnero()">INICIAR TURNERO</button>
+</div>
+<div class="wrapper turnero d-none">
     <!-- Content -->
     <main class="content p-3">
         <div class="container-fluid h-100">
@@ -176,7 +178,14 @@
 </style>
 <script>
     let turnosEnAtencion = []
-    setInterval(cargarTurnos, 5000);
+    //setInterval(cargarTurnos, 5000);
+
+    function iniciarTurnero(){
+        cargarTurnos();
+        $('.iniciador').addClass('d-none');
+        $('.turnero').removeClass('d-none');
+        setInterval(cargarTurnos, 5000);
+    }
 
     var sound = new Howl({
         src: ['{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/sound.mp3'],
@@ -341,7 +350,7 @@
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
-        await cargarTurnos();
+        // await cargarTurnos();
     })
 </script>
 <style>
