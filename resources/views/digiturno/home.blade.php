@@ -262,8 +262,10 @@
             	await inicializar();
             }else{
             	user_consulta = data.data;
-            	$('#user-new').html(`${data.data.codigoUsuario}`).attr('user-rel',data.data.codigoUsuario);
-				$('#user-active').html(`${userLogged.codigoUsuario}`).attr('user-rel',userLogged.codigoUsuario);
+            	$('#user-active').html(`${data.data.codigoUsuario}`).attr('user-rel',data.data.codigoUsuario);
+            	$('#btn-user-active').attr('user-rel',data.data.codigoUsuario);
+				$('#user-new').html(`${userLogged.codigoUsuario}`).attr('user-rel',userLogged.codigoUsuario);
+				$('#btn-user-new').attr('user-rel',userLogged.codigoUsuario);
             	$('#modalConsultaUser').modal('show');
             }
         }else{

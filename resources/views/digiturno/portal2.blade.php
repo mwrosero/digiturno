@@ -732,12 +732,14 @@
 
         $('body').on('click', '.btn-turno', async function(){
             let detalle = [];
+            let crearPtx = false;
             // if (typeof $(this).attr("data-rel") === "undefined") {
             if($(this).attr("data-rel") !== undefined){
+                crearPtx = true;
                 detalle = JSON.parse($(this).attr("data-rel"));
             }
             // console.log(detalle);return;
-            await generarTurno(detalle);
+            await generarTurno(detalle, crearPtx);
         })
 
         $('body').on('click', '.btn-notificar-llegada', async function(){
@@ -2695,9 +2697,12 @@
         return elem;
     }
 
-    async function generarTurno(detalle){
+    async function generarTurno(detalle, crearPtx = false){
+        console.log(detalle);
         let url_adicional = ``;
-        if(detalle.length > 0){
+        
+        // if(detalle != []){
+        if (crearPtx) {
             let pre_trx = await activarPrestacionesChequeos('TURNO',detalle);
             url_adicional += `&idPreTransaccion=${pre_trx}`
         }
