@@ -17,8 +17,8 @@
 	                <h5 class="fs--20 line-height-24 mt-3 mb--20" id="info-user">Existe una sesión iniciada, elija</h5>
 	            </div>
 	            <div class="modal-footer pt-0 pb-3 px-3 border-0">
-	                <button type="button" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-auto fs-4 w-100 my-2" id="btn-user-new">Cerrar e Iniciar con: <span id="user-new"></span></button>
 	                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 w-100 my-2" id="btn-user-active">Continuar con: <span id="user-active"></span></button>
+	                <button type="button" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-auto fs-4 w-100 my-2" id="btn-user-new">Cerrar e Iniciar con: <span id="user-new"></span></button>
 	            </div>
 	        </form>
 	    </div>
@@ -263,9 +263,9 @@
             }else{
             	user_consulta = data.data;
             	$('#user-active').html(`${data.data.codigoUsuario}`).attr('user-rel',data.data.codigoUsuario);
-            	$('#btn-user-active').attr('user-rel',data.data.codigoUsuario);
+            	$('#btn-user-active').attr('user-rel',userLogged.codigoUsuario);
 				$('#user-new').html(`${userLogged.codigoUsuario}`).attr('user-rel',userLogged.codigoUsuario);
-				$('#btn-user-new').attr('user-rel',userLogged.codigoUsuario);
+				$('#btn-user-new').attr('user-rel',data.data.codigoUsuario);
             	$('#modalConsultaUser').modal('show');
             }
         }else{
