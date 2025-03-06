@@ -1352,9 +1352,9 @@
             payload.reservas = [{
                 "_id": generateUUIDv4(),
                 "beneficio": {
-                    "convenio": (detalle.beneficio.convenio != null) ? detalle.beneficio.convenio : null,
-                    "secuenciaTarjetaPaciente": (detalle.beneficio.tarjeta != null) ? detalle.beneficio.tarjeta.secuenciaTarjetaXPaciente : null,
-                    "secuenciaPaquetePaciente": (detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
+                    "convenio": (detalle.beneficio != null && detalle.beneficio.convenio != null) ? detalle.beneficio.convenio : null,
+                    "secuenciaTarjetaPaciente": (detalle.beneficio != null && detalle.beneficio.tarjeta != null) ? detalle.beneficio.tarjeta.secuenciaTarjetaXPaciente : null,
+                    "secuenciaPaquetePaciente": (detalle.beneficio != null && detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
                 },
                 "codigoReserva": detalle.codigoReserva,
                 "numeroOrden": detalle.numeroOrden,
@@ -1366,17 +1366,25 @@
                 "secuenciaPaquetePaciente": detalle.secuenciaPaquetePaciente
             }]
         }else{
-            payload.reservas = [{
-                "_id": generateUUIDv4(),
+            let detallesOrdenItems = [];
+            $.each(detalle.detallesOrden, function(key, value){
+                if(!estadosVigentes.includes(value.codigoEstado)){
+                    detallesOrdenItems.push({
+                        "_id": generateUUIDv4(),
+                        "lineaDetalle": value.lineaDetalleOrden
+                    })
+                }
+            })
+            
+            payload.ordenes = {
                 "beneficio": {
-                    "convenio": (detalle.beneficio.convenio != null) ? detalle.beneficio.convenio : null,
-                    "secuenciaTarjetaPaciente": (detalle.beneficio.tarjeta != null) ? detalle.beneficio.tarjeta.secuenciaTarjetaXPaciente : null,
-                    "secuenciaPaquetePaciente": (detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
+                    "convenio": (detalle.beneficio != null && detalle.beneficio.convenio != null) ? detalle.beneficio.convenio : null,
+                    "secuenciaTarjetaPaciente": (detalle.beneficio != null && detalle.beneficio.tarjeta != null) ? detalle.beneficio.tarjeta.secuenciaTarjetaXPaciente : null,
+                    "secuenciaPaquetePaciente": (detalle.beneficio != null && detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
                 },
-                "codigoReserva": detalle.codigoReserva,
                 "numeroOrden": detalle.numeroOrden,
-                "lineaDetalleOrden": detalle.lineaDetalleOrden
-            }]
+                "detallesOrden": detallesOrdenItems
+            }
         }
 
         args["method"] = "PUT";
