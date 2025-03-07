@@ -1873,10 +1873,10 @@
         if(addForToday){
             let elemToday = `<div class="col-12 col-lg-6 col-xxl-4 d-flex mb-5 mt-0">
                     <div class="w-100 mt-1">
-                        <div class="tab-card bg-citas d-inline-block py-2 px-4 rounded-t-8 rounded-ts-0">
-                            <span class="fs-16 fw-medium text-veris-dark">${labelServicio}</span>
+                        <div class="tab-card bg-citas d-inline-block py-2 px-4 rounded-t-8">
+                            <span class="fs-16 fw-medium text-veris-dark text-capitalize">${labelServicio}</span>
                         </div>
-                        <div class="card d-flex flex-column content-card rounded-8 p-2 px-3 border-citas-1">
+                        <div class="card d-flex flex-column content-card rounded-8 rounded-ts-0 p-2 px-3 border-citas-1">
                             <div class="card-header p-0 bg-transparent border-0 d-flex justify-content-start align-items-center">
                                 <img class="me-2" src="${icon_service_name}" alt="">
                                 <div class="me-2 flex-grow-1">
