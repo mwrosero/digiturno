@@ -32,6 +32,7 @@ Route::get('/git-pull', function () {
 
 Route::get('/refreshToken', [DigiturnoController::class, 'refreshToken'])->name('refreshToken');
 Route::get('/{mac}', [DigiturnoController::class, 'index'])->name('index');
+Route::get('/kiosko/{mac}', [DigiturnoController::class, 'kiosko'])->name('kiosko');
 Route::get('/ingreso/{mac}', [DigiturnoController::class, 'ingreso'])->name('ingreso');
 Route::get('/test/{mac}', [DigiturnoController::class, 'testIngreso'])->name('ingreso2');
 Route::get('/portal/{portalToken}', [DigiturnoController::class, 'portal'])->name('portal');

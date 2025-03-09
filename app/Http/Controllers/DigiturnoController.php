@@ -19,16 +19,28 @@ class DigiturnoController extends Controller
                 ->with('mac',$mac);
     }
 
+    public function kiosko($mac) {
+        $token = Veris::getToken();
+        $ip = request()->ip();
+        // dd($ip);
+        return view('digiturno.kiosko')
+                ->with('accessToken',$token)
+                ->with('ip', $ip)
+                ->with('mac',$mac);
+    }
+
     public function ingreso($mac, Request $request) {
         $data = $request->all();
+        $ip = request()->ip();
         if(isset($data['utm_medium']) && $data['utm_medium'] == 'CENTRAL'){
             $mac = 'E0-D5-5E-DB-42-36';
-            return redirect()->route('ingreso', ['mac' => $mac, 'utm_source' => 'HOJA', 'utm_medium' => 'DORADO']);
+            return redirect()->route('ingreso', ['mac' => $mac, 'utm_source' => 'HOJA', 'utm_medium' => 'DORADO', 'ip' => $ip]);
         }
 
         $token = Veris::getToken();
         //dd($token);
         return view('digiturno.ingreso_kiosk')
+                ->with('ip', $ip)
                 ->with('accessToken',$token)
                 ->with('mac',$mac);
     }
