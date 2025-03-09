@@ -187,11 +187,24 @@
 
     async function playSound() {
         if (audioCtx.state === 'suspended') {
+            console.log("-------------------SUSPENDIDO---------------")
             await audioCtx.resume();
+            await updateToken();
+            await cargarTurnos();
         }
         audioElement.play();
     }
 
+    setInterval(() => {
+        document.dispatchEvent(new Event("visibilitychange"));
+        document.title = document.title === "Turnos" ? "Turnos Activos" : "Turnos";
+    }, 60000); // Cada 60 segundos
+
+    const worker = new Worker(URL.createObjectURL(new Blob([`
+        setInterval(() => postMessage("keepAlive"), 30000);
+    `], { type: "text/javascript" })));
+
+    worker.onmessage = (event) => console.log(event.data);
 
     function iniciarTurnero(){
         cargarTurnos();

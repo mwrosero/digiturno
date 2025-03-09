@@ -10,8 +10,8 @@
 
 {{-- Modal de datos de facturación --}}
 <div class="modal modal-top fade" id="modalDatosFacturacion" tabindex="-1" aria-labelledby="modalDatosFacturacionLabel" data-bs-backdrop="static" data-bs-keyboard="true">
-    <div class="modal-dialog modal modal-lg modal-dialog-centered mx-auto">
-    {{-- <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable mx-auto"> --}}
+    {{-- <div class="modal-dialog modal modal-lg modal-dialog-centered mx-auto"> --}}
+    <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable mx-auto">
         <form class="modal-content rounded-8 mt-5">
             <div class="modal-header">
                 <h5 class="fs--20 line-height-24 mt-3 mb-3 text-center">Datos de Facturación</h5
@@ -88,7 +88,7 @@
                     </div>
                     <div class="col-8 mb-3">
                         <label class="form-label fs-3 text-silver-dark" for="telefonoV">Número Teléfono móvil</label>
-                        <input autocomplete="off" class="form-control w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-center fs-2 onlyNumber" type="number" name="telefonoV" id="telefonoV" data-kioskboard-type="numpad">
+                        <input autocomplete="off" class="form-control w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-center fs-2 onlyNumber" type="number" name="telefonoV" id="telefonoV" data-kioskboard-type="numpad" placeholder="999999999">
                     </div>
                 </div>
             </div>
@@ -1693,7 +1693,9 @@
 
     async function solicitarPagoPinPad(){
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
+        // args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
+        args["endpoint"] =  `https://zq3hqnfr-3000.use2.devtunnels.ms/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
+
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
@@ -1738,7 +1740,12 @@
 
         args["data"] = JSON.stringify({
             "formaPago": {
-                "tarjeta": [{
+                "efectivo": {
+                  "idPago": null,
+                  "valorEntregado": parseFloat(datosPago.validacion.valorTotalAPagarPaciente),
+                  "valorCambio": 0.00
+                },
+                /*"tarjeta": [{
                     "idPago": 1,
                     "valorEntregado": tarjeta.valor,
                     "nombre": tarjeta.nombre,
@@ -1764,7 +1771,7 @@
                         "codigoIngresoVap": null,
                         "codigoSolicitudServDomicilio": null
                     }
-                }]
+                }]*/
             }
         });
         args["bodyType"] = "json";
@@ -1780,7 +1787,7 @@
 
     async function facturarCobroPinPad(){
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/facturar?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/facturar?codigoEmpresa=1&idPreTransaccion=${datosPago.idPreTransaccion}`;
         let idAgrupacion = await getIdAgrupacionArray();
         let payload = {
             "idAgrupacion": idAgrupacion
@@ -1795,6 +1802,23 @@
             // Imprimir ticket
             $('#modalDatosVoucher').modal('hide');
             alert("Pago realizado exitosamente, se imprimirá su factura...")
+            /*
+            {
+                "code": 200,
+                "success": true,
+                "message": "Ok",
+                "data": {
+                    "transacciones": [
+                        {
+                            "numeroComprobante": "003-100-001641478",
+                            "numeroTransaccion": 21479144,
+                            "numeroOrden": 35809021,
+                            "secuenciaComprobante": 25302954
+                        }
+                    ]
+                }
+            }
+            */
             // $('#modalDatosPagoExitoso').modal('show');
         }
     }
@@ -2165,9 +2189,11 @@
                 </div>`;
             break;
             case 'BATERIA_PRESTACIONES':
+                addForToday = true;
                 icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg`;
 
                 labelServicio = `${detalle.nombreConvenio.toLowerCase()}`;
+
                 
                 iconEstadoItemReserva = ``;
                 strEstadoItemReserva = ``;
@@ -2286,6 +2312,9 @@
             let classCards = `col-12 col-lg-6 col-xxl-4 d-flex mb-5 mt-0`;
             if(esKiosko){
                 classCards = `col-6 d-flex mb-5 mt-0`
+            }
+            if(detalle.tipoServicio == 'BATERIA_PRESTACIONES'){
+                labelServicio = "CHEQUEO"
             }
             let elemToday = `<div class="${classCards}">
                     <div class="w-100 mt-1">
