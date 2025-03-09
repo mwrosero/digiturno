@@ -194,10 +194,68 @@
 	    if (clickCount === 6) {
 	        console.log("SALIR");
 	        if(!isMobile()){
-	        	await finalizar();
+	        	if(localStorage.getItem('userKiosko') !== null) {
+	        		await cerrarCaja();
+	        	}else{
+	        		await finalizar();
+	        	}
 	        }
 	    }
 	});
+
+	async function cerrarCaja(){
+		let caja = JSON.parse(localStorage.getItem('userKiosko'));
+		let args = [];
+		// arqueos_caja/apertura
+        args["endpoint"] = `${api_url_digitales}/facturacion/v1/arqueos_caja/cierre`;
+        args["method"] = "PUT";
+        args["showLoader"] = true;
+        args["token"] = "{{ $accessToken }}";
+        args["bodyType"] = "json";
+        args["data"] = JSON.stringify({
+			"codigoCaja": caja.codigoCaja,
+			"numeroPuntoEmision": caja.numeroPuntoEmision,
+			"codigoEmpresa": caja.codigoEmpresa,
+			"codigoSucursal": caja.codigoSucursal,
+			"fondoInicial": 0.00,
+			"ipAddress": "{{ $ip }}",
+			"codigoUsuario": caja.codigoUsuario,
+			"hostName": caja.codigoUsuario,
+			"billetes": {
+				"b100": 0,
+				"b50": 0,
+				"b20": 0,
+				"b10": 0,
+				"b5": 0,
+				"b2": 0,
+				"b1": 0
+			},
+			"monedas": {
+				"m1": 0,
+				"m50": 0,
+				"m25": 0,
+				"m10": 0,
+				"m5": 0,
+				"m01": 0
+			},
+			"valorConteoFisico": 0,
+			"numeroPapeleta": 0,
+			"codigoInstitucion": 0,
+			"ingresoComprobantesManuales": true
+
+		})
+
+        const data = await call(args);
+        console.log(data);
+
+        if(data.code == 200){
+        	localStorage.clear();
+        	let url_salir = `/kiosko/{{ $mac }}`;
+            location.href = url_salir;
+        }else{
+        	alert(data.message);
+        }
+	}
 
 	let accion = "FINALIZAR";
 	async function finalizar(){
@@ -425,6 +483,9 @@
 		})
 
 		let url_salir = `/{{ $mac }}`;
+		if(localStorage.getItem('userKiosko') !== null) {
+			url_salir = `/ingreso/{{ $mac }}`;
+		}
         if(isMobile()){
             url_salir = `/ingreso/{{ $mac }}`;
         }
@@ -468,7 +529,7 @@
             reiniciarConteo();
         });
 
-        if(!isMobile()){
+        if( !isMobile() && localStorage.getItem('userKiosko') === null ){
             console.log("Iniciando conteo")
             // Iniciar el conteo inicial
             reiniciarConteo();

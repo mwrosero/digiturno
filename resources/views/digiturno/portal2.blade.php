@@ -7,6 +7,99 @@
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/html2canvas.min.js"></script>
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+{{-- Modal de datos de facturación --}}
+<div class="modal modal-top fade" id="modalDatosFacturacion" tabindex="-1" aria-labelledby="modalDatosFacturacionLabel" data-bs-backdrop="static" data-bs-keyboard="true">
+    {{-- <div class="modal-dialog modal modal-dialog-centered mx-auto"> --}}
+    <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable mx-auto">
+        <form class="modal-content rounded-8 mt-5">
+            <div class="modal-header">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-center">Datos de Facturación</h5
+                >
+                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <label class="form-label fs-3 text-silver-dark" for="codigoTipoIdentificacion">Tipo de documento</label>
+                        <select class="form-select p-1 rounded-8 fs-2 text-center" name="codigoTipoIdentificacion" id="codigoTipoIdentificacion">
+                            <option value="2">Cédula</option>
+                            <option value="1">Ruc</option>
+                        </select>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="form-label fs-3 text-silver-dark" for="numeroIdentificacion">Número de documento</label>
+                        <input autocomplete="off" class="form-control w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-center fs-2 onlyNumber" type="number" name="numeroIdentificacion" id="numeroIdentificacion" data-kioskboard-type="numpad">
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="form-label fs-3 text-silver-dark" for="nombreCompleto">Nombre completo</label>
+                        <input autocomplete="off" class="form-control w-100 onlyLetters text-uppercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-2 mb-2" type="text" name="nombreCompleto" id="nombreCompleto">
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="form-label fs-3 text-silver-dark" for="email">Correo electrónico</label>
+                        <input autocomplete="off" class="form-control w-100 onlyLetters text-lowercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-2 mb-2" type="email" name="email" id="email" data-kioskboard-specialcharacters="true"/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
+                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4 btn-continuar-factura">Continuar</button>
+                {{-- <button type="button" class="btn fw-normal text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-continuar-factura" data-bs-dismiss="modal">Continuar</button> --}}
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- Modal de datos de voucher --}}
+<div class="modal modal-top fade" id="modalDatosVoucher" tabindex="-1" aria-labelledby="modalDatosVoucherLabel" data-bs-backdrop="static" data-bs-keyboard="true">
+    {{-- <div class="modal-dialog modal modal-dialog-centered mx-auto"> --}}
+    <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable mx-auto">
+        <form class="modal-content rounded-8 mt-5">
+            <div class="modal-header">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-center">Datos de Voucher</h5
+                >
+                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <label class="form-label fs-3 text-silver-dark" for="codigoTipoIdentificacionV">Tipo de documento</label>
+                        <select class="form-select p-1 rounded-8 fs-2 text-center" name="codigoTipoIdentificacionV" id="codigoTipoIdentificacionV">
+                            <option value="2">Cédula</option>
+                            <option value="1">Ruc</option>
+                            <option value="3">Pasaporte</option>
+                        </select>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="form-label fs-3 text-silver-dark" for="numeroIdentificacionV">Número de documento</label>
+                        <input autocomplete="off" class="form-control w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-center fs-2 onlyNumber" type="number" name="numeroIdentificacionV" id="numeroIdentificacionV" data-kioskboard-type="numpad">
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="form-label fs-3 text-silver-dark" for="nombreCompletoV">Nombre completo</label>
+                        <input autocomplete="off" class="form-control w-100 onlyLetters text-uppercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-2 mb-2" type="text" name="nombreCompletoV" id="nombreCompletoV">
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="form-label fs-3 text-silver-dark" for="emailV">Correo electrónico</label>
+                        <input autocomplete="off" class="form-control w-100 onlyLetters text-lowercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-2 mb-2" type="email" name="emailV" id="emailV" data-kioskboard-specialcharacters="true"/>
+                    </div>
+                    <div class="col-4 mb-3">
+                        <label class="form-label fs-3 text-silver-dark" for="codigoPaisCelular">Código País</label>
+                        <select class="form-select p-1 rounded-8 fs-2 text-center" name="codigoPaisCelular" id="codigoPaisCelular">
+                        </select>
+                    </div>
+                    <div class="col-8 mb-3">
+                        <label class="form-label fs-3 text-silver-dark" for="telefonoV">Número Teléfono móvil</label>
+                        <input autocomplete="off" class="form-control w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-center fs-2 onlyNumber" type="number" name="telefonoV" id="telefonoV" data-kioskboard-type="numpad">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
+                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4 btn-continuar-voucher">Pagar</button>
+                {{-- <button type="button" class="btn fw-normal text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-continuar-factura" data-bs-dismiss="modal">Continuar</button> --}}
+            </div>
+        </form>
+    </div>
+</div>
+
 {{-- Modal de pago --}}
 <div class="modal fade mt-4" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel">
     <div class="modal-dialog modal-sm modal-dialog-top modal-dialog-scrollable mx-auto">
@@ -596,6 +689,15 @@
     let puedeEnviar = false;
     buscarUsuarioFlag = false;
 
+    let userKiosko;
+    let esKiosko = false;
+    if (localStorage.getItem('userKiosko') !== null) {
+        esKiosko = true
+        userKiosko = localStorage.getItem('userKiosko');
+    }
+
+    let datosPago = {};
+
     $(document).ready(async function() {
         if(!isMobile()){
             KioskBoard.init({
@@ -611,7 +713,39 @@
             });
 
             KioskBoard.run('.virtual-keyboard-all', {});
+
         }
+
+        if(esKiosko){
+            KioskBoard.init({
+                keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
+                keysNumeric: true,
+                //keysArrayOfObjects: null, // Usa el teclado QWERTY predeterminado
+                language: 'es',          // Idioma (ejemplo: 'es' para español)
+                theme: 'light',          // Tema del teclado ('light' o 'dark')
+                allowMobileKeyboard: false,
+                keysEnterText: '<i class="material-icons enter-key-icon">check_circle</i>',
+            });
+
+            // Activa el teclado virtual en los inputs con la clase 'virtual-keyboard'
+            KioskBoard.run('.virtual-keyboard-numpad', {});
+
+            KioskBoard.init({
+                keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
+                // keysNumeric: true,
+                //keysArrayOfObjects: null, // Usa el teclado QWERTY predeterminado
+                language: 'es',          // Idioma (ejemplo: 'es' para español)
+                theme: 'light',          // Tema del teclado ('light' o 'dark')
+                keysSpacebarText: 'Espacio',
+                // keysSpecialCharsArray: ["@", ".", "_", "-"],
+                allowMobileKeyboard: false,
+                capsLockActive: true,
+                keysEnterText: '<i class="material-icons enter-key-icon">check_circle</i>',
+            });
+
+            KioskBoard.run('.virtual-keyboard-all', {});
+        }
+
         const macsParami = @json(\App\Models\Veris::MACS_PARAMI);
 
         if(macsParami.includes(dataTurno.mac)){
@@ -621,6 +755,9 @@
         }
 
         let url_salir = `/${ dataTurno.mac }`;
+        if(localStorage.getItem('userKiosko') !== null) {
+            url_salir = `/ingreso/${ dataTurno.mac }`;
+        }
         if(isMobile()){
             url_salir = `/ingreso/${ dataTurno.mac }`;
         }
@@ -653,7 +790,7 @@
 
         // Detectar interacción del usuario
         $(document).on("mousemove keydown click scroll", function () {
-            reiniciarConteo();
+            // reiniciarConteo();
         });
 
         // Manejar clic en el botón "Sí"
@@ -661,7 +798,7 @@
             clearTimeout(temporizadorRespuesta);
             $("#modalEstasAhi").fadeOut();
             console.log("El usuario sigue presente.");
-            reiniciarConteo();
+            // reiniciarConteo();
         });
 
         $('body').on('click','.btn-confirmar-cita', function(){
@@ -674,7 +811,7 @@
         if(!isMobile()){
             console.log("Iniciando conteo")
             // Iniciar el conteo inicial
-            reiniciarConteo();
+            // reiniciarConteo();
         }
         
         await parametrosGenerales(dataTurno.mac);
@@ -978,7 +1115,23 @@
                     return;
                 }
             }
-            await activarPrestacionesChequeos();
+            await activarPrestacionesInicializar();
+        })
+
+        $('body').on('click', '.btn-pagar', async function(){
+            let detalle = JSON.parse($(this).attr('data-rel'));
+            // Inicializar pago
+            await activarPrestacionesInicializar('PRESTACION', detalle)
+        })
+
+        $('body').on('click', '.btn-continuar-factura', async function(){
+            // validar datos de factura
+            await setearDatosFactura();
+        })
+
+        $('body').on('click', '.btn-continuar-voucher', async function(){
+            // validar datos de voucher
+            await solicitarPagoPinPad();
         })
 
         $('body').on('click', '.btn-link-pago', async function(){
@@ -1020,7 +1173,27 @@
                 `
             });
         });*/
+        await cargarCodigosPaises()
     });
+
+    async function cargarCodigosPaises(){
+        let args = [];
+        args["endpoint"] = `${api_url_digitales}/general/v1/paises/codigos_telefonicos?codigoEmpresa=1`;
+        args["method"] = "GET";
+        args["showLoader"] = true;
+        args["token"] = "{{ $accessToken }}";
+
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            let elem = ``;
+            $.each(data.data, function(key, value){
+                let selected = (value.esDefault == "S") ? `selected` : ``;
+                elem += `<option ${selected} data-rel='${JSON.stringify(value)}' value="${value.codigoPais}">${value.nombrePais}</option>>`
+            })
+            $('#codigoPaisCelular').html(elem);
+        }
+    } 
 
     async function enviarLinkMailPago(){
         let email = $('#email_link_pago').val();
@@ -1183,7 +1356,7 @@
         return false;
     }
 
-    async function activarPrestacionesChequeos(origen = 'CHEQUEO', detalle = null){
+    async function activarPrestacionesInicializar(origen = 'CHEQUEO', detalle = null){
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/inicializar?codigoEmpresa=1&tipoPreTransaccion=FACTURA`;
         let payload = {
@@ -1206,8 +1379,13 @@
             let idPreTransaccion = data.data.idPreTransaccion
             if(origen == "CHEQUEO"){
                 await agregarItemChequeo(idPreTransaccion);
+            }else if(origen == "PRESTACION"){
+                datosPago = {};
+                datosPago.detalle = detalle;
+                datosPago.inicializar = data.data;
+                await agregarItemTurno(idPreTransaccion, detalle, "PRESTACION");
             }else{
-                await agregarItemTurno(idPreTransaccion, detalle);
+                await agregarItemTurno(idPreTransaccion, detalle, "TURNO");
                 return idPreTransaccion;
             }
         }
@@ -1335,9 +1513,11 @@
         console.log(data);
     }
 
-    async function agregarItemTurno(idPreTransaccion, detalle){
+    async function agregarItemTurno(idPreTransaccion, detalle, origen = "TURNO"){
         let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
+
+        // console.log(detalle);
 
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/agregar_item?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
@@ -1394,7 +1574,224 @@
         args["bodyType"] = "json";
         const data = await call(args);
         if(data.code == 200){
-            return data.data;
+            if(origen == "TURNO"){
+                return data.data;
+            }else{
+                datosPago.idPreTransaccion = idPreTransaccion;
+                datosPago.items = data.data;
+                await consultaPreTrx(idPreTransaccion, data.data);
+            }
+        }
+    }
+
+    async function getIdAgrupacionArray(){
+        let arr = [];
+        $.each(datosPago.items, function(key, value){
+            console.log(value.idAgrupacion);
+            arr.push(value.idAgrupacion);
+        })
+        return arr;
+    }
+
+    async function consultaPreTrx(idPreTransaccion, detalle){        
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/consulta?codigoEmpresa=1`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify(detalle);
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            datosPago.consulta = data.data;
+            await verificarDatosFactura();
+            $('#modalDatosFacturacion').modal("show");
+            // await validacionPrevioPago()
+        }
+    }
+
+    async function verificarDatosFactura(){
+        let numeroIdentificacion = datosPago.consulta[0].paciente.numeroIdentificacion;
+        let codigoTipoIdentificacion = datosPago.consulta[0].paciente.codigoTipoIdentificacion;
+        let args = [];
+        args["endpoint"] = `${api_url_digitales}/facturacion/v1/pacientes/verificar_datos_factura?numeroIdentificacion=${numeroIdentificacion}&codigoTipoIdentificacion=${codigoTipoIdentificacion}`;
+        args["method"] = "GET";
+        args["showLoader"] = true;
+        args["token"] = "{{ $accessToken }}";
+
+        const data = await call(args);
+        console.log(data);
+
+        if(data.code = 200){
+            datosPago.infoFactura = data.data;
+            $('#codigoTipoIdentificacion').val(datosPago.infoFactura.codigoTipoIdentificacion);
+            $('#numeroIdentificacion').val(datosPago.infoFactura.numeroIdentificacion);
+            $('#nombreCompleto').val(datosPago.infoFactura.nombreCompleto);
+            $('#email').val(datosPago.infoFactura.mail);
+
+            $('#codigoTipoIdentificacionV').val(datosPago.infoFactura.codigoTipoIdentificacion);
+            $('#numeroIdentificacionV').val(datosPago.infoFactura.numeroIdentificacion);
+            $('#nombreCompletoV').val(datosPago.infoFactura.nombreCompleto);
+            $('#emailV').val(datosPago.infoFactura.mail);
+        }
+        return;
+    }
+
+    async function setearDatosFactura(){
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${datosPago.idPreTransaccion}/setear_datos_factura?codigoEmpresa=1`;
+
+        let item = [];
+
+        let idAgrupacion = await getIdAgrupacionArray();
+        let payload = {
+            "codigoTipoIdentificacion": parseInt($('#codigoTipoIdentificacion option:selected').val()),
+            "numeroIdentificacion": $('#numeroIdentificacion').val(),
+            "nombreCompleto": $('#nombreCompleto').val(),
+            "email": $('#email').val(),
+            "idAgrupacion": idAgrupacion,
+            "actualizarVirTransaccionEpago": false
+        }
+
+        args["method"] = "PUT";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify(payload);
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            await validacionPrevioPago()
+        }else{
+            alert(data.message);
+        }
+    }
+
+    async function validacionPrevioPago(){        
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${datosPago.idPreTransaccion}/validacion_previo_pago?codigoEmpresa=1`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        let idAgrupacion = await getIdAgrupacionArray();
+        args["data"] = JSON.stringify({
+            "idAgrupacion": idAgrupacion
+        });
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            datosPago.validacion = data.data;
+            $('#modalDatosFacturacion').modal("hide");
+            $('#modalDatosVoucher').modal("show");
+        }else{
+            alert(data.message);
+        }
+    }
+
+    async function solicitarPagoPinPad(){
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        let idAgrupacion = await getIdAgrupacionArray();
+        args["data"] = JSON.stringify({
+            "codigoMedioPago": 1,
+            "codigoPlazoTarjeta": 1,
+            "secuenciaDiferido": null,
+            "valor": parseFloat(datosPago.validacion.valorTotalAPagarPaciente),
+            "datosPersonaTarjeta": {
+                "codigoTipoIdentificacion": parseInt($('#codigoTipoIdentificacionV option:selected').val()),
+                "numeroIdentificacion": $('#numeroIdentificacionV').val(),
+                "nombreCompleto": $('#nombreCompletoV').val(),
+                "email": $('#emailV').val(),
+                "telefonoCelular": $('#telefonoV').val(),
+                "codigoPaisCelular": parseInt($('#codigoPaisCelular option:selected').val())
+            },
+            "flujoConPreTransaccion": {
+                "idPreTransaccion": datosPago.idPreTransaccion
+            }
+        });
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            datosPago.cobro = data.data;
+            $('#modalDatosVoucher').modal("hide");
+            await setearPago();
+        }else{
+            alert(data.message);
+        }
+    }
+
+    async function setearPago(){
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${datosPago.idPreTransaccion}/setear_pagos?codigoEmpresa=1&accion=NEW`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        let idAgrupacion = await getIdAgrupacionArray();
+        args["data"] = JSON.stringify({
+            "formaPago": {
+                "tarjeta": [{
+                    "idPago": null,
+                    "valorEntregado": 99.87,
+                    "codigoMotivoManual": null,
+                    "nombre": "KAREN COXXXXXS",
+                    "numeroTarjeta": "415580XXXXXXX754",
+                    "numeroLote": 13901,
+                    "mesAnioCaducidad": "03/21",
+                    "numeroReferencia": 19384,
+                    "numeroAprobacion": 808431,
+                    "codigoMarcaTc": 3,
+                    "codigoTipoTarjeta": 1,
+                    "codigoInstBancoEmisor": 15,
+                    "codigoInstBancoLiquidador": 3,
+                    "codigoMedioPago": 2,
+                    "codigoPlazoTarjeta": 1,
+                    "aplicaInteres": true,
+                    "secuenciaTramaPOS": null,
+                    "secuenciadDocumentoVoucher": null,
+                    "secuenciaDiferido": null,
+                    "codigoEpago": null,
+                    "fechaSolicitudEpago": "dd/mm/yyyy hh24:mi:ss",
+                    "metadataEpago": {
+                        "codigoIngresoVap": null,
+                        "codigoSolicitudServDomicilio": null
+                    }
+                }]
+            }
+        });
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            datosPago.setearPago = data.data;
+            await facturarCobroPinPad();
+        }else{
+            alert(data.message);
+        }
+    }
+
+    async function facturarCobroPinPad(){
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/facturar?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
+        let idAgrupacion = await getIdAgrupacionArray();
+        let payload = {
+            "idAgrupacion": idAgrupacion
+        }
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify(payload);
+        args["bodyType"] = "json";
+        const data = await call(args);
+        if(data.code == 200){
+            // Imprimir ticket
+            $('#modalDatosVoucher').modal('hide');
+            // $('#modalDatosPagoExitoso').modal('show');
         }
     }
 
@@ -1614,13 +2011,19 @@
                             </button>`;
                         }else{
                             labelEstadoItem = `Por pagar`;
-                            if(detalle.nombreServicioNivel1 == "LABORATORIO" || detalle.nombreServicioNivel1 == "IMAGENES" || detalle.nombreServicioNivel1 == "PROCEDIMIENTOS"){
-                                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
-                                    Pagar en caja
-                                </button>
-                                <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
-                                    Pagar aquí
-                                </button>`;    
+                            if(detalle.nombreServicioNivel1 == "LABORATORIO" || detalle.nombreServicioNivel1 == "IMAGENES" || detalle.nombreServicioNivel1 == "PROCEDIMIENTOS" || detalle.nombreServicioNivel1 == "CONSULTA" || detalle.nombreServicioNivel1 == "CONSULTA NO MEDICA"){
+                                if(esKiosko){
+                                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
+                                        Pagar
+                                    </button>`;
+                                }else{
+                                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                                        Pagar en caja
+                                    </button>
+                                    <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
+                                        Pagar aquí
+                                    </button>`;
+                                }    
                             }else{
                                 elemFooterCard += `<!--button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3">
                                     Pagar aquí
@@ -2711,7 +3114,7 @@
         
         // if(detalle != []){
         if (crearPtx) {
-            let pre_trx = await activarPrestacionesChequeos('TURNO',detalle);
+            let pre_trx = await activarPrestacionesInicializar('TURNO',detalle);
             url_adicional += `&idPreTransaccion=${pre_trx}`
         }
 
@@ -3004,6 +3407,12 @@
     #confimar-icon{
         min-width: 350px;
     }
+
+    #modalDatosFacturacion .modal-lg,
+    #modalDatosVoucher .modal-lg{
+        max-width: 850px !important;
+    }
+
     @media (min-width: 1200px) {
         .modal-lg {
             max-width: 850px !important;
