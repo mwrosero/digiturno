@@ -10,8 +10,8 @@
 
 {{-- Modal de datos de facturación --}}
 <div class="modal modal-top fade" id="modalDatosFacturacion" tabindex="-1" aria-labelledby="modalDatosFacturacionLabel" data-bs-backdrop="static" data-bs-keyboard="true">
-    {{-- <div class="modal-dialog modal modal-dialog-centered mx-auto"> --}}
-    <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable mx-auto">
+    <div class="modal-dialog modal modal-lg modal-dialog-centered mx-auto">
+    {{-- <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable mx-auto"> --}}
         <form class="modal-content rounded-8 mt-5">
             <div class="modal-header">
                 <h5 class="fs--20 line-height-24 mt-3 mb-3 text-center">Datos de Facturación</h5
@@ -694,6 +694,7 @@
     if (localStorage.getItem('userKiosko') !== null) {
         esKiosko = true
         userKiosko = localStorage.getItem('userKiosko');
+        // $('.logo').css("max-width","400px !important");
     }
 
     let datosPago = {};
@@ -1732,28 +1733,30 @@
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
-        let idAgrupacion = await getIdAgrupacionArray();
+        
+        let tarjeta = datosPago.cobro.datosTarjeta;
+
         args["data"] = JSON.stringify({
             "formaPago": {
                 "tarjeta": [{
-                    "idPago": null,
-                    "valorEntregado": 99.87,
+                    "idPago": 1,
+                    "valorEntregado": tarjeta.valor,
+                    "nombre": tarjeta.nombre,
+                    "numeroTarjeta": tarjeta.numeroTarjeta,
+                    "numeroLote": tarjeta.numeroLote,
+                    "mesAnioCaducidad": tarjeta.mesAnioCaducidad,
+                    "numeroReferencia": tarjeta.numeroReferencia,
+                    "numeroAprobacion": tarjeta.numeroAprobacion,
+                    "codigoMarcaTc": tarjeta.codigoMarcaTc,
+                    "codigoTipoTarjeta": tarjeta.codigoTipoTarjeta,
+                    "codigoInstBancoEmisor": tarjeta.codigoInstBancoEmisor,
+                    "codigoInstBancoLiquidador": tarjeta.codigoInstBancoLiquidador,
+                    "codigoMedioPago": tarjeta.codigoMedioPago,
+                    "codigoPlazoTarjeta": tarjeta.codigoPlazoTarjeta,
+                    "aplicaInteres": tarjeta.aplicaInteres,
+                    "secuenciadDocumentoVoucher": datosPago.cobro.secuenciaDocumentoVoucher,
                     "codigoMotivoManual": null,
-                    "nombre": "KAREN COXXXXXS",
-                    "numeroTarjeta": "415580XXXXXXX754",
-                    "numeroLote": 13901,
-                    "mesAnioCaducidad": "03/21",
-                    "numeroReferencia": 19384,
-                    "numeroAprobacion": 808431,
-                    "codigoMarcaTc": 3,
-                    "codigoTipoTarjeta": 1,
-                    "codigoInstBancoEmisor": 15,
-                    "codigoInstBancoLiquidador": 3,
-                    "codigoMedioPago": 2,
-                    "codigoPlazoTarjeta": 1,
-                    "aplicaInteres": true,
                     "secuenciaTramaPOS": null,
-                    "secuenciadDocumentoVoucher": null,
                     "secuenciaDiferido": null,
                     "codigoEpago": null,
                     "fechaSolicitudEpago": "dd/mm/yyyy hh24:mi:ss",
@@ -1791,6 +1794,7 @@
         if(data.code == 200){
             // Imprimir ticket
             $('#modalDatosVoucher').modal('hide');
+            alert("Pago realizado exitosamente, se imprimirá su factura...")
             // $('#modalDatosPagoExitoso').modal('show');
         }
     }
@@ -2240,7 +2244,12 @@
             break;
         }
 
-        let elem = `<div class="col-12 col-lg-6 col-xxl-4 d-flex mb-3 mt-0">
+        let classCards = `col-12 col-lg-6 col-xxl-4 d-flex mb-3 mt-0`;
+        if(esKiosko){
+            classCards = `col-6 d-flex mb-3 mt-0`
+        }
+
+        let elem = `<div class="${classCards}0">
                 <div class="w-100 mt-1">
                     <div class="card d-flex flex-column content-card rounded-8 p-2 px-3 border-citas-1">
                         <div class="card-header p-0 bg-transparent border-0 d-flex justify-content-start align-items-center">
@@ -2274,7 +2283,11 @@
         $(`#row-${sectionEstadoPago}-${tipoServicio}`).append(elem);
 
         if(addForToday){
-            let elemToday = `<div class="col-12 col-lg-6 col-xxl-4 d-flex mb-5 mt-0">
+            let classCards = `col-12 col-lg-6 col-xxl-4 d-flex mb-5 mt-0`;
+            if(esKiosko){
+                classCards = `col-6 d-flex mb-5 mt-0`
+            }
+            let elemToday = `<div class="${classCards}">
                     <div class="w-100 mt-1">
                         <div class="tab-card bg-citas d-inline-block py-2 px-4 rounded-t-8">
                             <span class="fs-16 fw-medium text-veris-dark text-capitalize">${labelServicio}</span>

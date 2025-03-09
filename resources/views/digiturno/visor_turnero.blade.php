@@ -180,6 +180,19 @@
     let turnosEnAtencion = []
     //setInterval(cargarTurnos, 5000);
 
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const audioElement = new Audio('{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/sound.mp3');
+    const track = audioCtx.createMediaElementSource(audioElement);
+    track.connect(audioCtx.destination);
+
+    async function playSound() {
+        if (audioCtx.state === 'suspended') {
+            await audioCtx.resume();
+        }
+        audioElement.play();
+    }
+
+
     function iniciarTurnero(){
         cargarTurnos();
         $('.iniciador').addClass('d-none');
@@ -202,7 +215,7 @@
         })
     }
 
-    async function playSound(){
+    async function __playSound(){
         // var sonido = $("#turno-sound")[0];
         // sonido.play();
         console.log('ACTIVA SONIDO');
