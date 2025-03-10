@@ -1693,8 +1693,8 @@
 
     async function solicitarPagoPinPad(){
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
-        // args["endpoint"] =  `https://zq3hqnfr-3000.use2.devtunnels.ms/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
+        // args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
+        args["endpoint"] =  `https://zq3hqnfr-3000.use2.devtunnels.ms/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
 
         args["method"] = "POST";
         args["token"] = accessToken;

@@ -994,6 +994,9 @@ function actualizarFechaHora() {
     const formattedDate = dateFormatter.format(date); // Ejemplo: 27/11/2024
     const formattedTime = timeFormatter.format(date); // Ejemplo: 15:45
 
+    console.log(formattedDate)
+    console.log(formattedTime)
+
     // Actualizar los elementos con jQuery
     $('#fecha').text(formattedDate);
     $('#hora').text(formattedTime);
