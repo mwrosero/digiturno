@@ -183,7 +183,8 @@
         		console.log(data.data[0])
         		let caja = data.data[0];
         		localStorage.setItem('userKiosko', JSON.stringify(caja));
-        		location.reload();
+        		// location.reload();
+        		location.href = `/ingreso/{{ $mac }}`;
         	}else{
         		let elem = ``;
         		$.each(data.data, function(key, value){
@@ -227,7 +228,8 @@
 
         if(data.code == 200){
         	localStorage.setItem('userKiosko', JSON.stringify(caja));
-        	location.reload();
+        	// location.reload();
+        	location.href = `/ingreso/{{ $mac }}`;
         }else{
         	alert(data.message);
         }
