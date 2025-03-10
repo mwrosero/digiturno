@@ -19,30 +19,41 @@
                 <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
-                <div class="row">
+                <div class="row box-datos-factura">
                     <div class="col-12 mb-3">
                         <label class="form-label fs-3 text-silver-dark" for="codigoTipoIdentificacion">Tipo de documento</label>
-                        <select class="form-select p-1 rounded-8 fs-2 text-center" name="codigoTipoIdentificacion" id="codigoTipoIdentificacion">
+                        <select class="form-select p-1 rounded-8 fs-2 text-start" name="codigoTipoIdentificacion" id="codigoTipoIdentificacion">
                             <option value="2">Cédula</option>
                             <option value="1">Ruc</option>
                         </select>
                     </div>
                     <div class="col-12 mb-3">
                         <label class="form-label fs-3 text-silver-dark" for="numeroIdentificacion">Número de documento</label>
-                        <input autocomplete="off" class="form-control w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-center fs-2 onlyNumber" type="number" name="numeroIdentificacion" id="numeroIdentificacion" data-kioskboard-type="numpad">
+                        <input autocomplete="off" class="form-control w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-start fs-2 onlyNumber" type="number" name="numeroIdentificacion" id="numeroIdentificacion" data-kioskboard-type="numpad">
                     </div>
                     <div class="col-12 mb-3">
                         <label class="form-label fs-3 text-silver-dark" for="nombreCompleto">Nombre completo</label>
-                        <input autocomplete="off" class="form-control w-100 onlyLetters text-uppercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-2 mb-2" type="text" name="nombreCompleto" id="nombreCompleto">
+                        <input autocomplete="off" class="form-control w-100 onlyLetters text-uppercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-start fs-2 mb-2" type="text" name="nombreCompleto" id="nombreCompleto">
                     </div>
                     <div class="col-12 mb-3">
                         <label class="form-label fs-3 text-silver-dark" for="email">Correo electrónico</label>
-                        <input autocomplete="off" class="form-control w-100 onlyLetters text-lowercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-2 mb-2" type="email" name="email" id="email" data-kioskboard-specialcharacters="true"/>
+                        <input autocomplete="off" class="form-control w-100 onlyLetters text-lowercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-start fs-2 mb-2" type="email" name="email" id="email" data-kioskboard-specialcharacters="true"/>
+                    </div>
+                    {{-- <div class="col-12 mb-3">
+                        <p class="text-center my-2 valorPago fs-40 fw-bold text-veris"></p>
+                    </div> --}}
+                </div>
+                <div class="row box-load-pago d-none">
+                    <div class="col-12 mb-3 text-center">
+                        <img class="w-100" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/payment.svg" alt="">
+                    </div>
+                    <div class="col-12 mb-3 fs-20 line-height-24 text-center fw-bold text-veris">
+                        Inserta o desliza la tarjeta
                     </div>
                 </div>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
-                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4 btn-continuar-factura">Continuar</button>
+                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-3 mx-2 fs-4 rounded-8 btn-continuar-factura">Continuar</button>
                 {{-- <button type="button" class="btn fw-normal text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-continuar-factura" data-bs-dismiss="modal">Continuar</button> --}}
             </div>
         </form>
@@ -63,7 +74,7 @@
                 <div class="row">
                     <div class="col-12 mb-3">
                         <label class="form-label fs-3 text-silver-dark" for="codigoTipoIdentificacionV">Tipo de documento</label>
-                        <select class="form-select p-1 rounded-8 fs-2 text-center" name="codigoTipoIdentificacionV" id="codigoTipoIdentificacionV">
+                        <select class="form-select p-1 rounded-8 fs-2 text-start" name="codigoTipoIdentificacionV" id="codigoTipoIdentificacionV">
                             <option value="2">Cédula</option>
                             <option value="1">Ruc</option>
                             <option value="3">Pasaporte</option>
@@ -71,29 +82,29 @@
                     </div>
                     <div class="col-12 mb-3">
                         <label class="form-label fs-3 text-silver-dark" for="numeroIdentificacionV">Número de documento</label>
-                        <input autocomplete="off" class="form-control w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-center fs-2 onlyNumber" type="number" name="numeroIdentificacionV" id="numeroIdentificacionV" data-kioskboard-type="numpad">
+                        <input autocomplete="off" class="form-control w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-start fs-2 onlyNumber" type="number" name="numeroIdentificacionV" id="numeroIdentificacionV" data-kioskboard-type="numpad">
                     </div>
                     <div class="col-12 mb-3">
                         <label class="form-label fs-3 text-silver-dark" for="nombreCompletoV">Nombre completo</label>
-                        <input autocomplete="off" class="form-control w-100 onlyLetters text-uppercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-2 mb-2" type="text" name="nombreCompletoV" id="nombreCompletoV">
+                        <input autocomplete="off" class="form-control w-100 onlyLetters text-uppercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-start fs-2 mb-2" type="text" name="nombreCompletoV" id="nombreCompletoV">
                     </div>
                     <div class="col-12 mb-3">
                         <label class="form-label fs-3 text-silver-dark" for="emailV">Correo electrónico</label>
-                        <input autocomplete="off" class="form-control w-100 onlyLetters text-lowercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-2 mb-2" type="email" name="emailV" id="emailV" data-kioskboard-specialcharacters="true"/>
+                        <input autocomplete="off" class="form-control w-100 onlyLetters text-lowercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-start fs-2 mb-2" type="email" name="emailV" id="emailV" data-kioskboard-specialcharacters="true"/>
                     </div>
                     <div class="col-4 mb-3">
                         <label class="form-label fs-3 text-silver-dark" for="codigoPaisCelular">Código País</label>
-                        <select class="form-select p-1 rounded-8 fs-2 text-center" name="codigoPaisCelular" id="codigoPaisCelular">
+                        <select class="form-select p-1 rounded-8 fs-2 text-start" name="codigoPaisCelular" id="codigoPaisCelular">
                         </select>
                     </div>
                     <div class="col-8 mb-3">
                         <label class="form-label fs-3 text-silver-dark" for="telefonoV">Número Teléfono móvil</label>
-                        <input autocomplete="off" class="form-control w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-center fs-2 onlyNumber" type="number" name="telefonoV" id="telefonoV" data-kioskboard-type="numpad" placeholder="999999999">
+                        <input autocomplete="off" class="form-control w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-start fs-2 onlyNumber" type="text" name="telefonoV" id="telefonoV" data-kioskboard-type="numpad" placeholder="0999999999">
                     </div>
                 </div>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
-                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4 btn-continuar-voucher">Pagar</button>
+                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-3 mx-2 fs-4 rounded-8 btn-continuar-voucher">Pagar</button>
                 {{-- <button type="button" class="btn fw-normal text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-continuar-factura" data-bs-dismiss="modal">Continuar</button> --}}
             </div>
         </form>
@@ -694,10 +705,18 @@
     if (localStorage.getItem('userKiosko') !== null) {
         esKiosko = true
         userKiosko = localStorage.getItem('userKiosko');
+        $('header').addClass('pt-4')
         // $('.logo').css("max-width","400px !important");
     }
 
     let datosPago = {};
+
+    let url_salir = ``;
+    let temporizadorInactividad;
+    let temporizadorRespuesta;
+
+    const tiempoInactividad = 45; // Tiempo de inactividad en segundos
+    const tiempoMaximoRespuesta = 15; // Tiempo máximo de respuesta al modal en segundos
 
     $(document).ready(async function() {
         if(!isMobile()){
@@ -755,7 +774,7 @@
             $('.logo').attr('src',`{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/veris-large.png`);
         }
 
-        let url_salir = `/${ dataTurno.mac }`;
+        url_salir = `/${ dataTurno.mac }`;
         if(localStorage.getItem('userKiosko') !== null) {
             url_salir = `/ingreso/${ dataTurno.mac }`;
         }
@@ -763,31 +782,6 @@
             url_salir = `/ingreso/${ dataTurno.mac }`;
         }
         $('.btn-salir').attr('href',url_salir);
-
-        const tiempoInactividad = 45; // Tiempo de inactividad en segundos
-        const tiempoMaximoRespuesta = 15; // Tiempo máximo de respuesta al modal en segundos
-
-        let temporizadorInactividad;
-        let temporizadorRespuesta;
-
-        // Función para mostrar el modal
-        function mostrarModal() {
-            // Mostrar el modal
-            $("#modalEstasAhi").modal("show");
-
-            // Iniciar temporizador para esperar respuesta
-            temporizadorRespuesta = setTimeout(() => {
-                $("#modalEstasAhi").modal("hide");
-                console.log("No hubo respuesta a tiempo.");
-                location.href = url_salir;
-            }, tiempoMaximoRespuesta * 1000);
-        }
-
-        // Función para reiniciar el conteo de inactividad
-        function reiniciarConteo() {
-            clearTimeout(temporizadorInactividad);
-            temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
-        }
 
         // Detectar interacción del usuario
         $(document).on("mousemove keydown click scroll", function () {
@@ -1126,13 +1120,18 @@
         })
 
         $('body').on('click', '.btn-continuar-factura', async function(){
-            // validar datos de factura
-            await setearDatosFactura();
+            let validacion = await validarDatosFactura();
+            if(validacion){
+                await setearDatosFactura();
+            }
         })
 
         $('body').on('click', '.btn-continuar-voucher', async function(){
             // validar datos de voucher
-            await solicitarPagoPinPad();
+            let validacion = await validarDatosVoucher();
+            if(validacion){
+                await solicitarPagoPinPad();
+            }
         })
 
         $('body').on('click', '.btn-link-pago', async function(){
@@ -1176,6 +1175,97 @@
         });*/
         await cargarCodigosPaises()
     });
+    
+    // Función para mostrar el modal
+    function mostrarModal() {
+        // Mostrar el modal
+        $("#modalEstasAhi").modal("show");
+
+        // Iniciar temporizador para esperar respuesta
+        temporizadorRespuesta = setTimeout(() => {
+            $("#modalEstasAhi").modal("hide");
+            console.log("No hubo respuesta a tiempo.");
+            location.href = url_salir;
+        }, tiempoMaximoRespuesta * 1000);
+    }
+
+    // Función para reiniciar el conteo de inactividad
+    function reiniciarConteo() {
+        clearTimeout(temporizadorInactividad);
+        temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
+    }
+
+    async function validarDatosFactura(){
+        let msg = "";
+
+        if($('#numeroIdentificacion').val() == ""){
+            msg += "Debe ingresar un número de documento \n";
+        }else{
+            if(parseInt($('#codigoTipoIdentificacion option:selected').val()) == 2){
+                if(!esValidaCedula($('#numeroIdentificacion').val())){
+                    msg += "Debe ingresar una cédula válida \n";
+                }
+            }else{
+                if($('#numeroIdentificacion').val().length != 13){
+                    msg += "Debe ingresar un RUC válido \n";
+                }
+            }
+        }
+
+        if($('#nombreCompleto').val() == ""){
+            msg += "Debe ingresar nombres completos \n";
+        }
+
+        if(!isValidEmailAddress($('#email').val())){
+            msg += "Debe ingresar un email válido \n";
+        }
+        
+        if(msg == ""){
+            return true;
+        }else{
+            toastr.error(msg, 'Datos de Factura incorrectos', {
+                timeOut: 8000
+            });
+            return false;
+        }
+    }
+
+    async function validarDatosVoucher(){
+        return true;
+        let val = $('#telefonoV').val().replace(/\D/g, '');
+        let msg = "";
+
+        if (val.startsWith('0')) {
+            if (val.length !== 10) {
+                msg += "Teléfono móvil incorrecto \n";
+            }
+        }else{
+            if (val.length !== 9) {
+                msg += "Teléfono móvil incorrecto \n";
+            }
+        }
+
+        if($('#numeroIdentificacionV').val() == ""){
+            msg += "Debe ingresar una cédula válida \n";
+        }
+
+        if($('#nombreCompletoV').val() == ""){
+            msg += "Debe ingresar nombres completos \n";
+        }
+
+        if(!isValidEmailAddress($('#emailV').val())){
+            msg += "Debe ingresar un email válido \n";
+        }
+        
+        if(msg == ""){
+            return true;
+        }else{
+            toastr.error(msg, 'Datos de Voucher incorrectos', {
+                timeOut: 8000
+            });
+            return false;
+        }
+    }
 
     async function cargarCodigosPaises(){
         let args = [];
@@ -1607,6 +1697,8 @@
         if(data.code == 200){
             datosPago.consulta = data.data;
             await verificarDatosFactura();
+            $('.valorPago').html(`$${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}`);
+            $('.btn-continuar-factura').html(`Pagar $${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}`)
             $('#modalDatosFacturacion').modal("show");
             // await validacionPrevioPago()
         }
@@ -1684,17 +1776,26 @@
         console.log(data);
         if(data.code == 200){
             datosPago.validacion = data.data;
-            $('#modalDatosFacturacion').modal("hide");
-            $('#modalDatosVoucher').modal("show");
+            // $('#modalDatosFacturacion').modal("hide");
+            // $('#modalDatosVoucher').modal("show");
+            $('.box-datos-factura').addClass('d-none')
+            $('.box-load-pago').removeClass('d-none')
+            await solicitarPagoPinPad();
         }else{
             alert(data.message);
         }
     }
 
     async function solicitarPagoPinPad(){
+        clearTimeout(temporizadorInactividad);
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
         // args["endpoint"] =  `https://zq3hqnfr-3000.use2.devtunnels.ms/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
+
+        let telefonoMovil = $('#telefonoV').val();
+        if(telefonoMovil.length == 10){
+            telefonoMovil = telefonoMovil.substring(1);
+        }
 
         args["method"] = "POST";
         args["token"] = accessToken;
@@ -1706,12 +1807,12 @@
             "secuenciaDiferido": null,
             "valor": parseFloat(datosPago.validacion.valorTotalAPagarPaciente),
             "datosPersonaTarjeta": {
-                "codigoTipoIdentificacion": parseInt($('#codigoTipoIdentificacionV option:selected').val()),
-                "numeroIdentificacion": $('#numeroIdentificacionV').val(),
-                "nombreCompleto": $('#nombreCompletoV').val(),
-                "email": $('#emailV').val(),
-                "telefonoCelular": $('#telefonoV').val(),
-                "codigoPaisCelular": parseInt($('#codigoPaisCelular option:selected').val())
+                "codigoTipoIdentificacion": parseInt($('#codigoTipoIdentificacion option:selected').val()),
+                "numeroIdentificacion": $('#numeroIdentificacion').val(),
+                "nombreCompleto": $('#nombreCompleto').val(),
+                "email": $('#email').val(),
+                "telefonoCelular": null,//telefonoMovil,
+                "codigoPaisCelular": null,//parseInt($('#codigoPaisCelular option:selected').val())
             },
             "flujoConPreTransaccion": {
                 "idPreTransaccion": datosPago.idPreTransaccion
@@ -1723,9 +1824,17 @@
         if(data.code == 200){
             datosPago.cobro = data.data;
             $('#modalDatosVoucher').modal("hide");
-            await setearPago();
+            // await setearPago();
+            $('.box-datos-factura').removeClass('d-none')
+            $('.box-load-pago').addClass('d-none')
+            await facturarCobroPinPad();
         }else{
-            alert(data.message);
+            reiniciarConteo();
+            toastr.error("", data.message, {
+                timeOut: 5000
+            });
+            $('.box-datos-factura').removeClass('d-none')
+            $('.box-load-pago').addClass('d-none')
         }
     }
 
@@ -1777,6 +1886,7 @@
         args["bodyType"] = "json";
         const data = await call(args);
         console.log(data);
+        reiniciarConteo();
         if(data.code == 200){
             datosPago.setearPago = data.data;
             await facturarCobroPinPad();
@@ -1787,7 +1897,7 @@
 
     async function facturarCobroPinPad(){
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/facturar?codigoEmpresa=1&idPreTransaccion=${datosPago.idPreTransaccion}`;
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${datosPago.idPreTransaccion}/facturar?codigoEmpresa=1&idPreTransaccion=${datosPago.idPreTransaccion}`;
         let idAgrupacion = await getIdAgrupacionArray();
         let payload = {
             "idAgrupacion": idAgrupacion
@@ -2581,7 +2691,7 @@
                             <div class="col-10 col-md-6 mx-auto text-center mt-3">
                                 <img class="w-75 mb-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/empty-data.svg" />
                                 <h2 class="fs-40 my-3 fw-medium text-veris-dark">¿Deseas consultar algo?</h2>
-                                <button type="button" class="btn fw-normal text-white fs-70 badge bg-veris px-4 py-3 btn-turno rounded-8">Generar turno</button>
+                                <button type="button" class="btn fw-normal text-white w-100 fs-40 badge bg-veris px-4 py-3 btn-turno rounded-8">Generar turno</button>
                             </div>
                         </div>
                     `)
@@ -3450,8 +3560,8 @@
         min-width: 350px;
     }
 
-    #modalDatosFacturacion .modal-lg,
-    #modalDatosVoucher .modal-lg{
+/*    #modalDatosVoucher .modal-lg{*/
+    #modalDatosFacturacion .modal-lg{
         max-width: 850px !important;
     }
 
