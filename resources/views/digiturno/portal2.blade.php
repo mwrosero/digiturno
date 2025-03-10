@@ -791,7 +791,7 @@
 
         // Detectar interacción del usuario
         $(document).on("mousemove keydown click scroll", function () {
-            // reiniciarConteo();
+            reiniciarConteo();
         });
 
         // Manejar clic en el botón "Sí"
@@ -799,7 +799,7 @@
             clearTimeout(temporizadorRespuesta);
             $("#modalEstasAhi").fadeOut();
             console.log("El usuario sigue presente.");
-            // reiniciarConteo();
+            reiniciarConteo();
         });
 
         $('body').on('click','.btn-confirmar-cita', function(){
@@ -812,7 +812,7 @@
         if(!isMobile()){
             console.log("Iniciando conteo")
             // Iniciar el conteo inicial
-            // reiniciarConteo();
+            reiniciarConteo();
         }
         
         await parametrosGenerales(dataTurno.mac);
@@ -1693,8 +1693,8 @@
 
     async function solicitarPagoPinPad(){
         let args = [];
-        // args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
-        args["endpoint"] =  `https://zq3hqnfr-3000.use2.devtunnels.ms/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
+        // args["endpoint"] =  `https://zq3hqnfr-3000.use2.devtunnels.ms/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
 
         args["method"] = "POST";
         args["token"] = accessToken;
@@ -1740,12 +1740,12 @@
 
         args["data"] = JSON.stringify({
             "formaPago": {
-                "efectivo": {
-                  "idPago": null,
-                  "valorEntregado": parseFloat(datosPago.validacion.valorTotalAPagarPaciente),
-                  "valorCambio": 0.00
-                },
-                /*"tarjeta": [{
+                // "efectivo": {
+                //   "idPago": null,
+                //   "valorEntregado": parseFloat(datosPago.validacion.valorTotalAPagarPaciente),
+                //   "valorCambio": 0.00
+                // },
+                "tarjeta": [{
                     "idPago": 1,
                     "valorEntregado": tarjeta.valor,
                     "nombre": tarjeta.nombre,
@@ -1771,7 +1771,7 @@
                         "codigoIngresoVap": null,
                         "codigoSolicitudServDomicilio": null
                     }
-                }]*/
+                }]
             }
         });
         args["bodyType"] = "json";
