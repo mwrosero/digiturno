@@ -1472,7 +1472,7 @@
                 })
             }
             let lugares = await labelLugaresChequeos();
-            $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris-dark">${lugares.join(", ").toLowerCase()}</span>. Y espera a ser llamado.`);
+            $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris">${lugares.join(", ").toLowerCase()}</span>. Y espera a ser llamado.`);
             $('#modalNotificarLlegadaDirigirLugar').modal('show');
         }
     }
@@ -1911,7 +1911,7 @@
         if(data.code == 200){
             //$('#direccionDirigirseLlegada').html(`Por favor, diríjase al área de <span class="fw-bold text-capitalize text-veris-dark">${detalle.tipoOrdenApoyo.toLowerCase()}</span> .`);
             let lugar = (detalle.tipoServicio == "ORDEN_MEDICA") ? detalle.nombreServicioNivel1.toLowerCase() : detalle.tipoOrdenApoyo.toLowerCase();
-            $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris-dark">${lugar}</span> y espera a ser llamado.`);
+            $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris">${lugar}</span> y espera a ser llamado.`);
             $('#modalNotificarLlegadaDirigirLugar').modal('show');
         }
     }
@@ -2313,13 +2313,13 @@
             if(esKiosko){
                 classCards = `col-6 d-flex mb-5 mt-0`
             }
-            if(detalle.tipoServicio == 'BATERIA_PRESTACIONES'){
-                labelServicio = "CHEQUEO"
-            }
+            // if(detalle.tipoServicio == 'BATERIA_PRESTACIONES'){
+            //     labelServicio = "CHEQUEO"
+            // }
             let elemToday = `<div class="${classCards}">
                     <div class="w-100 mt-1">
                         <div class="tab-card bg-citas d-inline-block py-2 px-4 rounded-t-8">
-                            <span class="fs-16 fw-medium text-veris-dark text-capitalize">${labelServicio}</span>
+                            <span class="fs-16 fw-medium text-veris-dark text-capitalize">${ (detalle.tipoServicio == 'BATERIA_PRESTACIONES') ?  `CHEQUEO ${detalle.nombreTipoContrato}` : labelServicio}</span>
                         </div>
                         <div class="card d-flex flex-column content-card rounded-8 rounded-ts-0 p-2 px-3 border-citas-1">
                             <div class="card-header p-0 bg-transparent border-0 d-flex justify-content-start align-items-center">
