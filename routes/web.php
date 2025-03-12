@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DigiturnoController;
+use App\Http\Controllers\AgendamientoController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -40,6 +42,12 @@ Route::get('/portal2/{portalToken}', [DigiturnoController::class, 'portal2'])->n
 Route::get('/turno/{portalToken}', [DigiturnoController::class, 'turno'])->name('turno');
 Route::get('/turnero/{mac}', [DigiturnoController::class, 'turnero'])->name('turnero');
 Route::get('/turnero/laboratorio/{mac}', [DigiturnoController::class, 'turneroLaboratorio'])->name('turneroLaboratorio');
+
+// Agendamiento
+Route::get('/paciente/{portalToken}', [AgendamientoController::class, 'paciente'])->name('paciente');
+Route::get('/seleccionar-datos-cita/{portalToken}', [AgendamientoController::class, 'datosCita'])->name('datosCita');
+Route::get('/citas-elegir-fecha-doctor/{portalToken}', [AgendamientoController::class, 'fechaCita'])->name('fechaCita');
+
 
 
 // Route::get('/test', function () {

@@ -322,31 +322,38 @@
                 <div class="col-12 px-0">
                     <h4 class="mb-0">Tu círculo familiar</h4>
                 </div>
-                <div class="col-12 px-0">
-                    <!-- ESPECIALIDAD -->
-                    <div class="modal modal-top fade" id="pacienteModal" tabindex="-1" aria-labelledby="pacienteModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-sm modal-dialog-centered mx-auto">
-                            <form class="modal-content rounded-4">
-                                <div class="modal-header d-none">
-                                    <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body p-4">
-                                    <h4 class="mb-3">Elegir paciente</h4>
-                                    <div class="row gx-2 justify-content-between align-items-center">
-                                        <div class="list-group list-group-checkable d-grid gap-2 border-0" id="listaPacientes">
+                <div class="col-12">
+                    <div class="row h-100 d-flex justify-content-between align-items-center">
+                        <div class="col-12 px-0">
+                            <!-- FAMILIARES -->
+                            <div class="modal modal-top fade" id="pacienteModal" tabindex="-1" aria-labelledby="pacienteModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-sm modal-dialog-centered mx-auto">
+                                    <form class="modal-content rounded-4">
+                                        <div class="modal-header d-none">
+                                            <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                    </div>
+                                        <div class="modal-body p-4">
+                                            <h4 class="mb-3">Elegir paciente</h4>
+                                            <div class="row gx-2 justify-content-between align-items-center">
+                                                <div class="list-group list-group-checkable d-grid gap-2 border-0" id="listaPacientes">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{-- <div class="modal-footer pt-0 pb-3 px-3">
+                                            <button type="button" class="btn w-100 fw-medium fs--16 waves-effect line-height-20 m-0 p-3" style="color: #0071CE;" data-bs-dismiss="modal">Cancelar</button>
+                                        </div> --}}
+                                    </form>
                                 </div>
-                                {{-- <div class="modal-footer pt-0 pb-3 px-3">
-                                    <button type="button" class="btn w-100 fw-medium fs--16 waves-effect line-height-20 m-0 p-3" style="color: #0071CE;" data-bs-dismiss="modal">Cancelar</button>
-                                </div> --}}
-                            </form>
+                            </div>
+                            <div class="my-2 box-btn-familia border-veris-1 rounded-8">
+                                <div class="btn w-100 btn-sm d-flex justify-content-between align-items-center pt-3 pb-3 border-veris-1 rounded-8" data-bs-toggle="modal" data-bs-target="#pacienteModal" id="btn-paciente" data-rel="">
+                                    <p class="fw-light fs-20 line-height-20 mb-0 text-truncate nombrePacienteElegido ms-3"></p>
+                                    <i class="fa-solid fa-chevron-right mx-2 text-veris fs-20 fw-bold"></i>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="my-2 box-btn-familia border-veris-1 rounded-8">
-                        <div class="btn w-100 btn-sm d-flex justify-content-between align-items-center pt-3 pb-3 border-veris-1 rounded-8" data-bs-toggle="modal" data-bs-target="#pacienteModal" id="btn-paciente" data-rel="">
-                            <p class="fw-light fs-20 line-height-20 mb-0 text-truncate nombrePacienteElegido ms-3"></p>
-                            <i class="fa-solid fa-chevron-right mx-2 text-veris fs-20 fw-bold"></i>
+                        <div class="col-3 offset-1 px-0 d-none">
+                            <a href="/paciente/{{ $portalToken }}" class="btn bg-veris text-white my-2 w-100 h-100 fw-bold rounded-8 py-3">Agendar cita médica</a>
                         </div>
                     </div>
                 </div>
@@ -799,7 +806,8 @@
         $('body').on('click','.btn-confirmar-cita', function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             console.log(detalle);
-            $('.box-info-consultorio').html(`Ve al ${(detalle.nombreSitioConsultorio.split(' '))[0].toLowerCase()} <span class="text-veris ms-2 fs-40">${(detalle.nombreSitioConsultorio.split(' '))[1]}</span>`);
+            let consultorio = obtenerNombreConsultorio(detalle.nombreSitioConsultorio);
+            $('.box-info-consultorio').html(`${consultorio}`);
             $('#modalConfirmarCita').modal('show')
         })
 
@@ -1194,6 +1202,24 @@
         clearTimeout(temporizadorInactividad);
         temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
     }
+
+    function obtenerNombreConsultorio(nombreSitioConsultorio) {
+        let mensaje = "Ve al ";
+
+        // Normalizar el texto a minúsculas para evitar problemas de comparación
+        let nombreNormalizado = nombreSitioConsultorio.trim().toLowerCase();
+
+        if (nombreNormalizado.includes("consultorio")) {
+            // Extraer número si existe
+            let numero = nombreSitioConsultorio.match(/\d+/);
+            mensaje += `Consultorio${numero ? `: <span class="text-veris ms-2 fs-25">${numero[0]}</span>` : ''}`;
+        } else {
+            mensaje += `área de <span class="text-veris ms-2 fs-25">${nombreSitioConsultorio}</span>`;
+        }
+
+        return mensaje;
+    }
+
 
     async function validarDatosFactura(){
         let msg = "";
@@ -2259,8 +2285,9 @@
                             Pagar en caja
                         </button>`;
                 }else{
+                    let consultorio = obtenerNombreConsultorio(detalle.nombreSitioConsultorio);
                     elemBodyCard += `<div class="d-flex justify-content-center align-items-center fw-bold text-dark fs-18 bg-silver-light py-2 rounded-8 my-2">
-                        Ve al ${(detalle.nombreSitioConsultorio.split(' '))[0].toLowerCase()} <span class="text-veris ms-2 fs-25">${(detalle.nombreSitioConsultorio.split(' '))[1]}</span>
+                        ${consultorio}
                     </div>`;
                     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-confirmar-cita p-2 py-3 mt-3">
                             Confirmar cita
@@ -2475,62 +2502,6 @@
         return permiteAgenda;
     }
 
-    async function drawHoy(){
-        let elem = `<div class="row row-flex mb-3 pb-3" style="max-height: 75vh;">
-            <div class="col-12 col-lg-6 col-xxl-4 d-flex mb-5 mt-0">
-                <div class="w-100 mt-1">
-                    <div class="tab-card bg-citas d-inline-block py-2 px-4 rounded-t-8">
-                        <span class="fs-16 fw-medium text-veris-dark">Citas</span>
-                    </div>
-                    <div class="card d-flex flex-column content-card rounded-8 p-2 border-citas-1 rounded-ts-0">
-                        <div class="card-header p-0 bg-transparent border-0 d-flex justify-content-start align-items-center">
-                            <img class="me-2" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg" alt="">
-                            <span class="fs-16 fw-medium text-veris me-2 flex-grow-1">Cita Médica</span>
-                            <div class="text-end ms-2">
-                                <div class="text-verde fw-medium fs-14">
-                                    <i class="fa-solid fa-circle me-1"></i>
-                                    Pagado
-                                </div>
-                                <div class="text-silver-dark fw-medium fs-14">
-                                    <i class="fa-regular fa-calendar-check me-1"></i>
-                                    Por realizar
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body p-0 bg-transparent border-0">
-                            <div class="d-flex justify-content-center align-items-center fw-bold text-dark fs-18 bg-silver-light py-2 rounded-8 my-2">
-                                Ve al consultorio <span class="text-veris ms-2 fs-25">13</span>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <div class="avatar-doctor border-veris-1" style="background: url(https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg) no-repeat top center;background-size: cover;">
-                                </div>
-                                <div class="info-doctor text-veris-dark mx-2">
-                                    <p class="mb-1 fw-medium">Dr(a) Moreno Obando Jaime Roberto</p>
-                                    <p class="mb-1">Medicina General</p>
-                                </div>
-                                <div class="info-doctor ms-2">
-                                    <p class="mb-1 fw-bold text-veris">Agendado</p>
-                                    <p class="mb-1">AGO 09, 2025 <span class="text-veris">11:20 AM</span></p>
-                                    <p class="mb-1">Veris Alborada</p>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-start align-items-start mt-2">
-                                <p class="text-veris-dark fw-medium mb-1">Beneficio:</p>
-                                <p class="mb-1 ms-2">SALUDSA-PLANSMART</p>
-                            </div>
-                        </div>
-                        <div class="card-footer mt-auto p-0 bg-transparent border-0">
-                            <button type="button" class="btn w-100 d-flex bg-veris text-white justify-content-center align-items-center p-2 py-3 mt-3">
-                                Confirmar cita
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>`;
-        $('#pills-Hoy').html(elem);
-    }
-
     let groupedData2 = [];
     let tipoServicioFilter = ['Citas','Laboratorio','Imagenes','Procedimientos','OrdenesApoyo','Odontologia','Promociones','Chequeos'];
     async function agruparDatos2(){
@@ -2704,7 +2675,7 @@
                         <div class="col-10 col-md-6 mx-auto text-center mt-3">
                             <img class="w-75 mb-3" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/empty-data.svg" />
                             <h2 class="fs-40 my-3 fw-medium text-veris-dark">¿Deseas consultar algo?</h2>
-                            <button type="button" class="btn fw-normal text-white fs-70 badge bg-veris px-4 py-3 btn-turno rounded-8">Generar turno</button>
+                            <button type="button" class="btn fw-normal text-white fs-40 badge bg-veris px-4 py-3 btn-turno rounded-8 w-100">Generar turno</button>
                         </div>
                     </div>
                 `)

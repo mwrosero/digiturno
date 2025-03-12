@@ -262,7 +262,11 @@ body, html {
 }
 
 .fs-25 {
-    font-size: 25px;
+    font-size: 25px !important;
+}
+
+.line-height-25{
+    line-height: 25px !important;
 }
 
 .fs-40 {
@@ -271,6 +275,10 @@ body, html {
 
 .line-height-40{
     line-height: 40px;
+}
+
+.line-height-48{
+    line-height: 48px;
 }
 
 .fs-50 {

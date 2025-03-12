@@ -29,14 +29,16 @@ async function call(args){
         myHeaders.append("Content-Type", "application/json");
     }
     
-    if(args.esLogin){
-        myHeaders.append("Authorization", "Basic " + args.basic);
-        myHeaders.append("Application", _applicationLogin);
-        myHeaders.append("IdOrganizacion", _idOrganizacionLogin);
-    }else{
-        myHeaders.append("Authorization","Bearer "+ args.token);
-        myHeaders.append("application", _application);
-        myHeaders.append("idorganizacion", _idOrganizacion);
+    if(!args.authVeris){
+        if(args.esLogin){
+            myHeaders.append("Authorization", "Basic " + args.basic);
+            myHeaders.append("Application", _applicationLogin);
+            myHeaders.append("IdOrganizacion", _idOrganizacionLogin);
+        }else{
+            myHeaders.append("Authorization","Bearer "+ args.token);
+            myHeaders.append("application", _application);
+            myHeaders.append("idorganizacion", _idOrganizacion);
+        }
     }
 
     if(trackId != ''){
