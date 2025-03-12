@@ -377,7 +377,19 @@
 
     document.addEventListener("DOMContentLoaded", async () => {
         // await cargarTurnos();
+        // Verificar cada 30 segundos si está suspendido
+        setInterval(keepAudioAlive, 30000);
     })
+
+    function keepAudioAlive() {
+        // console.log(9)
+        if (audioCtx.state === "suspended") {
+            audioCtx.resume().then(() => {
+                console.log("Reactivado automáticamente");
+            });
+        }
+    }
+
 </script>
 <style>
     .fs-50{
