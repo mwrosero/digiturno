@@ -29,7 +29,7 @@ async function call(args){
         myHeaders.append("Content-Type", "application/json");
     }
     
-    if(!args.authVeris){
+    if(localStorage.getItem('flujo') === null){
         if(args.esLogin){
             myHeaders.append("Authorization", "Basic " + args.basic);
             myHeaders.append("Application", _applicationLogin);
@@ -77,10 +77,10 @@ async function call(args){
                 hideLoader();
             }
             if(!args.dismissAlert && data.code == 400){
-                window.removeEventListener("beforeunload", beforeUnloadHandler);
-                $('#mensaje_400').html(data.message);
-                var myModal = new bootstrap.Modal(document.getElementById('modalError400'));
-                myModal.show();
+                console.log(5555)
+                toastr.error(data.message, `Ha ocurrido un error`, {
+                    timeOut: 8000
+                });
                 return;
             }
             return data;

@@ -1,11 +1,12 @@
 <!-- Header -->
-<header class="header p-2">
+<header class="header p-2 mb-3 sticky-top bg-white" style="z-index: 1030;">
 	<div class="container-fluid g-0">
 		<div class="row">
 			@if (!empty($showInfo) && $showInfo)
 			<div class="col-4 order-2 order-md-1 col-sm-10 col-md-4 d-flex justify-content-start align-items-center mt-3 mt-md-0">
 				<a href="#" class="btn-salir text-decoration-none text-veris-dark fs-25 fw-medium">
-					<i class="fa-solid fa-arrow-left me-1"></i>
+					{{-- <i class="fa-solid fa-arrow-left me-1"></i> --}}
+					<i class="fa-solid fa-arrow-right-from-bracket me-1"></i>
 					Salir
 				</a>
 			</div>
