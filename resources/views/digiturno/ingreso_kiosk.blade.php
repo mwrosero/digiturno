@@ -96,13 +96,13 @@
 							<h2 class="fw-bold p-1 p-md-3 m-1 m-md-3">Datos <span class="text-veris">del paciente</span></h2>
 						</div>
 						<div class="col-12 col-md-7 text-end">
-							<h5 class="fw-normal p-1 p-md-3 m-1 m-md-3 text-start d-inline-block"><span class="fw-bold">Ingresa tu cédula o pasaporte y genera tu turno.</span> <br class="d-none d-md-block">Además, si eres paciente 
+							<h5 class="fw-normal p-1 p-md-3 m-1 m-md-3 text-start d-inline-block"><span class="fw-bold">Ingresa tu cédula o pasaporte y genera tu turno.</span> <br class="d-none d-xxl-block">Además, si eres paciente 
 								@if (in_array($mac, \App\Models\Veris::MACS_PARAMI))
 								ParaMi 
 								@else
 								Mi Veris 
 								@endif
-							puedes ver <br class="d-none d-md-block">información de tu grupo familiar en un solo lugar.</h5>
+							puedes ver <br class="d-none d-xxl-block">información de tu grupo familiar en un solo lugar.</h5>
 						</div>
 					</div>
 				</div>
@@ -182,6 +182,15 @@
 	let clickCount = 0;
 	let logoutArea = document.getElementById("logo-digiturno"); // Elemento donde se hará la acción secreta
 	let timeout;
+
+	let userKiosko;
+    let esKiosko = false;
+    if (localStorage.getItem('userKiosko') !== null) {
+        esKiosko = true
+        userKiosko = localStorage.getItem('userKiosko');
+        $('header').addClass('pt-4')
+        // $('.logo').css("max-width","400px !important");
+    }
 
 	logoutArea.addEventListener("click", async function() {
 		console.log(999)
@@ -536,6 +545,13 @@
         }
 
         // Keyboard._simulateFocus('cedula')
+        $('input').on('focus', function() {
+	        if(esKiosko){
+	            setTimeout(function(){
+	            	$('.kioskboard-key, .kioskboard-key-backspace, .kioskboard-key-enter, .kioskboard-key-space, .kioskboard-key-specialcharacter, .kioskboard-key-capslock').addClass('custom-kioskboard-key-kiosko');
+	            }, 100)
+	        }
+	    })
     });
 
     // Simular el llamado a `open` externamente

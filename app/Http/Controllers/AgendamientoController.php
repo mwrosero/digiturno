@@ -44,4 +44,15 @@ class AgendamientoController extends Controller
                 ->with('params',$portalToken);
     }
 
+    public function detalleCita($portalToken, Request $request) {
+        $token = Veris::getToken();
+        $data = $request->all();
+        $mac = $data['mac'];
+        
+        return view('agendamiento.detalle_cita')
+                ->with('mac',$mac)
+                ->with('accessToken',$token)
+                ->with('params',$portalToken);
+    }
+
 }

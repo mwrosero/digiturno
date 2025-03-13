@@ -20,28 +20,57 @@
             </div>
             <div class="modal-body p-3">
                 <div class="row box-datos-factura">
-                    <div class="col-12 mb-3">
-                        <label class="form-label fs-3 text-silver-dark" for="codigoTipoIdentificacion">Tipo de documento</label>
-                        <select class="form-select p-1 rounded-8 fs-2 text-start" name="codigoTipoIdentificacion" id="codigoTipoIdentificacion">
+                    <div class="col-6 mb-3">
+                        <label class="form-label fs-20 text-silver-dark" for="codigoTipoIdentificacion">Tipo de documento</label>
+                        <select class="form-select p-1 rounded-8 fs-25 text-start" name="codigoTipoIdentificacion" id="codigoTipoIdentificacion">
                             <option value="2">Cédula</option>
                             <option value="1">Ruc</option>
                         </select>
                     </div>
-                    <div class="col-12 mb-3">
-                        <label class="form-label fs-3 text-silver-dark" for="numeroIdentificacion">Número de documento</label>
-                        <input autocomplete="off" class="form-control w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-start fs-2 onlyNumber" type="number" name="numeroIdentificacion" id="numeroIdentificacion" data-kioskboard-type="numpad">
+                    <div class="col-6 mb-3">
+                        <label class="form-label fs-20 text-silver-dark" for="numeroIdentificacion">Número de documento</label>
+                        <input autocomplete="off" class="form-control w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-start fs-25 onlyNumber" type="number" name="numeroIdentificacion" id="numeroIdentificacion" data-kioskboard-type="numpad">
                     </div>
                     <div class="col-12 mb-3">
-                        <label class="form-label fs-3 text-silver-dark" for="nombreCompleto">Nombre completo</label>
-                        <input autocomplete="off" class="form-control w-100 onlyLetters text-uppercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-start fs-2 mb-2" type="text" name="nombreCompleto" id="nombreCompleto">
+                        <label class="form-label fs-20 text-silver-dark" for="nombreCompleto">Nombre completo</label>
+                        <input autocomplete="off" class="form-control w-100 onlyLetters text-uppercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-start fs-25 mb-2" type="text" name="nombreCompleto" id="nombreCompleto">
                     </div>
                     <div class="col-12 mb-3">
-                        <label class="form-label fs-3 text-silver-dark" for="email">Correo electrónico</label>
-                        <input autocomplete="off" class="form-control w-100 onlyLetters text-lowercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-start fs-2 mb-2" type="email" name="email" id="email" data-kioskboard-specialcharacters="true"/>
+                        <label class="form-label fs-20 text-silver-dark" for="email">Correo electrónico</label>
+                        <input autocomplete="off" class="form-control w-100 onlyLetters text-lowercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-start fs-25 mb-2" type="email" name="email" id="email" data-kioskboard-specialcharacters="true"/>
                     </div>
                     {{-- <div class="col-12 mb-3">
                         <p class="text-center my-2 valorPago fs-40 fw-bold text-veris"></p>
                     </div> --}}
+                </div>
+                <div class="row box-datos-factura">
+                    <div class="col-10 mx-auto" id="contentDetalleCita">
+                        <ul class="list-group fs--1 border-0 bg-neutral rounded-8 pt-2 pb-2">
+                            <li class="list-group-item border-0 bg-transparent d-flex justify-content-between align-items-center py-0 px-2 fw-medium fs-25">
+                                Detalle de factura
+                            </li>
+                            <li class="list-group-item border-0 bg-transparent d-flex justify-content-between align-items-center fs-25 py-0 px-2">
+                                Subtotal
+                                <span class="badge text-dark fw-normal fs-25 p-0" id="subtotal"></span>
+                            </li>
+                            <li class="list-group-item border-0 bg-transparent d-flex justify-content-between align-items-center fs-25 py-0 px-2">
+                                Crédito/convenio
+                                <span class="badge text-dark fw-normal fs-25 p-0" id="creditoConvenio"></span>
+                            </li>
+                            <li class="list-group-item border-0 bg-transparent d-flex justify-content-between align-items-center fs-25 py-0 px-2">
+                                Descuento aplicado
+                                <span class="badge text-dark fw-normal fs-25 p-0" id="descuentoAplicado"></span>
+                            </li>
+                            <li class="list-group-item border-0 bg-transparent d-flex justify-content-between align-items-center fs-25 py-0 px-2">
+                                IVA
+                                <span class="badge text-dark fw-normal fs-25 p-0" id="iva"></span>
+                            </li>
+                            <li class="list-group-item border-0 bg-transparent d-flex justify-content-between align-items-center fs-25 py-0 px-2 fw-medium">
+                                Total
+                                <span class="badge text-dark fw-normal fs-25 p-0" id="total"></span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="row box-load-pago d-none">
                     <div class="col-12 mb-3 text-center">
@@ -51,12 +80,69 @@
                         Inserta o desliza la tarjeta
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-12 text-center mt-4">
+                        <div class="form-check d-flex justify-content-md-center align-items-center">
+                            <input class="form-check-input terminos-input me-2 mb-1 width-24" type="checkbox" value="" id="checkTerminosCondicion" required>
+                            <label class="form-check-label fs-20 fw-medium line-height-20" for="checkTerminosCondicion">
+                                Acepto los <a href="https://www.veris.com.ec/terminos-y-condiciones/" target="_blank" class="">términos y condiciones</a> 
+                                <span id="politicas" class="d-none">y <a href="https://www.veris.com.ec/politicas/" target="_blank">Política de protección de Datos Personales</a></span>
+                            </label>
+                            <div class="invalid-feedback">
+                                Debes aceptar antes de continuar
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10 mx-auto mt-3">
+                        <button type="button" class="btn bg-veris fs-25 line-height-25 text-white w-100 py-3 px-32 shadow-none d-flex justify-content-between align-items-center btn-disabled btn-continuar-factura rounded-8">Continuar</button>
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-12 col-md-6">
+                                <div type="button" id="btn-ver-examenes" class="bg-veris w-100 mx-auto mt-2 cursor-pointer justify-content-center align-items-center text-white p-2 rounded-8 d-none">
+                                    <div class="text-center">
+                                        Ver exámenes a pagar
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row box-detalles-lab px-2 mt-3 d-none">
+                    <table class="card-body w-100">
+                        <thead>
+                            <tr class="border-bottom sticky-top bg-white">
+                                <th class="fw-medium fs--2">Prestación</th>
+                                <th class="fw-medium fs--2">P.V.P.</th>
+                                <th class="fw-medium fs--2">Crédito/convenio</th>
+                                <th class="fw-medium fs--2">TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listadoPrestacionesPago">
+                        </tbody>
+                        {{-- <tr>
+                            <td class="fs--2">$${value.subtotal.toFixed(2)}</td>
+                            <td class="fs--2">$${value.cubreEmpresa.toFixed(2)}</td>
+                            <td class="fs--2">$${value.montoIva.toFixed(2)}</td>
+                            <td class="fs--2">$${value.total.toFixed(2)}</td>
+                        </tr> --}}
+                    </table>
+                </div>
             </div>
-            <div class="modal-footer box-datos-factura pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
-                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-3 mx-2 fs-4 rounded-8 btn-continuar-factura">Continuar</button>
-                {{-- <button type="button" class="btn fw-normal text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-continuar-factura" data-bs-dismiss="modal">Continuar</button> --}}
-            </div>
+            {{-- <div class="modal-footer box-datos-factura pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
+                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-5 py-3 mx-2 fs-25 rounded-8 btn-continuar-factura">Continuar</button>
+            </div> --}}
         </form>
+    </div>
+</div>
+
+{{-- Info de detalle laboratorio --}}
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasDetalleLaboratorio" aria-labelledby="offcanvasDetalleLaboratorioLabel" aria-modal="true" role="dialog" data-bs-backdrop="true">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel">Detalle de prestaciones</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
     </div>
 </div>
 
@@ -324,7 +410,7 @@
                 </div>
                 <div class="col-12">
                     <div class="row h-100 d-flex justify-content-between align-items-center">
-                        <div class="col-12 px-0">
+                        <div class="col-8 px-0">
                             <!-- FAMILIARES -->
                             <div class="modal modal-top fade" id="pacienteModal" tabindex="-1" aria-labelledby="pacienteModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-sm modal-dialog-centered mx-auto">
@@ -352,8 +438,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-3 offset-1 px-0 d-none">
-                            <a href="/paciente/{{ $portalToken }}" class="btn bg-veris text-white my-2 w-100 h-100 fw-bold rounded-8 py-3">Agendar cita médica</a>
+                        <div class="col-3 offset-1 px-0">
+                            <a href="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris text-white my-2 w-100 h-100 fw-bold rounded-8 py-3">Agendar cita médica</a>
                         </div>
                     </div>
                 </div>
@@ -816,6 +902,10 @@
             // Iniciar el conteo inicial
             reiniciarConteo();
         }
+
+        $('body').on('click', '#btn-ver-examenes', async function(){
+            $('.box-detalles-lab').toggleClass('d-none');
+        })
         
         await parametrosGenerales(dataTurno.mac);
 
@@ -958,21 +1048,37 @@
             if(qtyPrestacionesPorPagar > 0){
                 let btnPagar = ``;
                 if(detalle.tipoServicio == "ORDEN_MEDICA" && (detalle.nombreServicioNivel1 == "LABORATORIO" || detalle.nombreServicioNivel1 == "IMAGENES" || detalle.nombreServicioNivel1 == "PROCEDIMIENTOS") && detalle.permitePago){
-                    btnPagar += `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
+                    if(esKiosko){
+                        console.log(99)
+                        btnPagar += `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris p-2 py-3 mt-3 btn-pagar" data-bs-dismiss="modal">
+                                Pagar
+                            </button>`;
+                    }else{
+                        console.log(77)
+                        btnPagar += `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
                                 Pagar aquí
                             </button>`;
+                    }
                 }
-                prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start mt-auto">
-                        <div class="d-flex flex-wrap w-100 justify-content-between align-items-center mt-auto p-0 bg-transparent border-0 gap-2">
-                            ${btnPagar}
-                            <!--button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
-                                Pagar aquí
-                            </button-->
-                            <button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
-                                Pagar en caja
-                            </button>
-                        </div>
-                    </li>`
+                if(!esKiosko){
+                    prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start mt-auto">
+                            <div class="d-flex flex-wrap w-100 justify-content-between align-items-center mt-auto p-0 bg-transparent border-0 gap-2">
+                                ${btnPagar}
+                                <!--button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
+                                    Pagar aquí
+                                </button-->
+                                <button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
+                                    Pagar en caja
+                                </button>
+                            </div>
+                        </li>`
+                }else{
+                    prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start mt-auto">
+                            <div class="d-flex flex-wrap w-100 justify-content-between align-items-center mt-auto p-0 bg-transparent border-0 gap-2">
+                                ${btnPagar}
+                            </div>
+                        </li>`
+                }
                 $('.prestaciones-porpagar').removeClass('d-none');
             }else{
                 $('.prestaciones-porpagar').addClass('d-none');
@@ -1121,6 +1227,14 @@
             await activarPrestacionesInicializar();
         })
 
+        $('body').on('change', '#checkTerminosCondicion', function(){
+            if($('#checkTerminosCondicion').is(':checked')) {
+                $('.btn-continuar-factura').removeClass('btn-disabled');
+            } else {
+                $('.btn-continuar-factura').addClass('btn-disabled');
+            }
+        });
+
         $('body').on('click', '.btn-pagar', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             // Inicializar pago
@@ -1181,7 +1295,20 @@
                 `
             });
         });*/
-        await cargarCodigosPaises()
+
+        reiniciarConteo();
+        $('#modalDatosFacturacion').on('hidden.bs.modal', async function (e) {
+            await cargarCodigosPaises()
+        });
+
+        $('input').on('focus', function() {
+            if(esKiosko){
+                setTimeout(function(){
+                    $('.kioskboard-key, .kioskboard-key-backspace, .kioskboard-key-enter, .kioskboard-key-space, .kioskboard-key-specialcharacter, .kioskboard-key-capslock').addClass('custom-kioskboard-key-kiosko');
+                }, 100)
+            }
+        })
+
     });
     
     // Función para mostrar el modal
@@ -1724,9 +1851,54 @@
             datosPago.consulta = data.data;
             await verificarDatosFactura();
             $('.valorPago').html(`$${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}`);
-            $('.btn-continuar-factura').html(`Pagar $${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}`)
+            // $('.btn-continuar-factura').html(`Pagar $${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}`)
+            $('.btn-continuar-factura').html(`<span class="col-5 shadow-none">Continuar</span>
+                            |
+                <span class="col-5 mb-0 shadow-none cursor-inherit">$${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}</span>`);
+            // clearTimeout(temporizadorInactividad);
+            clearInterval(temporizadorInactividad)
+            mostrarDetallesFactura();
             $('#modalDatosFacturacion').modal("show");
             // await validacionPrevioPago()
+        }
+    }
+
+    async function mostrarDetallesFactura(){
+        $('.box-detalles-lab').addClass('d-none');
+        let valor_empresa = datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa;
+        let valor_paciente = datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente;
+        let subtotal = valor_empresa.subtotal + valor_paciente.subtotal;
+        let creditoConvenio = valor_empresa.valorTotal;
+        let descuentoAplicado = valor_empresa.valorDescuento + valor_empresa.valorDescuento;
+        let iva = valor_empresa.valorIva + valor_empresa.valorIva;
+        let total = valor_paciente.valorTotal;
+
+        $('#subtotal').html(`$${subtotal.toFixed(2)}`);
+        $('#creditoConvenio').html(`-$${creditoConvenio.toFixed(2)}`);
+        $('#descuentoAplicado').html(`-$${descuentoAplicado.toFixed(2)}`);
+        $('#iva').html(`+$${iva.toFixed(2)}`);
+        $('#total').html(`$${total.toFixed(2)}`);
+        // $('#totalLabel').html(`$${dataCita.facturacion.totales.total.toFixed(2)}`);
+
+        if(datosPago.detalle.tipoServicio == "ORDEN_MEDICA" && datosPago.detalle.nombreServicioNivel1 == "LABORATORIO"){
+            $('#btn-ver-examenes').removeClass('d-none');
+            let elem = ``
+            $.each(datosPago.consulta[0].agrupaciones[0].detallesAgrupacion, function(key, value){
+                let classBorder = `border-bottom`;
+                if(value.mensajeCobertura !== null && value.mensajeCobertura != ""){
+                    classBorder = `border-top border-bottom-0`
+                }
+                elem += `<tr class="${classBorder}">
+                        <td class="fs--2 text-capitalize">${value.nombrePrestacion.toLowerCase()}</td>
+                        <td class="fs--2">$${value.valoresPaciente.valorTotal.toFixed(2)}</td>
+                        <td class="fs--2">$${value.valoresEmpresa.valorTotal.toFixed(2)}</td>
+                        <td class="fs--2">$${value.valoresVenta.valorTotal.toFixed(2)}</td>
+                    </tr>`;
+                if(value.mensajeCobertura !== null && value.mensajeCobertura != ""){
+                    elem += `<tr class="border-bottom border-top-0"><td colspan="4" class="fs-12 line-height-14 text-danger text-start">${value.mensajeCobertura}</td></tr>`
+                }
+            })
+            $('#listadoPrestacionesPago').html(elem);
         }
     }
 
@@ -1813,7 +1985,7 @@
     }
 
     async function solicitarPagoPinPad(){
-        clearTimeout(temporizadorInactividad);
+        
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
         // args["endpoint"] =  `https://zq3hqnfr-3000.use2.devtunnels.ms/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
@@ -3291,6 +3463,23 @@
     /*
     Para buscar paquetes: https://api.phantomx.com.ec/digitales/v1/comercial/detallePaquete?canalOrigen=MVE_CMV&codigoEmpresa=1&secuenciaPaquetePaciente=4680170
     */
+
+    async function llenarDataDetallesCitas(){
+        let elem = ``;
+        $.each(dataCita.facturacion.detalleServicio.citas, function(key, value){
+            elem = `<p class="text-primary-veris fs--16 line-height-20 fw-medium mb-1">${capitalizarCadaPalabra(value.especialidad)}</p>`;
+            if(value.esTeleconsulta == "N"){    
+                elem += `<p class="fw-medium fs--1 line-height-16 mb-1">${capitalizarCadaPalabra(value.centroMedico)}</p>`;
+            }
+            elem += `<p class="fs--2 line-height-16 mb-1">${value.fechaHoraCita}</b></p>
+            <p class="fs--2 line-height-16 mb-1 text-capitalize">Dr(a) ${value.doctor.toLowerCase()}</p>
+            <p class="fs--2 line-height-16 mb-1 text-capitalize">${value.nombresPaciente.toLowerCase()}</p>`;
+            if(value.convenio != null && value.convenio != ""){
+                elem += `<p class="fs--2 line-height-16 mb-1 text-capitalize">${ value.convenio.toLowerCase() }</p>`
+            }
+        })
+        $('#contentDetalleCita').html(elem);
+    }
 </script>
 <style>
     body{
@@ -3532,9 +3721,27 @@
         min-width: 350px;
     }
 
+    .bg-neutral {
+        background-color: rgba(231, 233, 236, 1) !important;
+    }   
+
+    .btn-disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
 /*    #modalDatosVoucher .modal-lg{*/
     #modalDatosFacturacion .modal-lg{
-        max-width: 850px !important;
+        max-width: 800px !important;
+    }
+
+    .offcanvas {
+        z-index: 1060 !important; /* Asegura que esté encima del modal */
+    }
+
+    .box-detalles-lab {
+        max-height: 300px;
+        overflow: auto;
     }
 
     @media (min-width: 1200px) {

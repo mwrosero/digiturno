@@ -7,259 +7,270 @@ Mi Veris - Citas - Elige fecha y doctor
 <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/theme-veris-app.css?v=1.0.3')}}">
 
-<div class="flex-grow-1 container-p-y pt-0">
-    <!-- Modal de error -->
-    <div class="modal fade" id="mensajeSolicitudLlamadaModalError" tabindex="-1" aria-labelledby="mensajeSolicitudLlamadaModalErrorLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
-            <div class="modal-content">
-                <div class="modal-body text-center p-3 pb-2">
-                    <h1 class="modal-title fs--20 line-height-24 fw-medium mb-3">Veris</h1>
-                    <p class="fs--16 fw-normal text-veris mb-3" id="mensajeError" ></p>
-                </div>
-                <div class="modal-footer pt-0 pb-3 px-3">
-                    <button type="button" class="btn btn-primary-veris fs--18 line-height-24 m-0 px-4 py-3 w-100" data-bs-dismiss="modal" id="btnEntiendoError">Entiendo</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/vendor/libs/toastr/toastr.css" />
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/vendor/libs/toastr/toastr.js"></script>
 
-    <!-- Modal de error validacion fecha -->
-    <div class="modal fade" id="modalValidacionFecha" tabindex="-1" aria-labelledby="modalValidacionFechaLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
-            <div class="modal-content">
-                <div class="modal-body text-center p-3 pb-2">
-                    <h1 class="modal-title fs--20 line-height-24 my-3">Información de tu seguro</h1>
-                    <p class="fs--1 fw-normal" id="msg-validacion-fecha"></p>
-                </div>
-                <div class="modal-footer pt-0 pb-3 px-3">
-                    <button type="button" class="btn btn-primary-veris fs--18 line-height-24 m-0 px-4 py-3 w-100" data-bs-dismiss="modal" id="btnEntiendoError">Entiendo</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- modal elegir horario -->
-    <div class="modal bg-transparent fade" id="elegirHorarioModal" tabindex="-1" aria-labelledby="elegirHorarioModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
-            <div class="modal-content">
-                <div class="modal-body p-3 pb-2">
-                    <h6 class="text-center fs--16 line-height-20 fw-medium mb-2">{{ __('Horarios') }}:</h6>
-                    <div id="listaHorariosMedico" class="row g-2">
-                        {{-- <div class="card card-body rounded-3 position-relative py-2 mb-2">
-                            <a href="{{route('citas.detalleCita')}}">
-                                <div class="badge-discount-top fs--3 fw-medium"><span>{{ __('-30%') }}</span></div>
-                                <p class="fs--2 text-primary-veris text-center my-1">08:00 - 08:20</p>
-                                <div class="badge-discount-bottom fs--3 fw-medium"><span>{{ __('descuento') }}</span></div>
-                            </a>
-                        </div> --}}
-                    </div>
-                </div>
-                <div class="modal-footer pt-0 pb-3 px-3">
-                    <button type="button" class="btn btn-sm text-primary-veris fs--18 line-height-24 fw-medium shadow-none m-0 w-100 px-4 py-3" data-bs-dismiss="modal">Cancelar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- modal NO HAY FECHA DISPONIBLES -->
-    <div class="modal fade" id="sinFechaDisponibles" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="sinFechaDisponiblesLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
-            <div class="modal-content">
-                <div class="modal-body p-3 pb-2">
-                    <div class="text-center">
-                        <h1 class="modal-title fs--20 line-height-24 fw-medium mb-3" id="sinFechaDisponiblesLabel">Veris</h1>
-                        <p class="fs--16 fw-normal text-veris mb-3" title="titleNoDisponibilidad">No tiene fechas disponibles.</p>
-                    </div>
-                </div>
-                <div class="modal-footer pt-0 pb-3 px-3">
-                    <a href="{{ url()->previous() }}" class="btn btn-primary-veris fs--18 line-height-24 m-0 w-100 px-4 py-3">Aceptar</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- modal no hay medicos disponibles -->
-    <div class="modal fade" i|d="sinMedicosDisponibles" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="sinMedicosDisponiblesLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
-            <div class="modal-content">
-                <div class="modal-body p-3 pb-2">
-                    <div class="text-center">
-                        <h1 class="modal-title fs--20 line-height-24 fw-medium mb-3" id="sinMedicosDisponiblesLabel">Veris</h1>
-                        <p class="fs--16 fw-normal text-veris mb-3">No tiene médicos disponibles.</p>
-                    </div>
-                </div>
-                <div class="modal-footer pt-0 pb-3 px-3">
-                    <a href="{{ url()->previous() }}" class="btn btn-primary-veris fs--18 line-height-24 m-0 w-100 px-4 py-3">Aceptar</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="d-flex justify-content-between align-items-center bg-white">
-        <h5 class="ps-3 my-auto py-3 fs-20 fs-md-24">{{ __('Elige fecha y doctor') }}</h5>
-    </div>
-    <section class="p-0 bg-dark-blue-veris-medium-sm">
-        <div class="row g-0 justify-content-center">
-            <div class="col-auto p-2 bg-dark-blue-veris-medium" style="min-width: 375px;">
-                <p class="text-center text-white fw-medium fs--18 line-height-24 m-1 mb-0 text-capitalize" id="month-name"></p>
-                <div class="row g-0 d-flex">
-                    <div class="col-12">
-                        <div class="calendar-container invisible p-0 mb-1 w-100">
-                            <span class="arrow mt-3" id="prev-week">
-                                <i class="fa-solid fa-chevron-left"></i>
-                            </span>
-                            <div class="calendar-header">
-                                <div class="week-container pt-3 mt-1" id="week-days"></div>
-                            </div>
-                            <span class="arrow mt-3" id="next-week">
-                                <i class="fa-solid fa-chevron-right"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="p-0">
-        <div class="row g-0 justify-content-center">
-            <div class="col-auto ps-3 pe-3">
-                <p class="fs--1 mt-2 line-height-16 fw-normal mb-0 d-none" id="nombreFiltro">Filtrar por</p>
-                <ul class="nav nav-pills d-none justify-content-center border-box-veris w-auto p-1 rounded-3 mt-2 mb-3" id="pills-tab" role="tablist">
-                    <li class="nav-item w-50" role="presentation" data-rel="T">
-                        <button data-rel="N" class="nav-link options-date ps-1 pe-1 active" id="pills-options-tab" data-bs-toggle="pill" data-bs-target="#pills-options" type="button" role="tab" aria-controls="pills-options" aria-selected="true">Todos</button>
-                    </li>
-                    <li class="nav-item w-50" role="presentation" data-rel="D">
-                        <button data-rel="S" class="nav-link options-date ps-1 pe-1" id="pills-options-descuentos-tab" data-bs-toggle="pill" data-bs-target="#pills-options-descuentos" type="button" role="tab" aria-controls="pills-options-descuentos" aria-selected="false" tabindex="-1">Con descuento
-                            <svg width="18" height="17" viewBox="0 0 18 17" class="ms-1 badge-icon-selected" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.2178 8.3125C17.2178 9.50488 16.6377 10.5361 15.7031 11.1162C15.9287 12.1797 15.6387 13.3398 14.8008 14.1455C13.9951 14.9834 12.835 15.3057 11.7715 15.0801C11.1592 15.9824 10.1602 16.5625 8.96777 16.5625C7.80762 16.5625 6.77637 15.9824 6.16406 15.0801C5.10059 15.3057 3.97266 14.9834 3.13477 14.1455C2.3291 13.3398 2.00684 12.1797 2.23242 11.1162C1.33008 10.5361 0.717773 9.50488 0.717773 8.3125C0.717773 7.15234 1.33008 6.12109 2.23242 5.54102C2.00684 4.47754 2.3291 3.31738 3.13477 2.47949C3.97266 1.67383 5.13281 1.35156 6.16406 1.57715C6.77637 0.674805 7.80762 0.0625 8.96777 0.0625C10.1602 0.0625 11.1592 0.674805 11.7715 1.57715C12.835 1.35156 13.9951 1.67383 14.8008 2.47949C15.6387 3.31738 15.9287 4.47754 15.7031 5.54102C16.6055 6.12109 17.2178 7.15234 17.2178 8.3125ZM6.90527 5.21875C6.35742 5.21875 5.87402 5.70215 5.87402 6.25C5.87402 6.83008 6.35742 7.28125 6.90527 7.28125C7.48535 7.28125 7.9043 6.83008 7.9043 6.25C7.9043 5.70215 7.48535 5.21875 6.90527 5.21875ZM7.45312 10.9229L11.5781 6.79785C11.9004 6.50781 11.9004 6.02441 11.5781 5.73438C11.2881 5.41211 10.8047 5.41211 10.5146 5.73438L6.38965 9.85938C6.06738 10.1494 6.06738 10.6328 6.38965 10.9229C6.51855 11.084 6.71191 11.1484 6.9375 11.1484C7.13086 11.1484 7.32422 11.084 7.45312 10.9229ZM11.0303 11.4062C11.6104 11.4062 12.0615 10.9551 12.0615 10.375C12.0615 9.82715 11.6104 9.34375 11.0303 9.34375C10.4824 9.34375 9.99902 9.82715 9.99902 10.375C9.99902 10.9551 10.4824 11.4062 11.0303 11.4062Z" fill="#EF2E79"/></svg> </button>
-                    </li>
-                </ul>
-                <div class="overflow-auto row g-2" id="listaMedicos">
-                    {{-- <div class="border-box-light-blue rounded-3 p--2 mb-3">
-                        <div class="header-doctor d-flex justify-content-between align-items-start mb-3">
-                            <div class="picture-doctor border-box-light-blue border-3 rounded-circle" style="background: url({{ asset('assets/img/svg/avatar_doctor.svg') }}) no-repeat center center;background-size: auto;">
-                            </div>
-                            <div class="content-doctor ms-2 flex-grow-1">
-                                <div class="name-rate d-flex justify-content-between align-items-center mb-1">
-                                    <h6 style="max-width: 200px" class="fs--16 line-height-20 fw-medium flex-grow-1 m-0">Juan Alberto Rodrigues Gonzáles</h6>
-                                    <div class="star-box text-center ms-1">
-                                        <i class="fa-solid fa-star fw-bold star-ico fs--20 d-block"></i>
-                                        <span class="fw-normal fs--3 mt-1 rate-label">4.6</span>
-                                    </div>
-                                </div>
-                                <p class="fs--2 line-height-16 fw-normal mb-1" style="color: #425065;">Dermatología</p>
-                                <div class="info-adicional-medico d-flex justify-content-between align-items-center">
-                                    <div class="badge rounded-3 py-1 px-2 bg-cita-atendida d-flex justify-content-between align-items-center gap-1 flex-grow-1 me-2">
-                                        <i class="fa-solid fa-clock" style="color:#2F7833;"></i>
-                                        <span class="fw-normal fs--2" style="color:#2F7833;">Te atendiste con este doctor</span>
-                                    </div>
-                                    <div class="badge rounded-3 py-1 px-2 bg-fav-atendida">
-                                        <i class="fa-solid fs--2 fa-heart" style="color:#D84315;"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="dates-doctor">
-                            <p class="fs--1 line-height-16 fw-medium mb-2" style="color:#296BEF;">Horario más próximo:</p>
-                            <div class="row g-2" style="max-width:341px">
-                                <div class="col-6">
-                                    <div class="cursor-pointer waves-effect p--2 px-3 w-100 bg-time-doctor rounded-3 d-flex justify-content-center align-items-center">
-                                        <span class="fs--1 line-height-20 rate-label text-center mb-0">09:00 - 09:20</span>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="cursor-pointer waves-effect p--2 px-3 w-100 bg-time-doctor box-time-doctor-with-discount position-relative rounded-3 d-flex justify-content-end align-items-center">
-                                        <div class="box-badge-discount-time position-absolute">
-                                            <span class="badge-discount-time position-absolute fs--2 fw-medium">-10%</span>
-                                        </div>
-                                        <span class="fs--1 line-height-20 rate-label text-center mb-0">09:00 - 09:20</span>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="cursor-pointer waves-effect p--2 px-3 w-100 bg-time-doctor rounded-3 d-flex justify-content-center align-items-center">
-                                        <span class="fs--1 line-height-20 rate-label text-center mb-0">09:00 - 09:20</span>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="cursor-pointer waves-effect p--2 px-3 w-100 bg-time-doctor-alt rounded-3 d-flex justify-content-center align-items-center">
-                                        <span class="fs--1 line-height-20 rate-label text-center mb-0">Ver más horarios</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
-                </div>
-            </div>
-        </div>
-    </section>
+@include('template.header_agendamiento', ['showInfo' => true])
 
-    <section class="p-3 mb-3 d-none">
-        <div class="row justify-content-center">
-            <div class="col-auto" style="min-width: 375px;">
-                <div class="card card-fecha-foctor position-relative">
-                    <div class="card-body p-0">
-                        <div class="calendar-body position-relative">
-                            <div class="calendar-container w-auto" style="max-height: 140px;">
-                                <div class="calendar-header">
-                                    <button class="btn btn-sm px-0 shadow-none prev-btn"><i class="bi bi-chevron-left fs--1 text-white"></i></button>
-                                    <h6 class="text-white fw-normal fs--1 mx-3 mb-0" id="month-year"></h6>
-                                    <button class="btn btn-sm px-0 shadow-none next-btn"><i class="bi bi-chevron-right fs--1 text-white"></i></button>
-                                </div>
-                                <div class="calendar-grid" id="calendar-grid"></div>
+<section class="p-3 px-0 mb-3">
+    <div class="row mx-0">
+        @include('template.back')
+        <div class="col-12 col-lg-4 d-flex justify-content-between align-items-center bg-veris sticky-top overflow-hidden">
+            <h5 class="ps-3 text-white my-auto py-3 fs-40 line-height-48">{{ __('Elige fecha y doctor') }}</h5>
+        </div>
+        <div class="col-12 col-lg-8 overflow-auto pt-3">
+            <div class="flex-grow-1 container-p-y pt-0">
+                <!-- Modal de error -->
+                <div class="modal fade" id="mensajeSolicitudLlamadaModalError" tabindex="-1" aria-labelledby="mensajeSolicitudLlamadaModalErrorLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
+                        <div class="modal-content">
+                            <div class="modal-body text-center p-3 pb-2">
+                                <h1 class="modal-title fs--20 line-height-24 fw-medium mb-3">Veris</h1>
+                                <p class="fs--16 fw-normal text-veris mb-3" id="mensajeError" ></p>
                             </div>
-                            <button class="btn btn-sm shadow-none text-white fs-2 fw-medium w-100" id="toggle-calendar-btn"><i class="bi bi-chevron-compact-down"></i></button>
+                            <div class="modal-footer pt-0 pb-3 px-3">
+                                <button type="button" class="btn btn-primary-veris fs--18 line-height-24 m-0 px-4 py-3 w-100" data-bs-dismiss="modal" id="btnEntiendoError">Entiendo</button>
+                            </div>
                         </div>
-                        <div class="card shadow-none border-24" style="background: var(--neutral-05, #F3F4F5);">
-                            <div class="card-header border-bottom py-2" id="tituloFechaDoctor">
-                                Resultados
+                    </div>
+                </div>
+
+                <!-- Modal de error validacion fecha -->
+                <div class="modal fade" id="modalValidacionFecha" tabindex="-1" aria-labelledby="modalValidacionFechaLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
+                        <div class="modal-content">
+                            <div class="modal-body text-center p-3 pb-2">
+                                <h1 class="modal-title fs--20 line-height-24 my-3">Información de tu seguro</h1>
+                                <p class="fs--1 fw-normal" id="msg-validacion-fecha"></p>
                             </div>
-                            <div class="card-body p-3" style="max-width: 433px;">
-                                <div class="col-auto overflow-auto" id="listaMedicos" style="max-height: 433px;">
-                                    {{-- <div class="card shadow-none mb-3">
-                                        <div class="card-body p--2">
-                                            <div class="row g-2">
-                                                <div class="col-3 text-center">
-                                                    <img src="{{ asset('assets/img/svg/avatar_doctor.svg') }}" class="img-fluid mt-4" alt="doctor" width="48">
-                                                </div>
-                                                <div class="col-9">
-                                                    <h6 class="fw-medium mb-0">Dr(a) Villon Asencio Abel Armando</h6>
-                                                    <p class="text-primary-veris fw-medium fs--2 mb-0">Veris - Alborada</p>
-                                                    <p class="fs--2 mb-0">Cardiología</p>
-                                                    <p class="fs--2 mb-0">Disponibilidad: <b class="fw-normal text-primary-veris" id="disponibilidad">Do/Lu/Ma/Mi/Ju/Vi/Sa</b></p>
-                                                    <p class="fs--2 mb-0">Horarios: <b class="fw-normal text-primary-veris" id="horarios">08h00 - 12h00</b></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer text-end p--2">
-                                            <button type="button" class="btn btn-sm btn-primary-veris" data-bs-toggle="modal" data-bs-target="#elegirHorarioModal">
-                                                Elegir Cita
-                                            </button>
-                                        </div>
+                            <div class="modal-footer pt-0 pb-3 px-3">
+                                <button type="button" class="btn btn-primary-veris fs--18 line-height-24 m-0 px-4 py-3 w-100" data-bs-dismiss="modal" id="btnEntiendoError">Entiendo</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- modal elegir horario -->
+                <div class="modal bg-transparent fade" id="elegirHorarioModal" tabindex="-1" aria-labelledby="elegirHorarioModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
+                        <div class="modal-content">
+                            <div class="modal-body p-3 pb-2">
+                                <h6 class="text-center fs--16 line-height-20 fw-medium mb-2">{{ __('Horarios') }}:</h6>
+                                <div id="listaHorariosMedico" class="row g-2">
+                                    {{-- <div class="card card-body rounded-3 position-relative py-2 mb-2">
+                                        <a href="{{route('citas.detalleCita')}}">
+                                            <div class="badge-discount-top fs--3 fw-medium"><span>{{ __('-30%') }}</span></div>
+                                            <p class="fs--2 text-primary-veris text-center my-1">08:00 - 08:20</p>
+                                            <div class="badge-discount-bottom fs--3 fw-medium"><span>{{ __('descuento') }}</span></div>
+                                        </a>
                                     </div> --}}
                                 </div>
                             </div>
-                            <div class="card-footer border-0 p-3 d-none" id="btnAgendarOrdenExterna">  
-                                <div class="col-auto overflow-auto" style="max-height: 433px;">
-                                    <div class="card-body p-2">
-                                        <div class="examenLista">
-                                            <!-- Fila para el encabezado -->
-                                            <div class="examenEncabezado">
-                                                <h6 class="fw-medium mb-0">Disponibilidad</h6>
-                                            </div>
-                                            <!-- Fila para el botón, alineado a la derecha -->
-                                            <div class="botonAgendar" style="text-align: right; margin-top: 10px;">
-                                                <a href="#" class="btn btn-primary-veris" id="btnAgendarServicioOrdenExterna"
-                                                 >Agendar Servicio</a>
-                                            </div>
+                            <div class="modal-footer pt-0 pb-3 px-3">
+                                <button type="button" class="btn btn-sm text-primary-veris fs--18 line-height-24 fw-medium shadow-none m-0 w-100 px-4 py-3" data-bs-dismiss="modal">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- modal NO HAY FECHA DISPONIBLES -->
+                <div class="modal fade" id="sinFechaDisponibles" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="sinFechaDisponiblesLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
+                        <div class="modal-content">
+                            <div class="modal-body p-3 pb-2">
+                                <div class="text-center">
+                                    <h1 class="modal-title fs--20 line-height-24 fw-medium mb-3" id="sinFechaDisponiblesLabel">Veris</h1>
+                                    <p class="fs--16 fw-normal text-veris mb-3" title="titleNoDisponibilidad">No tiene fechas disponibles.</p>
+                                </div>
+                            </div>
+                            <div class="modal-footer pt-0 pb-3 px-3">
+                                <a href="{{ url()->previous() }}" class="btn btn-primary-veris fs--18 line-height-24 m-0 w-100 px-4 py-3">Aceptar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- modal no hay medicos disponibles -->
+                <div class="modal fade" i|d="sinMedicosDisponibles" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="sinMedicosDisponiblesLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
+                        <div class="modal-content">
+                            <div class="modal-body p-3 pb-2">
+                                <div class="text-center">
+                                    <h1 class="modal-title fs--20 line-height-24 fw-medium mb-3" id="sinMedicosDisponiblesLabel">Veris</h1>
+                                    <p class="fs--16 fw-normal text-veris mb-3">No tiene médicos disponibles.</p>
+                                </div>
+                            </div>
+                            <div class="modal-footer pt-0 pb-3 px-3">
+                                <a href="{{ url()->previous() }}" class="btn btn-primary-veris fs--18 line-height-24 m-0 w-100 px-4 py-3">Aceptar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <section class="p-0 bg-dark-blue-veris-medium-sm">
+                    <div class="row g-0 justify-content-center">
+                        <div class="col-12 col-md-8 mb-4 p-2 bg-dark-blue-veris-medium" style="min-width: 375px;">
+                            <p class="text-center text-white fw-medium fs--18 line-height-24 m-1 mb-0 text-capitalize" id="month-name"></p>
+                            <div class="row g-0 d-flex">
+                                <div class="col-12">
+                                    <div class="calendar-container invisible p-0 mb-1 w-100">
+                                        <span class="arrow mt-3" id="prev-week">
+                                            <i class="fa-solid fa-chevron-left"></i>
+                                        </span>
+                                        <div class="calendar-header">
+                                            <div class="week-container pt-3 mt-1" id="week-days"></div>
                                         </div>
+                                        <span class="arrow mt-3" id="next-week">
+                                            <i class="fa-solid fa-chevron-right"></i>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-                    <!-- modal -->
-                </div>
+                </section>
+                <section class="p-0">
+                    <div class="row g-0 justify-content-center">
+                        <div class="col-12 col-md-10 mb-4 ps-3 pe-3">
+                            <p class="fs--1 mt-2 line-height-16 fw-normal mb-0 d-none" id="nombreFiltro">Filtrar por</p>
+                            <ul class="nav nav-pills d-none justify-content-center border-box-veris w-auto p-1 rounded-3 mt-2 mb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item w-50" role="presentation" data-rel="T">
+                                    <button data-rel="N" class="nav-link options-date ps-1 pe-1 active" id="pills-options-tab" data-bs-toggle="pill" data-bs-target="#pills-options" type="button" role="tab" aria-controls="pills-options" aria-selected="true">Todos</button>
+                                </li>
+                                <li class="nav-item w-50" role="presentation" data-rel="D">
+                                    <button data-rel="S" class="nav-link options-date ps-1 pe-1" id="pills-options-descuentos-tab" data-bs-toggle="pill" data-bs-target="#pills-options-descuentos" type="button" role="tab" aria-controls="pills-options-descuentos" aria-selected="false" tabindex="-1">Con descuento
+                                        <svg width="18" height="17" viewBox="0 0 18 17" class="ms-1 badge-icon-selected" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.2178 8.3125C17.2178 9.50488 16.6377 10.5361 15.7031 11.1162C15.9287 12.1797 15.6387 13.3398 14.8008 14.1455C13.9951 14.9834 12.835 15.3057 11.7715 15.0801C11.1592 15.9824 10.1602 16.5625 8.96777 16.5625C7.80762 16.5625 6.77637 15.9824 6.16406 15.0801C5.10059 15.3057 3.97266 14.9834 3.13477 14.1455C2.3291 13.3398 2.00684 12.1797 2.23242 11.1162C1.33008 10.5361 0.717773 9.50488 0.717773 8.3125C0.717773 7.15234 1.33008 6.12109 2.23242 5.54102C2.00684 4.47754 2.3291 3.31738 3.13477 2.47949C3.97266 1.67383 5.13281 1.35156 6.16406 1.57715C6.77637 0.674805 7.80762 0.0625 8.96777 0.0625C10.1602 0.0625 11.1592 0.674805 11.7715 1.57715C12.835 1.35156 13.9951 1.67383 14.8008 2.47949C15.6387 3.31738 15.9287 4.47754 15.7031 5.54102C16.6055 6.12109 17.2178 7.15234 17.2178 8.3125ZM6.90527 5.21875C6.35742 5.21875 5.87402 5.70215 5.87402 6.25C5.87402 6.83008 6.35742 7.28125 6.90527 7.28125C7.48535 7.28125 7.9043 6.83008 7.9043 6.25C7.9043 5.70215 7.48535 5.21875 6.90527 5.21875ZM7.45312 10.9229L11.5781 6.79785C11.9004 6.50781 11.9004 6.02441 11.5781 5.73438C11.2881 5.41211 10.8047 5.41211 10.5146 5.73438L6.38965 9.85938C6.06738 10.1494 6.06738 10.6328 6.38965 10.9229C6.51855 11.084 6.71191 11.1484 6.9375 11.1484C7.13086 11.1484 7.32422 11.084 7.45312 10.9229ZM11.0303 11.4062C11.6104 11.4062 12.0615 10.9551 12.0615 10.375C12.0615 9.82715 11.6104 9.34375 11.0303 9.34375C10.4824 9.34375 9.99902 9.82715 9.99902 10.375C9.99902 10.9551 10.4824 11.4062 11.0303 11.4062Z" fill="#EF2E79"/></svg> </button>
+                                </li>
+                            </ul>
+                            <div class="overflow-auto row g-2" id="listaMedicos">
+                                {{-- <div class="border-box-light-blue rounded-3 p--2 mb-3">
+                                    <div class="header-doctor d-flex justify-content-between align-items-start mb-3">
+                                        <div class="picture-doctor border-box-light-blue border-3 rounded-circle" style="background: url({{ asset('assets/img/svg/avatar_doctor.svg') }}) no-repeat center center;background-size: auto;">
+                                        </div>
+                                        <div class="content-doctor ms-2 flex-grow-1">
+                                            <div class="name-rate d-flex justify-content-between align-items-center mb-1">
+                                                <h6 style="max-width: 200px" class="fs--16 line-height-20 fw-medium flex-grow-1 m-0">Juan Alberto Rodrigues Gonzáles</h6>
+                                                <div class="star-box text-center ms-1">
+                                                    <i class="fa-solid fa-star fw-bold star-ico fs--20 d-block"></i>
+                                                    <span class="fw-normal fs--3 mt-1 rate-label">4.6</span>
+                                                </div>
+                                            </div>
+                                            <p class="fs--2 line-height-16 fw-normal mb-1" style="color: #425065;">Dermatología</p>
+                                            <div class="info-adicional-medico d-flex justify-content-between align-items-center">
+                                                <div class="badge rounded-3 py-1 px-2 bg-cita-atendida d-flex justify-content-between align-items-center gap-1 flex-grow-1 me-2">
+                                                    <i class="fa-solid fa-clock" style="color:#2F7833;"></i>
+                                                    <span class="fw-normal fs--2" style="color:#2F7833;">Te atendiste con este doctor</span>
+                                                </div>
+                                                <div class="badge rounded-3 py-1 px-2 bg-fav-atendida">
+                                                    <i class="fa-solid fs--2 fa-heart" style="color:#D84315;"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dates-doctor">
+                                        <p class="fs--1 line-height-16 fw-medium mb-2" style="color:#296BEF;">Horario más próximo:</p>
+                                        <div class="row g-2" style="max-width:341px">
+                                            <div class="col-6">
+                                                <div class="cursor-pointer waves-effect p--2 px-3 w-100 bg-time-doctor rounded-3 d-flex justify-content-center align-items-center">
+                                                    <span class="fs--1 line-height-20 rate-label text-center mb-0">09:00 - 09:20</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="cursor-pointer waves-effect p--2 px-3 w-100 bg-time-doctor box-time-doctor-with-discount position-relative rounded-3 d-flex justify-content-end align-items-center">
+                                                    <div class="box-badge-discount-time position-absolute">
+                                                        <span class="badge-discount-time position-absolute fs--2 fw-medium">-10%</span>
+                                                    </div>
+                                                    <span class="fs--1 line-height-20 rate-label text-center mb-0">09:00 - 09:20</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="cursor-pointer waves-effect p--2 px-3 w-100 bg-time-doctor rounded-3 d-flex justify-content-center align-items-center">
+                                                    <span class="fs--1 line-height-20 rate-label text-center mb-0">09:00 - 09:20</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="cursor-pointer waves-effect p--2 px-3 w-100 bg-time-doctor-alt rounded-3 d-flex justify-content-center align-items-center">
+                                                    <span class="fs--1 line-height-20 rate-label text-center mb-0">Ver más horarios</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> --}}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="p-3 mb-3 d-none">
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-md-8 mb-4" style="min-width: 375px;">
+                            <div class="card card-fecha-foctor position-relative">
+                                <div class="card-body p-0">
+                                    <div class="calendar-body position-relative">
+                                        <div class="calendar-container w-auto" style="max-height: 140px;">
+                                            <div class="calendar-header">
+                                                <button class="btn btn-sm px-0 shadow-none prev-btn"><i class="bi bi-chevron-left fs--1 text-white"></i></button>
+                                                <h6 class="text-white fw-normal fs--1 mx-3 mb-0" id="month-year"></h6>
+                                                <button class="btn btn-sm px-0 shadow-none next-btn"><i class="bi bi-chevron-right fs--1 text-white"></i></button>
+                                            </div>
+                                            <div class="calendar-grid" id="calendar-grid"></div>
+                                        </div>
+                                        <button class="btn btn-sm shadow-none text-white fs-2 fw-medium w-100" id="toggle-calendar-btn"><i class="bi bi-chevron-compact-down"></i></button>
+                                    </div>
+                                    <div class="card shadow-none border-24" style="background: var(--neutral-05, #F3F4F5);">
+                                        <div class="card-header border-bottom py-2" id="tituloFechaDoctor">
+                                            Resultados
+                                        </div>
+                                        <div class="card-body p-3" style="max-width: 433px;">
+                                            <div class="col-12 col-md-8 mb-4 overflow-auto" id="listaMedicos" style="max-height: 433px;">
+                                                {{-- <div class="card shadow-none mb-3">
+                                                    <div class="card-body p--2">
+                                                        <div class="row g-2">
+                                                            <div class="col-3 text-center">
+                                                                <img src="{{ asset('assets/img/svg/avatar_doctor.svg') }}" class="img-fluid mt-4" alt="doctor" width="48">
+                                                            </div>
+                                                            <div class="col-9">
+                                                                <h6 class="fw-medium mb-0">Dr(a) Villon Asencio Abel Armando</h6>
+                                                                <p class="text-primary-veris fw-medium fs--2 mb-0">Veris - Alborada</p>
+                                                                <p class="fs--2 mb-0">Cardiología</p>
+                                                                <p class="fs--2 mb-0">Disponibilidad: <b class="fw-normal text-primary-veris" id="disponibilidad">Do/Lu/Ma/Mi/Ju/Vi/Sa</b></p>
+                                                                <p class="fs--2 mb-0">Horarios: <b class="fw-normal text-primary-veris" id="horarios">08h00 - 12h00</b></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-footer text-end p--2">
+                                                        <button type="button" class="btn btn-sm btn-primary-veris" data-bs-toggle="modal" data-bs-target="#elegirHorarioModal">
+                                                            Elegir Cita
+                                                        </button>
+                                                    </div>
+                                                </div> --}}
+                                            </div>
+                                        </div>
+                                        <div class="card-footer border-0 p-3 d-none" id="btnAgendarOrdenExterna">  
+                                            <div class="col-12 col-md-8 mb-4 overflow-auto" style="max-height: 433px;">
+                                                <div class="card-body p-2">
+                                                    <div class="examenLista">
+                                                        <!-- Fila para el encabezado -->
+                                                        <div class="examenEncabezado">
+                                                            <h6 class="fw-medium mb-0">Disponibilidad</h6>
+                                                        </div>
+                                                        <!-- Fila para el botón, alineado a la derecha -->
+                                                        <div class="botonAgendar" style="text-align: right; margin-top: 10px;">
+                                                            <a href="#" class="btn btn-primary-veris" id="btnAgendarServicioOrdenExterna"
+                                                             >Agendar Servicio</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!-- modal -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
-    </section>
-</div>
+    </div>
+</section>
 
 <script>
     let currentDate = new Date();
@@ -404,7 +415,7 @@ Mi Veris - Citas - Elige fecha y doctor
 
         $('body').on('click','.btn-disponibilidad-medico', function(){
             dataCita.horario = JSON.parse($(this).attr("data-horario")); 
-            let ruta = "/citas-revisa-tus-datos/" + "{{ $params }}";
+            let ruta = "/citas-revisa-tus-datos/" + "{{ $params }}?mac={{ $mac }}";
             if(dataCita.central && dataCita.central.codigoTipoSucursal == "CAP"){
                 ruta = "/cita-urgencias-ambulatorias/" + "{{ $params }}";
             }
@@ -609,7 +620,7 @@ Mi Veris - Citas - Elige fecha y doctor
         console.log(newArrayCard)
         if (data.code == 200){
             let elemento = '';
-            if(newArrayCard.length > 0){
+            if(newArrayCard !== null &&newArrayCard.length > 0){
                 newArrayCard.forEach((medico) => {
                     let img_doctor = (medico.imagen != null) ? medico.imagen : '{{ asset('assets/img/svg/avatar_doctor.svg') }}';
 

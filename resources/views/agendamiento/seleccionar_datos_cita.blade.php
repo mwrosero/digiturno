@@ -53,10 +53,11 @@ Elige datos para la Cita
 </div>
 <section class="p-3 px-0 mb-3">
     <div class="row mx-0">
-        <div class="col-12 col-lg-4 d-flex justify-content-between align-items-center bg-veris">
+        @include('template.back')
+        <div class="col-12 col-lg-4 d-flex justify-content-between align-items-center bg-veris sticky-top overflow-hidden">
             <h5 class="ps-3 text-white my-auto py-3 fs-40 line-height-48">{{ __('Datos para la cita') }}</h5>
         </div>
-        <div class="col-12 col-lg-8 pt-3">
+        <div class="col-12 col-lg-8 overflow-auto pt-3">
             <div class="flex-grow-1 container-p-y pt-0">
                 <!-- Modal Tratamiento-->
                 <div class="modal fade" id="consultaTratamientoModal" tabindex="-1" aria-labelledby="consultaTratamientoModalLabel" aria-hidden="true">

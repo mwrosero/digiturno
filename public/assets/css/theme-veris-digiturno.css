@@ -627,6 +627,10 @@ button:active {
     border-top-right-radius: 8px;
 }
 
+.custom-kioskboard-key-kiosko{
+    height: 50px !important;
+    padding: 5px !important;
+}
 
 @media (min-width: 576px) {
     .modal-dialog {
@@ -648,5 +652,9 @@ button:active {
 
     .content {
         min-height: 70vh; /* Al menos el 70% del alto */
+    }
+
+    .h-lg-100 {
+        height: 100%;
     }
 }

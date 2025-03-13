@@ -9,9 +9,11 @@ Elige Paciente
 <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/theme-veris-app.css?v=1.0.3')}}">
 
+<div class="d-flex flex-column vh-100">
 @include('template.header_agendamiento', ['showInfo' => true])
 
-<div class="flex-grow-1 container-p-y pt-0">
+{{-- <div class="flex-grow-1 container-p-y pt-0"> --}}
+<div class="flex-grow-1 pt-0">
     <!-- Modal -->
     <div class="modal modal-top fade" id="convenioModal" tabindex="-1" aria-labelledby="convenioModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm modal-dialog-centered mx-auto">
@@ -51,13 +53,14 @@ Elige Paciente
     {{-- <div class="d-flex justify-content-between align-items-center bg-white">
         <h5 class="ps-3 my-auto py-3 fs-20 fs-md-24">{{ __('Elegir paciente') }}</h5>
     </div> --}}
-    <section class="p-3 px-0 mb-3">
-        <div class="row mx-0">
-            <div class="col-12 col-lg-4 d-flex justify-content-between align-items-center bg-veris">
+    <section class="px-0 h-100">
+        <div class="row mx-0 h-lg-100">
+            @include('template.back')
+            <div class="col-12 col-lg-4 d-flex justify-content-start justify-content-lg-center align-items-center bg-veris">
                 <h5 class="ps-3 text-white my-auto py-3 fs-40 line-height-48 fs-md-24">{{ __('Elegir paciente') }}</h5>
             </div>
-            <div class="col-12 col-lg-8 pt-3">
-                <div class="row g-3 px-3" id="listaPacientes">
+            <div class="col-12 col-lg-8 pt-3 pt-lg-0">
+                <div class="row px-3" id="listaPacientes">
                     {{-- <div class="col-6 col-md-3">
                         <div class="card h-100">
                             <div class="card-body d-flex flex-column justify-content-center align-items-center px-3 py-2">
@@ -77,12 +80,13 @@ Elige Paciente
         </div>
     </section>
 </div>
-
+</div>
 <script>
     // variables globales
     let familiar = [];
     // CAPTURAR PARAMETROS
     let local = localStorage.getItem('turno-{{ $params }}');
+    localStorage.setItem('flujo','agendamiento');
     let dataTurno = JSON.parse(local);
 
     localStorage.setItem('cita-{{ $params }}','{}');
@@ -108,7 +112,7 @@ Elige Paciente
         let codigoUsuario = dataTurno.paciente.numeroIdentificacion;
         args["endpoint"] = api_url_digitales + `/${api_war_digitales}/perfil/migrupo?canalOrigen=${canalOrigen}&codigoUsuario=${codigoUsuario}&incluyeUsuarioSesion=S`
         args["method"] = "GET";
-        args["authVeris"] = false;
+        // args["authVeris"] = false;
         args["showLoader"] = true;
         const data = await call(args);
         
@@ -150,7 +154,7 @@ Elige Paciente
             familiar.forEach((pacientes) => {
                 let backgroundClass = pacientes.genero === "F" ? "bg-strong-magenta" : (pacientes.genero === "M" ? "bg-soft-blue" : "bg-soft-green");
 
-                elemento += `<div class="col-12 col-md-6 col-lg-4">
+                elemento += `<div class="col-12 col-md-6 col-lg-4 mb-3">
                     <div class="card h-100 cursor-pointer">
                         <div class="card-body text-center px-3 py-2">
                             
