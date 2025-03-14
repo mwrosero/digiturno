@@ -532,6 +532,7 @@ Mi Veris - Citas - Elige fecha y doctor
         if(data.code == 200){
             console.log(data)
         }
+        exitAfterTurno();
         return;
     }
 

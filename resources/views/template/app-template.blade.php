@@ -153,7 +153,9 @@
             function exitAfterTurno(){
                 if(localStorage.getItem('flujo') !== null){
                     let url_salir = `/{{ $mac }}`;
-                    // if(isMobile() || localStorage.getItem('userKiosko') !== null){
+                    if (localStorage.getItem('userKiosko') !== null) {
+                        url_salir = `/kiosko/{{ $mac }}`;
+                    }
                     if(isMobile()){
                         url_salir = `/ingreso/{{ $mac }}`;
                     }

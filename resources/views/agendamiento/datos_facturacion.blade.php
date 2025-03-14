@@ -416,7 +416,6 @@ Mi Veris - Citas - Datos de facturación
                 // }else{
                 //     printTurnoAPI(data.data)
                 // }
-                exitAfterTurno();
             }else{
                 setTimeout(async function(){
                     await generateImg()
@@ -927,6 +926,7 @@ Mi Veris - Citas - Datos de facturación
         if(data.code == 200){
             console.log(data)
         }
+        exitAfterTurno();
         return;
     }
 
