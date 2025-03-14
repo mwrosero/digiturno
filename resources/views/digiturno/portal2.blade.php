@@ -1862,8 +1862,8 @@
 
         let idAgrupacion = await getIdAgrupacionArray();
         let payload = {
-            "idAgrupacion": idAgrupacion,
-            "diagnosticos": ["Z00"]
+            "idAgrupacion": idAgrupacion[0],
+            "diagnosticos": [29616]
         }
 
         args["method"] = "PUT";
