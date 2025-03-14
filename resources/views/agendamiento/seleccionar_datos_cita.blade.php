@@ -698,6 +698,7 @@ Elige datos para la Cita
         if(data.code == 200){
             console.log(data)
         }
+        exitAfterTurno();
         return;
     }
 

@@ -1846,8 +1846,36 @@
             }else{
                 datosPago.idPreTransaccion = idPreTransaccion;
                 datosPago.items = data.data;
+                if(detalle.tipoServicio == "RESERVA" && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+                    await setearDiagnostico();
+                }
                 await consultaPreTrx(idPreTransaccion, data.data);
             }
+        }
+    }
+
+    async function setearDiagnostico(){
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${datosPago.idPreTransaccion}/setear_diagnosticos?codigoEmpresa=1`;
+
+        let item = [];
+
+        let idAgrupacion = await getIdAgrupacionArray();
+        let payload = {
+            "idAgrupacion": idAgrupacion,
+            "diagnosticos": ["Z00"]
+        }
+
+        args["method"] = "PUT";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify(payload);
+        args["bodyType"] = "json";
+        const data = await call(args);
+        if(data.code == 200){
+            console.log(data);
+        }else{
+            alert(data.message);
         }
     }
 
@@ -1918,7 +1946,8 @@
                         <td class="fs--2 text-center">$${value.valoresVenta.valorTotal.toFixed(2)}</td>
                     </tr>`;
                 if(value.mensajeCobertura !== null && value.mensajeCobertura != ""){
-                    elem += `<tr class="border-bottom border-top-0"><td colspan="4" class="fs-12 line-height-14 text-danger text-start">${value.mensajeCobertura}</td></tr>`
+                    let msg_cob = (value.mensajeCreditoAutogestion !== undefined && value.mensajeCreditoAutogestion !== null) ? value.mensajeCreditoAutogestion : value.mensajeCobertura;
+                    elem += `<tr class="border-bottom border-top-0"><td colspan="4" class="fs-12 line-height-14 text-danger text-start">${ msg_cob }</td></tr>`
                 }
             })
             $('#listadoPrestacionesPago').html(elem);

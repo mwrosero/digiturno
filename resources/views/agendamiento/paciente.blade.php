@@ -183,6 +183,7 @@ Elige Paciente
         if(data.code == 200){
             console.log(data)
         }
+        exitAfterTurno();
         return;
     }
 

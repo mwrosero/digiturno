@@ -143,6 +143,8 @@ Mi Veris - Citas - Revisa tus datos
             $('#msg-cita').append(elemMsg);
 
         }else{
+            // Revisar con Boris
+            // await 
             await obtenerPrecio();
         }
 
@@ -157,6 +159,19 @@ Mi Veris - Citas - Revisa tus datos
         });
 
         $('.detalles-cita-box').removeClass('invisible')
+
+        $('body').on('click', '.btn-turno', async function(){
+            let detalle = [];
+            let crearPtx = false;
+            // if (typeof $(this).attr("data-rel") === "undefined") {
+            if($(this).attr("data-rel") !== undefined){
+                crearPtx = true;
+                detalle = fillBoxEfectivoData();
+            }
+            // console.log(detalle);return;
+            await generarTurno(detalle, crearPtx);
+        })
+
     });
 
     async function eliminarReserva(){
@@ -687,6 +702,76 @@ Mi Veris - Citas - Revisa tus datos
 
     function guardarData(){
         localStorage.setItem('cita-{{ $params }}', JSON.stringify(dataCita));
+    }
+
+    async function generateImg(){
+        let modalContent = document.getElementById("turnoDisplay");
+        
+        html2canvas(modalContent).then(function (canvas) {
+            let image = canvas.toDataURL("image/png");
+            let link = document.createElement("a");
+            link.href = image;
+            link.download = "TURNO-VERIS.png";
+            link.click();
+        });
+    }
+
+    async function printFactura(detalle){
+        // http://localhost:3001/printer-ticket/v1/printFile?url=https://api-phantomx.veris.com.ec/reportes/v1/facturacion/comprobante_paciente?format=text_plain%26codigoEmpresa=1%26numeroTransaccion=21479281%26codigoSucursalImpresion=1%26usuarioRealizaImpresion=true
+
+        let args = [];
+        args["endpoint"] = `http://localhost:3001/printer-ticket/v1/printFile?url=https://api-phantomx.veris.com.ec/reportes/v1/facturacion/comprobante_paciente?format=text_plain&codigoEmpresa=1&numeroTransaccion=${datosPago.comprobantes.transacciones[0].numeroTransaccion}&codigoSucursalImpresion=${dataParametrosGenerales.caja.codigoSucursal}&usuarioRealizaImpresion=true`;
+        args["method"] = "GET";
+        const data = await call(args);
+        if(data.code == 200){
+            console.log(data)
+        }
+        return;
+    }
+
+    async function printTurnoAPI(detalle){
+        let args = [];
+        args["endpoint"] = `http://localhost:3002/printer-ticket/v1/turnero?turno=${detalle.turno}&sucursal=${detalle.nombreSucursalTurnero.toUpperCase()}&paciente=${detalle.nombreCompleo}&fechaTicket=${detalle.fechaEmision}&nombreMuestraTurnero=${dataParametrosGenerales.nombreMuestraTurnero}`;
+        args["method"] = "GET";
+        const data = await call(args);
+        if(data.code == 200){
+            console.log(data)
+        }
+        exitAfterTurno();
+        return;
+    }
+
+    async function printTurno(detalle){
+        var content = $('#turnoDisplay').html();
+        var htmlContent = `
+            <html>
+            <head>
+                <!-- Incluye Bootstrap o tu CSS personalizado -->
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+                <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/theme-veris-digiturno.css?v=1.0">
+                <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/bootstrap-icons.min.css?v=1.0">
+            </head>
+            <body>
+                <h3>${detalle.nombreSucursalTurnero.toUpperCase()}</h3>
+                <h1>Turno: ${detalle.turno}</h1>
+                <p class="fs-14 text-wrap"><strong>Paciente: </strong>${detalle.nombreCompleo}</p>
+            </body>
+            </html>
+        `;
+        printJS({
+            printable: htmlContent,
+            type: 'raw-html',
+            style: `
+                @media print {
+                    header, footer { display: none; }
+                    body {
+                        font-size: 14px;
+                        margin: 0;
+                        padding: 0;
+                    }
+                }
+            `
+        });
     }
 </script>
 @endsection
