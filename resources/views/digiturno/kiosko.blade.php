@@ -53,16 +53,16 @@
 	<main class="content p-2 logged d-none" id="qr-box-container">
 		<div class="container-fluid h-100">
 			<div class="row d-flex justify-content-between align-items-center h-100">
-				<div class="col-6 h-100 d-flex justify-content-center align-items-center">
-					<img class="w-100 label-qr" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/label-qr.png" alt="">
-				</div>
-				<div class="col-6 d-flex justify-content-center align-items-center h-100 text-center">
+				<div class="col-8 mt-5 offset-2 d-flex justify-content-center align-items-center h-100 text-center">
 					{{-- <img src="{{ asset('assets/img/qr-inicio.png') }}" alt="" style="width: 250px"> --}}
-					<div>
+					<div class="mt-5">
 						<p class="mb-0 fs-70 fw-bold text-white line-height-50">ESCANEA</p>
 						<p class="fs-50 mb-3 text-white text-decoration-underline text-center">EL CÓDIGO QR</p>
 						<div id="qrcode"></div>
 					</div>
+				</div>
+				<div class="col-8 mt-3 offset-2 h-100 d-flex justify-content-center align-items-center">
+					<img class="w-100 label-qr" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/label-qr.png" alt="">
 				</div>
 			</div>
 			<!-- Más contenido aquí -->
@@ -184,7 +184,7 @@
         		let caja = data.data[0];
         		localStorage.setItem('userKiosko', JSON.stringify(caja));
         		// location.reload();
-        		location.href = `/ingreso/{{ $mac }}`;
+        		location.href = `/kiosko/{{ $mac }}`;
         	}else{
         		let elem = ``;
         		$.each(data.data, function(key, value){

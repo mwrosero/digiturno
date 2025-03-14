@@ -411,7 +411,7 @@ body, html {
 }
 
 .bg-veris{
-    background: var(--veris-blue);
+    background: var(--veris-blue) !important;
 }
 
 .rounded-8{

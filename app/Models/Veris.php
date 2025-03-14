@@ -120,7 +120,7 @@ class Veris extends Model
     /*
     * getToken
     * ----------------------------------------------
-    * Peticion al webservice de ISM para obtener el token
+    * Peticion al webservice de Digiturno para obtener el token
     * de acceso para las peticiones CURL. Esto se debe
     * ejecutar una sola vez por sessión.
     * ----------------------------------------------

@@ -43,6 +43,23 @@
                         <p class="text-center my-2 valorPago fs-40 fw-bold text-veris"></p>
                     </div> --}}
                 </div>
+                <div class="row box-datos-factura box-detalles-pago px-2 mb-3">
+                    <h5 class="fs--20 line-height-24 mb-3 text-start">Detalles</h5>
+                    <div class="px-2">
+                        <table class="card-body w-100">
+                            <thead>
+                                <tr class="border-bottom sticky-top bg-white">
+                                    <th class="fw-medium fs--2">Prestación</th>
+                                    <th class="fw-medium text-center fs--2">P.V.P.</th>
+                                    <th class="fw-medium text-center fs--2">Crédito/convenio</th>
+                                    <th class="fw-medium text-center fs--2">TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listadoPrestacionesPago">
+                            </tbody>
+                        </table>
+                        </div>
+                </div>
                 <div class="row box-datos-factura">
                     <div class="col-10 mx-auto" id="contentDetalleCita">
                         <ul class="list-group fs--1 border-0 bg-neutral rounded-8 pt-2 pb-2">
@@ -67,7 +84,7 @@
                             </li>
                             <li class="list-group-item border-0 bg-transparent d-flex justify-content-between align-items-center fs-25 py-0 px-2 fw-medium">
                                 Total
-                                <span class="badge text-dark fw-normal fs-25 p-0" id="total"></span>
+                                <span class="badge text-dark fw-bold fs-25 p-0" id="total"></span>
                             </li>
                         </ul>
                     </div>
@@ -80,7 +97,7 @@
                         Inserta o desliza la tarjeta
                     </div>
                 </div>
-                <div class="row">
+                <div class="row box-datos-factura">
                     <div class="col-12 text-center mt-4">
                         <div class="form-check d-flex justify-content-md-center align-items-center">
                             <input class="form-check-input terminos-input me-2 mb-1 width-24" type="checkbox" value="" id="checkTerminosCondicion" required>
@@ -94,10 +111,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row box-datos-factura">
                     <div class="col-10 mx-auto mt-3">
                         <button type="button" class="btn bg-veris fs-25 line-height-25 text-white w-100 py-3 px-32 shadow-none d-flex justify-content-between align-items-center btn-disabled btn-continuar-factura rounded-8">Continuar</button>
-                        <div class="row justify-content-center align-items-center">
+                        <div class="row justify-content-center align-items-center d-none">
                             <div class="col-12 col-md-6">
                                 <div type="button" id="btn-ver-examenes" class="bg-veris w-100 mx-auto mt-2 cursor-pointer justify-content-center align-items-center text-white p-2 rounded-8 d-none">
                                     <div class="text-center">
@@ -107,26 +124,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row box-detalles-lab px-2 mt-3 d-none">
-                    <table class="card-body w-100">
-                        <thead>
-                            <tr class="border-bottom sticky-top bg-white">
-                                <th class="fw-medium fs--2">Prestación</th>
-                                <th class="fw-medium fs--2">P.V.P.</th>
-                                <th class="fw-medium fs--2">Crédito/convenio</th>
-                                <th class="fw-medium fs--2">TOTAL</th>
-                            </tr>
-                        </thead>
-                        <tbody id="listadoPrestacionesPago">
-                        </tbody>
-                        {{-- <tr>
-                            <td class="fs--2">$${value.subtotal.toFixed(2)}</td>
-                            <td class="fs--2">$${value.cubreEmpresa.toFixed(2)}</td>
-                            <td class="fs--2">$${value.montoIva.toFixed(2)}</td>
-                            <td class="fs--2">$${value.total.toFixed(2)}</td>
-                        </tr> --}}
-                    </table>
                 </div>
             </div>
             {{-- <div class="modal-footer box-datos-factura pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
@@ -268,18 +265,18 @@
     </div>
 </div>
 {{-- Modal Confirmar Cita --}}
-<div class="modal modal-top fade" id="modalConfirmarCita" tabindex="-1" aria-labelledby="modalConfirmarCitaLabel">
+<div class="modal modal-top fade" id="modalPagoRealizado" tabindex="-1" aria-labelledby="modalPagoRealizadoLabel">
     <div class="modal-dialog modal modal-sm modal-dialog-centered mx-auto">
         <form class="modal-content rounded-8">
             <div class="modal-header d-none">
                 <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3 text-center">
-                {{-- <h5 class="fs--20 line-height-24 mt-3 mb-3">{{ __('Detalle la orden:') }}</h5> --}}
-                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-start">Cita confirmada</h5>
-                <div class="box-info-consultorio d-flex justify-content-center align-items-center fw-bold text-dark fs-25 bg-silver-light py-2 rounded-8 my-2">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-start">Pago realizado</h5>
+                <div class="box-info-comprobante d-flex justify-content-center align-items-center fw-bold text-dark fs-25 bg-silver-light py-2 rounded-8 my-2">
+                    Comprobante: <span></span>
                 </div>
-                <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/confirmar-cita.svg" id="confimar-icon" alt="">
+                <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/pago-realizado.svg" id="confimar-icon" alt="">
                 <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
@@ -857,6 +854,8 @@
             });
 
             KioskBoard.run('.virtual-keyboard-all', {});
+
+            obtenerConvenios();
         }
 
         const macsParami = @json(\App\Models\Veris::MACS_PARAMI);
@@ -904,7 +903,7 @@
         }
 
         $('body').on('click', '#btn-ver-examenes', async function(){
-            $('.box-detalles-lab').toggleClass('d-none');
+            $('.box-detalles-pago').toggleClass('d-none');
         })
         
         await parametrosGenerales(dataTurno.mac);
@@ -1087,6 +1086,36 @@
             $('.prestaciones-porpagar ul').html(prestacionesPorPagar);
             $('#modalDetalleOrden').modal('show');
         })
+
+    
+        let timeoutId;
+
+        $('body').on('input', '#numeroIdentificacion', function() {
+            clearTimeout(timeoutId); // Limpia el timeout anterior
+            
+            timeoutId = setTimeout(async function() {
+                let datosF = {
+                    "numeroIdentificacion": $('#numeroIdentificacion').val(),
+                    "codigoTipoIdentificacion": $('#codigoTipoIdentificacion option:selected').val()
+                };
+                if(parseInt($('#codigoTipoIdentificacion option:selected').val()) == 2){
+                    if(esValidaCedula($('#numeroIdentificacion').val())){
+                        await verificarDatosFactura(datosF);
+                    }else{
+                        toastr.warning("Cédula incorrecta", "Atención", {
+                            timeOut: 5000
+                        });
+                        $('#nombreCompleto').val("");
+                        $('#email').val("");
+                    }
+                }else{
+                    if($('#numeroIdentificacion').val().length == 13){
+                        await verificarDatosFactura(datosF);
+                    }
+                }
+            }, 2000); // Espera 1 segundo después de la última entrada
+        });
+
 
         $('body').on('change', '#autorizacion', function(){
             if($('#autorizacion').is(':checked')) {
@@ -1298,7 +1327,9 @@
 
         reiniciarConteo();
         $('#modalDatosFacturacion').on('hidden.bs.modal', async function (e) {
-            await cargarCodigosPaises()
+            // await cargarCodigosPaises()
+            $('.box-datos-factura').removeClass('d-none')
+            $('.box-load-pago').addClass('d-none')
         });
 
         $('input').on('focus', function() {
@@ -1635,14 +1666,6 @@
         }
     }
 
-    function generateUUIDv4() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            const r = (Math.random() * 16) | 0; // Genera un número aleatorio entre 0 y 15
-            const v = c === 'x' ? r : (r & 0x3) | 0x8; // Asegura que el formato cumple con UUID v4
-            return v.toString(16); // Convierte el número a hexadecimal
-        });
-    }
-
     function obtenerPrestacionesParaActivar(){
         let arr = []
         $('#v-pills-tabContent').find('input:checked').each(function(index, element) {
@@ -1864,7 +1887,7 @@
     }
 
     async function mostrarDetallesFactura(){
-        $('.box-detalles-lab').addClass('d-none');
+        // $('.box-detalles-pago').addClass('d-none');
         let valor_empresa = datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa;
         let valor_paciente = datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente;
         let subtotal = valor_empresa.subtotal + valor_paciente.subtotal;
@@ -1880,8 +1903,8 @@
         $('#total').html(`$${total.toFixed(2)}`);
         // $('#totalLabel').html(`$${dataCita.facturacion.totales.total.toFixed(2)}`);
 
-        if(datosPago.detalle.tipoServicio == "ORDEN_MEDICA" && datosPago.detalle.nombreServicioNivel1 == "LABORATORIO"){
-            $('#btn-ver-examenes').removeClass('d-none');
+        // if(datosPago.detalle.tipoServicio == "ORDEN_MEDICA" && datosPago.detalle.nombreServicioNivel1 == "LABORATORIO"){
+        //     $('#btn-ver-examenes').removeClass('d-none');
             let elem = ``
             $.each(datosPago.consulta[0].agrupaciones[0].detallesAgrupacion, function(key, value){
                 let classBorder = `border-bottom`;
@@ -1890,21 +1913,25 @@
                 }
                 elem += `<tr class="${classBorder}">
                         <td class="fs--2 text-capitalize">${value.nombrePrestacion.toLowerCase()}</td>
-                        <td class="fs--2">$${value.valoresPaciente.valorTotal.toFixed(2)}</td>
-                        <td class="fs--2">$${value.valoresEmpresa.valorTotal.toFixed(2)}</td>
-                        <td class="fs--2">$${value.valoresVenta.valorTotal.toFixed(2)}</td>
+                        <td class="fs--2 text-center">$${value.valoresPaciente.valorTotal.toFixed(2)}</td>
+                        <td class="fs--2 text-center">$${value.valoresEmpresa.valorTotal.toFixed(2)}</td>
+                        <td class="fs--2 text-center">$${value.valoresVenta.valorTotal.toFixed(2)}</td>
                     </tr>`;
                 if(value.mensajeCobertura !== null && value.mensajeCobertura != ""){
                     elem += `<tr class="border-bottom border-top-0"><td colspan="4" class="fs-12 line-height-14 text-danger text-start">${value.mensajeCobertura}</td></tr>`
                 }
             })
             $('#listadoPrestacionesPago').html(elem);
-        }
+        // }
     }
 
-    async function verificarDatosFactura(){
+    async function verificarDatosFactura(datos = null){
         let numeroIdentificacion = datosPago.consulta[0].paciente.numeroIdentificacion;
         let codigoTipoIdentificacion = datosPago.consulta[0].paciente.codigoTipoIdentificacion;
+        if(datos !== null){
+            numeroIdentificacion = datos.numeroIdentificacion;
+            codigoTipoIdentificacion = datos.codigoTipoIdentificacion;
+        }
         let args = [];
         args["endpoint"] = `${api_url_digitales}/facturacion/v1/pacientes/verificar_datos_factura?numeroIdentificacion=${numeroIdentificacion}&codigoTipoIdentificacion=${codigoTipoIdentificacion}`;
         args["method"] = "GET";
@@ -1976,15 +2003,24 @@
             datosPago.validacion = data.data;
             // $('#modalDatosFacturacion').modal("hide");
             // $('#modalDatosVoucher').modal("show");
-            $('.box-datos-factura').addClass('d-none')
-            $('.box-load-pago').removeClass('d-none')
-            await solicitarPagoPinPad();
+            if(datosPago.validacion.valorTotalAPagarPaciente == 0){
+                console.log(9999)
+                await solicitarPagoPinPad();
+            }else{
+                $('.box-datos-factura').addClass('d-none')
+                $('.box-load-pago').removeClass('d-none')
+                await solicitarPagoPinPad();
+            }
         }else{
             alert(data.message);
         }
     }
 
     async function solicitarPagoPinPad(){
+        if(datosPago.validacion.valorTotalAPagarPaciente == 0){
+            await facturarCobroPinPad();
+            return;
+        }
         
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
@@ -2023,8 +2059,8 @@
             datosPago.cobro = data.data;
             $('#modalDatosVoucher').modal("hide");
             // await setearPago();
-            $('.box-datos-factura').removeClass('d-none')
-            $('.box-load-pago').addClass('d-none')
+            // $('.box-datos-factura').removeClass('d-none')
+            // $('.box-load-pago').addClass('d-none')
             await facturarCobroPinPad();
         }else{
             reiniciarConteo();
@@ -2106,11 +2142,21 @@
         args["data"] = JSON.stringify(payload);
         args["bodyType"] = "json";
         const data = await call(args);
+        $('.box-datos-factura').removeClass('d-none')
+        $('.box-load-pago').addClass('d-none')
         if(data.code == 200){
+            datosPago.comprobantes = data.data;
             // Imprimir ticket
-            $('#modalDatosVoucher').modal('hide');
+            $('#modalDatosFacturacion').modal('hide');
             await cargarServicios();
-            alert("Pago realizado exitosamente, se imprimirá su factura...")
+            // alert("Pago realizado exitosamente, se imprimirá su factura...")
+            
+            if(datosPago.validacion.valorTotalAPagarPaciente == 0){
+                $('.box-info-comprobante').html(`Transacción: <span class="ms-2"> ${datosPago.comprobantes.transacciones[0].numeroTransaccion}</span>`)
+            }else{
+                $('.box-info-comprobante').html(`Comprobante: <span class="ms-2"> ${datosPago.comprobantes.transacciones[0].numeroComprobante}</span>`)
+            }
+            $('#modalPagoRealizado').modal('show');
             /*
             {
                 "code": 200,
@@ -2448,14 +2494,20 @@
                     sectionEstadoPago = `porpagar`;
                     labelEstadoItem = `Por pagar`;
                     classEstadoItem = `text-pendiente`;
-                    if(detalle.permitePago){
-                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
-                                Pagar aquí
+                    if(esKiosko){
+                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
+                                    Pagar aquí
+                                </button>`;
+                    }else{
+                        if(detalle.permitePago){
+                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
+                                    Pagar aquí
+                                </button>`;
+                        }
+                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                                Pagar en caja
                             </button>`;
-                    }
-                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
-                            Pagar en caja
-                        </button>`;
+                        }
                 }else{
                     let consultorio = obtenerNombreConsultorio(detalle.nombreSitioConsultorio);
                     elemBodyCard += `<div class="d-flex justify-content-center align-items-center fw-bold text-dark fs-18 bg-silver-light py-2 rounded-8 my-2">
@@ -3480,6 +3532,18 @@
         })
         $('#contentDetalleCita').html(elem);
     }
+
+    async function obtenerConvenios(){
+        let args = [];
+        args["endpoint"] = `${api_url_digitales}/comercial/v1/pacientes/${dataTurno.paciente.idPaciente}/convenios?codigoEmpresa=1&canalInvocacion=KIO`;
+        args["method"] = "GET";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        const data = await call(args);
+        if(data.code == 200){
+            console.log(data);
+        }
+    }
 </script>
 <style>
     body{
@@ -3739,8 +3803,8 @@
         z-index: 1060 !important; /* Asegura que esté encima del modal */
     }
 
-    .box-detalles-lab {
-        max-height: 300px;
+    .box-detalles-pago {
+        max-height: 500px;
         overflow: auto;
     }
 

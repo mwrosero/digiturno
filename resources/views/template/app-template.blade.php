@@ -134,14 +134,44 @@
                 }
                 // setInterval(checkAndUpdateToken, 15 * 60 * 1000);
                 setInterval(checkAndUpdateToken, 10 * 60 * 1000);
+
+                if(localStorage.getItem('flujo') !== null){
+                    let url_salir = `/{{ $mac }}`;
+                    // if(isMobile() || localStorage.getItem('userKiosko') !== null){
+                    if (localStorage.getItem('userKiosko') !== null) {
+                        url_salir = `/kiosko/{{ $mac }}`;
+                    }
+                    if(isMobile()){
+                        url_salir = `/ingreso/{{ $mac }}`;
+                    }
+                    $('.btn-salir').attr('href',url_salir);
+
+                    console.log(url_salir)
+                }
             });
 
-            async function parametrosGenerales(_mac){
+            function exitAfterTurno(){
+                if(localStorage.getItem('flujo') !== null){
+                    let url_salir = `/{{ $mac }}`;
+                    // if(isMobile() || localStorage.getItem('userKiosko') !== null){
+                    if(isMobile()){
+                        url_salir = `/ingreso/{{ $mac }}`;
+                    }
+                    setTimeout(function(key,value){
+                        location.href = url_salir;
+                    }, 3000);
+                }
+            }
+
+            async function parametrosGenerales(_mac, sendHeaders = false){
                 let args = [];
                 args["endpoint"] = `${api_url}/${api_war}/util/parametros_generales?macAddress=${ _mac }`;
                 args["method"] = "GET";
                 args["showLoader"] = false;
                 args["token"] = "{{ $accessToken }}";
+                if(sendHeaders){
+                    args["sendHeaders"] = "true";
+                }
 
                 const data = await call(args);
                 // console.log(data);

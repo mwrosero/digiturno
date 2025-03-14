@@ -29,7 +29,8 @@ async function call(args){
         myHeaders.append("Content-Type", "application/json");
     }
     
-    if(localStorage.getItem('flujo') === null){
+    if(localStorage.getItem('flujo') === null || args.sendHeaders){
+        // console.log(7777)
         if(args.esLogin){
             myHeaders.append("Authorization", "Basic " + args.basic);
             myHeaders.append("Application", _applicationLogin);
@@ -76,9 +77,9 @@ async function call(args){
             if(args.showLoader || args.showLoader == true){
                 hideLoader();
             }
-            if(!args.dismissAlert && data.code == 400){
+            if(!args.dismissAlert && data.code == 400 && localStorage.getItem('flujo') === null){
                 console.log(5555)
-                toastr.error(data.message, `Ha ocurrido un error`, {
+                toastr.warning(data.message, `Ha ocurrido un error`, {
                     timeOut: 8000
                 });
                 return;
@@ -1166,4 +1167,12 @@ function esDiaEnCurso(horaInicio) {
 
     // Comparar si pertenece al día en curso
     return anio === anioHoy && mes === mesHoy && dia === diaHoy;
+}
+
+function generateUUIDv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = (Math.random() * 16) | 0; // Genera un número aleatorio entre 0 y 15
+        const v = c === 'x' ? r : (r & 0x3) | 0x8; // Asegura que el formato cumple con UUID v4
+        return v.toString(16); // Convierte el número a hexadecimal
+    });
 }
