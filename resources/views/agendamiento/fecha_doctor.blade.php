@@ -277,6 +277,10 @@ Mi Veris - Citas - Elige fecha y doctor
     const daysOfWeek = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'];
 
     // Variables globales
+    let globalTurno = localStorage.getItem('turno-{{ $params }}');
+    localStorage.setItem('flujo','agendamiento');
+    let dataTurno = JSON.parse(globalTurno);
+
     let local = localStorage.getItem('cita-{{ $params }}');
     let dataCita = JSON.parse(local);
     let dataOrigen = dataCita?.origen;  
@@ -347,6 +351,7 @@ Mi Veris - Citas - Elige fecha y doctor
 
     // llamada al dom 
     document.addEventListener("DOMContentLoaded", async function () {
+        await parametrosGenerales("{{ $mac }}", true);
         // if((dataCita.central && dataCita.central.codigoTipoSucursal == "CAP") || dataCita.hasOwnProperty('detalleItemPaquete')){
         if((dataCita.central && dataCita.central.codigoTipoSucursal == "CAP")){
             $('#nombreFiltro').addClass('d-none');
@@ -448,7 +453,120 @@ Mi Veris - Citas - Elige fecha y doctor
         $('#btnAgendarServicioOrdenExterna').click(async function(){
             let data = await consultarHorasMotorizados();        
         });
+
+        $('body').on('click', '.btn-turno', async function(){
+            let detalle = [];
+            let crearPtx = false;
+            // if (typeof $(this).attr("data-rel") === "undefined") {
+            if($(this).attr("data-rel") !== undefined){
+                crearPtx = true;
+                detalle = fillBoxEfectivoData();
+            }
+            // console.log(detalle);return;
+            await generarTurno(detalle, crearPtx);
+        })
     });
+
+    async function generarTurno(detalle, crearPtx = false){
+        console.log(detalle);
+        let url_adicional = ``;
+        
+        // if(detalle != []){
+        if (crearPtx) {
+            let pre_trx = await activarPrestacionesInicializar('TURNO',detalle);
+            url_adicional += `&idPreTransaccion=${pre_trx}`
+        }
+
+        let paciente = dataTurno.paciente;
+        let args = [];
+        args["endpoint"] =  `${api_url}/${api_war}/transaccion/generar_ticket?macAddress=${ dataTurno.mac }&tipoIdentificacion=${paciente.nombreTipoIdentificacion}&numeroIdentificacion=${paciente.numeroIdentificacion}&nombreCompleto=${ paciente.nombreCompleto }${url_adicional}`;
+        //dataCita.paciente.numeroPaciente
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["sendHeaders"] = "true";
+        const data = await call(args);
+        // console.log(data);
+        if(data.code == 200){
+            $('#turnoModalLabel').html(`Turno - ${data.data.nombreSucursalTurnero}`);
+            $('.turno-codigo').html(`${data.data.turno}`);
+            // <p class="turno-prioridad">${data.data.nemonicoPrioridad}</p>
+            $('.info-box').html(`<p class="text-wrap"><strong>Paciente:</strong> ${data.data.nombreCompleo}</p>`);
+            $('#turnoModal').modal('show')
+            // console.log("iniciar conteo para enviar a home")
+            if(!isMobile()){
+                printTurnoAPI(data.data)
+                // if(dataTurno.mac == "00-22-4D-7B-2A-F5"){
+                //     printTurno(data.data)
+                // }else{
+                //     printTurnoAPI(data.data)
+                // }
+            }else{
+                setTimeout(async function(){
+                    await generateImg()
+                },500)
+            }
+        }else{
+            $('#mensajeError').html(`${data.message}`)
+            $('#modalAlerta').modal('show');
+        }
+    }
+
+    async function generateImg(){
+        let modalContent = document.getElementById("turnoDisplay");
+        
+        html2canvas(modalContent).then(function (canvas) {
+            let image = canvas.toDataURL("image/png");
+            let link = document.createElement("a");
+            link.href = image;
+            link.download = "TURNO-VERIS.png";
+            link.click();
+        });
+    }
+
+    async function printTurnoAPI(detalle){
+        let args = [];
+        args["endpoint"] = `http://localhost:3002/printer-ticket/v1/turnero?turno=${detalle.turno}&sucursal=${detalle.nombreSucursalTurnero.toUpperCase()}&paciente=${detalle.nombreCompleo}&fechaTicket=${detalle.fechaEmision}&nombreMuestraTurnero=${dataParametrosGenerales.nombreMuestraTurnero}`;
+        args["method"] = "GET";
+        const data = await call(args);
+        if(data.code == 200){
+            console.log(data)
+        }
+        return;
+    }
+
+    async function printTurno(detalle){
+        var content = $('#turnoDisplay').html();
+        var htmlContent = `
+            <html>
+            <head>
+                <!-- Incluye Bootstrap o tu CSS personalizado -->
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+                <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/theme-veris-digiturno.css?v=1.0">
+                <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/bootstrap-icons.min.css?v=1.0">
+            </head>
+            <body>
+                <h3>${detalle.nombreSucursalTurnero.toUpperCase()}</h3>
+                <h1>Turno: ${detalle.turno}</h1>
+                <p class="fs-14 text-wrap"><strong>Paciente: </strong>${detalle.nombreCompleo}</p>
+            </body>
+            </html>
+        `;
+        printJS({
+            printable: htmlContent,
+            type: 'raw-html',
+            style: `
+                @media print {
+                    header, footer { display: none; }
+                    body {
+                        font-size: 14px;
+                        margin: 0;
+                        padding: 0;
+                    }
+                }
+            `
+        });
+    }
 
     async function renderWeek() {
         const weekDaysContainer = $('#week-days');

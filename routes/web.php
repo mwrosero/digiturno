@@ -48,7 +48,7 @@ Route::get('/paciente/{portalToken}', [AgendamientoController::class, 'paciente'
 Route::get('/seleccionar-datos-cita/{portalToken}', [AgendamientoController::class, 'datosCita'])->name('datosCita');
 Route::get('/citas-elegir-fecha-doctor/{portalToken}', [AgendamientoController::class, 'fechaCita'])->name('fechaCita');
 Route::get('/citas-revisa-tus-datos/{params}',[AgendamientoController::class, 'detalleCita'])->name('detalleCita');
-// Route::get('/citas-datos-facturacion/{params}',[AgendamientoController::class, 'datosFacturacion'])->name('citas.datosFacturacion')->withoutMiddleware(['guest']);
+Route::get('/citas-datos-facturacion/{params}',[AgendamientoController::class, 'datosFacturacion'])->name('datosFacturacion');
 
 
 

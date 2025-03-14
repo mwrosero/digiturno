@@ -55,4 +55,15 @@ class AgendamientoController extends Controller
                 ->with('params',$portalToken);
     }
 
+    public function datosFacturacion($portalToken, Request $request) {
+        $token = Veris::getToken();
+        $data = $request->all();
+        $mac = $data['mac'];
+        
+        return view('agendamiento.datos_facturacion')
+                ->with('mac',$mac)
+                ->with('accessToken',$token)
+                ->with('params',$portalToken);
+    }
+
 }

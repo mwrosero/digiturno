@@ -4,6 +4,9 @@ Mi Veris - Citas - Revisa tus datos
 @endsection
 @section('content')
 
+<link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
+<link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/theme-veris-app.css?v=1.0.3')}}">
+
 <!-- Modal de error -->
 <div class="modal fade" id="ModalError" tabindex="-1" aria-labelledby="ModalError" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
@@ -23,58 +26,67 @@ Mi Veris - Citas - Revisa tus datos
     </div>
 </div>
 
-<div class="flex-grow-1 container-p-y pt-0">
-    <div class="d-flex justify-content-between align-items-center bg-white">
-        <h5 class="ps-3 my-auto py-3 fs-20 fs-md-24">{{ __('Revisa tus datos') }}</h5>
+@include('template.header_agendamiento', ['showInfo' => true])
+
+<section class="p-3 px-0 mb-3">
+    <div class="row mx-0">
+        @include('template.back')
+        <div class="col-12 col-lg-4 d-flex justify-content-between align-items-center bg-veris sticky-top overflow-hidden">
+            <h5 class="ps-3 text-white my-auto py-3 fs-40 line-height-48">{{ __('Revisa los datos') }}</h5>
+        </div>
+        <div class="col-12 col-lg-8 overflow-auto pt-3">
+            <div class="flex-grow-1 container-p-y pt-0">
+                <section class="p-3 mb-3 invisible detalles-cita-box">
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-12 col-md-10 mb-4 ps-3 pe-3 box-card-precio">
+                            <div class="card">
+                                <div class="card-header bg-grayish-blue p--2">
+                                    <h5 class="text-veris-many fw-medium line-height-28 fs-20 m-0">{{ __('Precio') }} </h5>
+                                </div>
+                                <div class="card-body py-2 px-0">
+                                    <div class="row gx-0 justify-content-center align-items-center box-precio pt-1 pb-1">
+                                    </div>
+                                </div>
+                                {{-- <div class="card-footer d-flex justify-content-between border-top p--2" id="contentLinkPago">
+                                    <div class="mx-1">
+                                        <p class="fs--2 line-height-16 mb-0 fw-medium">{{ __('¿Alguien más pagará esta cita?') }}</p>
+                                        <p class="fs--2 line-height-16 mb-0">{{ __('Genera tu link de pago') }}</p>
+                                    </div>
+                                    <a href="#" class="btn btn-sm btn-label-primary-veris fs--1 line-height-16 ms-3 px-3 py-2">{{ __('Enviar link') }}</a>
+                                </div> --}}
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-10 mb-4 ps-3 pe-3">
+                            <div class="card">
+                                <div class="card-header bg-grayish-blue p--2">
+                                    <h5 class="text-veris-many fw-medium line-height-28 fs-20 m-0">{{ __('Detalles de la cita') }}</h5>
+                                </div>
+                                <div class="card-body p--2">
+                                    <div class="" id="contentDetalleCita">
+                                        {{-- <p class="text-primary-veris fw-medium mb-0" id="nombreEspecialidad"></p>
+                                        <p class="fw-medium fs--1 mb-0">{{ isset($data->central) ? $data->central->nombreSucursal : 'VIRTUAL' }}</p>
+                                        <p class="fs--2 mb-0">{{ $data->horario->dia2 }} <b class="text-normal text-primary-veris fw-normal">{{ $data->horario->horaInicio }} {{ $meridiano }}</b></p>
+                                        <p class="fs--2 mb-0">Dr(a) {{ $data->horario->nombreMedico }}</p>
+                                        <p class="fs--2 mb-0">{{ $data->paciente->nombrePaciente }}</p>
+                                        <p class="fs--2 mb-0">{{ isset($data->convenio->nombreConvenio) ? $data->convenio->nombreConvenio : '' }}</p> --}}
+                                    </div>
+                                </div>
+                                <div class="card-footer pt-0 p--2" id="msg-cita">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-md-4 text-center mt-5">
+                            {{-- <a href="#" id="btn-pagar" class="btn btn-lg btn-primary-veris d-none w-100">{{ __('Pagar') }}</a> --}}
+                            <button id="btn-pagar" class="btn btn-lg btn-primary-veris d-none w-100 px-4 py-3 fs-25">{{ __('Continuar') }}</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
     </div>
-    <section class="p-3 mb-3 invisible detalles-cita-box">
-        <div class="row g-4 justify-content-center">
-            <div class="col-md-4 box-card-precio">
-                <div class="card">
-                    <div class="card-header bg-grayish-blue p--2">
-                        <h5 class="text-veris-many fw-medium line-height-16 m-0">{{ __('Precio') }} </h5>
-                    </div>
-                    <div class="card-body py-2 px-0">
-                        <div class="row gx-0 justify-content-center align-items-center box-precio pt-1 pb-1">
-                        </div>
-                    </div>
-                    {{-- <div class="card-footer d-flex justify-content-between border-top p--2" id="contentLinkPago">
-                        <div class="mx-1">
-                            <p class="fs--2 line-height-16 mb-0 fw-medium">{{ __('¿Alguien más pagará esta cita?') }}</p>
-                            <p class="fs--2 line-height-16 mb-0">{{ __('Genera tu link de pago') }}</p>
-                        </div>
-                        <a href="#" class="btn btn-sm btn-label-primary-veris fs--1 line-height-16 ms-3 px-3 py-2">{{ __('Enviar link') }}</a>
-                    </div> --}}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header bg-grayish-blue p--2">
-                        <h5 class="text-veris-many fw-medium line-height-16 m-0">{{ __('Detalles de la cita') }}</h5>
-                    </div>
-                    <div class="card-body p--2">
-                        <div class="" id="contentDetalleCita">
-                            {{-- <p class="text-primary-veris fw-medium mb-0" id="nombreEspecialidad"></p>
-                            <p class="fw-medium fs--1 mb-0">{{ isset($data->central) ? $data->central->nombreSucursal : 'VIRTUAL' }}</p>
-                            <p class="fs--2 mb-0">{{ $data->horario->dia2 }} <b class="text-normal text-primary-veris fw-normal">{{ $data->horario->horaInicio }} {{ $meridiano }}</b></p>
-                            <p class="fs--2 mb-0">Dr(a) {{ $data->horario->nombreMedico }}</p>
-                            <p class="fs--2 mb-0">{{ $data->paciente->nombrePaciente }}</p>
-                            <p class="fs--2 mb-0">{{ isset($data->convenio->nombreConvenio) ? $data->convenio->nombreConvenio : '' }}</p> --}}
-                        </div>
-                    </div>
-                    <div class="card-footer pt-0 p--2" id="msg-cita">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-4 text-center mt-5">
-                {{-- <a href="#" id="btn-pagar" class="btn btn-lg btn-primary-veris d-none w-100">{{ __('Pagar') }}</a> --}}
-                <button id="btn-pagar" class="btn btn-lg btn-primary-veris d-none w-100 px-4 py-3 fs-5">{{ __('Pagar') }}</button>
-            </div>
-        </div>
-    </section>
-</div>
+</section>
 
 <script>
 
@@ -115,7 +127,7 @@ Mi Veris - Citas - Revisa tus datos
             await eliminarReserva();
         }
         if(dataCita.reservaEdit && dataCita.reservaEdit.estaPagada === "S" && dataCita.cambioModalidad && dataCita.cambioModalidad === "S"){
-            let elem = `<p class="text-primary-veris fs--16 line-height-20 fw-medium mb-1 text-center">Servicio pagado<i class="fa-solid fa-circle-check text-success ms-2"></i></p>`;
+            let elem = `<p class="text-primary-veris fs-20 line-height-28 fw-medium mb-1 text-center">Servicio pagado<i class="fa-solid fa-circle-check text-success ms-2"></i></p>`;
             $('.box-precio').html(elem);
             $('#btn-pagar').html("Continuar").removeClass('d-none');
 
@@ -187,9 +199,9 @@ Mi Veris - Citas - Revisa tus datos
             horaInicio = dataCita.horario.horaInicio;
             horaFin = dataCita.horario.horaFin;
         }
-        let elem = `<p class="text-primary-veris fs--16 line-height-20 fw-medium mb-1"  id="nombreEspecialidad">${capitalizarCadaPalabra(nombreEspecialidad)}</p>`;
+        let elem = `<p class="text-primary-veris fs-20 line-height-28 fw-medium mb-1"  id="nombreEspecialidad">${capitalizarCadaPalabra(nombreEspecialidad)}</p>`;
         if(dataCita.online == "N"){    
-            elem += `<p class="fw-medium fs--1 line-height-16 mb-1">${capitalizarCadaPalabra(sucursal)}</p>`;
+            elem += `<p class="fw-medium fs-20 line-height-28 mb-1">${capitalizarCadaPalabra(sucursal)}</p>`;
         }
         let nombrePaciente;
         if(dataCita.paciente.nombrePaciente){
@@ -197,11 +209,11 @@ Mi Veris - Citas - Revisa tus datos
         }else{
             nombrePaciente = `${dataCita.paciente.primerNombre} ${dataCita.paciente.primerApellido} ${dataCita.paciente.segundoApellido}`;
         }
-        elem += `<p class="fs--2 line-height-16 mb-1">${capitalizarElemento(dia)} <b class="text-normal text-primary-veris fw-normal">${horaInicio} - ${horaFin} ${determinarMeridiano(horaInicio)}</b></p>
-            <p class="fs--2 line-height-16 mb-1 text-capitalize">Dr(a) ${dataCita.horario.nombreMedico.toLowerCase()}</p>
-            <p class="fs--2 line-height-16 mb-1 text-capitalize">${nombrePaciente.toLowerCase()}</p>`;
+        elem += `<p class="fs-20 line-height-28 mb-1">${capitalizarElemento(dia)} <b class="text-normal text-primary-veris fw-normal">${horaInicio} - ${horaFin} ${determinarMeridiano(horaInicio)}</b></p>
+            <p class="fs-20 line-height-28 mb-1 text-capitalize">Dr(a) ${dataCita.horario.nombreMedico.toLowerCase()}</p>
+            <p class="fs-20 line-height-28 mb-1 text-capitalize">${nombrePaciente.toLowerCase()}</p>`;
         if(dataCita.convenio.codigoConvenio){
-            elem += `<p class="fs--2 line-height-16 mb-1 text-capitalize">${ (dataCita.convenio.nombreConvenio) ? dataCita.convenio.nombreConvenio.toLowerCase() : ''}</p>`
+            elem += `<p class="fs-20 line-height-28 mb-1 text-capitalize">${ (dataCita.convenio.nombreConvenio) ? dataCita.convenio.nombreConvenio.toLowerCase() : ''}</p>`
         }
         $('#contentDetalleCita').html(elem);
 
@@ -422,7 +434,7 @@ Mi Veris - Citas - Revisa tus datos
         const data = await call(args);
 
         if (data.code == 200){
-            location.href = '/cita-agendada/{{ $params }}';
+            location.href = '/cita-agendada/{{ $params }}?mac={{ $mac }}';
         }
     }
 
@@ -544,7 +556,7 @@ Mi Veris - Citas - Revisa tus datos
             dataCita.reserva = data.data;
             guardarData();
             if(dataCita.tratamiento && dataCita.tratamiento.esPagada == "S"){
-                location.href = '/cita-agendada/{{ $params }}';
+                location.href = '/cita-agendada/{{ $params }}?mac={{ $mac }}';
                 return;
             }
             if(data.data.permitePago == "S"){
@@ -552,13 +564,13 @@ Mi Veris - Citas - Revisa tus datos
                 https://api-phantomx.veris.com.ec/${api_war_digitales}/agenda/validarPermitePago?canalOrigen=MVE_CMV&codigoUsuario=0926178534&tipoItem=C&codigoReserva=4222668939
                 */
                 await crearPreTransaccion()
-                //location.href = '/citas-datos-facturacion/{{ $params }}';
+                //location.href = '/citas-datos-facturacion/{{ $params }}?mac={{ $mac }}';
             }else{
-                location.href = '/cita-agendada/{{ $params }}';
+                location.href = '/cita-agendada/{{ $params }}?mac={{ $mac }}';
             }
         }else{
             //guardarData();
-            //location.href = '/citas-datos-facturacion/{{ $params }}';
+            //location.href = '/citas-datos-facturacion/{{ $params }}?mac={{ $mac }}';
             alert(data.message);
         }
     }
@@ -667,7 +679,7 @@ Mi Veris - Citas - Revisa tus datos
         if (data.code == 200){
             dataCita.preTransaccion = data.data;
             guardarData();
-            location.href = '/citas-datos-facturacion/{{ $params }}';
+            location.href = '/citas-datos-facturacion/{{ $params }}?mac={{ $mac }}';
         }else{
             alert(data.message);
         }

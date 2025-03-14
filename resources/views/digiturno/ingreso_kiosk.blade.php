@@ -493,7 +493,7 @@
 
 		let url_salir = `/{{ $mac }}`;
 		if(localStorage.getItem('userKiosko') !== null) {
-			url_salir = `/ingreso/{{ $mac }}`;
+			url_salir = `/kiosko/{{ $mac }}`;
 		}
         if(isMobile()){
             url_salir = `/ingreso/{{ $mac }}`;
@@ -508,15 +508,21 @@
 
         // Función para mostrar el modal
         function mostrarModal() {
-            // Mostrar el modal
-            $("#modalEstasAhi").modal("show");
+        	if($('#cedula').val() != "" || $('#pasaporte').val() != "" || $('#nombres').val() != "" || $('#apellidos').val() != "" || $('#nombresTM').val() != "" || $('#apellidosTM').val() != ""){
+	            // Mostrar el modal
+	            $("#modalEstasAhi").modal("show");
 
-            // Iniciar temporizador para esperar respuesta
-            temporizadorRespuesta = setTimeout(() => {
-                $("#modalEstasAhi").modal("hide");
-                console.log("No hubo respuesta a tiempo.");
-                location.href = url_salir;
-            }, tiempoMaximoRespuesta * 1000);
+	            // Iniciar temporizador para esperar respuesta
+	            temporizadorRespuesta = setTimeout(() => {
+	                $("#modalEstasAhi").modal("hide");
+	                console.log("No hubo respuesta a tiempo.");
+	                location.href = url_salir;
+	            }, tiempoMaximoRespuesta * 1000);
+	        }else{
+	        	console.log("extender porque esta vacio")
+	        	clearTimeout(temporizadorRespuesta);
+	        	reiniciarConteo();
+	        }
         }
 
         // Función para reiniciar el conteo de inactividad
@@ -538,7 +544,7 @@
             reiniciarConteo();
         });
 
-        if( !isMobile() && localStorage.getItem('userKiosko') === null ){
+        if( !isMobile()  ){
             console.log("Iniciando conteo")
             // Iniciar el conteo inicial
             reiniciarConteo();
