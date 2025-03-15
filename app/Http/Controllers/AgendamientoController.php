@@ -49,10 +49,20 @@ class AgendamientoController extends Controller
         $data = $request->all();
         $mac = $data['mac'];
         
-        return view('agendamiento.detalle_cita')
-                ->with('mac',$mac)
-                ->with('accessToken',$token)
-                ->with('params',$portalToken);
+        // return view('agendamiento.detalle_cita')
+        //         ->with('mac',$mac)
+        //         ->with('accessToken',$token)
+        //         ->with('params',$portalToken);
+        return response()
+            ->view('agendamiento.detalle_cita', [
+                'mac' => $mac,
+                'accessToken' => $token,
+                'params' => $portalToken
+            ])
+            ->header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+            ->header("Pragma", "no-cache")
+            ->header("Expires", "Sat, 01 Jan 2000 00:00:00 GMT");
+
     }
 
     public function datosFacturacion($portalToken, Request $request) {
