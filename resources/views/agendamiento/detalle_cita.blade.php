@@ -122,7 +122,7 @@ Mi Veris - Citas - Revisa tus datos
         permitePago = dataCita.convenio.permitePago;
     }
 
-    window.addEventListener("pageshow", function(event) {
+    window.addEventListener("pageshow", async function(event) {
         if (event.persisted) {
             if(dataCita.reserva){
                 await eliminarReserva();
