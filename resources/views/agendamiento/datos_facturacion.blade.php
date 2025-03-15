@@ -467,7 +467,7 @@ Mi Veris - Citas - Datos de facturación
         // let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
         let paciente = dataTurno.paciente;
 
-        // console.log(detalle);
+        console.log(detalle);
 
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/agregar_item?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
@@ -503,7 +503,7 @@ Mi Veris - Citas - Datos de facturación
             }else{
                 datosPago.idPreTransaccion = idPreTransaccion;
                 datosPago.items = data.data;
-                if(detalle.tipoServicio == "RESERVA" && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+                if(detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     await setearDiagnostico();
                 }
                 await consultaPreTrx(idPreTransaccion, data.data);
@@ -626,6 +626,7 @@ Mi Veris - Citas - Datos de facturación
         args["showLoader"] = true;
         args["data"] = JSON.stringify(payload);
         args["bodyType"] = "json";
+        args["sendHeaders"] = "true";
         const data = await call(args);
         if(data.code == 200){
             console.log(data);
