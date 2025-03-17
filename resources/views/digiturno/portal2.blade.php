@@ -264,7 +264,31 @@
         </form>
     </div>
 </div>
+
 {{-- Modal Confirmar Cita --}}
+<div class="modal modal-top fade" id="modalConfirmarCita" aria-labelledby="modalConfirmarCitaLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1">
+    <div class="modal-dialog modal modal-sm modal-dialog-centered mx-auto">
+        <form class="modal-content rounded-8">
+            <div class="modal-header d-none">
+                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3 text-center">
+                
+                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-start">Cita confirmada</h5>
+                <div class="box-info-consultorio d-flex justify-content-center align-items-center fw-bold text-dark fs-25 bg-silver-light py-2 rounded-8 my-2">
+                </div>
+                <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/confimar-icon.svg" id="confimar-icon" alt="">
+                {{-- <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3> --}}
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
+                {{-- <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-salir">No</a> --}}
+                <a href="#" class="btn fw-normal fs--16 badge bg-white px-4 py-2 mx-2 fs-4 btn-salir text-veris border-veris-1">Salir</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- Modal Confirmar Pago --}}
 <div class="modal modal-top fade" id="modalPagoRealizado" tabindex="-1" aria-labelledby="modalPagoRealizadoLabel">
     <div class="modal-dialog modal modal-sm modal-dialog-centered mx-auto">
         <form class="modal-content rounded-8">
@@ -276,16 +300,17 @@
                 <div class="box-info-comprobante d-flex justify-content-center align-items-center fw-bold text-dark fs-25 bg-silver-light py-2 rounded-8 my-2">
                     Comprobante: <span></span>
                 </div>
-                <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/pago-realizado.svg" id="confimar-icon" alt="">
-                <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3>
+                <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/pago-realizado.svg" id="confimar-pago-icon" alt="">
+                {{-- <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3> --}}
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
-                <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-salir">No</a>
-                <a href="#" class="btn fw-normal fs--16 badge bg-white px-4 py-2 mx-2 fs-4 btn-salir text-veris border-veris-1" data-bs-dismiss="modal">Si</a>
+                {{-- <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-salir">No</a> --}}
+                <a href="#" class="btn fw-normal fs--16 badge bg-white px-4 py-2 mx-2 fs-4 btn-salir text-veris border-veris-1">Salir</a>
             </div>
         </form>
     </div>
 </div>
+
 {{-- Modal luego notificar llegada dirigirse --}}
 <div class="modal modal-top fade" id="modalNotificarLlegadaDirigirLugar" tabindex="-1" aria-labelledby="modalNotificarLlegadaDirigirLugarLabel" data-bs-backdrop="static" data-bs-keyboard="true">
     <div class="modal-dialog modal modal-dialog-centered mx-auto">
@@ -2202,7 +2227,7 @@
                 $('.box-info-comprobante').html(`Comprobante: <span class="ms-2"> ${datosPago.comprobantes.transacciones[0].numeroComprobante}</span>`)
             }
             $('#modalPagoRealizado').modal('show');
-            printFactura()
+            await printFactura()
             /*
             {
                 "code": 200,

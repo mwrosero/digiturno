@@ -9,9 +9,9 @@ Mi Veris - Citas - Datos de facturación
 
 @include('template.header_agendamiento', ['showInfo' => true])
 
-{{-- Modal Confirmar Cita --}}
-<div class="modal modal-top fade" id="modalPagoRealizado" tabindex="-1" aria-labelledby="modalPagoRealizadoLabel">
-    <div class="modal-dialog modal modal-sm modal-dialog-centered mx-auto">
+{{-- Modal Confirmar Pago --}}
+<div class="modal modal-top fade" id="modalPagoRealizado" aria-labelledby="modalPagoRealizadoLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1">
+    <div class="modal-dialog modal modal-xxl modal-dialog-centered mx-auto">
         <form class="modal-content rounded-8">
             <div class="modal-header d-none">
                 <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -21,15 +21,17 @@ Mi Veris - Citas - Datos de facturación
                 <div class="box-info-comprobante d-flex justify-content-center align-items-center fw-bold text-dark fs-25 bg-silver-light py-2 rounded-8 my-2">
                     Comprobante: <span></span>
                 </div>
-                <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/pago-realizado.svg" id="confimar-icon" alt="">
+                <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/pago-realizado.svg" id="confimar-pago-icon" alt="">
                 {{-- <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3> --}}
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
-                <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-salir">Salir</a>
+                {{-- <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-salir">No</a> --}}
+                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white px-4 py-2 mx-2 fs-4 btn-salir text-veris border-veris-1">Salir</a>
             </div>
         </form>
     </div>
 </div>
+
 {{-- Modal de datos de facturación --}}
 <div class="modal modal-top fade" id="modalDatosFacturacion" tabindex="-1" aria-labelledby="modalDatosFacturacionLabel" data-bs-backdrop="static" data-bs-keyboard="true">
     {{-- <div class="modal-dialog modal modal-lg modal-dialog-centered mx-auto"> --}}
@@ -855,6 +857,7 @@ Mi Veris - Citas - Datos de facturación
                 $('.box-info-comprobante').html(`Comprobante: <span class="ms-2"> ${datosPago.comprobantes.transacciones[0].numeroComprobante}</span>`)
             }
             $('#modalPagoRealizado').modal('show');
+            await printFactura()
             /*
             {
                 "code": 200,
@@ -935,11 +938,11 @@ Mi Veris - Citas - Datos de facturación
     }
 
     async function printFactura(){
-        // http://localhost:3001/printer-ticket/v1/printFile?url=https://api-phantomx.veris.com.ec/reportes/v1/facturacion/comprobante_paciente?format=text_plain%26codigoEmpresa=1%26numeroTransaccion=21479281%26codigoSucursalImpresion=1%26usuarioRealizaImpresion=true
-
         let args = [];
         args["endpoint"] = `http://localhost:3001/printer-ticket/v1/printFile?url=https://api-phantomx.veris.com.ec/reportes/v1/facturacion/comprobante_paciente?format=text_plain&codigoEmpresa=1&numeroTransaccion=${datosPago.comprobantes.transacciones[0].numeroTransaccion}&codigoSucursalImpresion=${dataParametrosGenerales.caja.codigoSucursal}&usuarioRealizaImpresion=true`;
         args["method"] = "GET";
+        args["token"] = accessToken;
+        args["sendHeaders"] = "true";
         const data = await call(args);
         if(data.code == 200){
             console.log(data)
@@ -1005,6 +1008,8 @@ Mi Veris - Citas - Datos de facturación
         background-size: 40px 40px !important;
         color: white !important;
     }
-
+    .modal-xxl{
+        background: transparent !important;
+    }
 </style>
 @endsection
