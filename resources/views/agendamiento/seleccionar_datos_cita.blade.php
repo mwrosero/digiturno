@@ -1071,7 +1071,7 @@ Elige datos para la Cita
 
         localStorage.setItem('cita-{{ $params }}', JSON.stringify(dataCita));
 
-        path_url = "/citas-elegir-fecha-doctor/{{ $params }}";
+        path_url = "/citas-elegir-fecha-doctor/{{ $params }}?mac={{ $mac }}";
         
         if (data.code == 200 && data.data != null){
             $("#btn-no-tratamiento").attr("href",path_url);
