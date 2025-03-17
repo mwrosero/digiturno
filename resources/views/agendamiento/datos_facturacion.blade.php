@@ -934,7 +934,7 @@ Mi Veris - Citas - Datos de facturación
         });
     }
 
-    async function printFactura(detalle){
+    async function printFactura(){
         // http://localhost:3001/printer-ticket/v1/printFile?url=https://api-phantomx.veris.com.ec/reportes/v1/facturacion/comprobante_paciente?format=text_plain%26codigoEmpresa=1%26numeroTransaccion=21479281%26codigoSucursalImpresion=1%26usuarioRealizaImpresion=true
 
         let args = [];
