@@ -127,7 +127,6 @@
 	setInterval(actualizarFechaHora, 1000);
 	let accion = "INICIALIZAR";
 	$(document).ready(async function() {
-		await parametrosGenerales("{{ $mac }}");
 
 		let userKiosko = localStorage.getItem('userKiosko');
 
@@ -139,7 +138,9 @@
 			})	
 
 			localStorage.clear();
+			await parametrosGenerales("{{ $mac }}");
 		}else{
+			await parametrosGenerales("{{ $mac }}");
 			await consultarCajas();
 			$('.not-logged').removeClass('d-none');
 		}
