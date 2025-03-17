@@ -999,13 +999,13 @@
             let elem = ``;
             $.each(detalle.detallesOrden, function(key, value){
                 let badge = ``;
-
+                // console.log(value);
                 if(estadosVigentes.includes(value.codigoEstado)){
+                    qtyPrestacionesPagadas++;
                     if(value.fechaRecepcion == null){
                         badge = `<span style="width: 25px;" class="badge text-center badge-pill me-2">
                                 <i class="fa-solid fa-triangle-exclamation text-pendiente"></i>
                             </span>`;
-                        qtyPrestacionesPagadas++;
                     }else{
                         badge = `<span style="width: 25px;" class="badge text-center badge-pill me-2">
                                 <i class="fa-solid fa-circle-check text-verde"></i>
@@ -1027,7 +1027,9 @@
                 }
                 // ${ value.nombreServicio }/${ value.nombrePrestacion }
             })
-            console.log({qtyPrestacionesPagadas})
+            // console.log(prestacionesPagadas)
+            // console.log(qtyPrestacionesPorPagar);
+            // console.log({qtyPrestacionesPagadas})
             console.log(detalle.tieneOrdenApoyoPendiente)
             if(detalle.tieneOrdenApoyoPendiente && qtyPrestacionesPagadas > 0){
                 prestacionesPagadas += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start mt-auto">
@@ -1045,6 +1047,7 @@
             }
             
             if(qtyPrestacionesPorPagar > 0){
+                console.log("-------")
                 let btnPagar = ``;
                 if(detalle.tipoServicio == "ORDEN_MEDICA" && (detalle.nombreServicioNivel1 == "LABORATORIO" || detalle.nombreServicioNivel1 == "IMAGENES" || detalle.nombreServicioNivel1 == "PROCEDIMIENTOS") && detalle.permitePago){
                     if(esKiosko){
@@ -1058,8 +1061,14 @@
                                 Pagar aquí
                             </button>`;
                     }
+                }else{
+                    btnPagar = `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
+                                    Pagar en caja
+                                </button>`;
                 }
+
                 if(!esKiosko){
+                    console.log(33)
                     prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start mt-auto">
                             <div class="d-flex flex-wrap w-100 justify-content-between align-items-center mt-auto p-0 bg-transparent border-0 gap-2">
                                 ${btnPagar}
@@ -1072,6 +1081,7 @@
                             </div>
                         </li>`
                 }else{
+                    console.log(44)
                     prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start mt-auto">
                             <div class="d-flex flex-wrap w-100 justify-content-between align-items-center mt-auto p-0 bg-transparent border-0 gap-2">
                                 ${btnPagar}
@@ -1082,6 +1092,7 @@
             }else{
                 $('.prestaciones-porpagar').addClass('d-none');
             }
+            // console.log(prestacionesPagadas)
             $('.prestaciones-pagadas ul').html(prestacionesPagadas);
             $('.prestaciones-porpagar ul').html(prestacionesPorPagar);
             $('#modalDetalleOrden').modal('show');
@@ -1263,6 +1274,11 @@
                 $('.btn-continuar-factura').addClass('btn-disabled');
             }
         });
+
+        $('body').on('click', '.btn-agendar', async function(){
+            let detalle = JSON.parse($(this).attr('data-rel'));
+            console.log(detalle);
+        })
 
         $('body').on('click', '.btn-pagar', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
@@ -2425,6 +2441,11 @@
                             labelEstadoItem = `Por pagar`;
                             if(detalle.nombreServicioNivel1 == "LABORATORIO" || detalle.nombreServicioNivel1 == "IMAGENES" || detalle.nombreServicioNivel1 == "PROCEDIMIENTOS" || detalle.nombreServicioNivel1 == "CONSULTA" || detalle.nombreServicioNivel1 == "CONSULTA NO MEDICA"){
                                 if(esKiosko){
+                                    if(detalle.nombreServicioNivel1 == "CONSULTA"){
+                                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
+                                        Agendar cita
+                                    </button>`;
+                                    }
                                     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
                                         Pagar
                                     </button>`;
@@ -2487,7 +2508,7 @@
                 if(detalle.doctorAtencion !== null){
                     infoMedico += `<div class="avatar-doctor border-veris-1" style="background: url(${ (detalle.fotoMedicoApp != null) ? detalle.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
                     </div>
-                    <div class="info-doctor text-veris-dark mx-2 me-2 flex-fil">
+                    <div class="info-doctor text-veris-dark mx-2 me-2 flex-fill">
                         <p class="mb-1 fs-18 fw-bold text-capitalize">Dr(a) ${detalle.doctorAtencion.toLowerCase()}</p>
                         <p class="mb-1 text-capitalize">${(detalle.nombreEspecialidad != null) ? detalle.nombreEspecialidad.toLowerCase() : ``}</p>
                     </div>`;
@@ -2564,7 +2585,7 @@
                 elemBodyCard += `<div class="d-flex justify-content-between align-items-center mt-3">
                     <div class="avatar-doctor border-veris-1" style="background: url(${ (detalle.fotoMedicoApp != null) ? detalle.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
                     </div>
-                    <div class="info-doctor text-veris-dark mx-2 flex-fil">
+                    <div class="info-doctor text-veris-dark mx-2 flex-fill">
                         <p class="mb-1 fs-18 fw-bold text-capitalize">Dr(a) ${detalle.nombreMedico.toLowerCase()}</p>
                         <p class="mb-1 text-capitalize">${detalle.nombreEspecialidad.toLowerCase()}</p>
                     </div>
