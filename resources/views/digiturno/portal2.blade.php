@@ -277,7 +277,9 @@
                 <h5 class="fs--20 line-height-24 mt-3 mb-3 text-start">Cita confirmada</h5>
                 <div class="box-info-consultorio d-flex justify-content-center align-items-center fw-bold text-dark fs-25 bg-silver-light py-2 rounded-8 my-2">
                 </div>
-                <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/confirmar-cita.svg" id="confimar-icon" alt="">
+                <div class="w-100 my-3 box-info-medico-modal"></div>
+                <hr>
+                <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/confirmar-cita.svg" id="confimar-icon" class="w-50" alt="">
                 {{-- <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3> --}}
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
@@ -426,13 +428,13 @@
     @include('template.header', ['showInfo' => true])
     <main class="familia p-2 p-md-2">
         <div class="container-fluid">
-            <div class="row">
+            <div class="row d-none box-content-familia d-none">
                 <div class="col-12 px-0">
                     <h4 class="mb-0">Tu círculo familiar</h4>
                 </div>
                 <div class="col-12">
                     <div class="row h-100 d-flex justify-content-between align-items-center">
-                        <div class="col-8 px-0">
+                        <div class="col-8 px-0" id="col-familia">
                             <!-- FAMILIARES -->
                             <div class="modal modal-top fade" id="pacienteModal" tabindex="-1" aria-labelledby="pacienteModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-sm modal-dialog-centered mx-auto">
@@ -460,7 +462,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-3 offset-1 px-0">
+                        <div class="col-3 offset-1 px-0" id="col-agenda">
                             <a href="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris text-white my-2 w-100 h-100 fw-bold rounded-8 py-3">Agendar cita médica</a>
                         </div>
                     </div>
@@ -881,6 +883,19 @@
 
             KioskBoard.run('.virtual-keyboard-all', {});
 
+            $('#col-familia').removeClass('col-8').addClass('col-12')
+            $('#col-agenda').addClass('d-none')
+            $('.box-content-familia').removeClass('d-none');
+
+            // $('#KioskBoard-VirtualKeyboard .kioskboard-wrapper').css('padding-bottom','300px');
+            const style = document.createElement("style");
+            style.innerHTML = `
+                #KioskBoard-VirtualKeyboard .kioskboard-wrapper {
+                    padding-bottom: 300px !important;
+                }
+            `;
+            document.head.appendChild(style);
+
             obtenerConvenios();
         }
 
@@ -917,7 +932,7 @@
         $('body').on('click','.btn-confirmar-cita', function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             console.log(detalle);
-            let consultorio = obtenerNombreConsultorio(detalle.nombreSitioConsultorio);
+            let consultorio = obtenerNombreConsultorio(detalle);
             $('.box-info-consultorio').html(`${consultorio}`);
             $('#modalConfirmarCita').modal('show')
         })
@@ -1403,7 +1418,8 @@
         temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
     }
 
-    function obtenerNombreConsultorio(nombreSitioConsultorio) {
+    function obtenerNombreConsultorio(detalle) {
+        nombreSitioConsultorio = detalle.nombreSitioConsultorio
         let mensaje = "Ve al ";
 
         // Normalizar el texto a minúsculas para evitar problemas de comparación
@@ -1416,6 +1432,23 @@
         } else {
             mensaje += `área de <span class="text-veris ms-2 fs-25">${nombreSitioConsultorio}</span>`;
         }
+
+        let fechaHoraAgenda = (formatearFechaMesDia(detalle.horaInicio)).split('|');
+        let classHoraAgendada = `text-veris`;
+        let datosMedico = `<div class="d-flex justify-content-between align-items-center mt-3">
+            <div class="avatar-doctor border-veris-1" style="background: url(${ (detalle.fotoMedicoApp != null) ? detalle.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
+            </div>
+            <div class="info-doctor text-veris-dark mx-2 flex-fill text-start">
+                <p class="mb-1 fs-18 fw-bold text-capitalize">Dr(a) ${detalle.nombreMedico.toLowerCase()}</p>
+                <p class="mb-1 text-capitalize">${detalle.nombreEspecialidad.toLowerCase()}</p>
+            </div>
+            <div class="info-doctor ms-2 text-start">
+                <p class="mb-1 fw-bold text-veris">Agendado para:</p>
+                <p class="mb-1 text-capitalize">${fechaHoraAgenda[0].toLowerCase()} <span class="${classHoraAgendada}">${fechaHoraAgenda[1]}</span></p>
+                <p class="mb-1 text-capitalize">${detalle.nombreSucursal.toLowerCase()}</p>
+            </div>
+        </div>`;
+        $('.box-info-medico-modal').html(datosMedico);
 
         return mensaje;
     }
@@ -1891,7 +1924,7 @@
                 if(detalle.tipoServicio == "RESERVA" && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     await setearDiagnostico();
                 }
-                if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente)){
+                if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente) && detalle.beneficio.convenio.requiereAutorizacion){
                     await obtenerAutorizacion();
                 }
                 await consultaPreTrx(idPreTransaccion, data.data);
@@ -2663,12 +2696,12 @@
                             </button>`;
                         }
                 }else{
-                    let consultorio = obtenerNombreConsultorio(detalle.nombreSitioConsultorio);
-                    elemBodyCard += `<div class="d-flex justify-content-center align-items-center fw-bold text-dark fs-18 bg-silver-light py-2 rounded-8 my-2">
+                    let consultorio = obtenerNombreConsultorio(detalle);
+                    /*elemBodyCard += `<div class="d-flex justify-content-center align-items-center fw-bold text-dark fs-18 bg-silver-light py-2 rounded-8 my-2">
                         ${consultorio}
-                    </div>`;
+                    </div>`;*/
                     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-confirmar-cita p-2 py-3 mt-3">
-                            Confirmar cita
+                            Verificar consultorio
                         </button>`;
                 }
 
