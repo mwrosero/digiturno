@@ -441,6 +441,16 @@
 	        });
 
 	        KioskBoard.run('.virtual-keyboard-all', {});
+
+	        if(esKiosko){
+	        	const style = document.createElement("style");
+	            style.innerHTML = `
+	                #KioskBoard-VirtualKeyboard .kioskboard-wrapper {
+	                    padding-bottom: 300px !important;
+	                }
+	            `;
+	            document.head.appendChild(style);
+	        }
     	}
 
 		// Keyboard.open();
