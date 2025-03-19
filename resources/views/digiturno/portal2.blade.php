@@ -1143,9 +1143,8 @@
     
         let timeoutId;
 
-        $('body').on('input', '#numeroIdentificacion', function() {
+        $('body').on('keyup change', '#numeroIdentificacion', function() {
             clearTimeout(timeoutId); // Limpia el timeout anterior
-            
             timeoutId = setTimeout(async function() {
                 let datosF = {
                     "numeroIdentificacion": $('#numeroIdentificacion').val(),
@@ -1155,11 +1154,13 @@
                     if(esValidaCedula($('#numeroIdentificacion').val())){
                         await verificarDatosFactura(datosF);
                     }else{
-                        toastr.warning("Cédula incorrecta", "Atención", {
-                            timeOut: 5000
-                        });
-                        $('#nombreCompleto').val("");
-                        $('#email').val("");
+                        if($('#numeroIdentificacion').val().length == 10){
+                            toastr.warning("Cédula incorrecta", "Atención", {
+                                timeOut: 5000
+                            });
+                            $('#nombreCompleto').val("");
+                            $('#email').val("");
+                        }
                     }
                 }else{
                     if($('#numeroIdentificacion').val().length == 13){
@@ -1320,6 +1321,118 @@
         $('body').on('click', '.btn-agendar', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             console.log(detalle);
+            let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+            let paciente = JSON.parse(dataAttr);
+            let dataCitaReserva = {
+                "paciente": {
+                    "tipoIdentificacion": paciente.codigoTipoIdentificacion,
+                    "numeroIdentificacion": paciente.numeroIdentificacion,
+                    "numeroPaciente": paciente.idPaciente,
+                    "primerNombre": paciente.primerNombre,
+                    "segundoNombre": paciente.segundoNombre,
+                    "primerApellido": paciente.primerApellido,
+                    "segundoApellido": paciente.segundoApellido,
+                    // "idPersona": "MTQwMDc4MDA3Ni0y",
+                },
+                "tratamiento": {
+                    //"cantidadIntervalosReserva": 1,
+                    "numeroOrden": detalle.numeroOrden,
+                    "codigoEmpOrden": detalle.codigoEmpresa,
+                    "lineaDetalle": detalle.detallesOrden[0].lineaDetalleOrden,
+                    "esPagada": (estadosVigentes.includes(detalle.detallesOrden[0].codigoEstado)) ? "S" : "N";
+                },
+
+            }
+            
+            let test = {
+            "tratamiento": {
+                "cantidadIntervalosReserva": 1,
+                "numeroOrden": 42263805,
+                "codigoEmpOrden": 1,
+                "lineaDetalle": 2,
+                "esPagada": "S"
+            },
+            "tipoFlujo": "agenda/tratamiento/terapia",
+            "online": "N",
+            "especialidad": {
+                "codigoEspecialidad": 30,
+                "nombre": "TERAPIA FÍSICA Y REHABILITACIÓN",
+                "imagen": "https://dikg1979lm6fy.cloudfront.net/app/cmv/servicios/terapia_tp.png",
+                "esOnline": "N",
+                "codigoServicio": 252,
+                "codigoPrestacion": 2775,
+                "codigoTipoAtencion": "P",
+                "codigoSucursal": 34,
+                "origen": "Listatratamientos"
+            },
+            "origen": "Listatratamientos",
+            "convenio": {
+                "secuenciaAfiliado": 5257337,
+                "codigoCliente": 68,
+                "codigoConvenio": 1257,
+                "codigoEmpresa": 1,
+                "nombreConvenio": "VERIS S.A. - VERIS S.A - LISTA N5 71211207 - ADMINISTRATIVO GYE",
+                "permitePagoLab": "S",
+                "permiteReserva": "S",
+                "mensajeBloqueoReserva": "Agendamiento no permitido por este canal",
+                "permitePago": "S",
+                "mensajeBloqueoPago": "Pago no permitido por este canal",
+                "aplicaPagoDigitalObligatorio": "S",
+                "idCliente": "SALUD",
+                "mostrarEnvioLink": "S",
+                "rutaImagenConvenio": "https://d3o45mj1lt8ggq.cloudfront.net/veris/clientes/imagenes/Logo_Salud.png",
+                "aplicaVerificacionConvenio": "N",
+                "informacionExternaPlan": null,
+                "permiteReservaImagenes": "S",
+                "permitePagoImagenes": "S",
+                "esPlanStar": false,
+                "origen": "Listatratamientos"
+            },
+            "ciudad": {
+                "codigoPais": 1,
+                "codigoProvincia": 1,
+                "codigoRegion": null,
+                "codigoCiudad": 1,
+                "nombrePais": "ECUADOR",
+                "nombreProvincia": "GUAYAS",
+                "nombreCiudad": "GUAYAQUIL",
+                "codigoTipoSucursal": "CMV",
+                "nombreTipoSucursal": "CENTRO MÉDICO VERIS",
+                "idCiudadCompuesto": "1-1-1",
+                "esDefault": true
+            },
+            "central": {
+                "idCentro": "1-1",
+                "codigoEmpresa": 1,
+                "codigoSucursal": 1,
+                "nombreSucursal": "Veris Kennedy",
+                "nombreFoto": "https://dikg1979lm6fy.cloudfront.net/fotosCentrales/1_1.jpg",
+                "direccion": "Cdla. Kennedy Vieja, Av. Kennedy No.304 y Calle F",
+                "permiteReserva": "S",
+                "urlUbicacion": "https://www.google.com/maps/place/Veris/@-2.177993,-79.901277,17z/data=!3m1!4b1!4m2!3m1!1s0x902d6de8c3ce3671:0x78bea3719c8121cf?hl=es",
+                "centroMedico": true,
+                "sucursalSinAgenda": null,
+                "horariosAtencion": [
+                    {
+                        "dias": "Lunes a Viernes",
+                        "horario": "06:40 a 21:00"
+                    },
+                    {
+                        "dias": "SÃ¡bado",
+                        "horario": "07:00 a 20:00"
+                    },
+                    {
+                        "dias": "Domingo",
+                        "horario": "08:00 a 20:00"
+                    }
+                ],
+                "codigoCiudad": "1-1-1",
+                "descripcionCiudad": "Cdla. Kennedy Vieja, Av. Kennedy No.304 y Calle F",
+                "codigoTipoSucursal": "CMV",
+                "nombreTipoSucursal": "CENTRO MÉDICO VERIS",
+                "esPreferida": "S"
+            }
+        }
         })
 
         $('body').on('click', '.btn-pagar', async function(){
