@@ -824,6 +824,7 @@
         // $('.logo').css("max-width","400px !important");
     }
 
+    let clientesAuth = [5803, 13, 68, 10996, 7656];
     let datosPago = {};
 
     let url_salir = ``;
@@ -1890,8 +1891,72 @@
                 if(detalle.tipoServicio == "RESERVA" && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     await setearDiagnostico();
                 }
+                if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente)){
+                    await obtenerAutorizacion();
+                }
                 await consultaPreTrx(idPreTransaccion, data.data);
             }
+        }
+    }
+
+    async function obtenerInfoConvenio(){
+        let secuenciaAfiliadoConvenio;
+        $.each(conveniosPaciente, function(key, value){
+            if(clientesAuth.includes(value.codigoCliente)){
+                console.log(value.secuenciaAfiliado)
+                secuenciaAfiliadoConvenio = value.secuenciaAfiliado;
+            }
+        })
+        return secuenciaAfiliadoConvenio;
+    }
+
+    async function obtenerAutorizacion(){
+        let secuenciaAfiliadoConvenio = await obtenerInfoConvenio();
+        console.log(secuenciaAfiliadoConvenio);
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/validacion_aseguradora/sync/autorizacion?canalInvocacion=CAJ&lineaNegocio=CMV&secuenciaAfiliado=${ secuenciaAfiliadoConvenio }`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify({
+
+        });
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            datosPago.sync = data.data
+            await setearAutorizacion();
+        }else{
+            toastr.error("", data.message, {
+                timeOut: 5000
+            });
+        }
+    }
+
+    async function setearAutorizacion(){
+        let idAgrupacion = await getIdAgrupacionArray();
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${ datosPago.idPreTransaccion }/setear_autorizacion_aseguradora?codigoEmpresa=1`;
+        args["method"] = "PUT";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify({
+            "idAgrupacion": idAgrupacion[0],
+            // "_id": "string",
+            "esAutorizacionAutomatica": true,
+            "secuenciaLogWs": datosPago.sync.secuenciaLogSincronizacion,
+            "numeroAutorizacion": datosPago.sync.autorizacionAseguradora
+        });
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            datosPago.setearAutorizacion = data.data
+        }else{
+            toastr.error("", data.message, {
+                timeOut: 5000
+            });
         }
     }
 
@@ -2585,7 +2650,7 @@
                     classEstadoItem = `text-pendiente`;
                     if(esKiosko){
                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
-                                    Pagar aquí
+                                    Pagar
                                 </button>`;
                     }else{
                         if(detalle.permitePago){
@@ -3622,6 +3687,7 @@
         $('#contentDetalleCita').html(elem);
     }
 
+    let conveniosPaciente;
     async function obtenerConvenios(){
         let args = [];
         args["endpoint"] = `${api_url_digitales}/comercial/v1/pacientes/${dataTurno.paciente.idPaciente}/convenios?codigoEmpresa=1&canalInvocacion=KIO`;
@@ -3631,6 +3697,7 @@
         const data = await call(args);
         if(data.code == 200){
             console.log(data);
+            conveniosPaciente = data.data;
         }
     }
 </script>
