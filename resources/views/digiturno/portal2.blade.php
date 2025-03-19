@@ -883,10 +883,6 @@
 
             KioskBoard.run('.virtual-keyboard-all', {});
 
-            $('#col-familia').removeClass('col-8').addClass('col-12')
-            $('#col-agenda').addClass('d-none')
-            $('.box-content-familia').removeClass('d-none');
-
             // $('#KioskBoard-VirtualKeyboard .kioskboard-wrapper').css('padding-bottom','300px');
             const style = document.createElement("style");
             style.innerHTML = `
@@ -895,8 +891,13 @@
                 }
             `;
             document.head.appendChild(style);
-
+            $('.box-content-familia').removeClass('d-none');
             obtenerConvenios();
+        }else{
+            console.log(9)
+            $('#col-familia').removeClass('col-8').addClass('col-12')
+            $('#col-agenda').addClass('d-none')
+            $('.box-content-familia').removeClass('d-none');
         }
 
         const macsParami = @json(\App\Models\Veris::MACS_PARAMI);
