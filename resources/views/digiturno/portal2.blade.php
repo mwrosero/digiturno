@@ -1339,7 +1339,7 @@
                     "numeroOrden": detalle.numeroOrden,
                     "codigoEmpOrden": detalle.codigoEmpresa,
                     "lineaDetalle": detalle.detallesOrden[0].lineaDetalleOrden,
-                    "esPagada": (estadosVigentes.includes(detalle.detallesOrden[0].codigoEstado)) ? "S" : "N";
+                    "esPagada": (estadosVigentes.includes(detalle.detallesOrden[0].codigoEstado)) ? "S" : "N"
                 },
 
             }
