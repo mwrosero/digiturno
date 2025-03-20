@@ -102,7 +102,7 @@
                         <div class="form-check d-flex justify-content-md-center align-items-center">
                             <input class="form-check-input terminos-input me-2 mb-1 width-24" type="checkbox" value="" id="checkTerminosCondicion" required>
                             <label class="form-check-label fs-20 fw-medium line-height-20" for="checkTerminosCondicion">
-                                Acepto los <a href="https://www.veris.com.ec/terminos-y-condiciones/" target="_blank" class="">términos y condiciones</a> 
+                                Acepto los <span class="text-veris fw-bold" data-bs-toggle="modal" data-bs-target="#modalTerminosCondiciones">términos y condiciones</span>
                                 <span id="politicas" class="d-none">y <a href="https://www.veris.com.ec/politicas/" target="_blank">Política de protección de Datos Personales</a></span>
                             </label>
                             <div class="invalid-feedback">
@@ -414,7 +414,7 @@
 
                     <input id="autorizacion" class="me-2" type="checkbox" style="height:25px; width: 25px;">
                     <label for="autorizacion">
-                        Acepto que los resultados <br> serán entregados a la Empresa.
+                        Acepto <span class="text-veris fw-bold" data-bs-toggle="modal" data-bs-target="#modalAceptacionResultados">los términos y condiciones</span> que los resultados <br> serán entregados a la Empresa.
                     </label>
                 </div>
                 <div>
@@ -1241,8 +1241,28 @@
                 $('.box-aceptacion').addClass('d-none')
                 $('.btn-activar').removeClass('activar-disabled');
             }else{
+
                 $('.box-aceptacion').removeClass('d-none')
             }
+
+            let dataAttr = $('.paciente-item-selected').attr("data-rel");
+            let paciente = JSON.parse(dataAttr);
+            $('#nombreAceptacion').html(paciente.nombreCompleto);
+            $('#cedulaAceptacion').html(paciente.numeroIdentificacion);
+            
+            $('#'+detalle.nombreTipoContrato.toLowerCase()+'ChequeoAceptacion').html("X");
+            // $('#preChequeoAceptacion').val();
+            // $('#ocupacionalChequeoAceptacion').val();
+            // $('#postChequeoAceptacion').val();
+            $('#empresaAceptacion').html(detalle.nombreConvenio);
+
+            let fecha = new Date();
+            let dia = String(fecha.getDate()).padStart(2, '0');
+            let mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses van de 0 a 11
+            let anio = fecha.getFullYear();
+            
+            let fechaActual = `${dia}/${mes}/${anio}`;
+            $('#fechaAceptacion').html(fechaActual);
 
             let esOcupacional = false;
             if(detalle.nombreTipoContrato == "OCUPACIONAL"){
@@ -1382,7 +1402,7 @@
             let detalle = JSON.parse($(this).attr('data-rel'));
             console.log(generales);
             console.log(detalle);
-            let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+            let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
             
             convenioItem = {
@@ -1436,7 +1456,7 @@
         $('body').on('click', '.btn-agendar', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             console.log(detalle);
-            let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+            let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
             let convenioItem = {
                 "nombreConvenio": "Ninguno",
@@ -1555,6 +1575,18 @@
             $('.box-datos-factura').removeClass('d-none')
             $('.box-load-pago').addClass('d-none')
         });
+
+        $("#modalAceptacionResultados").on('shown.bs.modal', function () {
+            console.log("El modal ha sido abierto.");
+            clearInterval(temporizadorInactividad)
+        });
+
+        // Detectar cuando el modal se cierra
+        $("#modalAceptacionResultados").on('hidden.bs.modal', function () {
+            console.log("El modal ha sido cerrado.");
+            reiniciarConteo();
+        });
+
 
         $('input').on('focus', function() {
             if(esKiosko){
@@ -1722,7 +1754,7 @@
             }else{
                 codigoPrincipal = detalle.codigoReserva;
             }
-            let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+            let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
 
             let args = [];
@@ -1760,7 +1792,7 @@
 
         // if(!isMobile()){}
 
-        let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+        let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
 
         let args = [];
@@ -1924,7 +1956,7 @@
     }
 
     async function agregarItemChequeo(idPreTransaccion){
-        let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+        let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
         
         let dataChequeo = JSON.parse($('#dataChequeo').val());
@@ -2026,7 +2058,7 @@
     }
 
     async function agregarItemTurno(idPreTransaccion, detalle, origen = "TURNO"){
-        let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+        let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
 
         // console.log(detalle);
@@ -3210,7 +3242,7 @@
     }
     async function cargarServicios(){
         $('#pills-tab-servicios').empty();
-        // let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+        // let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let dataAttr = $('.paciente-item-selected').attr("data-rel");
 
         let paciente = JSON.parse(dataAttr);
@@ -3823,7 +3855,7 @@
             url_adicional += `&idPreTransaccion=${pre_trx}`
         }
 
-        let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+        let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
         let args = [];
         args["endpoint"] =  `${api_url}/${api_war}/transaccion/generar_ticket?macAddress=${ dataTurno.mac }&tipoIdentificacion=${paciente.nombreTipoIdentificacion}&numeroIdentificacion=${paciente.numeroIdentificacion}&nombreCompleto=${ paciente.nombreCompleto }${url_adicional}`;

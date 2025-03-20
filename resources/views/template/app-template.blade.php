@@ -60,9 +60,15 @@
 
     <body>
         @include('template.analytics-no-script')
+
+        @include('template.modal-terminos-condiciones')
+        @include('template.modal-terminos-resultados')
+        
         <!-- Layout wrapper -->
         
         @yield('content')
+
+
 
         <!-- Modal alerta -->
         <div class="modal fade" id="modalAlerta" tabindex="-1" aria-labelledby="modalAlertaLabel">

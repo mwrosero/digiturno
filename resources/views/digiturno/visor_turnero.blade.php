@@ -63,10 +63,10 @@
             $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6rRzJbZmaLutrK9po3379Zh&autoplay=1&mute=1&controls=0&loop=1&playlist=PLhHmuSWjQz6rRzJbZmaLutrK9po3379Zh";
     }
 @endphp
-<div class="wrapper iniciador d-flex justify-content-center align-items-center">
+<div class="wrapper iniciador d-flex justify-content-center align-items-center d-none">
     <button class="bg-veris text-white fs-1 p-3 rounded-8" onclick="iniciarTurnero()">INICIAR TURNERO</button>
 </div>
-<div class="wrapper turnero d-none">
+<div class="wrapper turnero">
     <!-- Content -->
     <main class="content p-3">
         <div class="container-fluid h-100">
@@ -376,9 +376,10 @@
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
-        // await cargarTurnos();
+        await cargarTurnos();
         // Verificar cada 30 segundos si está suspendido
         setInterval(keepAudioAlive, 30000);
+        reiniciarCadaHora();
     })
 
     function keepAudioAlive() {
@@ -390,6 +391,11 @@
         }
     }
 
+    function reiniciarCadaHora() {
+        setInterval(function () {
+            location.reload();
+        }, 3600000); // 3600000 ms = 1 hora
+    }
 </script>
 <style>
     .fs-50{
