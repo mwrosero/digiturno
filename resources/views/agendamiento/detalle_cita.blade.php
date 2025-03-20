@@ -7,6 +7,29 @@ Mi Veris - Citas - Revisa tus datos
 <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/theme-veris-app.css?v=1.0.3')}}">
 
+{{-- Modal Confirmar Pago --}}
+<div class="modal modal-top fade" id="modalAgendado" aria-labelledby="modalAgendadoLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1">
+    <div class="modal-dialog modal modal-xxl modal-dialog-centered mx-auto">
+        <form class="modal-content rounded-8">
+            <div class="modal-header d-none">
+                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3 text-center">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-start">Tu cita ha sido agendada con éxito.</h5>
+                {{-- <div class="box-info-comprobante d-flex justify-content-center align-items-center fw-bold text-dark fs-25 bg-silver-light py-2 rounded-8 my-2">
+                    Comprobante: <span></span>
+                </div> --}}
+                <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/pago-realizado.svg" id="confimar-pago-icon" alt="">
+                {{-- <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3> --}}
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
+                {{-- <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-salir">No</a> --}}
+                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white px-4 py-2 mx-2 fs-4 btn-salir text-veris border-veris-1">Salir</a>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Modal de error -->
 <div class="modal fade" id="ModalError" tabindex="-1" aria-labelledby="ModalError" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
@@ -584,17 +607,23 @@ Mi Veris - Citas - Revisa tus datos
             dataCita.reserva = data.data;
             guardarData();
             if(dataCita.tratamiento && dataCita.tratamiento.esPagada == "S"){
-                location.href = '/cita-agendada/{{ $params }}?mac={{ $mac }}';
+                // location.href = '/cita-agendada/{{ $params }}?mac={{ $mac }}';
+                $('#modalAgendado').modal('show');
                 return;
             }
             if(data.data.permitePago == "S"){
                 /*
                 https://api-phantomx.veris.com.ec/${api_war_digitales}/agenda/validarPermitePago?canalOrigen=MVE_CMV&codigoUsuario=0926178534&tipoItem=C&codigoReserva=4222668939
                 */
-                await crearPreTransaccion()
+                if(dataCita.precio.valor == 0){
+                    $('#modalAgendado').modal('show');
+                }else{
+                    await crearPreTransaccion()
+                }
                 //location.href = '/citas-datos-facturacion/{{ $params }}?mac={{ $mac }}';
             }else{
-                location.href = '/cita-agendada/{{ $params }}?mac={{ $mac }}';
+                $('#modalAgendado').modal('show');
+                // location.href = '/cita-agendada/{{ $params }}?mac={{ $mac }}';
             }
         }else{
             //guardarData();
@@ -787,4 +816,21 @@ Mi Veris - Citas - Revisa tus datos
         });
     }
 </script>
+<style>
+    .btn-disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    .toast-title {
+        color: #fff !important;
+    }
+    #toast-container > .toast-warning {
+        background: #f39c12 url("{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/exclamation.svg") no-repeat 10px center !important;
+        background-size: 40px 40px !important;
+        color: white !important;
+    }
+    .modal-xxl{
+        background: transparent !important;
+    }
+</style>
 @endsection

@@ -1285,6 +1285,7 @@
                     </div>`;
                 }
                 $.each(value.items, function(k,v){
+                    let btnAgenda = ``;
                     let esLaboratorio = false;
                     let classLabNoOcupacional = ``;
                     let classLabNoOcupacionalLegend = ``;
@@ -1297,8 +1298,15 @@
                     if( v.requiereAgendamiento && v.cantidadUtilizada == 0 && v.cantidadDisponible != v.cantidadUtilizada ){
                         disabledAttr = `disabled`;
                     }
+
+                    // if( value.nombreServicioNivel1 == "CONSULTA"){
+                    if(v.esAgendable && v.requiereAgendamiento){
+                        btnAgenda = `<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-3 btn-agendar-chequeo" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(v)}'>Agendar</div>`;                        
+                    }
+
                     if(esOcupacional){
-                        disabledAttr = `disabled`;
+                        // disabledAttr = `disabled`;
+                        classLabNoOcupacional = `check-only-individual`;
                         checked = `checked`;
                     }else{
                         console.log("NO ES OCUPACIONAL")
@@ -1308,11 +1316,6 @@
                             classLabNoOcupacional = `check-only-individual`;
                             classLabNoOcupacionalLegend = `check-only-individual-legend`;
                         }
-                    }
-                    
-                    let btnAgenda = ``;
-                    if( value.nombreServicioNivel1 == "CONSULTA"){
-                        btnAgenda = `<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-3 btn-agendar-chequeo" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(v)}'>Agendar</div>`;                        
                     }
 
                     elem_content += `<div class="d-flex justify-content-start align-items-start fs-16 line-height-16 mb-2 ${classLabNoOcupacionalLegend}">
@@ -1377,9 +1380,56 @@
         $('body').on('click', '.btn-agendar-chequeo', async function(){
             let generales = JSON.parse($(this).attr('generales-rel'));
             let detalle = JSON.parse($(this).attr('data-rel'));
-            
             console.log(generales);
             console.log(detalle);
+            let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
+            let paciente = JSON.parse(dataAttr);
+            
+            convenioItem = {
+                "codigoConvenio": generales.codigoConvenio,
+                "nombreConvenio": generales.nombreConvenio,
+                "codigoTipoConvenio": generales.codigoTipoConvenio,
+                "nombreTipoConvenio": generales.nombreTipoConvenio,
+                "permitePago": "S",
+                "permiteReserva": "S"
+            }
+            
+            let dataCitaReserva = {
+                "paciente": {
+                    "tipoIdentificacion": paciente.codigoTipoIdentificacion,
+                    "numeroIdentificacion": paciente.numeroIdentificacion,
+                    "numeroPaciente": paciente.idPaciente,
+                    "primerNombre": paciente.primerNombre,
+                    "segundoNombre": paciente.segundoNombre,
+                    "primerApellido": paciente.primerApellido,
+                    "segundoApellido": paciente.segundoApellido,
+                    // "idPersona": "MTQwMDc4MDA3Ni0y",
+                },
+                "convenio": convenioItem,
+                "tratamiento": {
+                    //"cantidadIntervalosReserva": 1,
+                    "numeroOrden": detalle.numeroOrden,
+                    "codigoEmpOrden": 1,//detalle.codigoEmpresa,
+                    "lineaDetalle": detalle.lineaDetalleOrden,
+                    "esPagada": "S"
+                },
+                "online": (detalle.esTeleconsulta) ? "S" : "N",
+                "especialidad": {
+                    "codigoEspecialidad": detalle.codigoEspecialidadServicio,
+                    "nombre": detalle.nombreServicio,
+                    "esOnline": (detalle.esTeleconsulta) ? "S" : "N",
+                    "codigoServicio": detalle.codigoServicio,
+                    "codigoPrestacion": detalle.codigoPrestacion,
+                    "codigoTipoAtencion": "C",
+                    // "codigoSucursal": detalle.codigoSucursal,
+                    "origen": "Listatratamientos"
+                },
+                "origen": "Listatratamientos"
+            }
+            dataTurno.ordenAgenda = dataCitaReserva;
+            localStorage.setItem('turno-{{ $portalToken }}', JSON.stringify(dataTurno));
+            location.href = '/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}';
+            console.log("RED");
         })
 
 
@@ -2602,7 +2652,7 @@
                     </div>
                 </div>`;
             }else{
-                elemContent += `<div class="tab-pane bg-silver-light fade mt-3 px-3" id="pills-${value.tipoServicio}" role="tabpanel" aria-labelledby="pills-${value.tipoServicio}-tab" tabindex="0">
+                elemContent += `<div class="tab-pane bg-silver-light fade mt-3 px-3" id="pills-${value.tipoServicio}" role="tabpanel" aria-labelledby="pills-${value.tipoServicio}-tab" tabindex="0" style="max-height: 75vh; overflow-y: auto;">
                     <div class="accordion" id="accordion-${value.tipoServicio}">
                         <div class="accordion-item bg-transparent border-0">
                             <h2 class="accordion-header" id="panelsStayOpen-pagadas-${value.tipoServicio}">
