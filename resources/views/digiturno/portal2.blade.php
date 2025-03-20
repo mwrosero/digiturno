@@ -899,8 +899,8 @@
             obtenerConvenios();
         }else{
             console.log(9)
-            $('#col-familia').removeClass('col-8').addClass('col-12')
-            $('#col-agenda').addClass('d-none')
+            // $('#col-familia').removeClass('col-8').addClass('col-12')
+            // $('#col-agenda').addClass('d-none')
             $('.box-content-familia').removeClass('d-none');
         }
 
