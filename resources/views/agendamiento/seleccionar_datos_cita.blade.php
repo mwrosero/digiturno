@@ -263,8 +263,13 @@ Elige datos para la Cita
     localStorage.setItem('flujo','agendamiento');
     let dataTurno = JSON.parse(globalTurno);
 
-    let local = localStorage.getItem('cita-{{ $params }}');
-    let dataCita = JSON.parse(local);
+    if(dataTurno.hasOwnProperty('ordenAgenda')){
+        let local = localStorage.setItem('cita-{{ $params }}', JSON.stringify(dataTurno.ordenAgenda));
+        dataCita = dataTurno.ordenAgenda;
+    }else{
+        let local = localStorage.getItem('cita-{{ $params }}');
+        let dataCita = JSON.parse(local);
+    }
     console.log(dataCita);
 
     if(dataCita.hasOwnProperty('convenio')){

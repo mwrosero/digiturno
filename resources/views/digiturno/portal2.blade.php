@@ -410,6 +410,8 @@
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-around align-items-center">
                 <div class="checkbox checkbox-primary fs-18 line-height-16 d-flex justify-content-between align-items-center me-2 box-aceptacion">
                     <input type="hidden" id="secuenciaAfiliado">
+                    <input type="hidden" id="tipoOcupacional">
+
                     <input id="autorizacion" class="me-2" type="checkbox" style="height:25px; width: 25px;">
                     <label for="autorizacion">
                         Acepto que los resultados <br> serán entregados a la Empresa.
@@ -805,6 +807,7 @@
 {{-- <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js?v=1.0.8"></script> --}}
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/qrcode.js"></script>
 <script>
+    localStorage.removeItem("flujo");
     let dataServicios;
     let groupedData = [];
     var estadosVigentes = ["REG", "ENTS", "FAC","PFAC","AUT","EXC"];
@@ -813,6 +816,7 @@
 
     let local = localStorage.getItem('turno-{{ $portalToken }}');
     let dataTurno = JSON.parse(local);
+    delete(dataTurno.ordenAgenda);
     trackId = dataTurno.trackId;
     let puedeEnviar = false;
     buscarUsuarioFlag = false;
@@ -1222,8 +1226,15 @@
             $('#modalDetallePaquete').modal('show');
         })
 
+        $('body').on('click', '.check-only-individual-legend', async function(){
+            toastr.warning('Debe seleccionar todos los exámenes', 'Atención', {
+                timeOut: 3000
+            });
+        })
+
         $('body').on('click', '.btn-detalle-chequeo', async function(){
             let dataChequeo = $(this).attr('data-rel');
+            $('.btn-activar').removeClass('d-none');
             $('#dataChequeo').val(dataChequeo)
             let detalle = JSON.parse(dataChequeo);
             if(detalle.esAutorizadoEnvResultDg){
@@ -1233,7 +1244,17 @@
                 $('.box-aceptacion').removeClass('d-none')
             }
 
+            let esOcupacional = false;
+            if(detalle.nombreTipoContrato == "OCUPACIONAL"){
+                esOcupacional = true;
+                if(detalle.esAutorizadoEnvResultDg){
+                    $('.btn-activar').addClass('d-none');
+                }
+            }
+
             $('#secuenciaAfiliado').val(detalle.secuenciaAfiliado);
+            $('#tipoOcupacional').val(detalle.nombreTipoContrato);
+
             console.log(detalle)
             $('#tituloChequeoDetalle').html(`${detalle.nombreTipoContrato} - ${detalle.nombreConvenio}`);
 
@@ -1253,27 +1274,55 @@
 
                 elem_content += `<div class="tab-pane pane-items-${ value.codigoServicioNivel1 } p-2 fade ${class_active} ${class_show}" id="prestacion-${ value.codigoServicioNivel1 }" role="tabpanel" aria-labelledby="prestacion-${ value.codigoServicioNivel1 }-tab">`;
 
-                elem_content += `<div class="d-flex justify-content-center align-items-center mt-2 mb-3">
-                    <div class="btn bg-veris text-white me-2 select-all" codigoServicio-rel="${ value.codigoServicioNivel1 }">
-                        <i class="fa-regular fa-square-check me-2"></i> Todos
-                    </div>
-                    <div class="btn bg-veris-dark text-white me-2 unselect-all" codigoServicio-rel="${ value.codigoServicioNivel1 }">
-                        <i class="fa-regular fa-square-minus me-2"></i> Ninguno
-                    </div>
-                </div>`;
+                if(!esOcupacional){
+                    elem_content += `<div class="d-flex justify-content-center align-items-center mt-2 mb-3">
+                        <div class="btn bg-veris text-white me-2 select-all" codigoServicio-rel="${ value.codigoServicioNivel1 }">
+                            <i class="fa-regular fa-square-check me-2"></i> Todos
+                        </div>
+                        <div class="btn bg-veris-dark text-white me-2 unselect-all" codigoServicio-rel="${ value.codigoServicioNivel1 }">
+                            <i class="fa-regular fa-square-minus me-2"></i> Ninguno
+                        </div>
+                    </div>`;
+                }
                 $.each(value.items, function(k,v){
+                    let esLaboratorio = false;
+                    let classLabNoOcupacional = ``;
+                    let classLabNoOcupacionalLegend = ``;
+                    if( value.nombreServicioNivel1 == "LABORATORIO"){
+                        esLaboratorio = true;
+                    }
                     let disabledAttr = ``;
+                    let checked = ``;
                     //MARCOS: v.esAgendable &&
                     if( v.requiereAgendamiento && v.cantidadUtilizada == 0 && v.cantidadDisponible != v.cantidadUtilizada ){
                         disabledAttr = `disabled`;
                     }
-                    elem_content += `<div class="d-flex justify-content-start align-items-start fs-16 line-height-16 mb-2">
-                            <div class="form-check flex-grow-1">
-                                <input ${disabledAttr} class="form-check-input my-0" type="checkbox" value="" id="item-prestacion-${ v.codigoPrestacion }" codigoServicio-rel="${ value.codigoServicioNivel1 }" nombreServicio-rel="${ value.nombreServicioNivel1 }" data-rel='${ JSON.stringify(v) }'>
+                    if(esOcupacional){
+                        disabledAttr = `disabled`;
+                        checked = `checked`;
+                    }else{
+                        console.log("NO ES OCUPACIONAL")
+                        if(esLaboratorio){
+                            console.log("ES LABORATORIO")
+                            {{-- disabledAttr = `disabled`; --}}
+                            classLabNoOcupacional = `check-only-individual`;
+                            classLabNoOcupacionalLegend = `check-only-individual-legend`;
+                        }
+                    }
+                    
+                    let btnAgenda = ``;
+                    if( value.nombreServicioNivel1 == "CONSULTA"){
+                        btnAgenda = `<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-3 btn-agendar-chequeo" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(v)}'>Agendar</div>`;                        
+                    }
+
+                    elem_content += `<div class="d-flex justify-content-start align-items-start fs-16 line-height-16 mb-2 ${classLabNoOcupacionalLegend}">
+                            <div class="form-check flex-grow-1 ${classLabNoOcupacional}">
+                                <input ${checked} ${disabledAttr} class="form-check-input my-0" type="checkbox" value="" id="item-prestacion-${ v.codigoPrestacion }" codigoServicio-rel="${ value.codigoServicioNivel1 }" nombreServicio-rel="${ value.nombreServicioNivel1 }" data-rel='${ JSON.stringify(v) }'>
                                 <label class="form-check-label" for="item-prestacion-${ v.codigoPrestacion }">
                                 ${ v.nombrePrestacion }
                                 </label>
                             </div>
+                            ${ btnAgenda }
                             <!--div class="flex-grow-1 ms-2">
                                 <span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal">${v.nombreServicio}/${ v.nombreServicioN2 }</span>
                             </div-->
@@ -1307,7 +1356,14 @@
                     return;
                 }
             }
-            await activarPrestacionesInicializar();
+
+            if($('#tipoOcupacional').val() != "OCUPACIONAL"){
+                await activarPrestacionesInicializar();
+            }else{
+                let lugares = await labelLugaresChequeos();
+                $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris">${lugares.join(", ").toLowerCase()}</span>. Y espera a ser llamado.`);
+                $('#modalNotificarLlegadaDirigirLugar').modal('show');
+            }
         })
 
         $('body').on('change', '#checkTerminosCondicion', function(){
@@ -1318,11 +1374,31 @@
             }
         });
 
+        $('body').on('click', '.btn-agendar-chequeo', async function(){
+            let generales = JSON.parse($(this).attr('generales-rel'));
+            let detalle = JSON.parse($(this).attr('data-rel'));
+            
+            console.log(generales);
+            console.log(detalle);
+        })
+
+
         $('body').on('click', '.btn-agendar', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             console.log(detalle);
             let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
+            let convenioItem = {
+                "nombreConvenio": "Ninguno",
+                "permitePago": "S",
+                "permiteReserva": "S",
+                "idCliente": null,
+                "codigoConvenio": null,
+            }
+            if(detalle.beneficio != null && detalle.beneficio.convenio != null){
+                convenioItem = detalle.beneficio.convenio;
+            }
+            //groupedData2[0].items[0].beneficio.convenio
             let dataCitaReserva = {
                 "paciente": {
                     "tipoIdentificacion": paciente.codigoTipoIdentificacion,
@@ -1334,6 +1410,7 @@
                     "segundoApellido": paciente.segundoApellido,
                     // "idPersona": "MTQwMDc4MDA3Ni0y",
                 },
+                "convenio": convenioItem,
                 "tratamiento": {
                     //"cantidadIntervalosReserva": 1,
                     "numeroOrden": detalle.numeroOrden,
@@ -1341,98 +1418,23 @@
                     "lineaDetalle": detalle.detallesOrden[0].lineaDetalleOrden,
                     "esPagada": (estadosVigentes.includes(detalle.detallesOrden[0].codigoEstado)) ? "S" : "N"
                 },
-
-            }
-            
-            let test = {
-            "tratamiento": {
-                "cantidadIntervalosReserva": 1,
-                "numeroOrden": 42263805,
-                "codigoEmpOrden": 1,
-                "lineaDetalle": 2,
-                "esPagada": "S"
-            },
-            "tipoFlujo": "agenda/tratamiento/terapia",
-            "online": "N",
-            "especialidad": {
-                "codigoEspecialidad": 30,
-                "nombre": "TERAPIA FÍSICA Y REHABILITACIÓN",
-                "imagen": "https://dikg1979lm6fy.cloudfront.net/app/cmv/servicios/terapia_tp.png",
-                "esOnline": "N",
-                "codigoServicio": 252,
-                "codigoPrestacion": 2775,
-                "codigoTipoAtencion": "P",
-                "codigoSucursal": 34,
+                "online": "N",
+                "especialidad": {
+                    "codigoEspecialidad": detalle.codigoEspecialidad,
+                    "nombre": detalle.nombreEspecialidad,
+                    "esOnline": "N",
+                    "codigoServicio": detalle.detallesOrden[0].codigoServicio,
+                    "codigoPrestacion": detalle.detallesOrden[0].codigoPrestacion,
+                    "codigoTipoAtencion": "C",
+                    "codigoSucursal": detalle.codigoSucursal,
+                    "origen": "Listatratamientos"
+                },
                 "origen": "Listatratamientos"
-            },
-            "origen": "Listatratamientos",
-            "convenio": {
-                "secuenciaAfiliado": 5257337,
-                "codigoCliente": 68,
-                "codigoConvenio": 1257,
-                "codigoEmpresa": 1,
-                "nombreConvenio": "VERIS S.A. - VERIS S.A - LISTA N5 71211207 - ADMINISTRATIVO GYE",
-                "permitePagoLab": "S",
-                "permiteReserva": "S",
-                "mensajeBloqueoReserva": "Agendamiento no permitido por este canal",
-                "permitePago": "S",
-                "mensajeBloqueoPago": "Pago no permitido por este canal",
-                "aplicaPagoDigitalObligatorio": "S",
-                "idCliente": "SALUD",
-                "mostrarEnvioLink": "S",
-                "rutaImagenConvenio": "https://d3o45mj1lt8ggq.cloudfront.net/veris/clientes/imagenes/Logo_Salud.png",
-                "aplicaVerificacionConvenio": "N",
-                "informacionExternaPlan": null,
-                "permiteReservaImagenes": "S",
-                "permitePagoImagenes": "S",
-                "esPlanStar": false,
-                "origen": "Listatratamientos"
-            },
-            "ciudad": {
-                "codigoPais": 1,
-                "codigoProvincia": 1,
-                "codigoRegion": null,
-                "codigoCiudad": 1,
-                "nombrePais": "ECUADOR",
-                "nombreProvincia": "GUAYAS",
-                "nombreCiudad": "GUAYAQUIL",
-                "codigoTipoSucursal": "CMV",
-                "nombreTipoSucursal": "CENTRO MÉDICO VERIS",
-                "idCiudadCompuesto": "1-1-1",
-                "esDefault": true
-            },
-            "central": {
-                "idCentro": "1-1",
-                "codigoEmpresa": 1,
-                "codigoSucursal": 1,
-                "nombreSucursal": "Veris Kennedy",
-                "nombreFoto": "https://dikg1979lm6fy.cloudfront.net/fotosCentrales/1_1.jpg",
-                "direccion": "Cdla. Kennedy Vieja, Av. Kennedy No.304 y Calle F",
-                "permiteReserva": "S",
-                "urlUbicacion": "https://www.google.com/maps/place/Veris/@-2.177993,-79.901277,17z/data=!3m1!4b1!4m2!3m1!1s0x902d6de8c3ce3671:0x78bea3719c8121cf?hl=es",
-                "centroMedico": true,
-                "sucursalSinAgenda": null,
-                "horariosAtencion": [
-                    {
-                        "dias": "Lunes a Viernes",
-                        "horario": "06:40 a 21:00"
-                    },
-                    {
-                        "dias": "SÃ¡bado",
-                        "horario": "07:00 a 20:00"
-                    },
-                    {
-                        "dias": "Domingo",
-                        "horario": "08:00 a 20:00"
-                    }
-                ],
-                "codigoCiudad": "1-1-1",
-                "descripcionCiudad": "Cdla. Kennedy Vieja, Av. Kennedy No.304 y Calle F",
-                "codigoTipoSucursal": "CMV",
-                "nombreTipoSucursal": "CENTRO MÉDICO VERIS",
-                "esPreferida": "S"
             }
-        }
+            dataTurno.ordenAgenda = dataCitaReserva;
+            localStorage.setItem('turno-{{ $portalToken }}', JSON.stringify(dataTurno));
+            location.href = '/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}';
+            console.log("RED");
         })
 
         $('body').on('click', '.btn-pagar', async function(){
@@ -2583,7 +2585,7 @@
                 </button>
             </li>`;
             if(value.tipoServicio == "Promociones" || value.tipoServicio == "Chequeos"){
-                elemContent += `<div class="tab-pane bg-silver-light fade mt-3 px-3" id="pills-${value.tipoServicio}" role="tabpanel" aria-labelledby="pills-${value.tipoServicio}-tab" tabindex="0">
+                elemContent += `<div class="tab-pane bg-silver-light fade mt-3 px-3" id="pills-${value.tipoServicio}" role="tabpanel" aria-labelledby="pills-${value.tipoServicio}-tab" tabindex="0" style="max-height: 75vh; overflow-y: auto;">
                     <div class="accordion" id="accordion-${value.tipoServicio}">
                         <div class="accordion-item bg-transparent border-0">
                             <h2 class="accordion-header" id="panelsStayOpen-pagadas-${value.tipoServicio}">
@@ -4109,6 +4111,10 @@
     .box-detalles-pago {
         max-height: 500px;
         overflow: auto;
+    }
+
+    .check-only-individual{
+        pointer-events: none;
     }
 
     @media (min-width: 1200px) {

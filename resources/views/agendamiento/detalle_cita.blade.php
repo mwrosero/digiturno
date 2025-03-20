@@ -350,9 +350,13 @@ Mi Veris - Citas - Revisa tus datos
 
             if(codigoConvenio){
                 console.log('subTotal', subtotalCopagoFloat, 'valorTotal', valorTotalCopagoFloat);
-                elem += `<div class="col-3 text-center">
+                let logoConvenio = ``;
+                if(rutaImagenConvenio !== undefined){
+                    logoConvenio = `<div class="col-3 text-center">
                             <img src="${rutaImagenConvenio}" alt="" class="img-fluid" width="86" height="">
-                        </div>
+                        </div>`
+                }
+                elem += `${logoConvenio}
                         <div class="col-5 text-center">`;
 
                 if(subtotalCopagoFloat > valorTotalCopagoFloat){
