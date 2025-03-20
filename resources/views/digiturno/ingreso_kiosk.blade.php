@@ -68,7 +68,7 @@
 					@endif
 				</div>
 				<div class="col-9 col-md-9 d-md-flex justify-content-end align-items-center d-none d-md-block">
-					<div class="time-box badge bg-veris-dark text-center p-3 rounded-8">
+					<div class="time-box badge bg-veris-dark text-center p-3 rounded-8" id="header-info">
 						<span class="fs-4">Fecha:</span><span class="ms-1 fs-4 text-veris-light" id="fecha"></span>
 						<span class="fs-4 ms-5 d-none">Hora:</span><span class="ms-1 fs-4 text-veris-light d-none" id="hora"></span>
                         <span class="fs-4 ms-5">Central:</span><span class="ms-1 fs-4 text-veris-light" id="central"></span>
@@ -190,6 +190,11 @@
         userKiosko = localStorage.getItem('userKiosko');
         $('header').addClass('pt-4')
         // $('.logo').css("max-width","400px !important");
+    }else{
+    	if(localStorage.getItem('userVeris') !== null){
+    		let userData = JSON.parse(localStorage.getItem('userVeris'));
+    		$('#header-info').append(`<span class="fs-4 ms-5">Host:</span><span class="ms-1 fs-4 text-veris-light" id="host">${userData.codigoUsuario}</span>`);
+    	}
     }
 
 	logoutArea.addEventListener("click", async function() {
@@ -200,7 +205,7 @@
 	    clearTimeout(timeout);
 	    timeout = setTimeout(() => { clickCount = 0; }, 3000);
 
-	    if (clickCount === 6) {
+	    if (clickCount === 2) {
 	        console.log("SALIR");
 	        if(!isMobile()){
 	        	if(localStorage.getItem('userKiosko') !== null) {
