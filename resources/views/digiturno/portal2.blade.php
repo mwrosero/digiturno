@@ -1468,11 +1468,11 @@
                     "lineaDetalle": detalle.detallesOrden[0].lineaDetalleOrden,
                     "esPagada": (estadosVigentes.includes(detalle.detallesOrden[0].codigoEstado)) ? "S" : "N"
                 },
-                "online": "N",
+                "online": (detalle.detallesOrden[0].esTeleconsulta) ? "S" : "N",
                 "especialidad": {
                     "codigoEspecialidad": detalle.codigoEspecialidad,
                     "nombre": detalle.nombreEspecialidad,
-                    "esOnline": "N",
+                    "esOnline": (detalle.detallesOrden[0].esTeleconsulta) ? "S" : "N",
                     "codigoServicio": detalle.detallesOrden[0].codigoServicio,
                     "codigoPrestacion": detalle.detallesOrden[0].codigoPrestacion,
                     "codigoTipoAtencion": "C",
@@ -1481,6 +1481,7 @@
                 },
                 "origen": "Listatratamientos"
             }
+            // console.log(dataCitaReserva); return;
             dataTurno.ordenAgenda = dataCitaReserva;
             localStorage.setItem('turno-{{ $portalToken }}', JSON.stringify(dataTurno));
             location.href = '/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}';
@@ -1801,8 +1802,11 @@
         args["method"] = "GET";
         const data = await call(args);
         if(data.code == 200){
-            console.log(data)
+            // console.log(data)
         }
+        setTimeout(function(){
+            location.href = url_salir;
+        }, 3000);
         return;
     }
 
@@ -3838,6 +3842,7 @@
             // console.log("iniciar conteo para enviar a home")
             if(!isMobile()){
                 printTurnoAPI(data.data)
+
                 // if(dataTurno.mac == "00-22-4D-7B-2A-F5"){
                 //     printTurno(data.data)
                 // }else{
