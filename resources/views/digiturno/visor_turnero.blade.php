@@ -377,6 +377,7 @@
 
     document.addEventListener("DOMContentLoaded", async () => {
         await cargarTurnos();
+        setInterval(cargarTurnos, 5000);
         // Verificar cada 30 segundos si está suspendido
         setInterval(keepAudioAlive, 30000);
         reiniciarCadaHora();
