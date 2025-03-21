@@ -387,7 +387,7 @@ Mi Veris - Citas - Datos de facturación
             height: 200,
             color: "#000",
             bgColor: "#FFF",
-            text: dataCita.reserva.linkPago.kushki
+            text: dataCita.reserva.linkPago.kushki+`&esLinkDigiturno=true&macAddress={{ $mac }}`
         });
     }
 
