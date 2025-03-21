@@ -279,46 +279,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div><div class="col-6">
-                        <div class="card rounded-8 bg-veris-dark mb-1">
-                            <div class="card-content text-center p-2 d-flex justify-content-around align-items-center">
-                                ${icon}
-                                <div class="info py-3">
-                                    <span class="text-center fw-bold fs-70 line-height-70 text-white mb-0">${value.turno}</span>
-                                    ${modulo}
-                                </div>
-                            </div>
-                        </div>
-                    </div><div class="col-6">
-                        <div class="card rounded-8 bg-veris-dark mb-1">
-                            <div class="card-content text-center p-2 d-flex justify-content-around align-items-center">
-                                ${icon}
-                                <div class="info py-3">
-                                    <span class="text-center fw-bold fs-70 line-height-70 text-white mb-0">${value.turno}</span>
-                                    ${modulo}
-                                </div>
-                            </div>
-                        </div>
-                    </div><div class="col-6">
-                        <div class="card rounded-8 bg-veris-dark mb-1">
-                            <div class="card-content text-center p-2 d-flex justify-content-around align-items-center">
-                                ${icon}
-                                <div class="info py-3">
-                                    <span class="text-center fw-bold fs-70 line-height-70 text-white mb-0">${value.turno}</span>
-                                    ${modulo}
-                                </div>
-                            </div>
-                        </div>
-                    </div><div class="col-6">
-                        <div class="card rounded-8 bg-veris-dark mb-1">
-                            <div class="card-content text-center p-2 d-flex justify-content-around align-items-center">
-                                ${icon}
-                                <div class="info py-3">
-                                    <span class="text-center fw-bold fs-70 line-height-70 text-white mb-0">${value.turno}</span>
-                                    ${modulo}
-                                </div>
-                            </div>
-                        </div>
                     </div>`;
                 }
             })
