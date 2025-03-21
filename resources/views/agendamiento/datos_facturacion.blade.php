@@ -277,7 +277,7 @@ Mi Veris - Citas - Datos de facturación
                     <div class="col-12 col-md-10 mb-4 ps-3 pe-3 mb-4">
                         <div class="card shadow py-4 rounded-8 cursor-pointer box-efectivo btn-turno" data-rel="">
                             <div class="card-body fs-40 line-height-48 text-center">
-                                Efectivo
+                                Efectivo (Pagar en caja)
                             </div>
                         </div>
                     </div>
