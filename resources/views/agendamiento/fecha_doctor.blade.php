@@ -82,7 +82,7 @@ Mi Veris - Citas - Elige fecha y doctor
                                 </div>
                             </div>
                             <div class="modal-footer pt-0 pb-3 px-3">
-                                <a href="{{ url()->previous() }}" class="btn btn-primary-veris fs--18 line-height-24 m-0 w-100 px-4 py-3">Aceptar</a>
+                                <a href="#" onclick="history.back();" class="btn btn-primary-veris fs--18 line-height-24 m-0 w-100 px-4 py-3">Aceptar</a>
                             </div>
                         </div>
                     </div>
@@ -98,7 +98,7 @@ Mi Veris - Citas - Elige fecha y doctor
                                 </div>
                             </div>
                             <div class="modal-footer pt-0 pb-3 px-3">
-                                <a href="{{ url()->previous() }}" class="btn btn-primary-veris fs--18 line-height-24 m-0 w-100 px-4 py-3">Aceptar</a>
+                                <a href="#" onclick="history.back();" class="btn btn-primary-veris fs--18 line-height-24 m-0 w-100 px-4 py-3">Aceptar</a>
                             </div>
                         </div>
                     </div>
@@ -813,7 +813,7 @@ Mi Veris - Citas - Elige fecha y doctor
                                 </div>
                                 <div class="dates-doctor">
                                     <p class="fs--1 line-height-16 fw-medium mb-2" style="color:#296BEF;">Horario más próximo:</p>
-                                    <div class="row g-2" style="max-width:341px">
+                                    <div class="row g-2" style="/*max-width:341px*/">
                                         ${listadoHorarios}
                                         <div class="col-6">
                                             <div class="cursor-pointer waves-effect p--2 px-3 w-100 bg-time-doctor-alt rounded-3 d-flex justify-content-center align-items-center btn-disponibilidad-medico-all" data-bs-toggle="modal" data-bs-target="#elegirHorarioModal" data-rel='${JSON.stringify(medico)}'>

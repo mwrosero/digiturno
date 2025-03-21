@@ -436,7 +436,7 @@
                 </div>
                 <div class="col-12">
                     <div class="row h-100 d-flex justify-content-between align-items-center">
-                        <div class="col-8 px-0" id="col-familia">
+                        <div class="col-9 px-0" id="col-familia">
                             <!-- FAMILIARES -->
                             <div class="modal modal-top fade" id="pacienteModal" tabindex="-1" aria-labelledby="pacienteModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-sm modal-dialog-centered mx-auto">
@@ -464,8 +464,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-3 offset-1 px-0" id="col-agenda">
-                            <a href="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris text-white my-2 w-100 h-100 fw-bold rounded-8 py-3">Agendar cita médica</a>
+                        <div class="col-2 offset-1 px-0 d-none" id="col-agenda">
+                            <a href="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-40">Agendar cita médica</a>
                         </div>
                     </div>
                 </div>
@@ -904,6 +904,8 @@
             $('.box-content-familia').removeClass('d-none');
         }
 
+        
+
         const macsParami = @json(\App\Models\Veris::MACS_PARAMI);
 
         if(macsParami.includes(dataTurno.mac)){
@@ -982,6 +984,7 @@
         });
 
         await drawListFamiliaresModal();
+        verificarUsuarioDigital();
         $('body').on('click','.paciente-item', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'))
             $(`.nombrePacienteElegido`).html(`${ detalle.nombreCompleto }`);
@@ -1108,6 +1111,7 @@
                             </button>`;
                     }
                 }else{
+                    console.log('///////////////')
                     btnPagar = `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
                                     Pagar en caja
                                 </button>`;
@@ -1121,9 +1125,9 @@
                                 <!--button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
                                     Pagar aquí
                                 </button-->
-                                <button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
+                                <!--button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
                                     Pagar en caja
-                                </button>
+                                </button-->
                             </div>
                         </li>`
                 }else{
@@ -1597,6 +1601,27 @@
         })
 
     });
+
+    async function verificarUsuarioDigital(){
+        let dataAttr = $('.paciente-item-selected').attr("data-rel");
+        let paciente = JSON.parse(dataAttr);
+
+        let args = [];
+        args["endpoint"] = `${api_url_digitales}/${api_war_digitales}/seguridad/cuenta?tipoIdentificacion=${paciente.codigoTipoIdentificacion}&numeroIdentificacion=${paciente.numeroIdentificacion}&canalOrigen=VER_CMV`;
+        args["method"] = "GET";
+        args["showLoader"] = true;
+        args["sendHeaders"] = false;
+        args["token"] = "{{ $accessToken }}";
+
+        const data = await call(args);
+        console.log(data);
+
+        if(data.data === null){
+            $('#col-agenda').addClass('d-none')
+        }else{
+            $('#col-agenda').removeClass('d-none')
+        }
+    }
     
     // Función para mostrar el modal
     function mostrarModal() {

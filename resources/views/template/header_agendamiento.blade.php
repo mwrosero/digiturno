@@ -26,6 +26,22 @@
 		</div>
 	</div>
 </header>
+
+{{-- Modal consulta inactividad --}}
+<div class="modal modal-top fade" id="modalEstasAhiAgenda" tabindex="-1" aria-labelledby="modalEstasAhiAgendaLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1">
+    <div class="modal-dialog modal modal-xxl modal-dialog-centered mx-auto">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h5 class="modal-title text-center my-2 text-uppercase">¿Estás ahí?</h5>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
+                <a id="btnSi" href="#" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-2 fs-4" data-bs-dismiss="modal">Si</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4 btn-salir">SALIR</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
 	.toast-title {
         color: #fff !important;
@@ -34,3 +50,53 @@
         background-image: url("{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/exclamation.svg") !important;
     }
 </style>
+
+<script>
+	let temporizadorInactividad;
+    let temporizadorRespuesta;
+
+    const tiempoInactividad = 20; // Tiempo de inactividad en segundos
+    const tiempoMaximoRespuesta = 10; // Tiempo máximo de respuesta al modal en segundos
+	$(document).ready(async function() {
+		$(document).on("mousemove keydown click scroll", function () {
+		    reiniciarConteo();
+		});
+		$("#btnSi").on("click", function () {
+		    clearTimeout(temporizadorRespuesta);
+		    $("#modalEstasAhiAgenda").fadeOut();
+		    console.log("El usuario sigue presente.");
+		    reiniciarConteo();
+		});
+		if(!isMobile()){
+            console.log("Iniciando conteo")
+            // Iniciar el conteo inicial
+            reiniciarConteo();
+        }
+	})
+
+	function mostrarModal() {
+        // Mostrar el modal
+        $("#modalEstasAhiAgenda").modal("show");
+
+        // Iniciar temporizador para esperar respuesta
+        temporizadorRespuesta = setTimeout(() => {
+            $("#modalEstasAhiAgenda").modal("hide");
+            console.log("No hubo respuesta a tiempo.");
+            let url_salir = `/{{ $mac }}`;
+            // if(isMobile() || localStorage.getItem('userKiosko') !== null){
+            if (localStorage.getItem('userKiosko') !== null) {
+                url_salir = `/kiosko/{{ $mac }}`;
+            }
+            if(isMobile()){
+                url_salir = `/ingreso/{{ $mac }}`;
+            }
+            location.href = url_salir;
+        }, tiempoMaximoRespuesta * 1000);
+    }
+
+    // Función para reiniciar el conteo de inactividad
+    function reiniciarConteo() {
+        clearTimeout(temporizadorInactividad);
+        temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
+    }
+</script>
