@@ -4195,7 +4195,7 @@
         margin-bottom: 0px;
     }
     .activar-disabled{
-        background: #bababa;
+        background: #bababa !important;
         pointer-events: none;
     }
     #confimar-icon{
@@ -4246,9 +4246,14 @@
             min-width: 150px;
             width: 60%;
         }
-        #btnPrint, #btn-agendar-header{
+        #btnPrint{
             font-size: 20px !important;
             line-height: 25px !important;
+        }
+        #btn-agendar-header{
+            font-size: 30px !important;
+            line-height: 30px !important;
+            padding: 15px 0px !important;
         }
     }
     @media print {
