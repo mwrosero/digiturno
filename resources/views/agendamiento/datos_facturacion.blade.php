@@ -337,6 +337,14 @@ Mi Veris - Citas - Datos de facturación
                 await setearDatosFactura();
             }
         })
+
+        $('#modalPagoQr').on('hidden.bs.modal', async function (e) {
+            // reiniciarConteo()
+        });
+
+        $("#modalPagoQr").on('shown.bs.modal', function () {
+            // clearInterval(temporizadorInactividad)
+        });
         
         $('body').on('click', '.btn-turno', async function(){
             let detalle = [];

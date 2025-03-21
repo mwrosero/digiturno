@@ -436,7 +436,7 @@
                 </div>
                 <div class="col-12">
                     <div class="row h-100 d-flex justify-content-between align-items-center">
-                        <div class="col-9 px-0" id="col-familia">
+                        <div class="col-12 col-md-9 px-0" id="col-familia">
                             <!-- FAMILIARES -->
                             <div class="modal modal-top fade" id="pacienteModal" tabindex="-1" aria-labelledby="pacienteModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-sm modal-dialog-centered mx-auto">
@@ -464,8 +464,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-2 offset-1 px-0 d-none" id="col-agenda">
-                            <a href="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-40">Agendar cita médica</a>
+                        <div class="col-12 col-md-2 offset-md-1 px-0 d-none" id="col-agenda">
+                            <a href="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-40" id="btn-agendar-header">Agendar cita médica</a>
                         </div>
                     </div>
                 </div>
@@ -4245,6 +4245,10 @@
         #confimar-icon{
             min-width: 150px;
             width: 60%;
+        }
+        #btnPrint, #btn-agendar-header{
+            font-size: 20px !important;
+            line-height: 25px !important;
         }
     }
     @media print {
