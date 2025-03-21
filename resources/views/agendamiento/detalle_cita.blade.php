@@ -615,8 +615,12 @@ Mi Veris - Citas - Revisa tus datos
                 /*
                 https://api-phantomx.veris.com.ec/${api_war_digitales}/agenda/validarPermitePago?canalOrigen=MVE_CMV&codigoUsuario=0926178534&tipoItem=C&codigoReserva=4222668939
                 */
-                if(dataCita.precio.valor == 0){
-                    $('#modalAgendado').modal('show');
+                if(dataCita.precio.valorCanalVirtual == 0){
+                    if(isMobile()){
+                        location.href = dataCita.reserva.linkPago.kushki;
+                    }else{
+                        $('#modalAgendado').modal('show');
+                    }
                 }else{
                     await crearPreTransaccion()
                 }

@@ -30,15 +30,17 @@ async function call(args){
     }
     
     if(localStorage.getItem('flujo') === null || args.sendHeaders){
-        // console.log(7777)
+        console.log(7777)
         if(args.esLogin){
             myHeaders.append("Authorization", "Basic " + args.basic);
             myHeaders.append("Application", _applicationLogin);
             myHeaders.append("IdOrganizacion", _idOrganizacionLogin);
         }else{
-            myHeaders.append("Authorization","Bearer "+ args.token);
-            myHeaders.append("application", _application);
-            myHeaders.append("idorganizacion", _idOrganizacion);
+            if(args.sendHeaders === undefined || args.sendHeaders){
+                myHeaders.append("Authorization","Bearer "+ args.token);
+                myHeaders.append("application", _application);
+                myHeaders.append("idorganizacion", _idOrganizacion);
+            }
         }
     }
 

@@ -9,6 +9,54 @@ Mi Veris - Citas - Datos de facturación
 
 @include('template.header_agendamiento', ['showInfo' => true])
 
+
+{{-- Modal de pago Qr --}}
+<div class="modal fade mt-4" id="modalPagoQr" tabindex="-1" aria-labelledby="modalPagoQrLabel">
+    <div class="modal-dialog modal modal-xxl modal-dialog-centered mx-auto">
+        <form class="modal-content rounded-8">
+            <div class="modal-header d-none">
+                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3">
+                <input type="hidden" id="detallePago">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3">{{ __('Pago en línea:') }}</h5>
+                <ul class="nav nav-pills justify-content-between bg-white w-100 rounded-3 mb-3" id="pills-tab" role="tablist">
+                    {{-- <li class="nav-item flex-fill" role="presentation">
+                        <button class="nav-link w-100 px-8 px-md-5 d-flex justify-content-center align-items-center active" id="pills-email-tab" data-bs-toggle="pill" data-bs-target="#pills-email" type="button" role="tab" aria-controls="pills-email" aria-selected="true">
+                            <i class="fa-regular fa-envelope icon-tab d-none d-md-inline-block me-2"></i>
+                            Email                                
+                        </button>
+                    </li> --}}
+                    <li class="nav-item flex-fill" role="presentation">
+                        <button data-rel="N" class="nav-link w-100 px-8 px-md-5 d-flex justify-content-center align-items-center active" id="pills-qr-tab" data-bs-toggle="pill" data-bs-target="#pills-qr" type="button" role="tab" aria-controls="pills-qr" aria-selected="false">
+                            <i class="fa-solid fa-qrcode me-2"></i>
+                            Código QR
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content bg-transparent w-100 pt-2" id="pills-tabContent">
+                    {{-- <div class="tab-pane fade mt-3 px-2 w-100 show active text-center" id="pills-email" role="tabpanel" aria-labelledby="pills-email-tab" tabindex="0">
+                        <input autofocus autocomplete="off" id="email_link_pago" type="text" class="w-100 keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1" data-kioskboard-specialcharacters="true">
+                        <div type="button" class="btn bg-veris-dark btn-enviar-mail text-white mx-auto mb-5 rounded-8 my-5 fs-20">
+                            ENVIAR LINK DE PAGO
+                            <i class="fa-regular fa-paper-plane ms-2 text-white"></i>
+                        </div>
+                    </div> --}}
+                    <div class="tab-pane fade mt-3 px-2 w-100 show active text-center" id="pills-qr" role="tabpanel" aria-labelledby="pills-qr-tab" tabindex="0">
+                        <div class="w-100 text-center my-3" id="qrcode"></div>
+                        <p class="text-veris-dark fw-medium fs-4 text-center mt-2">
+                            Escanea el Código QR con tu celular<br>para realizar el pago.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0">
+                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 {{-- Modal Confirmar Pago --}}
 <div class="modal modal-top fade" id="modalPagoRealizado" aria-labelledby="modalPagoRealizadoLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1">
     <div class="modal-dialog modal modal-xxl modal-dialog-centered mx-auto">
@@ -212,10 +260,17 @@ Mi Veris - Citas - Datos de facturación
         <div class="col-12 col-lg-8 overflow-auto pt-3">
             <div class="flex-grow-1 container-p-y pt-0">
                 <div class="row g-4 justify-content-center mt-5">
-                    <div class="col-12 col-md-10 mb-4 ps-3 pe-3 mb-4">
+                    <div class="col-12 col-md-10 mb-4 ps-3 pe-3 mb-4 tarjeta-box d-none">
                         <div class="card shadow py-4 rounded-8 cursor-pointer btn-pagar">
                             <div class="card-body fs-40 line-height-48 text-center">
                                 Tarjeta de débito o crédito
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-10 mb-4 ps-3 pe-3 mb-4 qr-box d-none" data-bs-toggle="modal" data-bs-target="#modalPagoQr">
+                        <div class="card shadow py-4 rounded-8 cursor-pointer">
+                            <div class="card-body fs-40 line-height-48 text-center">
+                                Pago en línea
                             </div>
                         </div>
                     </div>
@@ -232,6 +287,7 @@ Mi Veris - Citas - Datos de facturación
     </div>
 </section>
 
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/qrcode.js"></script>
 
 <script>
 
@@ -245,8 +301,19 @@ Mi Veris - Citas - Datos de facturación
     let dataCita = JSON.parse(local);
     let estadoPoliticas;
     let ultimaVersionPoliticas;
+    let clientesAuth = [5803, 13, 68, 10996, 7656];
+    let esKiosko = false;
 
     document.addEventListener("DOMContentLoaded", async function () {
+        if (localStorage.getItem('userKiosko') !== null) {
+            esKiosko = true
+        }
+        if(!esKiosko){
+            $('.qr-box').removeClass('d-none');
+            await generarLinkQr()
+        }else{
+            $('.tarjeta-box').removeClass('d-none');
+        }
         await parametrosGenerales("{{ $mac }}", true);
 
         $('body').on('change', '#checkTerminosCondicion', function(){
@@ -312,6 +379,17 @@ Mi Veris - Citas - Datos de facturación
             }, 2000);
         });
     });
+
+    async function generarLinkQr(){
+        $('#qrcode').empty();
+        $('#qrcode').qrcode({
+            width: 200,
+            height: 200,
+            color: "#000",
+            bgColor: "#FFF",
+            text: dataCita.reserva.linkPago.kushki
+        });
+    }
 
     async function validarDatosFactura(){
         let msg = "";
@@ -508,8 +586,63 @@ Mi Veris - Citas - Datos de facturación
                 if(detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     await setearDiagnostico();
                 }
+                if(clientesAuth.includes(dataCita.convenio.codigoCliente) && dataCita.convenio.requiereAutorizacionFacturacion){
+                    await obtenerAutorizacion();
+                }
                 await consultaPreTrx(idPreTransaccion, data.data);
             }
+        }
+    }
+
+    async function obtenerAutorizacion(){
+        let secuenciaAfiliadoConvenio = dataCita.convenio.secuenciaAfiliado;
+        console.log(secuenciaAfiliadoConvenio);
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/validacion_aseguradora/sync/autorizacion?canalInvocacion=CAJ&lineaNegocio=CMV&secuenciaAfiliado=${ secuenciaAfiliadoConvenio }`;
+        args["method"] = "POST";    
+        args["token"] = accessToken;
+        args["sendHeaders"] = "true";
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify({
+
+        });
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            datosPago.sync = data.data
+            await setearAutorizacion();
+        }else{
+            toastr.error("", data.message, {
+                timeOut: 5000
+            });
+        }
+    }
+
+    async function setearAutorizacion(){
+        let idAgrupacion = await getIdAgrupacionArray();
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${ datosPago.idPreTransaccion }/setear_autorizacion_aseguradora?codigoEmpresa=1`;
+        args["method"] = "PUT";
+        args["token"] = accessToken;
+        args["sendHeaders"] = "true";
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify({
+            "idAgrupacion": idAgrupacion[0],
+            // "_id": "string",
+            "esAutorizacionAutomatica": true,
+            "secuenciaLogWs": datosPago.sync.secuenciaLogSincronizacion,
+            "numeroAutorizacion": datosPago.sync.autorizacionAseguradora
+        });
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            datosPago.setearAutorizacion = data.data
+        }else{
+            toastr.error("", data.message, {
+                timeOut: 5000
+            });
         }
     }
 

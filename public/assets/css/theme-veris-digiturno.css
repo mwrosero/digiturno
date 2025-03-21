@@ -269,6 +269,14 @@ body, html {
     line-height: 25px !important;
 }
 
+.fs-30 {
+    font-size: 30px;
+}
+
+.line-height-30{
+    line-height: 30px;
+}
+
 .fs-40 {
     font-size: 40px;
 }
@@ -335,7 +343,7 @@ body, html {
 }
 
 .bg-veris-dark{
-    background: var(--veris-blue-dark);
+    background: var(--veris-blue-dark) !important;
 }
 
 .text-veris-light{
