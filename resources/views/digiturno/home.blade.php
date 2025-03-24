@@ -164,6 +164,8 @@
 	        KioskBoard.run('.virtual-keyboard-all', {});
 		}
 
+		console.log("TEST-*********-")
+
 		$('#qrcode').qrcode({
 			width: 300,
             height: 300,
@@ -318,7 +320,7 @@
         args["sendHeaders"] = "true";
         args["bodyType"] = "plain";
         const data = await call(args);
-        if(data.code == 200){
+        if(data.code == 200){ 
             console.log(data)
         }
         return;
