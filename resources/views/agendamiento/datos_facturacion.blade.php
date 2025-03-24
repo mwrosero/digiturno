@@ -1090,10 +1090,14 @@ Mi Veris - Citas - Datos de facturación
     }
 
     async function printFactura(){
-        clearInterval(temporizadorInactividad)
+        // clearInterval(temporizadorInactividad)
         console.table(datosPago.comprobantes)
+        const apiUrl = `${api_url_digitales}/reportes/v1/facturacion/comprobante_paciente?format=text_plain&codigoEmpresa=1&numeroTransaccion=${datosPago.comprobantes.transacciones[0].numeroTransaccion}&codigoSucursalImpresion=${dataParametrosGenerales.caja.codigoSucursal}&usuarioRealizaImpresion=true`;
+
+        // Codificar la URL antes de pasarla como parámetro
+        const encodedUrl = encodeURIComponent(apiUrl);
         let args = [];
-        args["endpoint"] = `http://localhost:3001/printer-ticket/v1/printFile?url=https://api-phantomx.veris.com.ec/reportes/v1/facturacion/comprobante_paciente?format=text_plain&codigoEmpresa=1&numeroTransaccion=${datosPago.comprobantes.transacciones[0].numeroTransaccion}&codigoSucursalImpresion=${dataParametrosGenerales.caja.codigoSucursal}&usuarioRealizaImpresion=true`;
+        args["endpoint"] = `http://localhost:3001/printer-ticket/v1/printFile?url=${encodedUrl}`;
         args["method"] = "GET";
         args["token"] = accessToken;
         args["sendHeaders"] = "true";
