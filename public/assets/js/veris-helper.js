@@ -112,6 +112,10 @@ async function callInformes(args) {
         myHeaders.append("Content-Type", "application/json");
         requestOptions.headers = myHeaders;
     }
+    if (args.bodyType === "plain") {
+        myHeaders.append("Content-Type", "text/plain");
+        requestOptions.headers = myHeaders;
+    }
     if (["POST", "PUT", "DELETE"].includes(args.method) && args.data) {
         requestOptions.body = args.data;
     }
