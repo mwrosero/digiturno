@@ -435,7 +435,7 @@
                 </div>
                 <div class="col-12">
                     <div class="row h-100 d-flex justify-content-between align-items-center">
-                        <div class="col-12 col-md-5 col-xl-8 px-0" id="col-familia">
+                        <div class="col-12 col-md-6 col-xl-8 px-0" id="col-familia">
                             <!-- FAMILIARES -->
                             <div class="modal modal-top fade" id="pacienteModal" tabindex="-1" aria-labelledby="pacienteModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-sm modal-dialog-centered mx-auto">
@@ -463,7 +463,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 offset-md-1 col-xl-3 offset-xl-1 px-0 d-none" id="col-agenda">
+                        <div class="col-12 col-md-5 offset-md-1 col-xl-3 offset-xl-1 px-0 d-none" id="col-agenda">
                             <a href="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-30" id="btn-agendar-header">Agendar cita médica</a>
                         </div>
                         <div class="col-12 px-0 d-block d-md-none">
