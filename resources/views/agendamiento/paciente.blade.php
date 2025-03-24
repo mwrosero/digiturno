@@ -330,7 +330,20 @@ Elige Paciente
         localStorage.setItem('cita-{{ $params }}', JSON.stringify(dataCita));
 
     });
-    
+    async function printFactura(){
+        // clearInterval(temporizadorInactividad)
+        // console.table(datosPago.comprobantes)
+        let args = [];
+        args["endpoint"] = `http://localhost:3001/printer-ticket/v1/printFile?url=https://api-phantomx.veris.com.ec/reportes/v1/facturacion/comprobante_paciente?format=text_plain&codigoEmpresa=1&numeroTransaccion=21309115&codigoSucursalImpresion=1&usuarioRealizaImpresion=true`;
+        args["method"] = "GET";
+        args["token"] = accessToken;
+        args["sendHeaders"] = "true";
+        const data = await call(args);
+        if(data.code == 200){
+            console.log(data)
+        }
+        return;
+    }
 </script>
 
 <style>
