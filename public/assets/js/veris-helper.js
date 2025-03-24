@@ -30,7 +30,7 @@ async function call(args){
     }
     
     if(localStorage.getItem('flujo') === null || args.sendHeaders){
-        console.log(7777)
+        // console.log(7777)
         if(args.esLogin){
             myHeaders.append("Authorization", "Basic " + args.basic);
             myHeaders.append("Application", _applicationLogin);
@@ -80,7 +80,7 @@ async function call(args){
                 hideLoader();
             }
             if(!args.dismissAlert && data.code == 400 && localStorage.getItem('flujo') === null){
-                console.log(5555)
+                // console.log(5555)
                 toastr.warning(data.message, `Ha ocurrido un error`, {
                     timeOut: 8000
                 });
@@ -88,7 +88,7 @@ async function call(args){
             }
             return data;
         }).catch(function(error) {
-            console.log("catch error call")
+            // console.log("catch error call")
             if(args.showLoader || args.showLoader == true){
                 hideLoader();
             }
@@ -296,7 +296,7 @@ async function obtenerPaises(){
 
     const data = await call(args);
     if(data.code == 200){
-        console.log('provincias', data);
+        // console.log('provincias', data);
         $('#pais').empty();
         $('#provincia').empty();
         $('#ciudad').empty();
