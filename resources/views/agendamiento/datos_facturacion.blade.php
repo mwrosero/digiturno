@@ -358,6 +358,17 @@ Mi Veris - Citas - Datos de facturación
             await generarTurno(detalle, crearPtx);
         })
 
+        $('#modalDatosFacturacion').on('hidden.bs.modal', async function (e) {
+            // await cargarCodigosPaises()
+            $('.box-datos-factura').removeClass('d-none')
+            $('.box-load-pago').addClass('d-none')
+            reiniciarConteo();
+        });
+
+        $('#modalDatosFacturacion').on('shown.bs.modal', async function (e) {
+            clearInterval(temporizadorInactividad)
+        });
+
         let timeoutId;
 
         $('body').on('input', '#numeroIdentificacion', function() {
