@@ -605,7 +605,7 @@ Mi Veris - Citas - Datos de facturación
                 if(detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     await setearDiagnostico();
                 }
-                if(clientesAuth.includes(dataCita.convenio.codigoCliente) && dataCita.convenio.requiereAutorizacionFacturacion){
+                if(dataCita.convenio.codigoConvenio != null && clientesAuth.includes(dataCita.convenio.codigoCliente) && dataCita.convenio.requiereAutorizacionFacturacion){
                     await obtenerAutorizacion();
                 }
                 await consultaPreTrx(idPreTransaccion, data.data);
@@ -1090,6 +1090,8 @@ Mi Veris - Citas - Datos de facturación
     }
 
     async function printFactura(){
+        clearInterval(temporizadorInactividad)
+        console.table(datosPago.comprobantes)
         let args = [];
         args["endpoint"] = `http://localhost:3001/printer-ticket/v1/printFile?url=https://api-phantomx.veris.com.ec/reportes/v1/facturacion/comprobante_paciente?format=text_plain&codigoEmpresa=1&numeroTransaccion=${datosPago.comprobantes.transacciones[0].numeroTransaccion}&codigoSucursalImpresion=${dataParametrosGenerales.caja.codigoSucursal}&usuarioRealizaImpresion=true`;
         args["method"] = "GET";
