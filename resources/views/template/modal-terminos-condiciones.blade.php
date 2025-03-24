@@ -1,6 +1,5 @@
 <div class="modal fade" id="modalTerminosCondiciones" aria-labelledby="modalTerminosCondicionesLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1">
     <div class="modal-dialog modal-fullscreen pt-5">
-        
         <div class="modal-content" style="max-height: 90vh;overflow-y: auto;width: 100%;margin: auto;padding: 30px;">
             <div class="w-100 position-relative">
                 <h5 class="fs--20 line-height-24 mt-3 mb-3 text-center">TÉRMINOS Y CONDICIONES</h5

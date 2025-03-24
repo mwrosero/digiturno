@@ -16,7 +16,7 @@
             <div class="modal-header">
                 <h5 class="fs--20 line-height-24 mt-3 mb-3 text-center">Datos de Facturación</h5
                 >
-                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
                 <div class="row box-datos-factura">
@@ -151,7 +151,7 @@
             <div class="modal-header">
                 <h5 class="fs--20 line-height-24 mt-3 mb-3 text-center">Datos de Voucher</h5
                 >
-                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
                 <div class="row">
@@ -198,12 +198,12 @@
 <div class="modal fade mt-4" id="modalPago" tabindex="-1" aria-labelledby="modalPagoLabel">
     <div class="modal-dialog modal-sm modal-dialog-top modal-dialog-scrollable mx-auto">
         <form class="modal-content rounded-8">
-            <div class="modal-header d-none">
-                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3">{{ __('Pago en línea:') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
                 <input type="hidden" id="detallePago">
-                <h5 class="fs--20 line-height-24 mt-3 mb-3">{{ __('Pago en línea:') }}</h5>
                 <ul class="nav nav-pills justify-content-between bg-white w-100 rounded-3 mb-3" id="pills-tab" role="tablist">
                     <li class="nav-item flex-fill" role="presentation">
                         <button class="nav-link w-100 px-8 px-md-5 d-flex justify-content-center align-items-center active" id="pills-email-tab" data-bs-toggle="pill" data-bs-target="#pills-email" type="button" role="tab" aria-controls="pills-email" aria-selected="true">
@@ -244,12 +244,12 @@
 <div class="modal modal-top fade" id="modalNotificarLlegada" tabindex="-1" aria-labelledby="modalNotificarLlegadaLabel">
     <div class="modal-dialog modal modal-dialog-centered mx-auto">
         <form class="modal-content rounded-8">
-            <div class="modal-header d-none">
-                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3" id="tituloPaqueteDetalleNotificar"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
                 {{-- <h5 class="fs--20 line-height-24 mt-3 mb-3">{{ __('Detalle la orden:') }}</h5> --}}
-                <h5 class="fs--20 line-height-24 mt-3 mb-3" id="tituloPaqueteDetalleNotificar"></h5>
                 <div class="row gx-2 justify-content-between align-items-center">
                     <ul class="list-group border-0 p-0" id="listaPrestaciones">
                     </ul>
@@ -269,12 +269,11 @@
 <div class="modal modal-top fade" id="modalConfirmarCita" aria-labelledby="modalConfirmarCitaLabel" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1">
     <div class="modal-dialog modal modal-sm modal-dialog-centered mx-auto">
         <form class="modal-content rounded-8">
-            <div class="modal-header d-none">
-                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-start">Cita confirmada</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3 text-center">
-                
-                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-start">Cita confirmada</h5>
                 <div class="box-info-consultorio d-flex justify-content-center align-items-center fw-bold text-dark fs-25 bg-silver-light py-2 rounded-8 my-2">
                 </div>
                 <div class="w-100 my-3 box-info-medico-modal"></div>
@@ -294,11 +293,11 @@
 <div class="modal modal-top fade" id="modalPagoRealizado" tabindex="-1" aria-labelledby="modalPagoRealizadoLabel">
     <div class="modal-dialog modal modal-sm modal-dialog-centered mx-auto">
         <form class="modal-content rounded-8">
-            <div class="modal-header d-none">
-                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-start">Pago realizado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3 text-center">
-                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-start">Pago realizado</h5>
                 <div class="box-info-comprobante d-flex justify-content-center align-items-center fw-bold text-dark fs-25 bg-silver-light py-2 rounded-8 my-2">
                     Comprobante: <span></span>
                 </div>
@@ -318,7 +317,7 @@
     <div class="modal-dialog modal modal-dialog-centered mx-auto">
         <form class="modal-content rounded-8">
             <div class="modal-header d-none">
-                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
                 <h5 class="fs--20 line-height-24 mt-3 mb-3 text-center" id="direccionDirigirseLlegada">Dirigirse a</h5>
@@ -333,11 +332,11 @@
 <div class="modal modal-top fade" id="modalDetalleOrden" tabindex="-1" aria-labelledby="modalDetalleOrdenLabel">
     <div class="modal-dialog modal modal-dialog-centered mx-auto">
         <form class="modal-content rounded-8">
-            <div class="modal-header d-none">
-                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3" id="tituloOrdenDetalle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
-                <h5 class="fs--20 line-height-24 mt-3 mb-3" id="tituloOrdenDetalle"></h5>
                 <div class="bg-silver-light rounded-8 text-veris-dark text-center fs-16 fw-bold p-2 mb-2">Muestras / Exámenes</div>
                 <ul class="row border-0 p-0 my-2" id="detalleComponentesOrden">
                     <div class="col-12 col-md-6 d-flex flex-fill flex-column prestaciones-pagadas">
@@ -371,11 +370,11 @@
 <div class="modal modal-top fade" id="modalDetallePaquete" tabindex="-1" aria-labelledby="modalDetallePaqueteLabel">
     <div class="modal-dialog modal modal-dialog-centered mx-auto">
         <form class="modal-content rounded-8">
-            <div class="modal-header d-none">
-                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3" id="tituloPaqueteDetalle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
-                <h5 class="fs--20 line-height-24 mt-3 mb-3" id="tituloPaqueteDetalle"></h5>
                 <ul class="list-group border-0 p-0 my-2" id="detalleComponentesPaquete">
                 </ul>
                 <div class="my-2 box-info-detalle p-2 bg-silver">
@@ -391,11 +390,11 @@
 <div class="modal modal-top fade" id="modalDetalleChequeo" tabindex="-1" aria-labelledby="modalDetalleChequeoLabel">
     <div class="modal-dialog modal modal-dialog-centered modal-lg mx-auto">
         <form class="modal-content rounded-8">
-            <div class="modal-header d-none">
-                <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3" id="tituloChequeoDetalle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
-                <h5 class="fs--20 line-height-24 mt-3 mb-3" id="tituloChequeoDetalle"></h5>
                 <input type="hidden" id="dataChequeo">
                 {{-- <div class="accordion border-0 p-0 my-2" id="detalleComponentesChequeo">
                 </div> --}}
@@ -436,16 +435,16 @@
                 </div>
                 <div class="col-12">
                     <div class="row h-100 d-flex justify-content-between align-items-center">
-                        <div class="col-12 col-md-9 px-0" id="col-familia">
+                        <div class="col-12 col-md-5 col-xl-8 px-0" id="col-familia">
                             <!-- FAMILIARES -->
                             <div class="modal modal-top fade" id="pacienteModal" tabindex="-1" aria-labelledby="pacienteModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-sm modal-dialog-centered mx-auto">
                                     <form class="modal-content rounded-4">
-                                        <div class="modal-header d-none">
-                                            <button type="button" class="btn-close fw-medium top-50" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <div class="modal-header">
+                                            <h4 class="mb-3">Elegir paciente</h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body p-4">
-                                            <h4 class="mb-3">Elegir paciente</h4>
                                             <div class="row gx-2 justify-content-between align-items-center">
                                                 <div class="list-group list-group-checkable d-grid gap-2 border-0" id="listaPacientes">
                                                 </div>
@@ -464,8 +463,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-2 offset-md-1 px-0 d-none" id="col-agenda">
-                            <a href="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-40" id="btn-agendar-header">Agendar cita médica</a>
+                        <div class="col-12 col-md-6 offset-md-1 col-xl-3 offset-xl-1 px-0 d-none" id="col-agenda">
+                            <a href="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-30" id="btn-agendar-header">Agendar cita médica</a>
                         </div>
                         <div class="col-12 px-0 d-block d-md-none">
                             <a href="https://app.veris.com.ec/external/financiero/devoluciones" class="btn bg-veris text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-40">Gestionar devoluciones</a>
