@@ -313,8 +313,13 @@
 	async function printFactura(){
         // clearInterval(temporizadorInactividad)
         // console.table(datosPago.comprobantes)
+        const apiUrl = "https://api-phantomx.veris.com.ec/reportes/v1/facturacion/comprobante_paciente?format=text_plain&codigoEmpresa=1&numeroTransaccion=21309115&codigoSucursalImpresion=1&usuarioRealizaImpresion=true";
+
+		// Codificar la URL antes de pasarla como parámetro
+		const encodedUrl = encodeURIComponent(apiUrl);
+
         let args = [];
-        args["endpoint"] = `http://localhost:3001/printer-ticket/v1/printFile?url=https://api-phantomx.veris.com.ec/reportes/v1/facturacion/comprobante_paciente?format=text_plain&codigoEmpresa=1&numeroTransaccion=21309115&codigoSucursalImpresion=1&usuarioRealizaImpresion=true`;
+        args["endpoint"] = `http://localhost:3001/printer-ticket/v1/printFile?url=${encodedUrl}`;
         args["method"] = "GET";
         args["token"] = accessToken;
         args["sendHeaders"] = "true";
