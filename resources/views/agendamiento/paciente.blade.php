@@ -338,6 +338,7 @@ Elige Paciente
         args["method"] = "GET";
         args["token"] = accessToken;
         args["sendHeaders"] = "true";
+        args["bodyType"] = "json";
         const data = await call(args);
         if(data.code == 200){
             console.log(data)
