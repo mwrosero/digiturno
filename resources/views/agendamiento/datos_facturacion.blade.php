@@ -605,8 +605,10 @@ Mi Veris - Citas - Datos de facturación
                 if(detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     await setearDiagnostico();
                 }
-                if(dataCita.convenio.codigoConvenio != null && clientesAuth.includes(dataCita.convenio.codigoCliente) && dataCita.convenio.requiereAutorizacionFacturacion){
-                    await obtenerAutorizacion();
+                if(dataCita.convenio != null){
+                    if(clientesAuth.includes(dataCita.convenio.codigoCliente) && dataCita.convenio.requiereAutorizacionFacturacion){
+                        await obtenerAutorizacion();
+                    }
                 }
                 await consultaPreTrx(idPreTransaccion, data.data);
             }
