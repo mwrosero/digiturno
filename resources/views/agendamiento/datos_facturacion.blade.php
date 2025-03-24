@@ -174,7 +174,7 @@ Mi Veris - Citas - Datos de facturación
                         <div class="form-check d-flex justify-content-md-center align-items-center">
                             <input class="form-check-input terminos-input me-2 mb-1 width-24 shadow" type="checkbox" value="" id="checkTerminosCondicion" required>
                             <label class="form-check-label fs-20 fw-medium line-height-20" for="checkTerminosCondicion">
-                                Acepto los <a href="https://www.veris.com.ec/terminos-y-condiciones/" target="_blank" class="">términos y condiciones</a> 
+                                Acepto los <span data-bs-toggle="modal" data-bs-target="#modalTerminosCondiciones" class="">términos y condiciones</span> 
                                 <span id="politicas" class="d-none">y <a href="https://www.veris.com.ec/politicas/" target="_blank">Política de protección de Datos Personales</a></span>
                             </label>
                             <div class="invalid-feedback">
