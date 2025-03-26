@@ -626,7 +626,8 @@ Mi Veris - Citas - Revisa tus datos
                 }
                 //location.href = '/citas-datos-facturacion/{{ $params }}?mac={{ $mac }}';
             }else{
-                $('#modalAgendado').modal('show');
+                // $('#modalAgendado').modal('show');
+                location.href = '/citas-datos-facturacion/{{ $params }}?mac={{ $mac }}';
                 // location.href = '/cita-agendada/{{ $params }}?mac={{ $mac }}';
             }
         }else{
