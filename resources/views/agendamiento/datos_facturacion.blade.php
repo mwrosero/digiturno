@@ -490,9 +490,10 @@ Mi Veris - Citas - Datos de facturación
         }
 
         // let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
-        let paciente = dataTurno.paciente;
+        let paciente = dataCita.paciente;
+        let nombreCompleto = `${dataCita.paciente.primerNombre} ${dataCita.paciente.primerApellido} ${dataCita.paciente.segundoApellido}`;
         let args = [];
-        args["endpoint"] =  `${api_url}/${api_war}/transaccion/generar_ticket?macAddress={{ $mac }}&tipoIdentificacion=${paciente.nombreTipoIdentificacion}&numeroIdentificacion=${paciente.numeroIdentificacion}&nombreCompleto=${ paciente.nombreCompleto }${url_adicional}`;
+        args["endpoint"] =  `${api_url}/${api_war}/transaccion/generar_ticket?macAddress={{ $mac }}&tipoIdentificacion=${paciente.tipoIdentificacion}&numeroIdentificacion=${paciente.numeroIdentificacion}&nombreCompleto=${ nombreCompleto }${url_adicional}`;
         //dataCita.paciente.numeroPaciente
         args["method"] = "POST";
         args["token"] = accessToken;
