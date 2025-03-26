@@ -1130,6 +1130,10 @@
                                 </button>`;
                 }
 
+                if(esTerapia){
+                    btnPagar = ``;
+                }
+
                 if(!esKiosko){
                     // console.log(33)
                     prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start mt-auto">
@@ -1433,16 +1437,17 @@
                 esAgendable = detalle.esAgendable;
                 esPagada = (estadosVigentes.includes(detalle.codigoEstado)) ? "S" : "N";
             }
-            // console.log(generales);
+            console.log(generales);
             // console.log(detalle);
             let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
             
             convenioItem = {
-                "codigoConvenio": generales.codigoConvenio,
-                "nombreConvenio": generales.nombreConvenio,
-                "codigoTipoConvenio": generales.codigoTipoConvenio,
-                "nombreTipoConvenio": generales.nombreTipoConvenio,
+                "codigoConvenio": generales.beneficio.convenio.codigoConvenio,
+                "nombreConvenio": generales.beneficio.convenio.nombreConvenio,
+                "codigoTipoConvenio": generales.beneficio.convenio.codigoTipoConvenio,
+                "nombreTipoConvenio": generales.beneficio.convenio.nombreTipoConvenio,
+                "requiereAutorizacionFacturacion": generales.beneficio.convenio.requiereAutorizacion,
                 "permitePago": permitePago,
                 "permiteReserva": esAgendable
             }
@@ -1480,8 +1485,9 @@
                 "origen": "Listatratamientos"
             }
             dataTurno.ordenAgenda = dataCitaReserva;
-            // console.log('/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}');
+            // console.log(dataCitaReserva)
             // return;
+            // console.log('/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}');
             localStorage.setItem('turno-{{ $portalToken }}', JSON.stringify(dataTurno));
             location.href = '/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}';
             // console.log("RED");

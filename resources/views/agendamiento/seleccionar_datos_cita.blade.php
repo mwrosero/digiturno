@@ -764,13 +764,14 @@ Elige datos para la Cita
     }
 
     async function cargarConvenios(){
+        clearInterval(temporizadorInactividad)
         //return;
         let args = [];
         args["endpoint"] = api_url_digitales + `/${api_war_digitales}/comercial/paciente/convenios?canalOrigen=${_canalOrigen}&tipoIdentificacion=${dataCita.paciente.tipoIdentificacion}&numeroIdentificacion=${dataCita.paciente.numeroIdentificacion}&codigoEmpresa=1&tipoCredito=CREDITO_SERVICIOS&excluyeNinguno=S`;
         args["method"] = "GET";
         args["showLoader"] = true;
         const data = await call(args);
-
+        reiniciarConteo();
         // llenar modal
         if (data.code == 200){
             if(data.data.length > 0){
