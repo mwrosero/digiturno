@@ -1623,7 +1623,7 @@
         });
 
         $('#modalDatosFacturacion').on('shown.bs.modal', async function (e) {
-            clearInterval(temporizadorInactividad)
+            // clearInterval(temporizadorInactividad)
         });
 
         $("#modalAceptacionResultados").on('shown.bs.modal', function () {
@@ -2330,7 +2330,6 @@
                             |
                 <span class="col-5 mb-0 shadow-none cursor-inherit">$${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}</span>`);
             // clearTimeout(temporizadorInactividad);
-            clearInterval(temporizadorInactividad)
             mostrarDetallesFactura();
             $('#modalDatosFacturacion').modal("show");
             // await validacionPrevioPago()
@@ -2455,6 +2454,7 @@
             datosPago.validacion = data.data;
             // $('#modalDatosFacturacion').modal("hide");
             // $('#modalDatosVoucher').modal("show");
+            clearInterval(temporizadorInactividad)
             if(datosPago.validacion.valorTotalAPagarPaciente == 0){
                 console.log(9999)
                 await solicitarPagoPinPad();
@@ -2596,7 +2596,6 @@
         const data = await call(args);
         $('.box-datos-factura').removeClass('d-none')
         $('.box-load-pago').addClass('d-none')
-        reiniciarConteo();
         if(data.code == 200){
             datosPago.comprobantes = data.data;
             // Imprimir ticket
@@ -2629,6 +2628,8 @@
             }
             */
             // $('#modalDatosPagoExitoso').modal('show');
+        }else{
+            reiniciarConteo();
         }
     }
 
@@ -2642,6 +2643,7 @@
         args["method"] = "GET";
         args["token"] = accessToken;
         const data = await call(args);
+        reiniciarConteo();
         if(data.code == 200){
             console.log(data)
         }
