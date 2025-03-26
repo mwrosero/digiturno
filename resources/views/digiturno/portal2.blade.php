@@ -2024,12 +2024,12 @@
         $('#v-pills-tabContent').find('input:checked').each(async function(index, element) {
             let prestacion = JSON.parse($(this).attr('data-rel'))
             if(prestacion.estadoExamen == "PENDIENTE"){
+                await notificarLlegada(prestacion, false);
+            }else if(prestacion.estadoExamen != "ACEPTADO"){
                 arr.push({
                     "_id": generateUUIDv4(),
                     "secuenciaPreXAfi": prestacion.secuenciaPreXAfi
                 })
-            }else{
-                await notificarLlegada(prestacion, false);
             }
         });
         return arr;
