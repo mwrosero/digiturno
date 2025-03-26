@@ -1609,7 +1609,7 @@
             // await cargarCodigosPaises()
             $('.box-datos-factura').removeClass('d-none')
             $('.box-load-pago').addClass('d-none')
-            reiniciarConteo();
+            // reiniciarConteo();
         });
 
         $('#modalDatosFacturacion').on('shown.bs.modal', async function (e) {
@@ -2575,6 +2575,7 @@
         const data = await call(args);
         $('.box-datos-factura').removeClass('d-none')
         $('.box-load-pago').addClass('d-none')
+        reiniciarConteo();
         if(data.code == 200){
             datosPago.comprobantes = data.data;
             // Imprimir ticket
@@ -2854,6 +2855,12 @@
                         }else{
                             labelEstadoItem = `Por pagar`;
                             if(detalle.nombreServicioNivel1 == "LABORATORIO" || detalle.nombreServicioNivel1 == "IMAGENES" || detalle.nombreServicioNivel1 == "PROCEDIMIENTOS" || detalle.nombreServicioNivel1 == "CONSULTA" || detalle.nombreServicioNivel1 == "CONSULTA NO MEDICA" || tipoServicio == "TERAPIA_FISICA"){
+                                // Permite agendar
+                                if(detalle.codigoReserva === null){
+
+                                }else{
+                                    // Permite pagar
+                                }
                                 if(esKiosko){
                                     if(detalle.nombreServicioNivel1 == "CONSULTA"){
                                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">

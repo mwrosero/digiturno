@@ -362,7 +362,6 @@ Mi Veris - Citas - Datos de facturación
             // await cargarCodigosPaises()
             $('.box-datos-factura').removeClass('d-none')
             $('.box-load-pago').addClass('d-none')
-            reiniciarConteo();
         });
 
         $('#modalDatosFacturacion').on('shown.bs.modal', async function (e) {
@@ -998,6 +997,7 @@ Mi Veris - Citas - Datos de facturación
         const data = await call(args);
         $('.box-datos-factura').removeClass('d-none')
         $('.box-load-pago').addClass('d-none')
+        reiniciarConteo();
         if(data.code == 200){
             datosPago.comprobantes = data.data;
             // Imprimir ticket
@@ -1168,6 +1168,7 @@ Mi Veris - Citas - Datos de facturación
         background-size: 40px 40px !important;
         color: white !important;
     }
+    .modal,
     .modal-xxl{
         background: transparent !important;
     }
