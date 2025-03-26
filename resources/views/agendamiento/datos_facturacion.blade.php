@@ -365,7 +365,7 @@ Mi Veris - Citas - Datos de facturación
         });
 
         $('#modalDatosFacturacion').on('shown.bs.modal', async function (e) {
-            clearInterval(temporizadorInactividad)
+            // clearInterval(temporizadorInactividad)
         });
 
         let timeoutId;
@@ -909,6 +909,7 @@ Mi Veris - Citas - Datos de facturación
         args["sendHeaders"] = "true";
         const data = await call(args);
         console.log(data);
+        clearInterval(temporizadorInactividad)
         if(data.code == 200){
             datosPago.cobro = data.data;
             $('#modalDatosVoucher').modal("hide");
@@ -1001,7 +1002,7 @@ Mi Veris - Citas - Datos de facturación
         const data = await call(args);
         $('.box-datos-factura').removeClass('d-none')
         $('.box-load-pago').addClass('d-none')
-        reiniciarConteo();
+        // reiniciarConteo();
         if(data.code == 200){
             datosPago.comprobantes = data.data;
             // Imprimir ticket
@@ -1034,6 +1035,8 @@ Mi Veris - Citas - Datos de facturación
             }
             */
             // $('#modalDatosPagoExitoso').modal('show');
+        }else{
+            reiniciarConteo();
         }
     }
 
@@ -1108,6 +1111,7 @@ Mi Veris - Citas - Datos de facturación
         args["token"] = accessToken;
         args["sendHeaders"] = "true";
         const data = await call(args);
+        reiniciarConteo();
         if(data.code == 200){
             console.log(data)
         }
