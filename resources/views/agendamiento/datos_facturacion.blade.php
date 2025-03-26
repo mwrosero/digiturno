@@ -314,6 +314,11 @@ Mi Veris - Citas - Datos de facturación
         }else{
             $('.tarjeta-box').removeClass('d-none');
         }
+
+        if(dataCita.convenio.permitePago == "N"){
+            $('.btn-pagar').addClass('d-none');
+        }
+
         await parametrosGenerales("{{ $mac }}", true);
 
         $('body').on('change', '#checkTerminosCondicion', function(){

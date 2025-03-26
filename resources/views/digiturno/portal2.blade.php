@@ -3044,6 +3044,8 @@
                     labelServicio = `Terapia Física`;
                 }
 
+                let sucursalAgendada = (detalle.esTeleconsulta) ? `Online` : detalle.nombreSucursal.toLowerCase();
+
                 elemBodyCard += `<div class="d-flex justify-content-between align-items-center mt-3">
                     <div class="avatar-doctor border-veris-1" style="background: url(${ (detalle.fotoMedicoApp != null) ? detalle.fotoMedicoApp : `https://dikg1979lm6fy.cloudfront.net/fotosMedicos/dummydoc.jpg` }) no-repeat top center;background-size: cover;">
                     </div>
@@ -3054,7 +3056,7 @@
                     <div class="info-doctor ms-2">
                         <p class="mb-1 fw-bold text-veris">Agendado para:</p>
                         <p class="mb-1 text-capitalize">${fechaHoraAgenda[0].toLowerCase()} <span class="${classHoraAgendada}">${fechaHoraAgenda[1]}</span></p>
-                        <p class="mb-1 text-capitalize">${detalle.nombreSucursal.toLowerCase()}</p>
+                        <p class="mb-1 text-capitalize">${sucursalAgendada}</p>
                     </div>
                 </div>
                 <div class="d-flex justify-content-start align-items-start mt-2">
