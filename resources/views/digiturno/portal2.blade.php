@@ -1076,9 +1076,12 @@
                             <i class="fa-solid fa-triangle-exclamation text-pendiente"></i>
                         </span>`;
                     let btnTerapia = ``;
-
+                    console.log('esTerapia:' + esTerapia)
+                    console.log(value)
                     if(esTerapia && value.codigoReserva == null){
-                        btnTerapia += `<button type='button' class="btn bg-veris text-white p-2 py-3 ms-auto btn-agendar-prestacion" terapia-rel='S' generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(value)}'>Agendar</button>`;
+                        btnTerapia += `<button type='button' class="btn bg-veris text-white p-2 py-1 ms-auto btn-agendar-prestacion" terapia-rel='S' generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(value)}'>Agendar</button>`;
+                    }else if(esTerapia && value.codigoReserva != null){
+                        btnTerapia += `<button type='button' class="btn bg-veris-dark text-white p-2 py-1 ms-auto btn-pagar" terapia-rel='S' data-rel='${JSON.stringify(detalle)}' data-bs-dismiss="modal">Pagar</button>`;
                     }
                     
                     prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-center">
@@ -1131,6 +1134,7 @@
                 }
 
                 if(esTerapia){
+                    console.log("ES TERAPIA")
                     btnPagar = ``;
                 }
 
@@ -2838,13 +2842,15 @@
             case 'ORDEN_MEDICA':
             case 'ORDENES_APOYO_PENDIENTE':
                 var ordenPagada = verificarEstadoOrden(detalle);
+                let esTerapia = "N";
                 if(tipoServicio == "TERAPIA_FISICA"){
+                    esTerapia = "S";
                     console.log({ordenPagada});
                 }
                 numeroOrden = detalle.numeroOrden;
                 var permiteAgendar = await verificarSiTienePrestacionAgendable(detalle);
                 if(tipoServicio == "TERAPIA_FISICA"){
-                    console.log({permiteAgendar});
+                    // console.log({permiteAgendar});
                 }
                 if(permiteAgendar){
                     classEstadoItemReserva = `text-silver-dark`;
@@ -2857,14 +2863,14 @@
                         classEstadoItem = `text-pendiente`;
                         classEstadoItem = `text-pendiente`;
                         if(tipoServicio == "TERAPIA_FISICA"){
-                            console.log({ordenParcial});
+                            // console.log({ordenParcial});
                         }
                         if(ordenParcial > 0){
                             addForToday = true;
                             labelEstadoItem = `Pagado parcialmente`;
                             let cantidadPagados = ` (${ordenParcial}) <span class="text-veris-dark fw-medium">${ (ordenParcial == 1) ? `Examen pagado` : `Exámenes pagados` }</span>`
                             strEstadoItemReserva = `Por realizar ${cantidadPagados}`;
-                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
+                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3" terapia-rel='${esTerapia}'>
                                 Ver detalle
                             </button>`;
                         }else{
@@ -2893,7 +2899,9 @@
                                         Pagar aquí
                                     </button>`;
                                 }
-
+                                console.log("-------------------------")
+                                console.log({tipoServicio})
+                                console.log("-------------------------")
                                 if(tipoServicio == "TERAPIA_FISICA"){
                                     elemFooterCard = `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3" terapia-rel='S'>
                                         Ver detalle

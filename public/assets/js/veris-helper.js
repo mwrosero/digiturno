@@ -30,16 +30,16 @@ async function call(args){
     }
 
     if(localStorage.getItem('flujo') === null || args.sendHeaders || localStorage.getItem('flujo') == "digiturno"){
-        console.log(7777)
+        // console.log(7777)
         if(args.esLogin){
-            console.log(888)
+            // console.log(888)
             myHeaders.append("Authorization", "Basic " + args.basic);
             myHeaders.append("Application", _applicationLogin);
             myHeaders.append("IdOrganizacion", _idOrganizacionLogin);
         }else{
-            console.log(999)
+            // console.log(999)
             if(args.sendHeaders === undefined || args.sendHeaders){
-                console.log(444)
+                // console.log(444)
                 myHeaders.append("Authorization","Bearer "+ args.token);
                 myHeaders.append("application", _application);
                 myHeaders.append("idorganizacion", _idOrganizacion);
