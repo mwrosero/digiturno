@@ -2197,8 +2197,10 @@
                 if(detalle.tipoServicio == "RESERVA" && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     await setearDiagnostico(detalle);
                 }
-                if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente) && detalle.beneficio.convenio.requiereAutorizacion){
-                    await obtenerAutorizacion();
+                if(detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+                    if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente) && detalle.beneficio.convenio.requiereAutorizacion){
+                        await obtenerAutorizacion();
+                    }
                 }
                 await consultaPreTrx(idPreTransaccion, data.data);
             }
