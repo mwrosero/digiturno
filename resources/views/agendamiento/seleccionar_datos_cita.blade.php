@@ -1185,5 +1185,9 @@ Elige datos para la Cita
         background: #fff !important;
         border: 1px solid #E7E9EC !important;
     }
+    .modal,
+    .modal-xxl{
+        background: transparent !important;
+    }
 </style>
 @endsection

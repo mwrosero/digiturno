@@ -1168,6 +1168,7 @@ Mi Veris - Citas - Datos de facturación
         background-size: 40px 40px !important;
         color: white !important;
     }
+    .modal,
     .modal-xxl{
         background: transparent !important;
     }

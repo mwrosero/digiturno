@@ -1191,5 +1191,9 @@ Mi Veris - Citas - Elige fecha y doctor
     background: #FFE5EF;
     border-radius: 32px 0px 0px 0px;
 }
+.modal,
+.modal-xxl{
+    background: transparent !important;
+}
 </style>
 @endsection

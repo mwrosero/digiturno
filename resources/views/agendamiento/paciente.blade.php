@@ -336,5 +336,9 @@ Elige Paciente
     .bg-soft-blue {
         background-color: #0071CE !important;
     }
+    .modal,
+    .modal-xxl{
+        background: transparent !important;
+    }
 </style>
 @endsection
