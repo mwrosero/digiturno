@@ -809,7 +809,7 @@
 {{-- <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/keyboard.js?v=1.0.8"></script> --}}
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/qrcode.js"></script>
 <script>
-    localStorage.removeItem("flujo");
+    // localStorage.removeItem("flujo");
     let dataServicios;
     let groupedData = [];
     var estadosVigentes = ["REG", "ENTS", "FAC","PFAC","AUT","EXC"];
@@ -2271,9 +2271,10 @@
         let diagnosticos = [29616];
         if(detalle.hasOwnProperty('diagnosticos')){
             diagnosticos = [];
-            $.each(detalle.diagnosticos, function(key, value){
-                diagnosticos.push(parseInt(value.codigoDiagnostico));
-            })
+            // $.each(detalle.diagnosticos, function(key, value){
+            //     diagnosticos.push(parseInt(value.codigoDiagnostico));
+            // })
+            return;
         }
 
         let idAgrupacion = await getIdAgrupacionArray();

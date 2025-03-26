@@ -36,6 +36,7 @@
         @stack('css')
         
         <script>
+            localStorage.setItem("flujo","digiturno");
             let buscarUsuarioFlag = true;
             let accessToken = "{{ $accessToken }}";
             let web_url = "{{ \App\Models\Veris::WEBURL }}";
