@@ -279,11 +279,11 @@
                 <div class="w-100 my-3 box-info-medico-modal"></div>
                 <hr>
                 <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/confirmar-cita.svg" id="confimar-icon" class="w-50" alt="">
-                {{-- <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3> --}}
+                <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
-                {{-- <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-salir">No</a> --}}
-                <a href="#" class="btn fw-normal fs--16 badge bg-white px-4 py-2 mx-2 fs-4 btn-salir text-veris border-veris-1">Salir</a>
+                <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-5 py-2 mx-2 fs-4 btn-salir">No</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1" data-bs-dismiss="modal">Si</a>
             </div>
         </form>
     </div>
@@ -302,11 +302,11 @@
                     Comprobante: <span></span>
                 </div>
                 <img src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/pago-realizado.svg" id="confimar-pago-icon" alt="">
-                {{-- <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3> --}}
+                <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
-                {{-- <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-4 py-2 mx-2 fs-4 btn-salir">No</a> --}}
-                <a href="#" class="btn fw-normal fs--16 badge bg-white px-4 py-2 mx-2 fs-4 btn-salir text-veris border-veris-1">Salir</a>
+                <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-5 py-2 mx-2 fs-4 btn-salir">No</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1" data-bs-dismiss="modal">Si</a>
             </div>
         </form>
     </div>
