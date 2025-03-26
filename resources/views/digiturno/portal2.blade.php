@@ -283,7 +283,7 @@
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
                 <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-5 py-2 mx-2 fs-4 btn-salir">No</a>
-                <a href="#" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1" data-bs-dismiss="modal">Si</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1 refresh-services" data-bs-dismiss="modal">Si</a>
             </div>
         </form>
     </div>
@@ -306,7 +306,7 @@
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
                 <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-5 py-2 mx-2 fs-4 btn-salir">No</a>
-                <a href="#" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1" data-bs-dismiss="modal">Si</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1 refresh-services" data-bs-dismiss="modal">Si</a>
             </div>
         </form>
     </div>
@@ -930,6 +930,10 @@
             reiniciarConteo();
         });
 
+        $('body').on('click','.refresh-services', async function(){
+            await cargarServicios(true);
+        })
+
         // Manejar clic en el botón "Sí"
         $("#btnSi").on("click", function () {
             clearTimeout(temporizadorRespuesta);
@@ -993,6 +997,7 @@
             $('.paciente-item').removeClass('paciente-item-selected');
             $(this).addClass('paciente-item-selected');
             await cargarServicios(true);
+            await obtenerConvenios()
         })
 
         await drawListFamiliares();
@@ -2014,24 +2019,40 @@
         }
     }
 
-    function obtenerPrestacionesParaActivar(){
+    async function obtenerPrestacionesParaActivar(){
         let arr = []
-        $('#v-pills-tabContent').find('input:checked').each(function(index, element) {
+        $('#v-pills-tabContent').find('input:checked').each(async function(index, element) {
             let prestacion = JSON.parse($(this).attr('data-rel'))
-            arr.push({
-                "_id": generateUUIDv4(),
-                "secuenciaPreXAfi": prestacion.secuenciaPreXAfi
-            })
+            if(prestacion.estadoExamen == "PENDIENTE"){
+                arr.push({
+                    "_id": generateUUIDv4(),
+                    "secuenciaPreXAfi": prestacion.secuenciaPreXAfi
+                })
+            }else{
+                await notificarLlegada(prestacion, false);
+            }
         });
         return arr;
     }
 
     async function agregarItemChequeo(idPreTransaccion){
+        console.log("------------")
         let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
         
         let dataChequeo = JSON.parse($('#dataChequeo').val());
-
+        let prestacionesActivar = await obtenerPrestacionesParaActivar();
+        console.log({prestacionesActivar})
+        console.log(prestacionesActivar.length)
+        if(prestacionesActivar.length == 0){
+            console.log(55)
+            let lugares = await labelLugaresChequeos();
+            $('#modalDetalleChequeo').modal('hide');
+            $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris">${lugares.join(", ").toLowerCase()}</span>. Y espera a ser llamado.`);
+            $('#modalNotificarLlegadaDirigirLugar').modal('show');
+            return;
+        }
+        console.log(775)
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/agregar_item?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
         let payload = {
@@ -2042,7 +2063,7 @@
                         "codigoConvenio": dataChequeo.codigoConvenio
                     }
                 },
-                "prestaciones": obtenerPrestacionesParaActivar()
+                "prestaciones": prestacionesActivar
             }
         }
         args["method"] = "PUT";
@@ -2725,7 +2746,7 @@
         $('#listaPrestaciones').html(elem);
     }
 
-    async function notificarLlegada(detalle){
+    async function notificarLlegada(detalle, showConfirmation = true){
         console.log(detalle.codigoOrdApoyo);
         let args = [];
         args["endpoint"] =  `${api_url}/${api_war}/orden/activa_orden_laboratorio?macAddress=${ dataTurno.mac }&codigoOrdenApoyo=${ detalle.codigoOrdApoyo }`;
@@ -2737,9 +2758,11 @@
         // console.log(data);
         if(data.code == 200){
             //$('#direccionDirigirseLlegada').html(`Por favor, diríjase al área de <span class="fw-bold text-capitalize text-veris-dark">${detalle.tipoOrdenApoyo.toLowerCase()}</span> .`);
-            let lugar = (detalle.tipoServicio == "ORDEN_MEDICA") ? detalle.nombreServicioNivel1.toLowerCase() : detalle.tipoOrdenApoyo.toLowerCase();
-            $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris">${lugar}</span> y espera a ser llamado.`);
-            $('#modalNotificarLlegadaDirigirLugar').modal('show');
+            if(showConfirmation){
+                let lugar = (detalle.tipoServicio == "ORDEN_MEDICA") ? detalle.nombreServicioNivel1.toLowerCase() : detalle.tipoOrdenApoyo.toLowerCase();
+                $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris">${lugar}</span> y espera a ser llamado.`);
+                $('#modalNotificarLlegadaDirigirLugar').modal('show');
+            }
         }
     }
 
@@ -3386,6 +3409,7 @@
         //dataCita.paciente.numeroPaciente
         args["method"] = "GET";
         args["token"] = accessToken;
+        console.log({showLoader})
         args["showLoader"] = showLoader;
         const data = await call(args);
         // console.log(data);
