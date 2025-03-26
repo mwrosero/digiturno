@@ -28,7 +28,7 @@ async function call(args){
     if(args.bodyType == "json"){
         myHeaders.append("Content-Type", "application/json");
     }
-    
+
     if(localStorage.getItem('flujo') === null || args.sendHeaders){
         // console.log(7777)
         if(args.esLogin){

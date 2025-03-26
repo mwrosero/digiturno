@@ -2191,7 +2191,7 @@
                 datosPago.idPreTransaccion = idPreTransaccion;
                 datosPago.items = data.data;
                 if(detalle.tipoServicio == "RESERVA" && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
-                    await setearDiagnostico();
+                    await setearDiagnostico(detalle);
                 }
                 if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente) && detalle.beneficio.convenio.requiereAutorizacion){
                     await obtenerAutorizacion();
@@ -2262,16 +2262,24 @@
         }
     }
 
-    async function setearDiagnostico(){
+    async function setearDiagnostico(detalle){
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${datosPago.idPreTransaccion}/setear_diagnosticos?codigoEmpresa=1`;
 
         let item = [];
 
+        let diagnosticos = [29616];
+        if(detalle.hasOwnProperty('diagnosticos')){
+            diagnosticos = [];
+            $.each(detalle.diagnosticos, function(key, value){
+                diagnosticos.push(parseInt(value.codigoDiagnostico));
+            })
+        }
+
         let idAgrupacion = await getIdAgrupacionArray();
         let payload = {
             "idAgrupacion": idAgrupacion[0],
-            "diagnosticos": [29616]
+            "diagnosticos": diagnosticos
         }
 
         args["method"] = "PUT";

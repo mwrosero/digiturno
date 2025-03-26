@@ -55,7 +55,11 @@ Elige Paciente
     </div> --}}
     <section class="px-0 h-100">
         <div class="row mx-0 h-lg-100">
-            @include('template.back')
+            <div class="col-12 mb-3">
+                <div class="border-veris-2 rounded-8 p-2 px-4 text-center text-primary-veris fs-18 fw-medium cursor-pointer ms-3 btn-atras-paciente" style="max-width: 150px;">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Atrás
+                </div>
+            </div>
             <div class="col-12 col-lg-4 d-flex justify-content-start justify-content-lg-center align-items-center bg-veris">
                 <h5 class="ps-3 text-white my-auto py-3 fs-40 line-height-48 fs-md-24">{{ __('Elegir paciente') }}</h5>
             </div>
@@ -103,6 +107,11 @@ Elige Paciente
         await parametrosGenerales("{{ $mac }}", true);
         $('body').on('click','.convenio-item', function(){
             reservaNoPermitida($(this).attr("url-rel"), $(this).attr("data-rel"));
+        })
+
+        $('body').on('click', '.btn-atras-paciente', async function(){
+            localStorage.removeItem("flujo");
+            history.back();
         })
 
         $('body').on('click', '.btn-turno', async function(){
