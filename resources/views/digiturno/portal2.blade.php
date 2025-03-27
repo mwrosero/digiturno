@@ -1303,7 +1303,7 @@
             if(detalle.nombreTipoContrato == "OCUPACIONAL"){
                 esOcupacional = true;
                 if(detalle.esAutorizadoEnvResultDg){
-                    $('.btn-activar').addClass('d-none');
+                    //$('.btn-activar').addClass('d-none');
                 }
             }
 
@@ -1405,9 +1405,9 @@
             })
 
             if(prestacionesParaActivar == 1){
-                $('.btn-activar').addClass('activar-disabled');
-            }else{
                 $('.btn-activar').removeClass('activar-disabled');
+            }else{
+                $('.btn-activar').addClass('activar-disabled');
             }
 
             $('#v-pills-tab').html(elem_header);
@@ -2936,14 +2936,17 @@
                                     // Permite pagar
                                 }
                                 if(esKiosko){
-                                    if(detalle.nombreServicioNivel1 == "CONSULTA"){
+                                    // console.log(detalle)
+                                    //if(detalle.nombreServicioNivel1 == "CONSULTA"){
+                                    if(permiteAgendar){
                                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
                                         Agendar cita
                                     </button>`;
+                                    }else{
+                                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
+                                                Pagar
+                                            </button>`;
                                     }
-                                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
-                                        Pagar
-                                    </button>`;
                                 }else{
                                     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
                                         Pagar en caja
@@ -3037,6 +3040,7 @@
                     <p class="mb-1 ms-2 text-capitalize">${obtenerBeneficio(detalle.beneficio).toLowerCase()}</p>
                 </div>`
                 console.log(`--------${tipoServicio}---------`)
+                
                 if(detalle.medicoSolicitante == "CHEQUEO EMPRESARIAL"){
                     addForToday = false;
                 }
@@ -3285,7 +3289,7 @@
     async function verificarSiTienePrestacionAgendable(detalle){
         let permiteAgenda = false;
         $.each(detalle.detallesOrden, function(k,v) {
-            if(v.esAgendable == "S"){
+            if(v.esAgendable == "S" && v.requiereAgendamientoPrevio == "S"){
                 permiteAgenda = true;
             }
         });
