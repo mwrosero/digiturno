@@ -2013,9 +2013,11 @@
     async function activarPrestacionesInicializar(origen = 'CHEQUEO', detalle = null){
         // let canalFacturacion = "CAJA";
         let canalFacturacion = "DIGITURNOS";
+        let esDigiturno = true;
 
         if(esKiosko){
             canalFacturacion = "KIOSKO";
+            esDigiturno = false;
         }
 
         let args = [];
@@ -2028,7 +2030,7 @@
             "esFarmaciaDomicilio": false,
             "codigoSolicitudServDomicilio": null,
             "numSolicitudLabDomicilio": null,
-            "esDigiturno": true
+            "esDigiturno": esDigiturno
         }
         args["method"] = "POST";
         args["token"] = accessToken;
