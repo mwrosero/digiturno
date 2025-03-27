@@ -2011,13 +2011,20 @@
     }
 
     async function activarPrestacionesInicializar(origen = 'CHEQUEO', detalle = null){
+        // let canalFacturacion = "CAJA";
+        let canalFacturacion = "DIGITURNOS";
+
+        if(esKiosko){
+            canalFacturacion = "KIOSKO";
+        }
+
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/inicializar?codigoEmpresa=1&tipoPreTransaccion=FACTURA`;
         let payload = {
             "secuenciaUsuario": dataParametrosGenerales.secuenciaUsuario,
             "idTurno": null,
             "caja": dataParametrosGenerales.caja,
-            "nemonicoCanalFacturacion": "CAJA",
+            "nemonicoCanalFacturacion": canalFacturacion,
             "esFarmaciaDomicilio": false,
             "codigoSolicitudServDomicilio": null,
             "numSolicitudLabDomicilio": null,
@@ -2249,6 +2256,13 @@
                     if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente) && detalle.beneficio.convenio.requiereAutorizacion){
                         await obtenerAutorizacion();
                         flagAutorizacion = true;
+                    }else{
+                        console.log(detalle.beneficio.convenio);
+                        if(parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
+                            console.log("-----////---------");
+                            await obtenerAutorizacionMedPay(detalle);
+                            flagAutorizacion = true;
+                        }
                     }
                 }
                 await consultaPreTrx(idPreTransaccion, data.data);
@@ -2258,20 +2272,74 @@
 
     async function obtenerInfoConvenio(){
         let secuenciaAfiliadoConvenio;
+        let convenio = []
         $.each(conveniosPaciente, function(key, value){
             if(clientesAuth.includes(value.codigoCliente)){
                 console.log(value.secuenciaAfiliado)
                 secuenciaAfiliadoConvenio = value.secuenciaAfiliado;
+                convenio = value;
             }
         })
-        return secuenciaAfiliadoConvenio;
+        // return secuenciaAfiliadoConvenio;
+        return convenio;
+    }
+
+    async function obtenerAutorizacionMedPay(detalle){
+        console.log('MEDPAYYYYYYYYYYYYYY');
+        console.log(detalle);
+        let convenio = await obtenerInfoConvenio();
+        let diagnosticos = [29616];
+        if(detalle.hasOwnProperty('diagnosticos')){
+            diagnosticos = [];
+            // $.each(detalle.diagnosticos, function(key, value){
+            //     diagnosticos.push(parseInt(value.codigoDiagnostico));
+            // })
+            //return;
+        }
+
+        let dataAttr = $('.paciente-item-selected').attr("data-rel");
+        let paciente = JSON.parse(dataAttr);
+
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=CAJ&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify({
+            "idTrx": generateUUIDv4(),
+            "idPaciente": paciente.idPaciente,
+            "prestaciones": [{
+                "codigoServicio": detalle.codigoServicio,
+                "codigoPrestacion": detalle.codigoPrestacion,
+                "cantidad": 1,
+                "esOdontologica": false,
+                "numeroParteDental": 0,
+                "numeroOrden": detalle.numeroOrden,// si o null
+                "lineaDetalleOrden": detalle.lineaDetalleOrden, //si o null
+                "valorFee": 0
+            }],
+            "diagnosticos": diagnosticos,
+            "medpayPlan": convenio.informacionExternaPlan
+        });
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log('MEDPAYYYYYYYYYYYYYY');
+        console.log(data);
+        if(data.code == 200){
+            datosPago.sync = data.data
+            //await setearAutorizacion();
+        }else{
+            toastr.error("", data.message, {
+                timeOut: 5000
+            });
+        }
     }
 
     async function obtenerAutorizacion(){
-        let secuenciaAfiliadoConvenio = await obtenerInfoConvenio();
-        console.log(secuenciaAfiliadoConvenio);
+        let convenio = await obtenerInfoConvenio();
+        console.log(convenio);
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/validacion_aseguradora/sync/autorizacion?canalInvocacion=CAJ&lineaNegocio=CMV&secuenciaAfiliado=${ secuenciaAfiliadoConvenio }`;
+        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/validacion_aseguradora/sync/autorizacion?canalInvocacion=CAJ&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
@@ -2521,7 +2589,15 @@
                 await solicitarPagoPinPad();
             }
         }else{
-            alert(data.message);
+            let str = "Nº Autorización es requerido. por favor verifique la(s) Orden(es) del Paciente";
+            if(data.message.includes(str)) {
+                datosPago.validacion = {
+                    "valorTotalAPagarPaciente": datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal
+                }
+                await solicitarPagoPinPad();
+            }else{
+                alert(data.message);
+            }
         }
     }
 
