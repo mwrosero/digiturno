@@ -2908,7 +2908,7 @@
                 let esTerapia = "N";
                 if(tipoServicio == "TERAPIA_FISICA"){
                     esTerapia = "S";
-                    console.log({ordenPagada});
+                    // console.log({ordenPagada});
                 }
                 numeroOrden = detalle.numeroOrden;
                 var permiteAgendar = await verificarSiTienePrestacionAgendable(detalle);
@@ -2919,8 +2919,8 @@
                     classEstadoItemReserva = `text-silver-dark`;
                     strEstadoItemReserva = `Por agendar`;
                 }
-                console.log({permiteAgendar})
-                console.log(detalle.permitePago)
+                // console.log({permiteAgendar})
+                // console.log(detalle.permitePago)
                 if(detalle.permitePago || detalle.tipoServicio == "ORDENES_APOYO_PENDIENTE"){
                     if(!ordenPagada){
                         let ordenParcial = await verificarEstadoOrdenParcialmente(detalle);
@@ -2967,9 +2967,9 @@
                                         Pagar aquí
                                     </button>`;
                                 }
-                                console.log("-------------------------")
-                                console.log({tipoServicio})
-                                console.log("-------------------------")
+                                // console.log("-------------------------")
+                                // console.log({tipoServicio})
+                                // console.log("-------------------------")
                                 if(tipoServicio == "TERAPIA_FISICA"){
                                     elemFooterCard = `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3" terapia-rel='S'>
                                         Ver detalle
@@ -2987,9 +2987,15 @@
                         }
                     }else{
                         addForToday = true;
-                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
+                        if(detalle.nombreServicioNivel1 == "CONSULTA" && detalle.detallesOrden[0].codigoReserva == null){
+                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
+                                        Agendar cita
+                                    </button>`;
+                        }else{
+                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
                                 Ver detalle
-                            </button>`;
+                               </button>`;
+                           }
                         if(detalle.tieneOrdenApoyoPendiente || detalle.tipoServicio == "ORDENES_APOYO_PENDIENTE"){
                             elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-notificar-llegada p-2 py-3 mt-3">
                                 Activar orden
@@ -3063,7 +3069,7 @@
                     <p class="text-veris-dark fw-bold mb-1">Beneficio:</p>
                     <p class="mb-1 ms-2 text-capitalize">${obtenerBeneficio(detalle.beneficio).toLowerCase()}</p>
                 </div>`
-                console.log(`--------${tipoServicio}---------`)
+                // console.log(`--------${tipoServicio}---------`)
                 
                 if(detalle.medicoSolicitante == "CHEQUEO EMPRESARIAL"){
                     addForToday = false;
