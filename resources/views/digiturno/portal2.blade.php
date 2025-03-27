@@ -1257,6 +1257,7 @@
         })
 
         $('body').on('click', '.check-only-individual-legend', async function(){
+            toastr.clear();
             toastr.warning('Debe seleccionar todos los exámenes', 'Atención', {
                 timeOut: 3000
             });
@@ -1354,6 +1355,8 @@
                         btnAgenda = `<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-3 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(v)}'>Agendar</div>`;                        
                     }
 
+                    let badge_estado_lab_chequeo = ``;
+
                     if(esOcupacional){
                         // disabledAttr = `disabled`;
                         classLabNoOcupacional = `check-only-individual`;
@@ -1365,6 +1368,14 @@
                             {{-- disabledAttr = `disabled`; --}}
                             classLabNoOcupacional = `check-only-individual`;
                             classLabNoOcupacionalLegend = `check-only-individual-legend`;
+                            if(v.estadoExamen == "ACEPTADO"){
+                                disabledAttr = `disabled`;
+                                badge_estado_lab_chequeo = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Activado</span>`
+                            }
+                            if(v.fechaRecepcion !== null){
+                                disabledAttr = `disabled`;
+                                badge_estado_lab_chequeo = `<span class="badge badge-pill bg-veris text-white fw-normal p-2">Realizado</span>`
+                            }
                         }
                     }
 
@@ -1375,6 +1386,7 @@
                                 ${ v.nombrePrestacion }
                                 </label>
                             </div>
+                            ${ badge_estado_lab_chequeo }
                             ${ btnAgenda }
                             <!--div class="flex-grow-1 ms-2">
                                 <span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal">${v.nombreServicio}/${ v.nombreServicioN2 }</span>
