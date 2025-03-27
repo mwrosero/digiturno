@@ -263,6 +263,7 @@ Elige Paciente
 
         let dataRel = $(event.currentTarget).data('rel');
         dataCita.paciente = dataRel;
+        showLoader();
         localStorage.setItem('cita-{{ $params }}', JSON.stringify(dataCita));
         location.href = '/seleccionar-datos-cita/{{ $params }}?mac={{ $mac }}';
         return;

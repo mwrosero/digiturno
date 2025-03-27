@@ -1065,6 +1065,7 @@ Elige datos para la Cita
         if(dataCita.hasOwnProperty('tratamiento') || dataCita.hasOwnProperty('reservaEdit') ||  dataCita.origen == "paquetes"){
             localStorage.setItem('cita-{{ $params }}', JSON.stringify(dataCita));
             window.location.href = '/citas-elegir-fecha-doctor/{{ $params }}?mac={{ $mac }}';
+            showLoader();
             return;
         }
         let args = [];
@@ -1114,6 +1115,7 @@ Elige datos para la Cita
         }else{
             localStorage.setItem('cita-{{ $params }}', JSON.stringify(dataCita));
             window.location.href = '/citas-elegir-fecha-doctor/{{ $params }}?mac={{ $mac }}';
+            showLoader();
         }
 
     }

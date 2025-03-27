@@ -425,6 +425,7 @@ Mi Veris - Citas - Elige fecha y doctor
                 ruta = "/cita-urgencias-ambulatorias/" + "{{ $params }}";
             }
             localStorage.setItem('cita-{{ $params }}', JSON.stringify(dataCita));
+            showLoader();
             window.location.href = ruta;
         })
 
