@@ -6,6 +6,7 @@ use session;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Http;
 
 class Veris extends Model
 {
@@ -134,14 +135,22 @@ class Veris extends Model
         }*/
         
         $method = '/autenticacion/login';
-        $response = Veris::call([
-            'endpoint' => self::BASE_URL_DIGITALES.'/'.self::SEGURIDADES_WAR.$method,
-            'basic' => self::BASICAUTHDIGITALES,
-            'method'   => 'POST'
-        ]);
+        // $response = Veris::call([
+        //     'endpoint' => self::BASE_URL_DIGITALES.'/'.self::SEGURIDADES_WAR.$method,
+        //     'basic' => self::BASICAUTHDIGITALES,
+        //     'method'   => 'POST'
+        // ]);
 
-        echo self::BASE_URL_DIGITALES.'/'.self::SEGURIDADES_WAR.$method;
-        dd($response);
+        $res =  Http::withOptions([
+                    'verify' => false, // Desactivar verificación de certificados
+                ])->withHeaders([
+                    'Application' => self::APPLICATION,
+                    'Authorization' => 'Basic '.self::BASICAUTHDIGITALES,
+                ])->post(self::BASE_URL_DIGITALES.'/'.self::SEGURIDADES_WAR.$method);
+        $response = json_decode($res->body());
+
+        // echo self::BASE_URL_DIGITALES.'/'.self::SEGURIDADES_WAR.$method;
+        // dd($response);
         
         session(['accessToken' => $response->data->idToken]);
         return $response->data->idToken;
