@@ -2175,6 +2175,7 @@
         console.log(data);
     }
 
+    let flagAutorizacion = false;
     async function agregarItemTurno(idPreTransaccion, detalle, origen = "TURNO"){
         let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
@@ -2247,6 +2248,7 @@
                 if(detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente) && detalle.beneficio.convenio.requiereAutorizacion){
                         await obtenerAutorizacion();
+                        flagAutorizacion = true;
                     }
                 }
                 await consultaPreTrx(idPreTransaccion, data.data);
@@ -2370,6 +2372,14 @@
         console.log(data);
         if(data.code == 200){
             datosPago.consulta = data.data;
+            if(!flagAutorizacion){
+                if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa){
+                    flagAutorizacion = true;
+                    await obtenerAutorizacion();
+                    await consultaPreTrx(idPreTransaccion, detalle);
+                    return;
+                }
+            }
             await verificarDatosFactura();
             $('.valorPago').html(`$${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}`);
             // $('.btn-continuar-factura').html(`Pagar $${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}`)
@@ -2996,9 +3006,15 @@
                             Agendar cita
                         </button>`;
                     }else{
-                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
-                                    Ver detalle
-                                </button>`;
+                        if(!permitePago){
+                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                                Pagar en caja
+                            </button>`;
+                        }else{
+                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
+                                        Ver detalle
+                                    </button>`;
+                        }
                     }
                 }
 
@@ -3070,15 +3086,21 @@
                     labelEstadoItem = `Por pagar`;
                     classEstadoItem = `text-pendiente`;
                     if(esKiosko){
-                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
+                        if(detalle.permitePago){
+                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
                                     Pagar
                                 </button>`;
-                    }else{
-                        if(detalle.permitePago){
-                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
-                                    Pagar aquí
+                        }else{
+                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                                    Pagar en caja
                                 </button>`;
                         }
+                    }else{
+                        // if(detalle.permitePago){
+                        //     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
+                        //             Pagar aquí
+                        //         </button>`;
+                        // }
                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
                                 Pagar en caja
                             </button>`;
