@@ -2909,6 +2909,8 @@
                     classEstadoItemReserva = `text-silver-dark`;
                     strEstadoItemReserva = `Por agendar`;
                 }
+                console.log({permiteAgendar})
+                console.log(detalle.permitePago)
                 if(detalle.permitePago || detalle.tipoServicio == "ORDENES_APOYO_PENDIENTE"){
                     if(!ordenPagada){
                         let ordenParcial = await verificarEstadoOrdenParcialmente(detalle);
@@ -2989,9 +2991,15 @@
                     labelEstadoItem = `Por pagar`;
                     classEstadoItem = `text-pendiente`;
                     classEstadoItem = `text-pendiente`;
-                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
-                                Ver detalle
-                            </button>`;
+                    if(permiteAgendar){
+                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
+                            Agendar cita
+                        </button>`;
+                    }else{
+                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
+                                    Ver detalle
+                                </button>`;
+                    }
                 }
 
                 // console.log(`----------------${detalle.nombreServicioNivel1}-----------------`)
