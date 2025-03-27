@@ -627,6 +627,7 @@ Mi Veris - Citas - Revisa tus datos
                 //location.href = '/citas-datos-facturacion/{{ $params }}?mac={{ $mac }}';
             }else{
                 // $('#modalAgendado').modal('show');
+                showLoader();
                 location.href = '/citas-datos-facturacion/{{ $params }}?mac={{ $mac }}';
                 // location.href = '/cita-agendada/{{ $params }}?mac={{ $mac }}';
             }
@@ -742,6 +743,7 @@ Mi Veris - Citas - Revisa tus datos
             dataCita.preTransaccion = data.data;
             guardarData();
             location.href = '/citas-datos-facturacion/{{ $params }}?mac={{ $mac }}';
+            showLoader();
         }else{
             alert(data.message);
         }
