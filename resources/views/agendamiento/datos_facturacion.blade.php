@@ -568,6 +568,7 @@ Mi Veris - Citas - Datos de facturación
         }
     }
 
+    let flagAutorizacion = false;
     async function agregarItemTurno(idPreTransaccion, detalle, origen = "TURNO"){
         // let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
         let paciente = dataTurno.paciente;
@@ -616,6 +617,7 @@ Mi Veris - Citas - Datos de facturación
                 if(dataCita.convenio != null){
                     if(clientesAuth.includes(dataCita.convenio.codigoCliente) && dataCita.convenio.requiereAutorizacionFacturacion){
                         await obtenerAutorizacion();
+                        flagAutorizacion = true;
                     }
                 }
                 await consultaPreTrx(idPreTransaccion, data.data);
@@ -688,6 +690,14 @@ Mi Veris - Citas - Datos de facturación
         console.log(data);
         if(data.code == 200){
             datosPago.consulta = data.data;
+            if(!flagAutorizacion){
+                if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa){
+                    flagAutorizacion = true;
+                    await obtenerAutorizacion();
+                    await consultaPreTrx(idPreTransaccion, detalle);
+                    return;
+                }
+            }
             await verificarDatosFactura();
             $('.valorPago').html(`$${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}`);
             // $('.btn-continuar-factura').html(`Pagar $${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}`)
