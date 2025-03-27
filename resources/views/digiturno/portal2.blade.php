@@ -321,9 +321,12 @@
             </div>
             <div class="modal-body p-3">
                 <h5 class="fs--20 line-height-24 mt-3 mb-3 text-center" id="direccionDirigirseLlegada">Dirigirse a</h5>
+                <h3 class="fw-medium text-veris-dark mt-3 text-center">¿Deseas consultar algo más?</h3>
             </div>
-            <div class="modal-footer pt-0 pb-3 px-3 border-0">
-                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-salir">CERRAR</a>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
+                {{-- <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-salir">CERRAR</a> --}}
+                <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-5 py-2 mx-2 fs-4 btn-salir">No</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1 refresh-services" data-bs-dismiss="modal">Si</a>
             </div>
         </form>
     </div>
@@ -1265,6 +1268,7 @@
 
         $('body').on('click', '.btn-detalle-chequeo', async function(){
             let dataChequeo = $(this).attr('data-rel');
+            let prestacionesParaActivar = 0;
             $('.btn-activar').removeClass('d-none');
             $('#dataChequeo').val(dataChequeo)
             let detalle = JSON.parse(dataChequeo);
@@ -1351,8 +1355,8 @@
                     }
 
                     // if( value.nombreServicioNivel1 == "CONSULTA"){
-                    if(v.esAgendable && v.requiereAgendamiento){
-                        btnAgenda = `<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-3 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(v)}'>Agendar</div>`;                        
+                    if(v.esAgendable){
+                        btnAgenda = `<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(v)}'>Agendar</div>`;                        
                     }
 
                     let badge_estado_lab_chequeo = ``;
@@ -1363,20 +1367,24 @@
                         checked = `checked`;
                     }else{
                         // console.log("NO ES OCUPACIONAL")
-                        if(esLaboratorio){
-                            {{-- console.log("ES LABORATORIO") --}}
-                            {{-- disabledAttr = `disabled`; --}}
-                            classLabNoOcupacional = `check-only-individual`;
-                            classLabNoOcupacionalLegend = `check-only-individual-legend`;
-                            if(v.estadoExamen == "ACEPTADO"){
-                                disabledAttr = `disabled`;
-                                badge_estado_lab_chequeo = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Activado</span>`
-                            }
-                            if(v.fechaRecepcion !== null){
-                                disabledAttr = `disabled`;
-                                badge_estado_lab_chequeo = `<span class="badge badge-pill bg-veris text-white fw-normal p-2">Realizado</span>`
-                            }
+                    }
+                    if(esLaboratorio){
+                        {{-- console.log("ES LABORATORIO") --}}
+                        {{-- disabledAttr = `disabled`; --}}
+                        classLabNoOcupacional = `check-only-individual`;
+                        classLabNoOcupacionalLegend = `check-only-individual-legend`;
+                        if(v.estadoExamen == "ACEPTADO"){
+                            disabledAttr = `disabled`;
+                            badge_estado_lab_chequeo = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Activado</span>`
                         }
+                        if(v.fechaRecepcion !== null){
+                            disabledAttr = `disabled`;
+                            badge_estado_lab_chequeo = `<span class="badge badge-pill bg-veris text-white fw-normal p-2">Realizado</span>`
+                        }
+                    }
+
+                    if(checked == "checked" && disabledAttr == ""){
+                        prestacionesParaActivar = 1;
                     }
 
                     elem_content += `<div class="d-flex justify-content-start align-items-start fs-16 line-height-16 mb-2 ${classLabNoOcupacionalLegend}">
@@ -1395,6 +1403,12 @@
                 })
                 elem_content += `</div>`;
             })
+
+            if(prestacionesParaActivar == 1){
+                $('.btn-activar').addClass('activar-disabled');
+            }else{
+                $('.btn-activar').removeClass('activar-disabled');
+            }
 
             $('#v-pills-tab').html(elem_header);
             $('#v-pills-tabContent').html(elem_content);
@@ -3023,6 +3037,9 @@
                     <p class="mb-1 ms-2 text-capitalize">${obtenerBeneficio(detalle.beneficio).toLowerCase()}</p>
                 </div>`
                 console.log(`--------${tipoServicio}---------`)
+                if(detalle.medicoSolicitante == "CHEQUEO EMPRESARIAL"){
+                    addForToday = false;
+                }
             break;
             // case 'ORDENES_APOYO_PENDIENTE':
             //     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/laboratorio-ico.svg`;                
