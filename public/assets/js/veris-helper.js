@@ -84,6 +84,7 @@ async function call(args){
             }
             if(!args.dismissAlert && data.code == 400 && localStorage.getItem('flujo') === null){
                 // console.log(5555)
+                toastr.clear();
                 toastr.warning(data.message, `Ha ocurrido un error`, {
                     timeOut: 8000
                 });
@@ -168,6 +169,7 @@ function maxLengthNumber(input, maxLength) {
 }
 
 function showMessage(type,title,message){
+    toastr.clear();
 	switch(type){
 		case 'warning':
 			toastr.warning(message,title);
