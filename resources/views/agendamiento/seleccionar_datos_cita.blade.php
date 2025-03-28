@@ -280,6 +280,13 @@ Elige datos para la Cita
     }
     // let convenio = dataCita.convenio.codigoConvenio || ' ';
 
+    window.addEventListener("pageshow", async function(event) {
+        if (event.persisted) {
+            reiniciarConteo();
+            $('#modalEstasAhiAgenda').modal('hide');
+            hideLoader();
+        }
+    });
 
     // llamada al dom
     document.addEventListener("DOMContentLoaded", async function () {
