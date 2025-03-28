@@ -349,6 +349,14 @@ Mi Veris - Citas - Elige fecha y doctor
     numeroMesSeleccionado = numeroMesCurso;
     let fechasDisponibles = []; // Variable global para almacenar las fechas disponibles*/
 
+    window.addEventListener("pageshow", async function(event) {
+        if (event.persisted) {
+            reiniciarConteo();
+            $('#modalEstasAhiAgenda').modal('hide');
+            hideLoader();
+        }
+    });
+    
     // llamada al dom 
     document.addEventListener("DOMContentLoaded", async function () {
         await parametrosGenerales("{{ $mac }}", true);

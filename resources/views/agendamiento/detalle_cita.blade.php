@@ -147,6 +147,9 @@ Mi Veris - Citas - Revisa tus datos
 
     window.addEventListener("pageshow", async function(event) {
         if (event.persisted) {
+            reiniciarConteo();
+            $('#modalEstasAhiAgenda').modal('hide');
+            hideLoader();
             if(dataCita.reserva){
                 await eliminarReserva();
             }
