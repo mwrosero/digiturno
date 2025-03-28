@@ -49,16 +49,20 @@
     #toast-container > .toast-warning{
         background-image: url("{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/exclamation.svg") !important;
     }
+    #modalEstasAhiAgenda{
+    	z-index: 99999999999999999;
+    }
 </style>
 
 <script>
 	let temporizadorInactividad;
     let temporizadorRespuesta;
 
-    const tiempoInactividad = 20; // Tiempo de inactividad en segundos
-    const tiempoMaximoRespuesta = 10; // Tiempo máximo de respuesta al modal en segundos
+    const tiempoInactividad = 30; // Tiempo de inactividad en segundos
+    const tiempoMaximoRespuesta = 15; // Tiempo máximo de respuesta al modal en segundos
 	$(document).ready(async function() {
 		$(document).on("mousemove keydown click scroll", function () {
+			console.log("movio algo")
 		    reiniciarConteo();
 		});
 		$("#btnSi").on("click", function () {
@@ -96,6 +100,7 @@
 
     // Función para reiniciar el conteo de inactividad
     function reiniciarConteo() {
+    	console.log("Conteo reiniciado")
         clearTimeout(temporizadorInactividad);
         temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
     }
