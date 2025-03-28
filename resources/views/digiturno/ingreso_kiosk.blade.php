@@ -523,7 +523,16 @@
 
         // Función para mostrar el modal
         function mostrarModal() {
-        	if($('#cedula').val() != "" || $('#pasaporte').val() != "" || $('#nombres').val() != "" || $('#apellidos').val() != "" || $('#nombresTM').val() != "" || $('#apellidosTM').val() != ""){
+        	$("#modalEstasAhi").modal("show");
+
+            // Iniciar temporizador para esperar respuesta
+            temporizadorRespuesta = setTimeout(() => {
+                $("#modalEstasAhi").modal("hide");
+                console.log("No hubo respuesta a tiempo.");
+                location.href = url_salir;
+            }, tiempoMaximoRespuesta * 1000);
+
+        	/*if($('#cedula').val() != "" || $('#pasaporte').val() != "" || $('#nombres').val() != "" || $('#apellidos').val() != "" || $('#nombresTM').val() != "" || $('#apellidosTM').val() != ""){
 	            // Mostrar el modal
 	            $("#modalEstasAhi").modal("show");
 
@@ -537,7 +546,7 @@
 	        	console.log("extender porque esta vacio")
 	        	clearTimeout(temporizadorRespuesta);
 	        	reiniciarConteo();
-	        }
+	        }*/
         }
 
         // Función para reiniciar el conteo de inactividad

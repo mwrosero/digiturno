@@ -1359,6 +1359,10 @@
                         btnAgenda = `<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(v)}'>Agendar</div>`;                        
                     }
 
+                    if(!esOcupacional && v.numeroOrden == null){
+                        btnAgenda = ``;
+                    }
+
                     let badge_estado_lab_chequeo = ``;
 
                     if(esOcupacional){
@@ -1527,9 +1531,10 @@
                 "convenio": convenioItem,
                 "tratamiento": {
                     //"cantidadIntervalosReserva": 1,
-                    "numeroOrden": generales.numeroOrden,
-                    "codigoEmpOrden": generales.codigoEmpresa,
+                    "numeroOrden": detalle.numeroOrden,
+                    "codigoEmpOrden": detalle.codigoEmpresa,
                     "lineaDetalle": detalle.lineaDetalleOrden,
+                    "codigoEmpOrden": 1,
                     "esPagada": esPagada
                 },
                 "online": (detalle.esTeleconsulta) ? "S" : "N",
