@@ -1517,7 +1517,8 @@
                     // "codigoSucursal": detalle.codigoSucursal,
                     "origen": "Listatratamientos"
                 },
-                "origen": "Listatratamientos"
+                "origen": "Listatratamientos",
+                "diagnosticos": detalle.diagnosticos
             }
             dataTurno.ordenAgenda = dataCitaReserva;
             // console.log(dataCitaReserva)
@@ -1575,7 +1576,8 @@
                     "codigoSucursal": detalle.codigoSucursal,
                     "origen": "Listatratamientos"
                 },
-                "origen": "Listatratamientos"
+                "origen": "Listatratamientos",
+                "diagnosticos": detalle.diagnosticos
             }
             // console.log(dataCitaReserva); return;
             dataTurno.ordenAgenda = dataCitaReserva;
