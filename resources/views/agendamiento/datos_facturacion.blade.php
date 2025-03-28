@@ -533,17 +533,25 @@ Mi Veris - Citas - Datos de facturación
     }
 
     async function activarPrestacionesInicializar(origen = 'CHEQUEO', detalle = null){
+        let canalFacturacion = "DIGITURNOS";
+        let esDigiturno = true;
+
+        if(esKiosko){
+            canalFacturacion = "KIOSKO";
+            esDigiturno = false;
+        }
+        
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/inicializar?codigoEmpresa=1&tipoPreTransaccion=FACTURA`;
         let payload = {
             "secuenciaUsuario": dataParametrosGenerales.secuenciaUsuario,
             "idTurno": null,
             "caja": dataParametrosGenerales.caja,
-            "nemonicoCanalFacturacion": "CAJA",
+            "nemonicoCanalFacturacion": canalFacturacion,
             "esFarmaciaDomicilio": false,
             "codigoSolicitudServDomicilio": null,
             "numSolicitudLabDomicilio": null,
-            "esDigiturno": true
+            "esDigiturno": esDigiturno
         }
         args["method"] = "POST";
         args["token"] = accessToken;
