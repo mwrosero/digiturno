@@ -618,10 +618,74 @@ Mi Veris - Citas - Datos de facturación
                     if(clientesAuth.includes(dataCita.convenio.codigoCliente) && dataCita.convenio.requiereAutorizacionFacturacion){
                         await obtenerAutorizacion();
                         flagAutorizacion = true;
+                    }else{
+                        if(parseInt(dataCita.convenio.codigoCliente) == 13){
+                            console.log("-----////---------");
+                            await obtenerAutorizacionMedPay(detalle);
+                            flagAutorizacion = true;
+                        }
                     }
                 }
                 await consultaPreTrx(idPreTransaccion, data.data);
             }
+        }
+    }
+
+    async function obtenerAutorizacionMedPay(detalle){
+        console.log('MEDPAYYYYYYYYYYYYYY');
+        console.log(detalle);
+        let convenio = dataCita.convenio;
+        let diagnosticos = [29616];
+        if(detalle.hasOwnProperty('diagnosticos')){
+            diagnosticos = [];
+            // $.each(detalle.diagnosticos, function(key, value){
+            //     diagnosticos.push(parseInt(value.codigoDiagnostico));
+            // })
+            //return;
+        }
+
+        let numeroOrden = null;
+        let lineaDetalle = null;
+
+        if(dataCita.hasOwnProperty('tratamiento')){
+            numeroOrden = dataCita.tratamiento.numeroOrden;
+            lineaDetalle = dataCita.tratamiento.lineaDetalle;
+        }
+
+        let paciente = dataCita.paciente;
+
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=CAJ&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify({
+            "idTrx": generateUUIDv4(),
+            "idPaciente": paciente.numeroPaciente,
+            "prestaciones": [{
+                "codigoServicio": dataCita.especialidad.codigoServicio,
+                "codigoPrestacion": dataCita.especialidad.codigoPrestacion,
+                "cantidad": 1,
+                "esOdontologica": false,
+                "numeroParteDental": 0,
+                "numeroOrden": numeroOrden,// si o null
+                "lineaDetalleOrden": lineaDetalle, //si o null
+                "valorFee": 0
+            }],
+            "diagnosticos": diagnosticos,
+            "medpayPlan": convenio.informacionExternaPlan
+        });
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log('MEDPAYYYYYYYYYYYYYY');
+        console.log(data);
+        if(data.code == 200){
+            datosPago.sync = data.data
+            //await setearAutorizacion();
+        }else{
+            toastr.error("", data.message, {
+                timeOut: 5000
+            });
         }
     }
 
@@ -878,9 +942,17 @@ Mi Veris - Citas - Datos de facturación
                 await solicitarPagoPinPad();
             }
         }else{
-            toastr.warning("", data.message, {
-                timeOut: 5000
-            });
+            let str = "Nº Autorización es requerido. por favor verifique la(s) Orden(es) del Paciente";
+            if(data.message.includes(str)) {
+                datosPago.validacion = {
+                    "valorTotalAPagarPaciente": datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal
+                }
+                await solicitarPagoPinPad();
+            }else{
+                toastr.warning("", data.message, {
+                    timeOut: 5000
+                });
+            }
         }
     }
 
