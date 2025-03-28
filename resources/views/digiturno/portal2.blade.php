@@ -1456,10 +1456,11 @@
         });
 
         $('body').on('click', '.btn-agendar-prestacion', async function(){
-            // console.log(999)
+            console.log(999)
             // return;
             let generales = JSON.parse($(this).attr('generales-rel'));
             let detalle = JSON.parse($(this).attr('data-rel'));
+            let convenioItem;
 
             let esTerapia = false;
             let permitePago = "S";
@@ -1473,18 +1474,43 @@
                 esPagada = (estadosVigentes.includes(detalle.codigoEstado)) ? "S" : "N";
             }
             console.log(generales);
-            // console.log(detalle);
+            console.log(detalle);
+            // return;
             let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
-            
-            convenioItem = {
-                "codigoConvenio": generales.beneficio.convenio.codigoConvenio,
-                "nombreConvenio": generales.beneficio.convenio.nombreConvenio,
-                "codigoTipoConvenio": generales.beneficio.convenio.codigoTipoConvenio,
-                "nombreTipoConvenio": generales.beneficio.convenio.nombreTipoConvenio,
-                "requiereAutorizacionFacturacion": generales.beneficio.convenio.requiereAutorizacion,
-                "permitePago": permitePago,
-                "permiteReserva": esAgendable
+
+            if(esTerapia){
+                if(generales.beneficio !== null && generales.beneficio.convenio !== null){
+                    convenioItem = {
+                        "codigoConvenio": generales.beneficio.convenio.codigoConvenio,
+                        "nombreConvenio": generales.beneficio.convenio.nombreConvenio,
+                        "codigoTipoConvenio": generales.beneficio.convenio.codigoTipoConvenio,
+                        "nombreTipoConvenio": generales.beneficio.convenio.nombreTipoConvenio,
+                        "requiereAutorizacionFacturacion": generales.beneficio.convenio.requiereAutorizacion,
+                        "permitePago": permitePago,
+                        "permiteReserva": esAgendable
+                    }
+                }else{
+                    convenioItem = {
+                        "codigoConvenio": null,
+                        "nombreConvenio": "Particular",
+                        "codigoTipoConvenio": null,
+                        "nombreTipoConvenio": null,
+                        "requiereAutorizacionFacturacion": false,
+                        "permitePago": permitePago,
+                        "permiteReserva": esAgendable
+                    }
+                }
+            }else{
+                convenioItem = {
+                    "codigoConvenio": generales.codigoConvenio,
+                    "nombreConvenio": generales.nombreConvenio,
+                    "codigoTipoConvenio": generales.codigoTipoConvenio,
+                    "nombreTipoConvenio": generales.nombreTipoConvenio,
+                    "requiereAutorizacionFacturacion": false,
+                    "permitePago": permitePago,
+                    "permiteReserva": esAgendable
+                }
             }
             
             let dataCitaReserva = {
