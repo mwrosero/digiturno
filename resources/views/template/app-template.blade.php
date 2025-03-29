@@ -159,6 +159,7 @@
             });
 
             function exitAfterTurno(){
+                console.log("-----------------------")
                 if(localStorage.getItem('flujo') !== null){
                     let url_salir = `/{{ $mac }}`;
                     if (localStorage.getItem('userKiosko') !== null) {
