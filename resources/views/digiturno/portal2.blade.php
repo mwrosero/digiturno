@@ -1323,7 +1323,7 @@
                     class_active = `active`;
                     class_show = `show`;
                 }
-                elem_header += `<button class="nav-link nav-link-servicios ${class_active}" id="prestacion-${ value.codigoServicioNivel1 }-tab" data-bs-toggle="pill" data-bs-target="#prestacion-${ value.codigoServicioNivel1 }" type="button" role="tab" aria-controls="prestacion-${ value.codigoServicioNivel1 }" aria-selected="true" codigoServicio-rel="${ value.codigoServicioNivel1 }">
+                elem_header += `<button class="nav-link nav-link-servicios ${class_active}" id="prestacion-${ value.codigoServicioNivel1 }-tab" data-bs-toggle="pill" data-bs-target="#prestacion-${ value.codigoServicioNivel1 }" type="button" role="tab" aria-controls="prestacion-${ value.codigoServicioNivel1 }" aria-selected="true" esOcupacional-rel='${esOcupacional}' codigoServicio-rel="${ value.codigoServicioNivel1 }">
                         ${ value.nombreServicioNivel1 }
                     </button>`;
 
@@ -1422,11 +1422,13 @@
         $('body').on('click', '.select-all', function(){
             let id = $(this).attr('codigoServicio-rel');
             $('.pane-items-' + id).find('input:not(:disabled)').prop('checked', true);
+            $('.btn-activar').removeClass('activar-disabled');
         })
 
         $('body').on('click', '.unselect-all', function(){
             let id = $(this).attr('codigoServicio-rel');
             $('.pane-items-' + id).find('input:not(:disabled)').prop('checked', false);
+            $('.btn-activar').addClass('activar-disabled');
         })
 
         $('body').on('click', '.btn-activar', async function(){

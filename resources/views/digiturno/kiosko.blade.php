@@ -74,7 +74,7 @@
 		<div class="container-fluid text-center g-0 text-decoration-none">
 			<div class="row">
 				<div class="col-12 d-flex justify-content-center align-items-center text-decoration-none fw-bold text-veris-dark p-3 px-5 fs-2">
-					Toca la pantalla para continuar
+					¡Toca la pantalla para continuar!
 					{{-- <h4	 class="text-end me-3"><span class="text-veris">¡Hola!</span> también lo puedes generar<br>un turno desde aquí</h4> --}}
 					{{-- <a href="/ingreso/{{ $mac }}" class="text-decoration-none fw-bold text-veris-dark p-3 px-5 fs-2 rounded-8">Toca la pantalla para continuar</a> --}}
 				</div>

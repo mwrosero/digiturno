@@ -127,7 +127,7 @@ Mi Veris - Citas - Elige fecha y doctor
                 </section>
                 <section class="p-0">
                     <div class="row g-0 justify-content-center">
-                        <div class="col-12 col-md-10 mb-4 ps-3 pe-3">
+                        <div class="col-12 col-md-12 mb-4 ps-3 pe-3">
                             <p class="fs--1 mt-2 line-height-16 fw-normal mb-0 d-none" id="nombreFiltro">Filtrar por</p>
                             <ul class="nav nav-pills d-none justify-content-center border-box-veris w-auto p-1 rounded-3 mt-2 mb-3" id="pills-tab" role="tablist">
                                 <li class="nav-item w-50" role="presentation" data-rel="T">
