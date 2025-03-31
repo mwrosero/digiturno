@@ -39,11 +39,9 @@ Mi Veris - Citas - Revisa tus datos
                 <p class="fs--1 line-height-16 text-veris fw-normal" id="mensajeError"></p>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3">
-                <a href="tel:+59346009600" id="btn-lamar" class="btn btn-primary-veris d-none m-0 w-100 px-4 py-3 mb-2"><i class="bi bi-telephone-fill me-2"></i> Llamar</a>
-                {{-- <button type="button" id="btn-dismiss-error" class="btn btn-action-error px-3 py-2 border-0 text-primary-veris shadow-none fw-normal fs--1 m-0 w-100 px-4 py-3" data-bs-dismiss="modal">Entiendo</button>
-                <a href="/" id="btn-redirect-error" class="btn btn-action-error px-3 py-2 border-0 text-primary-veris shadow-none fw-normal fs--1 m-0 w-100 px-4 py-3" data-bs-dismiss="modal">Regresar</a> --}}
+                {{-- <a href="tel:+59346009600" id="btn-lamar" class="btn btn-primary-veris d-none m-0 w-100 px-4 py-3 mb-2"><i class="bi bi-telephone-fill me-2"></i> Llamar</a> --}}
                 <button type="button" id="btn-dismiss-error" class="btn btn-action-error btn-primary-veris fw-medium fs--18 m-0 w-100 px-4 py-3" data-bs-dismiss="modal">Regresar</button>
-                <a href="/" id="btn-redirect-error" class="btn btn-action-error btn-primary-veris fw-medium fs--18 m-0 w-100 px-4 py-3">Volver al inicio</a>
+                <a href="#" id="btn-redirect-error" class="btn btn-action-error btn-primary-veris fw-medium fs--18 m-0 w-100 px-4 py-3 btn-salir" data-bs-dismiss="modal">Volver al inicio</a>
             </div>
         </div>
     </div>
