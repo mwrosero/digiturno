@@ -666,6 +666,7 @@ Mi Veris - Citas - Datos de facturación
         args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=CAJ&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
         args["method"] = "POST";
         args["token"] = accessToken;
+        args["sendHeaders"] = "true";
         args["showLoader"] = true;
         args["data"] = JSON.stringify({
             "idTrx": generateUUIDv4(),
