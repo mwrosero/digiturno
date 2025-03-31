@@ -282,8 +282,8 @@
                 <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
-                <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-5 py-2 mx-2 fs-4 btn-salir">No</a>
-                <a href="#" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1 refresh-services" data-bs-dismiss="modal">Si</a>
+                <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-5 py-2 mx-2 fs-4 btn-salir w-25">No</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1 refresh-services w-25" data-bs-dismiss="modal">Si</a>
             </div>
         </form>
     </div>
@@ -305,8 +305,8 @@
                 <h3 class="fw-medium text-veris-dark">¿Deseas consultar algo más?</h3>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
-                <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-5 py-2 mx-2 fs-4 btn-salir">No</a>
-                <a href="#" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1 refresh-services" data-bs-dismiss="modal">Si</a>
+                <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-5 py-2 mx-2 fs-4 btn-salir w-25">No</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1 refresh-services w-25" data-bs-dismiss="modal">Si</a>
             </div>
         </form>
     </div>
@@ -325,8 +325,8 @@
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
                 {{-- <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4 btn-salir">CERRAR</a> --}}
-                <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-5 py-2 mx-2 fs-4 btn-salir">No</a>
-                <a href="#" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1 refresh-services" data-bs-dismiss="modal">Si</a>
+                <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-5 py-2 mx-2 fs-4 btn-salir w-25">No</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1 refresh-services w-25" data-bs-dismiss="modal">Si</a>
             </div>
         </form>
     </div>
@@ -945,10 +945,11 @@
             reiniciarConteo();
         });
 
-        $('body').on('click','.btn-confirmar-cita', function(){
+        $('body').on('click','.btn-confirmar-cita', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             // console.log(detalle);
             let consultorio = obtenerNombreConsultorio(detalle);
+            await registrarTracking('VERIFICAR_CONSULTORIO',detalle);
             $('.box-info-consultorio').html(`${consultorio}`);
             $('#modalConfirmarCita').modal('show')
         })
@@ -1051,7 +1052,11 @@
             if($(this).attr('terapia-rel') !== null && $(this).attr('terapia-rel') == "S"){
                 esTerapia = true;
             }
-            console.log({esTerapia})
+            let esProcedimiento = false;
+            if(detalle.nombreServicioNivel1 == "PROCEDIMIENTOS"){
+                esProcedimiento = true;
+            }
+            // console.log(detalle)
             $('#tituloOrdenDetalle').html(`Detalle de Orden Médica: <span class="text-veris fw-bold">${detalle.numeroOrden}</span>`);
             
             //if(detalle.tieneOrdenApoyoPendiente || detalle.tipoServicio == "ORDENES_APOYO_PENDIENTE")
@@ -1125,9 +1130,15 @@
                 if(detalle.tipoServicio == "ORDEN_MEDICA" && (detalle.nombreServicioNivel1 == "LABORATORIO" || detalle.nombreServicioNivel1 == "IMAGENES" || detalle.nombreServicioNivel1 == "PROCEDIMIENTOS") && detalle.permitePago){
                     if(esKiosko){
                         // console.log(99)
-                        btnPagar += `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris p-2 py-3 mt-3 btn-pagar" data-bs-dismiss="modal">
-                                Pagar
-                            </button>`;
+                        if(esProcedimiento && qtyPrestacionesPorPagar >1){
+                            btnPagar = `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
+                                    Pagar en caja
+                                </button>`;
+                        }else{
+                            btnPagar += `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white p-2 py-3 mt-3 btn-pagar" data-bs-dismiss="modal">
+                                    Pagar
+                                </button>`;
+                            }
                     }else{
                         // console.log(77)
                         btnPagar += `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
@@ -2168,7 +2179,7 @@
         const data = await call(args);
         if(data.code == 200){
             console.log(data);
-            await registrarTracking(payloadRegistro);
+            await registrarTracking("ACTIVAR_CHEQUEO", payloadRegistro);
             // $('#direccionDirigirseLlegada').html(`Por favor, diríjase al área de chequeos.`);
             let debeActivar = await validarActivarLaboratorioChequeos();
             if(debeActivar){
@@ -2182,11 +2193,11 @@
         }
     }
 
-    async function registrarTracking(payloadRegistro){
+    async function registrarTracking(type, payloadRegistro){
         let args = [];
         args["endpoint"] = `${api_url}/${api_war}/util/registrar_tracking?macAddress=${ dataTurno.mac }`;
         let payload = {
-            "idProceso": "ACTIVAR_CHEQUEO",
+            "idProceso": type,
             "parametros": payloadRegistro
         }
         args["method"] = "POST";
@@ -2324,18 +2335,29 @@
     async function obtenerAutorizacionMedPay(detalle){
         console.log('MEDPAYYYYYYYYYYYYYY');
         console.log(detalle);
+        console.log('MEDPAYYYYYYYYYYYYYY');
         let convenio = await obtenerInfoConvenio();
         let diagnosticos = [29616];
         if(detalle.hasOwnProperty('diagnosticos')){
             diagnosticos = [];
-            // $.each(detalle.diagnosticos, function(key, value){
-            //     diagnosticos.push(parseInt(value.codigoDiagnostico));
-            // })
+            $.each(detalle.diagnosticos, function(key, value){
+                diagnosticos.push(parseInt(value.codigoDiagnostico));
+            })
             //return;
         }
 
         let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
+
+        let codigoServicio = detalle.codigoServicio;
+        let codigoPrestacion = detalle.codigoPrestacion;
+        let lineaDetalleOrden = detalle.lineaDetalleOrden;
+
+        if(detalle.hasOwnProperty('detallesOrden')){
+            codigoServicio = detalle.detallesOrden[0].codigoServicio;
+            codigoPrestacion = detalle.detallesOrden[0].codigoPrestacion;
+            lineaDetalleOrden = detalle.detallesOrden[0].lineaDetalleOrden;
+        }
 
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=CAJ&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
@@ -2346,13 +2368,13 @@
             "idTrx": generateUUIDv4(),
             "idPaciente": paciente.idPaciente,
             "prestaciones": [{
-                "codigoServicio": detalle.codigoServicio,
-                "codigoPrestacion": detalle.codigoPrestacion,
+                "codigoServicio": codigoServicio,
+                "codigoPrestacion": codigoPrestacion,
                 "cantidad": 1,
                 "esOdontologica": false,
                 "numeroParteDental": 0,
                 "numeroOrden": detalle.numeroOrden,// si o null
-                "lineaDetalleOrden": detalle.lineaDetalleOrden, //si o null
+                "lineaDetalleOrden": lineaDetalleOrden, //si o null
                 "valorFee": 0
             }],
             "diagnosticos": diagnosticos,
@@ -3060,17 +3082,25 @@
                                 }else{
                                     // Permite pagar
                                 }
+                                // console.log(permiteAgendar)
+                                // console.log(detalle.permitePago)
+                                // console.log(detalle)
                                 if(esKiosko){
-                                    // console.log(detalle)
                                     //if(detalle.nombreServicioNivel1 == "CONSULTA"){
-                                    if(permiteAgendar){
+                                    if(permiteAgendar && (detalle.nombreServicioNivel1 == "CONSULTA"  || tipoServicio == "TERAPIA_FISICA")){
                                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
                                         Agendar cita
                                     </button>`;
                                     }else{
-                                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
-                                                Pagar
-                                            </button>`;
+                                        if(detalle.nombreServicioNivel1 == "CONSULTA"  || tipoServicio == "TERAPIA_FISICA"){
+                                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
+                                                    Pagar
+                                                </button>`;
+                                            }else{
+                                                elemFooterCard = `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3" terapia-rel='N'>
+                                                    Ver detalle
+                                                </button>`;
+                                            }
                                     }
                                 }else{
                                     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">

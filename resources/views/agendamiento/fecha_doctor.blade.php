@@ -29,7 +29,7 @@ Mi Veris - Citas - Elige fecha y doctor
                                 <p class="fs--16 fw-normal text-veris mb-3" id="mensajeError" ></p>
                             </div>
                             <div class="modal-footer pt-0 pb-3 px-3">
-                                <button type="button" class="btn btn-primary-veris fs--18 line-height-24 m-0 px-4 py-3 w-100" data-bs-dismiss="modal" id="btnEntiendoError">Entiendo</button>
+                                <button type="button" class="btn btn-primary-veris fs--18 line-height-24 m-0 px-4 py-3 w-100" data-bs-dismiss="modal" id="btnEntiendoError" data-bs-dismiss="modal">Entiendo</button>
                             </div>
                         </div>
                     </div>
@@ -454,7 +454,7 @@ Mi Veris - Citas - Elige fecha y doctor
         // btnEntiendoError redirecciona a la página inicial
         $('#btnEntiendoError').click(function(){
             if(!dataCita.ordenExterna){
-                window.location.href = "/";
+                // window.location.href = "/";
             }
         });
 

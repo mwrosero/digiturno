@@ -646,9 +646,9 @@ Mi Veris - Citas - Datos de facturación
         let diagnosticos = [29616];
         if(detalle.hasOwnProperty('diagnosticos')){
             diagnosticos = [];
-            // $.each(detalle.diagnosticos, function(key, value){
-            //     diagnosticos.push(parseInt(value.codigoDiagnostico));
-            // })
+            $.each(detalle.diagnosticos, function(key, value){
+                diagnosticos.push(parseInt(value.codigoDiagnostico));
+            })
             //return;
         }
 
