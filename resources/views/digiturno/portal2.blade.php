@@ -470,7 +470,7 @@
                             <a href="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-30" id="btn-agendar-header">Agendar cita médica</a>
                         </div>
                         <div class="col-12 px-0 d-block d-md-none">
-                            <a href="https://app.veris.com.ec/external/financiero/devoluciones" class="btn bg-veris text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-40">Gestionar devoluciones</a>
+                            <a href="https://app.veris.com.ec/external/financiero/devoluciones" class="btn bg-veris text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-20">Gestionar devoluciones</a>
                         </div>
                     </div>
                 </div>
@@ -827,8 +827,8 @@
     buscarUsuarioFlag = false;
 
     let userKiosko;
-    let esKiosko = false;
-    if (localStorage.getItem('userKiosko') !== null) {
+    let esKiosko = isKiosk();
+    if (localStorage.getItem('userKiosko') !== null || isKiosk()) {
         esKiosko = true
         userKiosko = localStorage.getItem('userKiosko');
         $('header').addClass('pt-4')
@@ -925,6 +925,9 @@
         }
         if(isMobile()){
             url_salir = `/ingreso/${ dataTurno.mac }`;
+        }
+        if(isKiosk()){
+            url_salir = `/kiosko/${ dataTurno.mac }`;
         }
         $('.btn-salir').attr('href',url_salir);
 

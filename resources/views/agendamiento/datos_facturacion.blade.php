@@ -305,9 +305,10 @@ Mi Veris - Citas - Datos de facturación
     let esKiosko = false;
 
     document.addEventListener("DOMContentLoaded", async function () {
-        if (localStorage.getItem('userKiosko') !== null) {
-            esKiosko = true
-        }
+        // if (localStorage.getItem('userKiosko') !== null) {
+        //     esKiosko = true
+        // }
+        esKiosko = isKiosk();
         if(!esKiosko){
             $('.qr-box').removeClass('d-none');
             await generarLinkQr()
