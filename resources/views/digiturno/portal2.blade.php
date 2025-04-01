@@ -920,15 +920,13 @@
         }
 
         url_salir = `/${ dataTurno.mac }`;
-        if(localStorage.getItem('userKiosko') !== null) {
+        if(localStorage.getItem('userKiosko') !== null || isKiosk()) {
             url_salir = `/ingreso/${ dataTurno.mac }`;
         }
         if(isMobile()){
             url_salir = `/ingreso/${ dataTurno.mac }`;
         }
-        if(isKiosk()){
-            url_salir = `/kiosko/${ dataTurno.mac }`;
-        }
+        
         $('.btn-salir').attr('href',url_salir);
 
         // Detectar interacción del usuario
