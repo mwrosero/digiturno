@@ -146,7 +146,7 @@
                 if(localStorage.getItem('flujo') !== null){
                     let url_salir = `/{{ $mac }}`;
                     // if(isMobile() || localStorage.getItem('userKiosko') !== null){
-                    if (localStorage.getItem('userKiosko') !== null) {
+                    if (localStorage.getItem('userKiosko') !== null || isKiosk()) {
                         url_salir = `/kiosko/{{ $mac }}`;
                     }
                     if(isMobile()){

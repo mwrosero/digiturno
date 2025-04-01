@@ -1187,3 +1187,13 @@ function generateUUIDv4() {
         return v.toString(16); // Convierte el número a hexadecimal
     });
 }
+
+function isKiosk() {
+    if (window.matchMedia("(orientation: portrait)").matches) {
+        return true;
+        console.log("El monitor está en modo Portrait");
+    } else {
+        console.log("El monitor está en modo Landscape");
+        return false;
+    }
+}
