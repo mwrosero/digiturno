@@ -1189,6 +1189,10 @@ function generateUUIDv4() {
 }
 
 function isKiosk() {
+    let isTablet = navigator.userAgent.toLowerCase().match(/(ipad|android(?!.*mobi)|tablet|playbook|silk)/i);
+    if(isTablet !== null){
+        return false;
+    }
     if (window.matchMedia("(orientation: portrait)").matches) {
         return true;
         console.log("El monitor está en modo Portrait");
