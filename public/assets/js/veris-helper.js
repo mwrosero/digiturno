@@ -1189,8 +1189,9 @@ function generateUUIDv4() {
 }
 
 function isKiosk() {
+    let isPC = /(win|mac|linux)/i.test(navigator.platform);
     let isTablet = navigator.userAgent.toLowerCase().match(/(ipad|android(?!.*mobi)|tablet|playbook|silk)/i);
-    if(isTablet !== null){
+    if(isTablet !== null && !isPC){
         return false;
     }
     if (window.matchMedia("(orientation: portrait)").matches) {

@@ -2107,7 +2107,7 @@
             let prestacion = JSON.parse($(this).attr('data-rel'))
             if(prestacion.estadoExamen == "PENDIENTE"){
                 await notificarLlegada(prestacion, false);
-            }else if(prestacion.estadoExamen != "ACEPTADO"){
+            }else if(prestacion.estadoExamen != "ACEPTADO" && prestacion.estadoExamen !== null){
                 arr.push({
                     "_id": generateUUIDv4(),
                     "secuenciaPreXAfi": prestacion.secuenciaPreXAfi
