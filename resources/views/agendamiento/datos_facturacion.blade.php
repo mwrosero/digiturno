@@ -974,6 +974,9 @@ Mi Veris - Citas - Datos de facturación
             await facturarCobroPinPad();
             return;
         }
+
+        $('.box-datos-factura').addClass('d-none')
+        $('.box-load-pago').removeClass('d-none')
         
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
