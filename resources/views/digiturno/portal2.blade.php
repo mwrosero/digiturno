@@ -3224,7 +3224,7 @@
                             Agendar cita
                         </button>`;
                     }else{
-                        if(!permitePago){
+                        if(!detalle.permitePago){
                             elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
                                 Pagar en caja
                             </button>`;
@@ -3452,10 +3452,10 @@
 
         let classCards = `col-12 col-lg-6 col-xxl-4 d-flex mb-3 mt-0`;
         if(esKiosko){
-            classCards = `col-6 d-flex mb-3 mt-0`
+            classCards = `col-12 col-md-6 d-flex mb-3 mt-0`
         }
 
-        let elem = `<div class="${classCards}0">
+        let elem = `<div class="${classCards}">
                 <div class="w-100 mt-1">
                     <div class="card d-flex flex-column content-card rounded-8 p-2 px-3 border-citas-1">
                         <div class="card-header p-0 bg-transparent border-0 d-flex justify-content-start align-items-center">
@@ -3491,7 +3491,7 @@
         if(addForToday){
             let classCards = `col-12 col-lg-6 col-xxl-4 d-flex mb-5 mt-0`;
             if(esKiosko){
-                classCards = `col-6 d-flex mb-5 mt-0`
+                classCards = `col-12 col-md-6 d-flex mb-5 mt-0`
             }
             // if(detalle.tipoServicio == 'BATERIA_PRESTACIONES'){
             //     labelServicio = "CHEQUEO"

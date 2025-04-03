@@ -154,6 +154,7 @@
                     }
                     $('.btn-salir').attr('href',url_salir);
 
+                    console.log("========================app-template======================")
                     console.log(url_salir)
                 }
             });
