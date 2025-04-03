@@ -1050,6 +1050,7 @@
         $('body').on('click', '.btn-detalle-orden', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             let esTerapia = false;
+
             if($(this).attr('terapia-rel') !== null && $(this).attr('terapia-rel') == "S"){
                 esTerapia = true;
             }
@@ -1220,14 +1221,6 @@
         });
 
 
-        $('body').on('change', '#autorizacion', function(){
-            if($('#autorizacion').is(':checked')) {
-                $('.btn-activar').removeClass('activar-disabled');
-            } else {
-                $('.btn-activar').addClass('activar-disabled');
-            }
-        })
-
         $('body').on('click', '.btn-detalle-paquete', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             // console.log(detalle)
@@ -1272,23 +1265,26 @@
         })
 
         $('body').on('click', '.check-only-individual-legend', async function(){
-            toastr.clear();
-            toastr.warning('Debe seleccionar todos los exámenes', 'Atención', {
-                timeOut: 3000
-            });
+            if (!$(this).find('input').prop('disabled')) {
+                toastr.clear();
+                toastr.warning('Debe seleccionar todos los exámenes', 'Atención', {
+                    timeOut: 3000
+                });
+            }
         })
 
         $('body').on('click', '.btn-detalle-chequeo', async function(){
             let dataChequeo = $(this).attr('data-rel');
             let prestacionesParaActivar = 0;
+            let permiteAgendarUna = 0;
             $('.btn-activar').removeClass('d-none');
             $('#dataChequeo').val(dataChequeo)
             let detalle = JSON.parse(dataChequeo);
             if(detalle.esAutorizadoEnvResultDg){
                 $('.box-aceptacion').addClass('d-none')
                 $('.btn-activar').removeClass('activar-disabled');
+                $('#autorizacion').prop('checked', true);
             }else{
-
                 $('.box-aceptacion').removeClass('d-none')
             }
 
@@ -1383,6 +1379,7 @@
                         checked = `checked`;
                     }else{
                         // console.log("NO ES OCUPACIONAL")
+                        disabledAttr = ``;
                     }
                     if(esLaboratorio){
                         {{-- console.log("ES LABORATORIO") --}}
@@ -1400,6 +1397,9 @@
                     }
 
                     if(checked == "checked" && disabledAttr == ""){
+                        permiteAgendarUna = true;
+                    }
+                    if(v.estadoExamen == "PENDIENTE" || (!esOcupacional && v.estadoExamen === null)){
                         prestacionesParaActivar = 1;
                     }
 
@@ -1419,8 +1419,8 @@
                 })
                 elem_content += `</div>`;
             })
-
-            if(prestacionesParaActivar == 1){
+            console.log({prestacionesParaActivar});
+            if(prestacionesParaActivar == 1 && permiteAgendarUna){
                 $('.btn-activar').removeClass('activar-disabled');
             }else{
                 $('.btn-activar').addClass('activar-disabled');
@@ -1434,7 +1434,9 @@
         $('body').on('click', '.select-all', function(){
             let id = $(this).attr('codigoServicio-rel');
             $('.pane-items-' + id).find('input:not(:disabled)').prop('checked', true);
-            $('.btn-activar').removeClass('activar-disabled');
+            if($('#autorizacion').is(':checked')) {
+                $('.btn-activar').removeClass('activar-disabled');
+            }
         })
 
         $('body').on('click', '.unselect-all', function(){
@@ -1472,6 +1474,42 @@
                 $('.btn-continuar-factura').addClass('btn-disabled');
             }
         });
+
+        $('body').on('change', '#autorizacion', function(){
+            if($('#autorizacion').is(':checked')) {
+                let tieneItemChequeado = false;
+                console.log("Verifico que haya al menos una prestacion chequeada")
+                $('#v-pills-tabContent').find('input:checked').each(async function(index, element) {
+                    console.log("Bingo, hay una!")
+                    tieneItemChequeado = true;
+                });
+                if(tieneItemChequeado){
+                    $('.btn-activar').removeClass('activar-disabled');
+                }
+            } else {
+                $('.btn-activar').addClass('activar-disabled');
+            }
+        })
+
+        // cuando actualicen los checkbox
+        $('#v-pills-tabContent').on('change', 'input', function(){
+            if($('#autorizacion').is(':checked')) {
+                let tieneItemChequeado = false;
+                console.log("Verifico que haya al menos una prestacion chequeada")
+                $('#v-pills-tabContent').find('input:checked').each(async function(index, element) {
+                    console.log("Bingo, hay una!")
+                    tieneItemChequeado = true;
+                });
+                if(tieneItemChequeado){
+                    $('.btn-activar').removeClass('activar-disabled');
+                }else{
+                    $('.btn-activar').addClass('activar-disabled');
+                }
+            } else {
+                $('.btn-activar').addClass('activar-disabled');
+            }
+        });
+
 
         $('body').on('click', '.btn-agendar-prestacion', async function(){
             console.log(999)
@@ -2103,11 +2141,29 @@
 
     async function obtenerPrestacionesParaActivar(){
         let arr = []
+        let ordenesNotificadas = [];
         $('#v-pills-tabContent').find('input:checked').each(async function(index, element) {
+            // let prestacion = JSON.parse($(this).attr('data-rel'))
+            // if(prestacion.estadoExamen == "PENDIENTE"){
+            //     // solo unico
+            //     await notificarLlegada(prestacion, false);
+            // }else if(prestacion.estadoExamen != "ACEPTADO" ){//&& prestacion.estadoExamen !== null
+            //     arr.push({
+            //         "_id": generateUUIDv4(),
+            //         "secuenciaPreXAfi": prestacion.secuenciaPreXAfi
+            //     })
+            // }
             let prestacion = JSON.parse($(this).attr('data-rel'))
-            if(prestacion.estadoExamen == "PENDIENTE"){
-                await notificarLlegada(prestacion, false);
-            }else if(prestacion.estadoExamen != "ACEPTADO" && prestacion.estadoExamen !== null){
+            if(parseInt(prestacion.cantidadDisponible) === 0){
+                // solo unico y que sean lab
+                if(prestacion.codigoOrdApoyo !== null && prestacion.estadoExamen == "PENDIENTE"){
+                    console.log(prestacion.nombrePrestacion)
+                    if(!ordenesNotificadas.includes(prestacion.codigoOrdApoyo)){
+                        await notificarLlegada(prestacion, false);
+                        ordenesNotificadas.push(prestacion.codigoOrdApoyo)
+                    }
+                }
+            }else if(parseInt(prestacion.cantidadDisponible) === 1 ){//&& prestacion.estadoExamen !== null
                 arr.push({
                     "_id": generateUUIDv4(),
                     "secuenciaPreXAfi": prestacion.secuenciaPreXAfi
@@ -2666,6 +2722,9 @@
             await facturarCobroPinPad();
             return;
         }
+
+        $('.box-datos-factura').addClass('d-none');
+        $('.box-load-pago').removeClass('d-none');
         
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
