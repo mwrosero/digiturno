@@ -2157,17 +2157,20 @@
             if(parseInt(prestacion.cantidadDisponible) === 0){
                 // solo unico y que sean lab
                 if(prestacion.codigoOrdApoyo !== null && prestacion.estadoExamen == "PENDIENTE"){
-                    console.log(prestacion.nombrePrestacion)
+                    console.log(prestacion.nombrePrestacion +": ACTIVAR")
                     if(!ordenesNotificadas.includes(prestacion.codigoOrdApoyo)){
                         await notificarLlegada(prestacion, false);
                         ordenesNotificadas.push(prestacion.codigoOrdApoyo)
                     }
                 }
             }else if(parseInt(prestacion.cantidadDisponible) === 1 ){//&& prestacion.estadoExamen !== null
+                console.log(prestacion.nombrePrestacion +": ADD ARRAY")
                 arr.push({
                     "_id": generateUUIDv4(),
                     "secuenciaPreXAfi": prestacion.secuenciaPreXAfi
                 })
+            }else{
+                console.log(prestacion.nombrePrestacion +": NO ENTRO ELSE")
             }
         });
         return arr;
