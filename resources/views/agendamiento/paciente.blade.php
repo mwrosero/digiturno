@@ -54,31 +54,35 @@ Elige Paciente
         <h5 class="ps-3 my-auto py-3 fs-20 fs-md-24">{{ __('Elegir paciente') }}</h5>
     </div> --}}
     <section class="px-0 h-100">
-        <div class="row mx-0 h-lg-100">
+        <div class="row mx-0 h-lg-100 d-flex flex-column">
             <div class="col-12 mb-3">
                 <div class="border-veris-2 rounded-8 p-2 px-4 text-center text-primary-veris fs-18 fw-medium cursor-pointer ms-3 btn-atras-paciente" style="max-width: 150px;">
                     <i class="fa-solid fa-arrow-left me-1"></i> Atrás
                 </div>
             </div>
-            <div class="col-12 col-lg-4 d-flex justify-content-start justify-content-lg-center align-items-center bg-veris">
-                <h5 class="ps-3 text-white my-auto py-3 fs-40 line-height-48 fs-md-24">{{ __('Elegir paciente') }}</h5>
-            </div>
-            <div class="col-12 col-lg-8 pt-3 pt-lg-0">
-                <div class="row px-3" id="listaPacientes">
-                    {{-- <div class="col-6 col-md-3">
-                        <div class="card h-100">
-                            <div class="card-body d-flex flex-column justify-content-center align-items-center px-3 py-2">
-                                <a class="" href="#">
-                                    <div class="d-flex justify-content-center align-items-center mb-2">
-                                        <div class="avatar avatar-10">
-                                            <span class="avatar-initial rounded-circle bg-soft-blue"><i class="fa-solid fa-plus"></i></span>
-                                        </div>
+            <div class="col-12 flex-grow-1 d-flex">
+                <div class="row">
+                    <div class="col-12 col-lg-4 d-flex justify-content-start justify-content-lg-center align-items-center bg-veris">
+                        <h5 class="ps-3 text-white my-auto py-3 fs-40 line-height-48 fs-md-24">{{ __('Elegir paciente') }}</h5>
+                    </div>
+                    <div class="col-12 col-lg-8 pt-3 pt-lg-0">
+                        <div class="row px-3" id="listaPacientes">
+                            {{-- <div class="col-6 col-md-3">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex flex-column justify-content-center align-items-center px-3 py-2">
+                                        <a class="" href="#">
+                                            <div class="d-flex justify-content-center align-items-center mb-2">
+                                                <div class="avatar avatar-10">
+                                                    <span class="avatar-initial rounded-circle bg-soft-blue"><i class="fa-solid fa-plus"></i></span>
+                                                </div>
+                                            </div>
+                                            <p class="text-veris fw-medium fs--2 text-center mb-0">{{ __('Agregar nuevo paciente') }}</p>
+                                        </a>
                                     </div>
-                                    <p class="text-veris fw-medium fs--2 text-center mb-0">{{ __('Agregar nuevo paciente') }}</p>
-                                </a>
-                            </div>
+                                </div>
+                            </div> --}}
                         </div>
-                    </div> --}}
+                    </div>
                 </div>
             </div>
         </div>

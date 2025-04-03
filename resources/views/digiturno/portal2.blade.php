@@ -1371,7 +1371,7 @@
                         btnAgenda = ``;
                     }
 
-                    let badge_estado_lab_chequeo = ``;
+                    var badge_estado_lab_chequeo = ``;
 
                     if(esOcupacional){
                         // disabledAttr = `disabled`;
@@ -1381,11 +1381,15 @@
                         // console.log("NO ES OCUPACIONAL")
                         disabledAttr = ``;
                     }
+
+                    console.log({esLaboratorio})
+
                     if(esLaboratorio){
                         {{-- console.log("ES LABORATORIO") --}}
                         {{-- disabledAttr = `disabled`; --}}
                         classLabNoOcupacional = `check-only-individual`;
                         classLabNoOcupacionalLegend = `check-only-individual-legend`;
+                        console.log("prestacion "+v.nombrePrestacion+": "+v.estadoExamen)
                         if(v.estadoExamen == "ACEPTADO"){
                             disabledAttr = `disabled`;
                             badge_estado_lab_chequeo = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Activado</span>`
@@ -1402,6 +1406,8 @@
                     if(v.estadoExamen == "PENDIENTE" || (!esOcupacional && v.estadoExamen === null)){
                         prestacionesParaActivar = 1;
                     }
+
+                    console.log(badge_estado_lab_chequeo)
 
                     elem_content += `<div class="d-flex justify-content-start align-items-start fs-16 line-height-16 mb-2 ${classLabNoOcupacionalLegend}">
                             <div class="form-check flex-grow-1 ${classLabNoOcupacional}">
