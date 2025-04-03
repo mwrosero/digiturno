@@ -52,6 +52,9 @@
     #modalEstasAhiAgenda{
     	z-index: 99999999999999999;
     }
+    .border-veris-1{
+        border: 1px solid var(--veris-blue) !important;
+    }
 </style>
 
 <script>
