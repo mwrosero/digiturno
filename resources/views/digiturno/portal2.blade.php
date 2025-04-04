@@ -1540,6 +1540,7 @@
             // return;
             let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
+            let numeroOrden;
 
             if(esTerapia){
                 if(generales.beneficio !== null && generales.beneficio.convenio !== null){
@@ -1563,6 +1564,7 @@
                         "permiteReserva": esAgendable
                     }
                 }
+                numeroOrden = generales.numeroOrden;
             }else{
                 convenioItem = {
                     "codigoConvenio": generales.codigoConvenio,
@@ -1573,6 +1575,7 @@
                     "permitePago": permitePago,
                     "permiteReserva": esAgendable
                 }
+                numeroOrden = detalle.numeroOrden;
             }
             
             let dataCitaReserva = {
@@ -1589,7 +1592,7 @@
                 "convenio": convenioItem,
                 "tratamiento": {
                     //"cantidadIntervalosReserva": 1,
-                    "numeroOrden": detalle.numeroOrden,
+                    "numeroOrden": numeroOrden,
                     "codigoEmpOrden": detalle.codigoEmpresa,
                     "lineaDetalle": detalle.lineaDetalleOrden,
                     "codigoEmpOrden": 1,
