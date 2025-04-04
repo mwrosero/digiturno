@@ -1577,7 +1577,7 @@
                 }
                 numeroOrden = detalle.numeroOrden;
             }
-            
+             
             let dataCitaReserva = {
                 "paciente": {
                     "tipoIdentificacion": paciente.codigoTipoIdentificacion,
