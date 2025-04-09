@@ -438,7 +438,8 @@
                 </div>
                 <div class="col-12">
                     <div class="row h-100 d-flex justify-content-between align-items-center">
-                        <div class="col-12 col-md-6 col-xl-8 px-0" id="col-familia">
+                        {{-- <div class="col-12 col-xl-6 px-0" id="col-familia"> --}}
+                        <div class="col-12 col-md-8 col-xl-9 px-0" id="col-familia">
                             <!-- FAMILIARES -->
                             <div class="modal modal-top fade" id="pacienteModal" tabindex="-1" aria-labelledby="pacienteModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-sm modal-dialog-centered mx-auto">
@@ -453,9 +454,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        {{-- <div class="modal-footer pt-0 pb-3 px-3">
-                                            <button type="button" class="btn w-100 fw-medium fs--16 waves-effect line-height-20 m-0 p-3" style="color: #0071CE;" data-bs-dismiss="modal">Cancelar</button>
-                                        </div> --}}
                                     </form>
                                 </div>
                             </div>
@@ -466,12 +464,21 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-5 offset-md-1 col-xl-3 offset-xl-1 px-0 d-none" id="col-agenda">
+                        <div class="col-12 col-md-3 col-xl-4 d-none col-agenda">
                             <a href="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-30" id="btn-agendar-header">Agendar cita médica</a>
                         </div>
                         <div class="col-12 px-0 d-block d-md-none">
                             <a href="https://app.veris.com.ec/external/financiero/devoluciones" class="btn bg-veris text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-20">Gestionar devoluciones</a>
                         </div>
+                        {{-- <div class="col-12 col-md-6 col-xl-3 d-none col-agenda">
+                            <a href="/paciente-paquete/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-green-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-30" id="btn-paquete-header"><i class="fa-solid fa-gift"></i> Promociones</a>
+                        </div>
+                        <div class="col-12 col-md-6 col-xl-3 d-none col-agenda">
+                            <a href="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-30" id="btn-agendar-header">Agendar cita médica</a>
+                        </div>
+                        <div class="col-12 px-0 d-block d-md-none">
+                            <a href="https://app.veris.com.ec/external/financiero/devoluciones" class="btn bg-veris text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-20">Gestionar devoluciones</a>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -905,7 +912,7 @@
         }else{
             // console.log(9)
             // $('#col-familia').removeClass('col-8').addClass('col-12')
-            // $('#col-agenda').addClass('d-none')
+            // $('.col-agenda').addClass('d-none')
             $('.box-content-familia').removeClass('d-none');
         }
 
@@ -1788,9 +1795,9 @@
         // console.log(data);
 
         if(data.data === null){
-            $('#col-agenda').addClass('d-none')
+            $('.col-agenda').addClass('d-none')
         }else{
-            $('#col-agenda').removeClass('d-none')
+            $('.col-agenda').removeClass('d-none')
         }
     }
     
@@ -2145,6 +2152,10 @@
                 await agregarItemTurno(idPreTransaccion, detalle, "TURNO");
                 return idPreTransaccion;
             }
+        }else{
+            toastr.error("", data.message, {
+                timeOut: 5000
+            });
         }
     }
 
@@ -3157,31 +3168,40 @@
                                 // console.log(permiteAgendar)
                                 // console.log(detalle.permitePago)
                                 // console.log(detalle)
-                                if(esKiosko){
+                                //if(esKiosko){
                                     //if(detalle.nombreServicioNivel1 == "CONSULTA"){
                                     if(permiteAgendar && (detalle.nombreServicioNivel1 == "CONSULTA"  || tipoServicio == "TERAPIA_FISICA")){
                                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
-                                        Agendar cita
-                                    </button>`;
+                                                Agendar cita
+                                            </button>`;
                                     }else{
                                         if(detalle.nombreServicioNivel1 == "CONSULTA"  || tipoServicio == "TERAPIA_FISICA"){
-                                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
-                                                    Pagar
-                                                </button>`;
+                                            if(esKiosko){
+                                                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
+                                                        Pagar
+                                                    </button>`;
                                             }else{
-                                                elemFooterCard = `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3" terapia-rel='N'>
-                                                    Ver detalle
+                                                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                                                    Pagar en caja
+                                                </button>
+                                                <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
+                                                    Pagar aquí
                                                 </button>`;
                                             }
+                                        }else{
+                                            elemFooterCard = `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3" terapia-rel='N'>
+                                                    Ver detalle
+                                                </button>`;
+                                        }
                                     }
-                                }else{
+                                /*}else{
                                     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
                                         Pagar en caja
                                     </button>
                                     <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
                                         Pagar aquí
                                     </button>`;
-                                }
+                                }*/
                                 // console.log("-------------------------")
                                 // console.log({tipoServicio})
                                 // console.log("-------------------------")
@@ -3306,26 +3326,37 @@
                     sectionEstadoPago = `porpagar`;
                     labelEstadoItem = `Por pagar`;
                     classEstadoItem = `text-pendiente`;
-                    if(esKiosko){
+                    // if(esKiosko){
                         if(detalle.permitePago){
-                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
-                                    Pagar
-                                </button>`;
+                            if(esKiosko){
+                                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
+                                        Pagar
+                                    </button>`;
+                            }else{
+                                if(detalle.permitePago){
+                                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
+                                            Pagar aquí
+                                        </button>`;
+                                }
+                                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                                        Pagar en caja
+                                    </button>`;
+                            }
                         }else{
                             elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
                                     Pagar en caja
                                 </button>`;
                         }
-                    }else{
+                    // }else{
                         // if(detalle.permitePago){
                         //     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
                         //             Pagar aquí
                         //         </button>`;
                         // }
-                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
-                                Pagar en caja
-                            </button>`;
-                        }
+                        // elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                        //         Pagar en caja
+                        //     </button>`;
+                        // }
                 }else{
                     let consultorio = obtenerNombreConsultorio(detalle);
                     /*elemBodyCard += `<div class="d-flex justify-content-center align-items-center fw-bold text-dark fs-18 bg-silver-light py-2 rounded-8 my-2">
@@ -4668,7 +4699,8 @@
             font-size: 20px !important;
             line-height: 25px !important;
         }
-        #btn-agendar-header{
+        #btn-agendar-header,
+        #btn-paquete-header{
             font-size: 30px !important;
             line-height: 30px !important;
             padding: 15px 0px !important;

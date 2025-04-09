@@ -65,19 +65,19 @@
     const tiempoMaximoRespuesta = 15; // Tiempo máximo de respuesta al modal en segundos
 	$(document).ready(async function() {
 		$(document).on("mousemove keydown click scroll", function () {
-			console.log("movio algo")
-		    reiniciarConteo();
+			// console.log("movio algo")
+		    //reiniciarConteo();
 		});
 		$("#btnSi").on("click", function () {
 		    clearTimeout(temporizadorRespuesta);
 		    $("#modalEstasAhiAgenda").fadeOut();
-		    console.log("El usuario sigue presente.");
-		    reiniciarConteo();
+		    // console.log("El usuario sigue presente.");
+		    //reiniciarConteo();
 		});
 		if(!isMobile()){
-            console.log("Iniciando conteo")
+            // console.log("Iniciando conteo")
             // Iniciar el conteo inicial
-            reiniciarConteo();
+            //reiniciarConteo();
         }
 	})
 
@@ -88,7 +88,7 @@
         // Iniciar temporizador para esperar respuesta
         temporizadorRespuesta = setTimeout(() => {
             $("#modalEstasAhiAgenda").modal("hide");
-            console.log("No hubo respuesta a tiempo.");
+            // console.log("No hubo respuesta a tiempo.");
             let url_salir = `/{{ $mac }}`;
             // if(isMobile() || localStorage.getItem('userKiosko') !== null){
             if (localStorage.getItem('userKiosko') !== null || isKiosk()) {
@@ -103,7 +103,7 @@
 
     // Función para reiniciar el conteo de inactividad
     function reiniciarConteo() {
-    	console.log("Conteo reiniciado")
+    	// console.log("Conteo reiniciado")
         clearTimeout(temporizadorInactividad);
         temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
     }

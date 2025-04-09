@@ -338,6 +338,10 @@ body, html {
     color: var(--greenDark);
 }
 
+.bg-green-dark{
+    background: var(--greenDark);
+}
+
 .text-verde{
     color: var(--colorVerde);
 }

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DigiturnoController;
 use App\Http\Controllers\AgendamientoController;
+use App\Http\Controllers\PaquetesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,10 @@ Route::get('/citas-elegir-fecha-doctor/{portalToken}', [AgendamientoController::
 Route::get('/citas-revisa-tus-datos/{params}',[AgendamientoController::class, 'detalleCita'])->name('detalleCita');
 Route::get('/citas-datos-facturacion/{params}',[AgendamientoController::class, 'datosFacturacion'])->name('datosFacturacion');
 
+// Paquetes
+Route::get('/paciente-paquete/{portalToken}', [PaquetesController::class, 'pacientePaquete'])->name('pacientePaquete');
+Route::get('/seleccionar-paquete/{portalToken}', [PaquetesController::class, 'listadoPaquetes'])->name('listadoPaquetes');
+Route::get('/citas-datos-facturacion-paquete/{params}',[PaquetesController::class, 'datosFacturacionPaquetes'])->name('datosFacturacionPaquetes');
 
 
 
