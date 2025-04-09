@@ -40,6 +40,7 @@
             let buscarUsuarioFlag = true;
             let accessToken = "{{ $accessToken }}";
             let web_url = "{{ \App\Models\Veris::WEBURL }}";
+            const url_payment = "{{ \App\Models\Veris::URLPAYMENT }}";
             const api_url = "{{ \App\Models\Veris::BASE_URL }}";
             const api_url_digitales = "{{ \App\Models\Veris::BASE_URL_DIGITALES }}";
             const api_war_seguridad = "{{ \App\Models\Veris::SEGURIDADES_WAR }}";
