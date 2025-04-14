@@ -438,8 +438,8 @@
                 </div>
                 <div class="col-12">
                     <div class="row h-100 d-flex justify-content-between align-items-center">
-                        {{-- <div class="col-12 col-xl-6 px-0" id="col-familia"> --}}
-                        <div class="col-12 col-md-8 col-xl-9 px-0" id="col-familia">
+                        <div class="col-12 col-xl-6 px-0" id="col-familia">
+                        {{-- <div class="col-12 col-md-8 col-xl-9 px-0" id="col-familia"> --}}
                             <!-- FAMILIARES -->
                             <div class="modal modal-top fade" id="pacienteModal" tabindex="-1" aria-labelledby="pacienteModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-sm modal-dialog-centered mx-auto">
@@ -464,13 +464,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-3 col-xl-4 d-none col-agenda">
+                        {{-- <div class="col-12 col-md-3 col-xl-4 d-none col-agenda">
                             <a href="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-30" id="btn-agendar-header">Agendar cita médica</a>
                         </div>
                         <div class="col-12 px-0 d-block d-md-none">
                             <a href="https://app.veris.com.ec/external/financiero/devoluciones" class="btn bg-veris text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-20">Gestionar devoluciones</a>
-                        </div>
-                        {{-- <div class="col-12 col-md-6 col-xl-3 d-none col-agenda">
+                        </div> --}}
+                        <div class="col-12 col-md-6 col-xl-3 d-none col-agenda">
                             <a href="/paciente-paquete/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-green-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-30" id="btn-paquete-header"><i class="fa-solid fa-gift"></i> Promociones</a>
                         </div>
                         <div class="col-12 col-md-6 col-xl-3 d-none col-agenda">
@@ -478,7 +478,7 @@
                         </div>
                         <div class="col-12 px-0 d-block d-md-none">
                             <a href="https://app.veris.com.ec/external/financiero/devoluciones" class="btn bg-veris text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-20">Gestionar devoluciones</a>
-                        </div> --}}
+                        </div>
                     </div>
                 </div>
             </div>
