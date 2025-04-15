@@ -2439,8 +2439,14 @@
             lineaDetalleOrden = detalle.detallesOrden[0].lineaDetalleOrden;
         }
 
+        let canalInvocacion = "CAJ";
+
+        if(esKiosko){
+            canalInvocacion = "KIO";
+        }
+
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=CAJ&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
+        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=${canalInvocacion}&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
@@ -2468,6 +2474,7 @@
             datosPago.sync = data.data
             //await setearAutorizacion();
         }else{
+            // cerrar modal
             toastr.error("", data.message, {
                 timeOut: 5000
             });
@@ -2477,8 +2484,13 @@
     async function obtenerAutorizacion(){
         let convenio = await obtenerInfoConvenio();
         console.log(convenio);
+        let canalInvocacion = "CAJ";
+
+        if(esKiosko){
+            canalInvocacion = "KIO";
+        }
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/validacion_aseguradora/sync/autorizacion?canalInvocacion=CAJ&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }`;
+        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/validacion_aseguradora/sync/autorizacion?canalInvocacion=${canalInvocacion}&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
@@ -3165,17 +3177,14 @@
                                 }else{
                                     // Permite pagar
                                 }
-                                // console.log(permiteAgendar)
-                                // console.log(detalle.permitePago)
-                                // console.log(detalle)
                                 //if(esKiosko){
-                                    //if(detalle.nombreServicioNivel1 == "CONSULTA"){
-                                    if(permiteAgendar && (detalle.nombreServicioNivel1 == "CONSULTA"  || tipoServicio == "TERAPIA_FISICA")){
+                                    {{-- if(permiteAgendar && (detalle.nombreServicioNivel1 == "CONSULTA"  || tipoServicio == "TERAPIA_FISICA")){ --}}
+                                    if(permiteAgendar){
                                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
                                                 Agendar cita
                                             </button>`;
                                     }else{
-                                        if(detalle.nombreServicioNivel1 == "CONSULTA"  || tipoServicio == "TERAPIA_FISICA"){
+                                        //if(detalle.nombreServicioNivel1 == "CONSULTA"  || tipoServicio == "TERAPIA_FISICA"){
                                             if(esKiosko){
                                                 elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
                                                         Pagar
@@ -3188,11 +3197,11 @@
                                                     Pagar aquí
                                                 </button>`;
                                             }
-                                        }else{
+                                        {{-- }else{
                                             elemFooterCard = `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3" terapia-rel='N'>
                                                     Ver detalle
                                                 </button>`;
-                                        }
+                                        } --}}
                                     }
                                 /*}else{
                                     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
@@ -3202,9 +3211,7 @@
                                         Pagar aquí
                                     </button>`;
                                 }*/
-                                // console.log("-------------------------")
-                                // console.log({tipoServicio})
-                                // console.log("-------------------------")
+                                
                                 if(tipoServicio == "TERAPIA_FISICA"){
                                     elemFooterCard = `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3" terapia-rel='S'>
                                         Ver detalle
