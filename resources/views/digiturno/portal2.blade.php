@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/print.min.css">
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-2.3.0.min.js"></script>
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/print.min.js"></script>
-<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/html2canvas.min.js"></script>
+
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -474,7 +474,7 @@
                             <a href="/paciente-paquete/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-green-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-30" id="btn-paquete-header"><i class="fa-solid fa-gift"></i> Promociones</a>
                         </div>
                         <div class="col-12 col-md-6 col-xl-3 d-none col-agenda">
-                            <a href="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-30" id="btn-agendar-header">Agendar cita médica</a>
+                            <a href="#" url-rel="/paciente/{{ $portalToken }}?mac={{ $mac }}" class="btn bg-veris-dark text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-30" id="btn-agendar-header">Agendar cita médica</a>
                         </div>
                         <div class="col-12 px-0 d-block d-md-none">
                             <a href="https://app.veris.com.ec/external/financiero/devoluciones" class="btn bg-veris text-white my-2 w-100 h-100 fw-bold rounded-8 py-2 fs-20">Gestionar devoluciones</a>
@@ -1054,6 +1054,13 @@
             await notificarLlegada(detalle);
         })
 
+        $('body').on('click', '#btn-agendar-header', async function(){
+            let url = $(this).attr('url-rel');
+            delete dataTurno.ordenAgenda;
+            localStorage.setItem('turno-{{ $portalToken }}', JSON.stringify(dataTurno));
+            location.href = url;
+        })
+
         $('body').on('click', '.btn-detalle-orden', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             let esTerapia = false;
@@ -1631,7 +1638,7 @@
 
         $('body').on('click', '.btn-agendar', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
-            // console.log(detalle);
+            console.log(detalle);
             let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
             let convenioItem = {
@@ -1666,8 +1673,10 @@
                 },
                 "online": (detalle.detallesOrden[0].esTeleconsulta) ? "S" : "N",
                 "especialidad": {
-                    "codigoEspecialidad": detalle.codigoEspecialidad,
-                    "nombre": detalle.nombreEspecialidad,
+                    {{-- "codigoEspecialidad": detalle.codigoEspecialidad, --}}
+                    "codigoEspecialidad": detalle.detallesOrden[0].codigoEspecialidadServicio,
+                    {{-- "nombre": detalle.nombreEspecialidad, --}}
+                    "nombre": detalle.detallesOrden[0].nombreEspecialidadServicio,
                     "esOnline": (detalle.detallesOrden[0].esTeleconsulta) ? "S" : "N",
                     "codigoServicio": detalle.detallesOrden[0].codigoServicio,
                     "codigoPrestacion": detalle.detallesOrden[0].codigoPrestacion,
@@ -1678,6 +1687,8 @@
                 "origen": "Listatratamientos",
                 "diagnosticos": detalle.diagnosticos
             }
+            console.log(dataCitaReserva);
+            {{-- return; --}}
             // console.log(dataCitaReserva); return;
             dataTurno.ordenAgenda = dataCitaReserva;
             localStorage.setItem('turno-{{ $portalToken }}', JSON.stringify(dataTurno));
@@ -3229,7 +3240,8 @@
                         }
                     }else{
                         addForToday = true;
-                        if(detalle.nombreServicioNivel1 == "CONSULTA" && detalle.detallesOrden[0].codigoReserva == null){
+                        {{-- if(detalle.nombreServicioNivel1 == "CONSULTA" && detalle.detallesOrden[0].codigoReserva == null){ --}}
+                        if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].codigoReserva == null){
                             elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
                                         Agendar cita
                                     </button>`;

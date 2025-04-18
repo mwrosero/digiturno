@@ -135,7 +135,10 @@
 	setInterval(actualizarFechaHora, 1000);
 	let accion = "INICIALIZAR";
 	$(document).ready(async function() {			
-
+		if(isKiosk() && !isMobile()){
+			location.href = "/kiosko/{{ $mac }}"
+			return
+		}
 		let userVeris = localStorage.getItem('userVeris');
 		let userAnonimo = localStorage.getItem('userAnonimo');
 
