@@ -419,6 +419,11 @@
 
     let canSearch = true;
     document.addEventListener('DOMContentLoaded', async function () {
+    	{{-- if(isKiosk() && !isMobile()){
+			location.href = "/kiosko/{{ $mac }}"
+			return
+		}
+		 --}}
     	if(!isMobile()){
 	        KioskBoard.init({
 	        	keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',

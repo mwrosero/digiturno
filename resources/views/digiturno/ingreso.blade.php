@@ -296,6 +296,11 @@
 
     let canSearch = true;
 	document.addEventListener("DOMContentLoaded", async () => {
+
+		if(isKiosk()){
+			location.href = "/kiosko/{{ $mac }}"
+			return
+		}
 		// Keyboard.open();
 		$('body').on('click', '.nav-item.flex-fill', async function(){
 			//Keyboard.close();
