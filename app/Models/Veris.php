@@ -27,7 +27,6 @@ class Veris extends Model
     public const BASICAUTHDIGITALES = 'QkFDS0VORFBIQU5UT006Q2xAdmUxMjM0';
     public const WEBURL = 'https://digiturno.akold.com';
     public const URLPAYMENT = 'https://miveris.akold.com';
-
     public const APPLICATION_LOGIN = 'UEhBTlRPTVhfRU1QUkVTQVJJQUw=';
     public const IDORGANIZACION_LOGIN = '365509c8-9596-4506-a5b3-487782d5876e';
 
@@ -44,7 +43,6 @@ class Veris extends Model
     // public const BASICAUTHDIGITALES = 'YmFja2VuZHBoYW50b206QmFja1BAbnRoMG1QQHNzMjAyMQ==';
     // public const WEBURL = 'https://digiturno.veris.com.ec';
     // public const URLPAYMENT = 'https://app.veris.com.ec';
-
     // public const APPLICATION_LOGIN = 'UEhBTlRPTVhfRU1QUkVTQVJJQUw=';
     // public const IDORGANIZACION_LOGIN = '365509c8-9596-4506-a5b3-487782d5876e';
 

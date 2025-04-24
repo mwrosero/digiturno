@@ -535,7 +535,10 @@ Mi Veris - Citas - Datos de facturación
         // if(detalle != []){
         if (crearPtx) {
             let pre_trx = await activarPrestacionesInicializar('TURNO',detalle);
-            url_adicional += `&idPreTransaccion=${pre_trx}`
+            url_adicional += `&idPreTransaccion=${pre_trx}`;
+            let tramaTracking = detalle;
+            tramaTracking.idPreTransaccion = pre_trx;
+            await registrarTracking('PAGO_CAJA', tramaTracking)
         }
 
         // let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
@@ -706,8 +709,14 @@ Mi Veris - Citas - Datos de facturación
 
         let paciente = dataCita.paciente;
 
+        let canalInvocacion = "CAJ";
+
+        if(esKiosko){
+            canalInvocacion = "KIO";
+        }
+
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=CAJ&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
+        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=${canalInvocacion}&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["sendHeaders"] = "true";
@@ -1159,6 +1168,7 @@ Mi Veris - Citas - Datos de facturación
                 $('.box-info-comprobante').html(`Comprobante: <span class="ms-2"> ${datosPago.comprobantes.transacciones[0].numeroComprobante}</span>`)
             }
             $('#modalPagoRealizado').modal('show');
+            await registrarTracking('PAGO_PINPAD', datosPago);
             await printFactura()
             /*
             {

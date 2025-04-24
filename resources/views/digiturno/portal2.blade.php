@@ -1057,6 +1057,7 @@
         $('body').on('click', '#btn-agendar-header', async function(){
             let url = $(this).attr('url-rel');
             delete dataTurno.ordenAgenda;
+            await registrarTracking('AGENDAR_CITA_LIBRE_DEMANDA', {})
             localStorage.setItem('turno-{{ $portalToken }}', JSON.stringify(dataTurno));
             location.href = url;
         })
@@ -1108,9 +1109,9 @@
                     console.log('esTerapia:' + esTerapia)
                     console.log(value)
                     if(esTerapia && value.codigoReserva == null){
-                        btnTerapia += `<button type='button' class="btn bg-veris text-white p-2 py-1 ms-auto btn-agendar-prestacion" terapia-rel='S' generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(value)}'>Agendar</button>`;
+                        btnTerapia += `<button type='button' class="btn bg-veris text-white p-2 py-1 ms-auto btn-agendar-prestacion" terapia-rel='S' generales-rel='${ escapeHtmlAttr(JSON.stringify(detalle)) }' data-rel='${JSON.stringify(value)}'>Agendar</button>`;
                     }else if(esTerapia && value.codigoReserva != null){
-                        btnTerapia += `<button type='button' class="btn bg-veris-dark text-white p-2 py-1 ms-auto btn-pagar" terapia-rel='S' data-rel='${JSON.stringify(detalle)}' data-bs-dismiss="modal">Pagar</button>`;
+                        btnTerapia += `<button type='button' class="btn bg-veris-dark text-white p-2 py-1 ms-auto btn-pagar" terapia-rel='S' data-rel='${escapeHtmlAttr(JSON.stringify(detalle))}' data-bs-dismiss="modal">Pagar</button>`;
                     }
                     
                     prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-center">
@@ -1128,7 +1129,7 @@
             if(detalle.tieneOrdenApoyoPendiente && qtyPrestacionesPagadas > 0){
                 prestacionesPagadas += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start mt-auto">
                         <div class="d-flex flex-wrap w-100 justify-content-between align-items-center mt-auto p-0 bg-transparent border-0 gap-2">
-                            <button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-notificar-llegada p-2 py-3 mt-3" data-bs-dismiss="modal">
+                            <button type="button" data-rel='${escapeHtmlAttr(JSON.stringify(detalle))}' class="btn flex-fill bg-veris text-white btn-notificar-llegada p-2 py-3 mt-3" data-bs-dismiss="modal">
                                 Activar orden
                             </button>
                         </div>
@@ -1147,23 +1148,23 @@
                     if(esKiosko){
                         // console.log(99)
                         if(esProcedimiento && qtyPrestacionesPorPagar >1){
-                            btnPagar = `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
+                            btnPagar = `<button type="button" data-rel='${escapeHtmlAttr(JSON.stringify(detalle))}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
                                     Pagar en caja
                                 </button>`;
                         }else{
-                            btnPagar += `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white p-2 py-3 mt-3 btn-pagar" data-bs-dismiss="modal">
+                            btnPagar += `<button type="button" data-rel='${escapeHtmlAttr(JSON.stringify(detalle))}' class="btn flex-fill bg-veris text-white p-2 py-3 mt-3 btn-pagar" data-bs-dismiss="modal">
                                     Pagar
                                 </button>`;
                             }
                     }else{
                         // console.log(77)
-                        btnPagar += `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
+                        btnPagar += `<button type="button" data-rel='${escapeHtmlAttr(JSON.stringify(detalle))}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
                                 Pagar aquí
                             </button>`;
                     }
                 }else{
                     // console.log('///////////////')
-                    btnPagar = `<button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
+                    btnPagar = `<button type="button" data-rel='${escapeHtmlAttr(JSON.stringify(detalle))}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
                                     Pagar en caja
                                 </button>`;
                 }
@@ -1178,10 +1179,10 @@
                     prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-start mt-auto">
                             <div class="d-flex flex-wrap w-100 justify-content-between align-items-center mt-auto p-0 bg-transparent border-0 gap-2">
                                 ${btnPagar}
-                                <!--button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
+                                <!--button type="button" data-rel='${escapeHtmlAttr(JSON.stringify(detalle))}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3" data-bs-dismiss="modal">
                                     Pagar aquí
                                 </button-->
-                                <!--button type="button" data-rel='${JSON.stringify(detalle)}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
+                                <!--button type="button" data-rel='${escapeHtmlAttr(JSON.stringify(detalle))}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
                                     Pagar en caja
                                 </button-->
                             </div>
@@ -1627,6 +1628,8 @@
                 "diagnosticos": detalle.diagnosticos
             }
             dataTurno.ordenAgenda = dataCitaReserva;
+            await registrarTracking('AGENDAR_ORDEN_INTERNA', detalle);
+
             // console.log(dataCitaReserva)
             // return;
             // console.log('/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}');
@@ -1691,6 +1694,7 @@
             {{-- return; --}}
             // console.log(dataCitaReserva); return;
             dataTurno.ordenAgenda = dataCitaReserva;
+            await registrarTracking('AGENDAR_ORDEN_INTERNA', detalle);
             localStorage.setItem('turno-{{ $portalToken }}', JSON.stringify(dataTurno));
             location.href = '/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}';
             // console.log("RED");
@@ -2282,23 +2286,6 @@
             $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris">${lugares.join(", ").toLowerCase()}</span>. Y espera a ser llamado.`);
             $('#modalNotificarLlegadaDirigirLugar').modal('show');
         }
-    }
-
-    async function registrarTracking(type, payloadRegistro){
-        let args = [];
-        args["endpoint"] = `${api_url}/${api_war}/util/registrar_tracking?macAddress=${ dataTurno.mac }`;
-        let payload = {
-            "idProceso": type,
-            "parametros": payloadRegistro
-        }
-        args["method"] = "POST";
-        args["token"] = accessToken;
-        args["showLoader"] = true;
-        args["data"] = JSON.stringify(payload);
-        args["bodyType"] = "json";
-        const data = await call(args);
-        console.log(data)
-        return data;
     }
 
     async function activarLaboratorioChequeo(detalle){
@@ -2907,6 +2894,7 @@
                 $('.box-info-comprobante').html(`Comprobante: <span class="ms-2"> ${datosPago.comprobantes.transacciones[0].numeroComprobante}</span>`)
             }
             $('#modalPagoRealizado').modal('show');
+            await registrarTracking('PAGO_PINPAD', datosPago);
             await printFactura()
             /*
             {
@@ -3121,10 +3109,19 @@
         })
     }
 
+    function escapeHtmlAttr(str) {
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+    }
+
     async function drawCardItem(tipoServicio, labelServicio, detalle){
         // console.log(tipoServicio, labelServicio, detalle.tipoServicio)
         let addForToday = false;
-        let detalleRel = JSON.stringify(detalle);
+        let detalleRel = escapeHtmlAttr(JSON.stringify(detalle));
         let icon_service_name = ``;
         let sectionEstadoPago = `pagadas`;
         let labelEstadoItem = `Pagado`;
@@ -3146,6 +3143,11 @@
             case 'ORDEN_MEDICA':
             case 'ORDENES_APOYO_PENDIENTE':
                 var ordenPagada = verificarEstadoOrden(detalle);
+                if(detalle.numeroOrden == 42830715){
+                    console.log("----------------")
+                    console.log(ordenPagada)
+                    console.log("----------------")
+                }
                 let esTerapia = "N";
                 if(tipoServicio == "TERAPIA_FISICA"){
                     esTerapia = "S";
@@ -3188,40 +3190,28 @@
                                 }else{
                                     // Permite pagar
                                 }
-                                //if(esKiosko){
-                                    {{-- if(permiteAgendar && (detalle.nombreServicioNivel1 == "CONSULTA"  || tipoServicio == "TERAPIA_FISICA")){ --}}
-                                    if(permiteAgendar){
-                                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
-                                                Agendar cita
+
+                                if(permiteAgendar){
+                                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
+                                            Agendar cita
+                                        </button>`;
+                                }else{
+                                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
+                                        Ver detalle
+                                    </button>`;
+                                    /*if(esKiosko){
+                                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
+                                                Pagar
                                             </button>`;
                                     }else{
-                                        //if(detalle.nombreServicioNivel1 == "CONSULTA"  || tipoServicio == "TERAPIA_FISICA"){
-                                            if(esKiosko){
-                                                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
-                                                        Pagar
-                                                    </button>`;
-                                            }else{
-                                                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
-                                                    Pagar en caja
-                                                </button>
-                                                <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
-                                                    Pagar aquí
-                                                </button>`;
-                                            }
-                                        {{-- }else{
-                                            elemFooterCard = `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3" terapia-rel='N'>
-                                                    Ver detalle
-                                                </button>`;
-                                        } --}}
-                                    }
-                                /*}else{
-                                    elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
-                                        Pagar en caja
-                                    </button>
-                                    <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
-                                        Pagar aquí
-                                    </button>`;
-                                }*/
+                                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                                            Pagar en caja
+                                        </button>
+                                        <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
+                                            Pagar aquí
+                                        </button>`;
+                                    }*/
+                                }
                                 
                                 if(tipoServicio == "TERAPIA_FISICA"){
                                     elemFooterCard = `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3" terapia-rel='S'>
@@ -3230,18 +3220,21 @@
                                 }
 
                             }else{
-                                elemFooterCard += `<!--button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3">
+                                /*elemFooterCard += `<!--button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-link-pago p-2 py-3 mt-3">
                                     Pagar aquí
                                 </button-->
                                 <button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3">
                                     Pagar en caja
-                                </button>`;
+                                </button>`;*/
+                                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
+                                            Ver detalle
+                                        </button>`;
                             }
                         }
                     }else{
                         addForToday = true;
                         {{-- if(detalle.nombreServicioNivel1 == "CONSULTA" && detalle.detallesOrden[0].codigoReserva == null){ --}}
-                        if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].codigoReserva == null){
+                        if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].codigoReserva == null && detalle.nombreServicioNivel1 != "LABORATORIO"){
                             elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
                                         Agendar cita
                                     </button>`;
@@ -3257,24 +3250,36 @@
                         }
                     }
                 }else{
-                    sectionEstadoPago = `porpagar`;
-                    labelEstadoItem = `Por pagar`;
-                    classEstadoItem = `text-pendiente`;
-                    classEstadoItem = `text-pendiente`;
-                    if(permiteAgendar){
-                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
-                            Agendar cita
-                        </button>`;
-                    }else{
-                        if(!detalle.permitePago){
-                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
-                                Pagar en caja
+                    if(!ordenPagada){
+                        sectionEstadoPago = `porpagar`;
+                        labelEstadoItem = `Por pagar`;
+                        classEstadoItem = `text-pendiente`;
+                        classEstadoItem = `text-pendiente`;
+                        if(permiteAgendar){
+                                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
+                                Agendar cita
                             </button>`;
                         }else{
-                            elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
-                                        Ver detalle
-                                    </button>`;
+                            if(!detalle.permitePago){
+                                /*elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                                    Pagar en caja
+                                </button>`;*/
+                                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
+                                            Ver detalle
+                                        </button>`;
+                            }else{
+                                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
+                                            Ver detalle
+                                        </button>`;
+                            }
                         }
+                    }else{
+                        sectionEstadoPago = `pagadas`;
+                        labelEstadoItem = `Pagado`;
+                        classEstadoItem = `text-verde`;
+                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
+                                            Ver detalle
+                                        </button>`;
                     }
                 }
 
