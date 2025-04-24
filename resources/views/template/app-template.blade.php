@@ -226,6 +226,81 @@
                 }
             }
             //update token bearer accessToken
+
+            async function registrarTracking(type, payloadRegistro){
+                let args = [];
+                args["endpoint"] = `${api_url}/${api_war}/util/registrar_tracking?macAddress=${ dataTurno.mac }`;
+                {{-- if() --}}
+                let dataAttr = $('.paciente-item-selected').attr("data-rel");
+                let idPaciente;
+                if(dataAttr === undefined){
+                    idPaciente = dataCita.paciente.numeroPaciente;
+                    args["sendHeaders"] = "true";
+                    trackId = dataTurno.trackId;
+                }else{
+                    let paciente = JSON.parse(dataAttr);
+                    idPaciente = paciente.idPaciente;
+                }
+                let payload = {
+                    "idProceso": type,
+                    "pacPacNumero": parseInt(idPaciente),
+                    "parametros": payloadRegistro
+                }
+
+                // "pacPacNumero": "",
+                // "codigoOrdApoyo": "",
+                // "codigoReserva": "",
+                // "numeroOrden": ""
+
+                switch(type){
+                    case 'CITA_RESERVADA':
+                        payload.codigoReserva = dataCita.reserva.codigoReserva;
+                        if(dataCita.hasOwnProperty('tratamiento')){
+                            payload.numeroOrden = dataCita.tratamiento.numeroOrden;
+                        }
+                    break;
+                    case 'PAGO_PINPAD':
+                        if(localStorage.getItem('flujo') === null || localStorage.getItem('flujo') == "digiturno"){
+                            if(payloadRegistro.detalle.hasOwnProperty('codigoReserva')){
+                                payload.codigoReserva = payloadRegistro.detalle.codigoReserva;
+                            }
+                            if(payloadRegistro.detalle.hasOwnProperty('codigoOrdApoyo')){
+                                payload.codigoOrdApoyo = payloadRegistro.detalle.codigoOrdApoyo;
+                            }
+                            if(payloadRegistro.detalle.hasOwnProperty('numeroOrden')){
+                                payload.numeroOrden = payloadRegistro.detalle.numeroOrden;
+                            }
+                        }else{
+                            payload.codigoReserva = dataCita.reserva.codigoReserva;
+                            if(dataCita.hasOwnProperty('tratamiento')){
+                                payload.numeroOrden = dataCita.tratamiento.numeroOrden;
+                            }
+                        }
+                        payload.parametros = payloadRegistro.comprobantes;
+                    break;
+                    case 'PAGO_CAJA':
+                        payload.codigoReserva = payloadRegistro.codigoReserva;
+                    break;
+                    case 'AGENDAR_ORDEN_INTERNA':
+                        payload.codigoReserva = payloadRegistro.codigoReserva;
+                        if(payloadRegistro.hasOwnProperty('codigoOrdApoyo')){
+                            payload.codigoOrdApoyo = payloadRegistro.codigoOrdApoyo;
+                        }
+                        if(payloadRegistro.hasOwnProperty('numeroOrden')){
+                            payload.numeroOrden = payloadRegistro.numeroOrden;
+                        }
+                    break;
+                }
+
+                args["method"] = "POST";
+                args["token"] = accessToken;
+                args["showLoader"] = true;
+                args["data"] = JSON.stringify(payload);
+                args["bodyType"] = "json";
+                const data = await call(args);
+                console.log(data)
+                return data;
+            }
         </script>
         <style>
             html, body {

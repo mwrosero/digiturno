@@ -220,6 +220,7 @@ Mi Veris - Citas - Revisa tus datos
 
         //Menos para edictar reserva 
         if(data.code == 200){
+            registrarTracking('RESERVA_ELIMINADA', dataCita);
             delete dataCita.reserva;
             guardarData();
         }
@@ -608,6 +609,9 @@ Mi Veris - Citas - Revisa tus datos
         if (data.code == 200){
             dataCita.reserva = data.data;
             guardarData();
+            console.log(0)
+            await registrarTracking('CITA_RESERVADA', dataCita);
+            console.log(1)
             if(dataCita.tratamiento && dataCita.tratamiento.esPagada == "S"){
                 // location.href = '/cita-agendada/{{ $params }}?mac={{ $mac }}';
                 $('#modalAgendado').modal('show');
