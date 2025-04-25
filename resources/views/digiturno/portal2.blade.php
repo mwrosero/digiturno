@@ -1111,7 +1111,7 @@
                     if(esTerapia && value.codigoReserva == null){
                         btnTerapia += `<button type='button' class="btn bg-veris text-white p-2 py-1 ms-auto btn-agendar-prestacion" terapia-rel='S' generales-rel='${ escapeHtmlAttr(JSON.stringify(detalle)) }' data-rel='${JSON.stringify(value)}'>Agendar</button>`;
                     }else if(esTerapia && value.codigoReserva != null){
-                        btnTerapia += `<button type='button' class="btn bg-veris-dark text-white p-2 py-1 ms-auto btn-pagar" terapia-rel='S' data-rel='${escapeHtmlAttr(JSON.stringify(detalle))}' data-bs-dismiss="modal">Pagar</button>`;
+                        btnTerapia += `<button type='button' class="btn bg-veris-dark text-white p-2 py-1 ms-auto btn-pagar" terapia-rel='S' index-rel='${key}' data-rel='${escapeHtmlAttr(JSON.stringify(detalle))}' data-bs-dismiss="modal">Pagar</button>`;
                     }
                     
                     prestacionesPorPagar += `<li class="list-group-item bg-white border-0 mb-2 py-0 fs-16 ms-1 p-0 line-height-16 d-flex justify-content-start align-items-center">
@@ -1702,7 +1702,17 @@
 
         $('body').on('click', '.btn-pagar', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
+            let esTerapia = $(this).attr('terapia-rel');
+            if(esTerapia !== undefined && esTerapia !== null && esTerapia == "S"){
+                let indexItem = $(this).attr('index-rel');
+                let detalleTmp = detalle.detallesOrden[indexItem];
+                detalle.detallesOrden = [
+                    detalleTmp
+                ]
+            }
             // Inicializar pago
+            console.log(detalle);
+            {{-- return; --}}
             await activarPrestacionesInicializar('PRESTACION', detalle)
         })
 
@@ -2386,7 +2396,9 @@
                         console.log(detalle.beneficio.convenio);
                         if(parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
                             console.log("-----////---------");
+                            console.log(7)
                             await obtenerAutorizacionMedPay(detalle);
+                            console.log(8)
                             flagAutorizacion = true;
                         }
                     }
