@@ -8,6 +8,9 @@ Elige Paciente
 @endphp
 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
 <link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/theme-veris-app.css?v=1.0.3')}}">
+<link rel="stylesheet" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/css/kioskboard-2.3.0.min.css">
+<script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-2.3.0.min.js"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 {{-- Modal Detalle paquete --}}
 <div class="modal mt-4" id="modalDetallePaquete" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="true" aria-labelledby="modalDetallePaqueteLabel">
@@ -81,7 +84,7 @@ Elige Paciente
             <div class="col-12 col-md-6 mb-3">
                 <div class="input-group search-box">
                     <span class="input-group-text bg-transparent border-0 p-3" id="search"><img src="{{asset('assets/img/svg/search.svg')}}" alt="veris-promociones"></span>
-                    <input type="search" class="form-control bg-transparent fs--16 border-0 p-2 ps-0" name="buscarPorPromocion" id="buscarPorPromocion" placeholder="Ejemplo: Exámenes de laboratorio" aria-describedby="search" />
+                    <input type="search" class="form-control bg-transparent fs--16 border-0 p-2 ps-0 keyboard-input virtual-keyboard-all" name="buscarPorPromocion" id="buscarPorPromocion" placeholder="Ejemplo: Exámenes de laboratorio" aria-describedby="search" />
                 </div>
             </div>
         </div>
@@ -145,6 +148,34 @@ Elige Paciente
         // obtenerCategorias();
         await obtenerPaquetesSugeridos();
         await obtenerPaquetesPromocionales();
+        
+        if(!isMobile()){
+            KioskBoard.init({
+                keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
+                // keysNumeric: true,
+                //keysArrayOfObjects: null, // Usa el teclado QWERTY predeterminado
+                language: 'es',          // Idioma (ejemplo: 'es' para español)
+                theme: 'light',          // Tema del teclado ('light' o 'dark')
+                keysSpacebarText: 'Espacio',
+                // keysSpecialCharsArray: ["@", ".", "_", "-"],
+                allowMobileKeyboard: false,
+                capsLockActive: true,
+                keysEnterText: '<i class="material-icons enter-key-icon">check_circle</i>',
+            });
+
+            KioskBoard.run('.virtual-keyboard-all', {});
+
+            // $('#KioskBoard-VirtualKeyboard .kioskboard-wrapper').css('padding-bottom','300px');
+            const style = document.createElement("style");
+            style.innerHTML = `
+                #KioskBoard-VirtualKeyboard .kioskboard-wrapper {
+                    padding-bottom: 300px !important;
+                }
+            `;
+            if(isKiosk()){
+                document.head.appendChild(style);
+            }
+        }
 
         $('body').on('click', '.btnEliminarCategoria', async function(){
             $('[categoria-rel="'+$(this).attr("categoria-rel")+'"]').removeClass('category-selected');
@@ -299,6 +330,13 @@ Elige Paciente
                 await obtenerPaquetesPromocionales();
             }
         });
+
+        $('body').on('click', '.kioskboard-key-enter', async function(){
+            page = 1;
+            $('#listado-paquetes').empty();
+            cargandoContenido = true;
+            await obtenerPaquetesPromocionales();
+        })
 
         $('#buscarPorPromocion').on('search', function() {
             if ($(this).val().length === 0) {
