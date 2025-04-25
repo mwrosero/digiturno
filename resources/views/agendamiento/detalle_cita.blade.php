@@ -188,7 +188,7 @@ Mi Veris - Citas - Revisa tus datos
             if(dataCita.cambioModalidad && dataCita.cambioModalidad === "S"){
                 await cambiarModalidadCita();
             }else{
-                reservarCita();
+                await reservarCita();
             }
         });
 
@@ -617,6 +617,7 @@ Mi Veris - Citas - Revisa tus datos
                 $('#modalAgendado').modal('show');
                 return;
             }
+            {{-- return; --}}
             if(data.data.permitePago == "S"){
                 /*
                 https://api-phantomx.veris.com.ec/${api_war_digitales}/agenda/validarPermitePago?canalOrigen=MVE_CMV&codigoUsuario=0926178534&tipoItem=C&codigoReserva=4222668939
@@ -633,9 +634,13 @@ Mi Veris - Citas - Revisa tus datos
                 //location.href = '/citas-datos-facturacion/{{ $params }}?mac={{ $mac }}';
             }else{
                 // $('#modalAgendado').modal('show');
-                showLoader();
-                location.href = '/citas-datos-facturacion/{{ $params }}?mac={{ $mac }}';
-                // location.href = '/cita-agendada/{{ $params }}?mac={{ $mac }}';
+                if(dataCita.precio.valor == 0){
+                    $('#modalAgendado').modal('show');
+                }else{
+                    showLoader();
+                    location.href = '/citas-datos-facturacion/{{ $params }}?mac={{ $mac }}';
+                    // location.href = '/cita-agendada/{{ $params }}?mac={{ $mac }}';
+                }
             }
         }else{
             //guardarData();

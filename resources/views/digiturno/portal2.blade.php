@@ -1069,6 +1069,9 @@
             if($(this).attr('terapia-rel') !== null && $(this).attr('terapia-rel') == "S"){
                 esTerapia = true;
             }
+            if(detalle.nombreServicioNivel1 == "ODONTOLOGIA"){
+                esTerapia = true;
+            }
             let esProcedimiento = false;
             if(detalle.nombreServicioNivel1 == "PROCEDIMIENTOS"){
                 esProcedimiento = true;
@@ -1144,7 +1147,7 @@
             if(qtyPrestacionesPorPagar > 0){
                 // console.log("-------")
                 let btnPagar = ``;
-                if(detalle.tipoServicio == "ORDEN_MEDICA" && (detalle.nombreServicioNivel1 == "LABORATORIO" || detalle.nombreServicioNivel1 == "IMAGENES" || detalle.nombreServicioNivel1 == "PROCEDIMIENTOS") && detalle.permitePago){
+                if(detalle.tipoServicio == "ORDEN_MEDICA" && (detalle.nombreServicioNivel1 == "LABORATORIO" || detalle.nombreServicioNivel1 == "IMAGENES" || detalle.nombreServicioNivel1 == "PROCEDIMIENTOS" || detalle.nombreServicioNivel1 == "ODONTOLOGIA") && detalle.permitePago){
                     if(esKiosko){
                         // console.log(99)
                         if(esProcedimiento && qtyPrestacionesPorPagar >1){
@@ -3314,7 +3317,7 @@
                 }else if(detalle.nombreServicioNivel1 == "LABORATORIO"){
                     textColorServicio = `text-green-dark`;
                     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/laboratorio-ico.svg`;
-                }else if(detalle.nombreServicioNivel1 == "CONSULTA" || detalle.nombreServicioNivel1 == "CONSULTA NO MEDICA"){
+                }else if(detalle.nombreServicioNivel1 == "CONSULTA" || detalle.nombreServicioNivel1 == "CONSULTA NO MEDICA" || detalle.nombreServicioNivel1 == "ODONTOLOGIA"){
                     textColorServicio = `text-green-dark`;
                     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg`;
                 }else if(detalle.tipoServicio == 'ORDENES_APOYO_PENDIENTE'){
@@ -3643,6 +3646,9 @@
                     }else if(item.nombreServicioNivel1 == "LABORATORIO"){
                         tipoServicioItem = 'Laboratorio';
                         labelServicio = 'Laboratorio';
+                    }else if(item.nombreServicioNivel1 == "ODONTOLOGIA"){
+                        tipoServicioItem = 'Odontologia';
+                        labelServicio = 'Odontología';
                     }else if(item.nombreServicioNivel1 == "CONSULTA" || item.nombreServicioNivel1 =="CONSULTA NO MEDICA"){
                         tipoServicioItem = 'Consulta';
                         labelServicio = 'Consulta';
