@@ -25,37 +25,6 @@
 	</div>
 
 	{{-- login user --}}
-	<main class="content p-2 not-logged-userpass d-none">
-		<div class="col-12 bg-silver mb-3">
-			<div class="row d-flex align-items-center">
-				<div class="col-12 col-md-5">
-					<h2 class="fw-bold p-1 p-md-3 m-1 m-md-3">Datos <span class="text-veris">del empleado</span></h2>
-				</div>
-				<div class="col-12 col-md-7 text-end">
-					<h5 class="fw-normal p-1 p-md-3 m-1 m-md-3 text-start d-inline-block"><span class="fw-bold">Ingresa tu usuario</span> para aperturar<br class="d-none d-md-block">  el Digiturno 
-						@if (in_array($mac, \App\Models\Veris::MACS_PARAMI))
-						ParaMi.
-						@else
-						Veris.
-						@endif
-					</h5>
-				</div>
-			</div>
-		</div>
-		<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-5">
-    		<input autocomplete="off" class="w-100 onlyLetters keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1 mb-2" id="user" type="text" placeholder="Ingresar Usuario" />
-    		<div class="w-100 d-flex justify-content-between align-items-center">
-    			<input autocomplete="off" type="password" class="w-100 mt-3 onlyLetters keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1 mb-2" id="password" type="text" placeholder="Ingresar Clave" data-kioskboard-specialcharacters="true"/>
-    			<div class="box-ver-pass ms-3 fs-40 text-veris">
-    				<i class="fa-solid fa-eye"></i>
-    			</div>
-    		</div>
-    		<div onclick="loginUser();" class="btn bg-veris btn-ingresar text-white mx-auto fs-1 p-3 mb-5 rounded-8 my-5">INICIAR SESIÓN</div>
-    	</div>
-    	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-3">
-    		<div onclick="loginAnonimo();" class="btn bg-veris-dark btn-anonimo text-white mx-auto fs-3 p-2 mb-5 rounded-8 my-3"><i class="fa-solid fa-user-secret me-2"></i>INGRESO ANÓNIMO</div>
-    	</div>
-	</main>
 	<main class="content p-2 not-logged d-none" style="overflow-x: hidden;">
 		<div class="col-12 bg-silver mb-3">
 			<div class="row d-flex align-items-center">
@@ -159,53 +128,44 @@
 	let accion = "INICIALIZAR";
 	$(document).ready(async function() {
 
-		let userVeris = localStorage.getItem('userVeris');
-		let userAnonimo = localStorage.getItem('userAnonimo');
+		let userKiosko = localStorage.getItem('userKiosko');
 
-		if (localStorage.getItem('userVeris') !== null || localStorage.getItem('userAnonimo') !== null) {
-			let userKiosko = localStorage.getItem('userKiosko');
+		if (localStorage.getItem('userKiosko') !== null) {
+			$('.logged').removeClass('d-none');
 
-			if (localStorage.getItem('userKiosko') !== null) {
-				$('.logged').removeClass('d-none');
+			$('body').on('click touch', function(){
+				location.href = `/ingreso/{{ $mac }}`;
+			})	
 
-				$('body').on('click touch', function(){
-					location.href = `/ingreso/{{ $mac }}`;
-				})	
-
-				localStorage.clear();
-				await parametrosGenerales("{{ $mac }}");
-			}else{
-				await parametrosGenerales("{{ $mac }}");
-				await consultarCajas();
-				$('.not-logged').removeClass('d-none');
-			}
-
-			$('#qrcode').qrcode({
-				width: 300,
-	            height: 300,
-	            color: "#000",
-	            bgColor: "#FFF",
-	            text: `${web_url}/ingreso/{{ $mac }}?utm_source=PC&utm_medium=CENTRAL_&utm_campaign=lanzamiento_digiturno&utm_id={{ $mac }}`
-	            // text: `${web_url}/ingreso/{{ $mac }}?utm_source=HOJA&utm_medium=CENTRAL_TUMBACO&utm_campaign=lanzamiento_digiturno`
-			});
-
-			
-
-			if (userKiosko !== null) {
-				// Reescribe usuario
-			    localStorage.setItem('userKiosko', userKiosko);
-			}
-
-			$('body').on('click', '.btn-aperturar', async function(){
-				let caja = JSON.parse($(this).attr('data-rel'));
-				console.log(caja)
-				await aperturarCaja(caja);
-			})
+			localStorage.clear();
+			await parametrosGenerales("{{ $mac }}");
 		}else{
-			// mostrar login page
-			console.log("LOGIN")
-			$('.not-logged-userpass').removeClass('d-none')
+			await parametrosGenerales("{{ $mac }}");
+			await consultarCajas();
+			$('.not-logged').removeClass('d-none');
 		}
+
+		$('#qrcode').qrcode({
+			width: 300,
+            height: 300,
+            color: "#000",
+            bgColor: "#FFF",
+            text: `${web_url}/ingreso/{{ $mac }}?utm_source=PC&utm_medium=CENTRAL_&utm_campaign=lanzamiento_digiturno&utm_id={{ $mac }}`
+            // text: `${web_url}/ingreso/{{ $mac }}?utm_source=HOJA&utm_medium=CENTRAL_TUMBACO&utm_campaign=lanzamiento_digiturno`
+		});
+
+		
+
+		if (userKiosko !== null) {
+			// Reescribe usuario
+		    localStorage.setItem('userKiosko', userKiosko);
+		}
+
+		$('body').on('click', '.btn-aperturar', async function(){
+			let caja = JSON.parse($(this).attr('data-rel'));
+			console.log(caja)
+			await aperturarCaja(caja);
+		})
 		
 	})
 

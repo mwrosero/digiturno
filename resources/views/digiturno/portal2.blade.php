@@ -3232,13 +3232,21 @@
                             }
                         }
                     }else{
-                        addForToday = true;
+                        if(detalle.nombreServicioNivel1 == "LABORATORIO"){
+                            addForToday = true;
+                        }else{
+                            console.log(detalle)
+                            addForToday = esDiaEnCurso(detalle.fechaInicioAtencion);
+                        }
                         {{-- if(detalle.nombreServicioNivel1 == "CONSULTA" && detalle.detallesOrden[0].codigoReserva == null){ --}}
                         if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].codigoReserva == null && detalle.nombreServicioNivel1 != "LABORATORIO"){
                             elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
                                         Agendar cita
                                     </button>`;
                         }else{
+                            iconEstadoItemReserva = `<i class="fa-regular fa-calendar-check me-1"></i>`;
+                            classEstadoItemReserva = `text-veris`;
+                            strEstadoItemReserva = `Por realizar`;
                             elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
                                 Ver detalle
                                </button>`;
