@@ -50,6 +50,7 @@ Elige Paciente
     {{-- <div class="d-flex justify-content-between align-items-center bg-white">
         <h5 class="ps-3 my-auto py-3 fs-20 fs-md-24">{{ __('Comprar promociones') }}</h5>
     </div> --}}
+    @include('template.back')
     <section class="mb-0 p-3 pb-0">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="fw-medium border-start-veris ps-3 fs-18 mb-0">{{ __('Promociones sugeridas') }} <a href="/promociones/sugeridas" class="d-none ms-3 fs--2"> Ver todas</a></h5>

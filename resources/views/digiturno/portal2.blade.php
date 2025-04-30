@@ -3672,25 +3672,27 @@
                 break;
             }
 
-            const existingGroup = groupedData2.find(group => group.tipoServicio === tipoServicioItem);
+            if((item.nombreServicioNivel1 != "ODONTOLOGIA")){
+                const existingGroup = groupedData2.find(group => group.tipoServicio === tipoServicioItem);
 
-            if (existingGroup) {
-                // Si el grupo ya existe, agrega el item a "items"
-                existingGroup.items.push(
-                    $.extend({}, item, { tipoServicio: undefined }) // Eliminar tipoServicio de los items
-                );
-            } else {
-                // Si no existe, crea el grupo con el primer item
-                let nombreServicio = item.nombreServicioNivel1;
-                if(item.tipoServicio == 'ORDEN_MEDICA' &&  item.nombreServicioNivel1 == "PROCEDIMIENTOS" && item.detallesOrden[0].codigoServicio == 252){
-                    nombreServicio = 'TERAPIA_FISICA';
+                if (existingGroup) {
+                    // Si el grupo ya existe, agrega el item a "items"
+                    existingGroup.items.push(
+                        $.extend({}, item, { tipoServicio: undefined }) // Eliminar tipoServicio de los items
+                    );
+                } else {
+                    // Si no existe, crea el grupo con el primer item
+                    let nombreServicio = item.nombreServicioNivel1;
+                    if(item.tipoServicio == 'ORDEN_MEDICA' &&  item.nombreServicioNivel1 == "PROCEDIMIENTOS" && item.detallesOrden[0].codigoServicio == 252){
+                        nombreServicio = 'TERAPIA_FISICA';
+                    }
+                    groupedData2.push({
+                        tipoServicio: tipoServicioItem,
+                        labelServicio: labelServicio,
+                        nombreServicioNivel1: nombreServicio,
+                        items: [$.extend({}, item, { tipoServicio: undefined })] // Eliminar tipoServicio de los items
+                    });
                 }
-                groupedData2.push({
-                    tipoServicio: tipoServicioItem,
-                    labelServicio: labelServicio,
-                    nombreServicioNivel1: nombreServicio,
-                    items: [$.extend({}, item, { tipoServicio: undefined })] // Eliminar tipoServicio de los items
-                });
             }
         });
     }
