@@ -690,6 +690,12 @@ Mi Veris - Citas - Datos de facturación
         console.log('MEDPAYYYYYYYYYYYYYY');
         console.log(detalle);
         let convenio = dataCita.convenio;
+        
+        if(convenio.informacionExternaPlan === null || dataCita.precio.hasOwnProperty('secuenciaTransaccion')){
+            console.log("No emite autorización")
+            return;
+        }
+        
         let diagnosticos = [29616];
         if(detalle.hasOwnProperty('diagnosticos')){
             diagnosticos = [];
