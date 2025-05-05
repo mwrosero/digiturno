@@ -3250,8 +3250,11 @@
                         if(detalle.nombreServicioNivel1 == "LABORATORIO"){
                             addForToday = true;
                         }else{
-                            console.log(detalle)
-                            addForToday = esDiaEnCurso(detalle.fechaInicioAtencion);
+                            {{-- console.log(detalle)
+                            console.log(detalle.fechaInicioAtencion) --}}
+                            if(detalle.hasOwnProperty('fechaInicioAtencion')){
+                                addForToday = esDiaEnCurso(detalle.fechaInicioAtencion);
+                            }
                         }
                         {{-- if(detalle.nombreServicioNivel1 == "CONSULTA" && detalle.detallesOrden[0].codigoReserva == null){ --}}
                         if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].codigoReserva == null && detalle.nombreServicioNivel1 != "LABORATORIO"){
