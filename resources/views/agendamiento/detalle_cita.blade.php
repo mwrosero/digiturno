@@ -533,7 +533,7 @@ Mi Veris - Citas - Revisa tus datos
             "codigoSucursalRegistro": null,
             "porcentajeDescuento": dataCita.horario.porcentajeDescuento,
             "permitePago": dataCita.convenio.permitePago,
-            "secuenciaAfiliado": dataCita.convenio.secuenciaAfiliado,
+            "secuenciaAfiliado": dataCita.convenio.secuenciaAfiliado ?? null,
             "canalOrigen": _canalOrigen,
             "enviarLinkPago": null,
             "valorizacion": dataCita.precio.valorCanalVirtual,
@@ -557,9 +557,12 @@ Mi Veris - Citas - Revisa tus datos
             datosReserva.itemPaquete = dataCita.detalleItemPaquete.itemPaquete;
             // if(dataCita.tratamiento){
                 /*se recibe desde 3 flujos: tratamiento/re-agendamiento*/
-                datosReserva.numeroOrden = dataCita.detalleItemPaquete.numeroOrden;
+                datosReserva.numeroOrden = null;//dataCita.detalleItemPaquete.numeroOrden;
                 datosReserva.codigoEmpOrden = dataCita.detalleItemPaquete.codigoEmpresaOrden;
-                datosReserva.lineaDetalle = dataCita.detalleItemPaquete.lineaDetalleOrden;
+                console.log("----------")
+                console.log(dataCita.detalleItemPaquete.codigoEmpresaOrden)
+                datosReserva.lineaDetalle = null;//dataCita.detalleItemPaquete.lineaDetalleOrden;
+                datosReserva.secuenciaAfiliado
             // }
         }
         
@@ -574,7 +577,7 @@ Mi Veris - Citas - Revisa tus datos
             datosReserva.idCliente = dataCita.convenio.idCliente;
         }
 
-        if(dataCita.tratamiento){
+        if(dataCita.tratamiento && dataCita.origen != "paquetes"){
             if(dataCita.origen && dataCita.origen == "Listatratamientos"){
                 datosReserva.numeroOrden = dataCita.tratamiento.numeroOrden;
                 datosReserva.codigoEmpOrden = dataCita.tratamiento.codigoEmpOrden;

@@ -358,7 +358,7 @@ Elige datos para la Cita
             await consultarCiudades();
             $('#btn-convenio').removeClass('disabled selectable')
         }else if(dataCita.origen == "paquetes"){
-            $('.element-no-paquete').addClass('d-none');
+            {{-- $('.element-no-paquete').addClass('d-none'); --}}
             $('.label-sugerencia').removeClass('d-none');
             if(dataCita.online == "N"){
                 await consultarCiudades();
