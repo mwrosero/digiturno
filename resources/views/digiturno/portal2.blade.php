@@ -1370,7 +1370,8 @@
                     }
 
                     // if( value.nombreServicioNivel1 == "CONSULTA"){
-                    if(v.esAgendable){
+                    console.log(value)
+                    if(value.esAgendable){
                         btnAgenda = `<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(v)}'>Agendar</div>`;                        
                     }
 
@@ -1407,7 +1408,8 @@
 
                     let inputElem = `<input ${checked} ${disabledAttr} class="form-check-input my-0" type="checkbox" value="" id="item-prestacion-${ v.codigoPrestacion }" codigoServicio-rel="${ value.codigoServicioNivel1 }" nombreServicio-rel="${ value.nombreServicioNivel1 }" data-rel='${ JSON.stringify(v) }'>`;
 
-                    if(value.requiereAgendamientoPrevio && value.esAgendable){
+                    {{-- if(value.requiereAgendamientoPrevio && value.esAgendable){ --}}
+                    if(value.esAgendable){
                         inputElem = ``;
                     }
 
