@@ -1283,10 +1283,12 @@
                         nombreServicioNivel1: nombre,
                         requiereAgendamientoPrevio: item.requiereAgendamientoPrevio,
                         esAgendable: item.esAgendable,
+                        esTeleconsulta: item.esTeleconsulta,
                         items: []
                     };
                     resultado.push(servicioMap[nombre]);
                 }
+
                 let detalle = [];
 
                 if (item.detallesOrden.length > 0) {
@@ -1295,6 +1297,7 @@
                         nombrePrestacion: item.nombrePrestacion || item.nombreServicio || null,
                         detalleItemPaquete:{
                             nombreDetalle: item.nombrePrestacion,
+                            esTeleconsulta: item.esTeleconsulta,
                             cantidad: item.cantidad,
                             numeroOrden: item.numeroOrden,
                             codigoEmpresaOrden: item.codigoEmpresa,
@@ -1312,6 +1315,7 @@
                         nombrePrestacion: item.nombrePrestacion || item.nombreServicio || null,
                         detalleItemPaquete:{
                             nombreDetalle: item.nombrePrestacion,
+                            esTeleconsulta: item.esTeleconsulta,
                             cantidad: item.cantidad,
                             numeroOrden: item.numeroOrden,
                             codigoEmpresaOrden: item.codigoEmpresa,
@@ -1747,9 +1751,9 @@
                 esAgendable = detalle.esAgendable;
                 esPagada = (estadosVigentes.includes(detalle.codigoEstado)) ? "S" : "N";
             }
-            {{-- console.log(generales); --}}
-            {{-- console.log(detalle);
-            return; --}}
+            console.log(generales);
+            console.log(detalle);
+            {{-- return; --}}
             let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
             let numeroOrden;
@@ -1835,8 +1839,9 @@
                 dataCitaReserva.secuenciaPaquetePaciente = detalle.secuenciaPaquetePaciente;
             }
 
-            {{-- console.log(dataCitaReserva);
-            return; --}}
+            console.log(dataCitaReserva);
+            console.log(detalle.esTeleconsulta);
+            {{-- return; --}}
 
             dataTurno.ordenAgenda = dataCitaReserva;
             await registrarTracking('AGENDAR_ORDEN_INTERNA', detalle);
@@ -1846,8 +1851,10 @@
             // console.log('/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}');
             localStorage.setItem('turno-{{ $portalToken }}', JSON.stringify(dataTurno));
             if(detalle.esTeleconsulta == "N"){
+                console.log(0);return;
                 location.href = '/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}';
             }else{
+                console.log(1);return;
                 location.href = '/citas-elegir-fecha-doctor/{{ $portalToken }}?mac={{ $mac }}';
             }
             // console.log("RED");

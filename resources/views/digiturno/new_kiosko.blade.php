@@ -190,11 +190,15 @@
 	            // text: `${web_url}/ingreso/{{ $mac }}?utm_source=HOJA&utm_medium=CENTRAL_TUMBACO&utm_campaign=lanzamiento_digiturno`
 			});
 
-			
-
 			if (userKiosko !== null) {
 				// Reescribe usuario
 			    localStorage.setItem('userKiosko', userKiosko);
+			    if(userVeris !== null){
+			    	localStorage.setItem('userVeris', userVeris);
+			    }
+			    if(userAnonimo !== null){
+			    	localStorage.setItem('userAnonimo', userAnonimo);
+			    }
 			}
 
 			$('body').on('click', '.btn-aperturar', async function(){
@@ -206,6 +210,26 @@
 			// mostrar login page
 			console.log("LOGIN")
 			$('.not-logged-userpass').removeClass('d-none')
+
+			$('body').on('click', '#btn-user-new', async function(){
+				await finalizar($(this).attr('user-rel'));
+			})
+
+			$('body').on('click', '#btn-user-active', async function(){
+				localStorage.setItem('userVeris', JSON.stringify(userLogged));
+	            location.reload();
+			})
+
+			$('body').on('click', '.box-ver-pass', async function(){
+				console.log($('#password').attr('type'))
+				if($('#password').attr('type') == "text"){
+					$('#password').attr('type','password');
+					$('.box-ver-pass').html(`<i class="fa-solid fa-eye"></i>`);
+				}else{
+					$('#password').attr('type','text');
+					$('.box-ver-pass').html(`<i class="fa-solid fa-eye-slash"></i>`);
+				}
+			})
 		}
 		
 	})
