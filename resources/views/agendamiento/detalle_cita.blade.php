@@ -516,6 +516,12 @@ Mi Veris - Citas - Revisa tus datos
             }
         }
 
+        let canalOrigenAgendamiento = "MVE";
+
+        if(!isMobile()){
+            canalOrigenAgendamiento = "KIO";
+        }
+
         let datosReserva = {
             "numeroIdentificacion": dataCita.paciente.numeroIdentificacion,
             "tipoIdentificacion": tipoIdentificacion,
@@ -528,7 +534,7 @@ Mi Veris - Citas - Revisa tus datos
             "origen": 4,
             "motivoConsulta": "",
             "codigoServicio": dataCita.especialidad.codigoServicio,
-            "canalOrigenAgendamiento": "MVE",
+            "canalOrigenAgendamiento": canalOrigenAgendamiento,
             "codigoEmpresaRegistro": 1,
             "codigoSucursalRegistro": null,
             "porcentajeDescuento": dataCita.horario.porcentajeDescuento,

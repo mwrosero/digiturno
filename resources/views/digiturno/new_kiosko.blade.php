@@ -56,7 +56,7 @@
     		<div onclick="loginAnonimo();" class="btn bg-veris-dark btn-anonimo text-white mx-auto fs-3 p-2 mb-5 rounded-8 my-3"><i class="fa-solid fa-user-secret me-2"></i>INGRESO ANÓNIMO</div>
     	</div>
     	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-3 box-btn-cerrar-caja d-none">
-    		<div class="btn bg-success btn-cerrar-caja text-white mx-auto fs-3 p-2 mb-2 rounded-8 my-0"><i class="fa-solid fa-box me-2"></i>Cerrar Caja</div>
+    		<div onclick="preguntaCerrar()" class="btn bg-success btn-cerrar-caja text-white mx-auto fs-3 p-2 mb-2 rounded-8 my-0"><i class="fa-solid fa-box me-2"></i>Cerrar Caja</div>
     	</div>
 	</main>
 	<main class="content p-2 not-logged d-none" style="overflow-x: hidden;">
@@ -238,6 +238,66 @@
 		}
 		
 	})
+
+	async function preguntaCerrar(){
+		if (confirm("Desea cerrar caja?")) {
+		    await cerrarCaja();
+		}
+	}
+
+	async function cerrarCaja(){
+		let caja = JSON.parse(localStorage.getItem('userKiosko'));
+		let args = [];
+		// arqueos_caja/apertura
+        args["endpoint"] = `${api_url_digitales}/facturacion/v1/arqueos_caja/cierre`;
+        args["method"] = "PUT";
+        args["showLoader"] = true;
+        args["token"] = "{{ $accessToken }}";
+        args["bodyType"] = "json";
+        args["data"] = JSON.stringify({
+			"codigoCaja": caja.codigoCaja,
+			"numeroPuntoEmision": caja.numeroPuntoEmision,
+			"codigoEmpresa": caja.codigoEmpresa,
+			"codigoSucursal": caja.codigoSucursal,
+			"fondoInicial": 0.00,
+			"ipAddress": "{{ $ip }}",
+			"codigoUsuario": caja.codigoUsuario,
+			"hostName": caja.codigoUsuario,
+			"billetes": {
+				"b100": 0,
+				"b50": 0,
+				"b20": 0,
+				"b10": 0,
+				"b5": 0,
+				"b2": 0,
+				"b1": 0
+			},
+			"monedas": {
+				"m1": 0,
+				"m50": 0,
+				"m25": 0,
+				"m10": 0,
+				"m5": 0,
+				"m01": 0
+			},
+			"valorConteoFisico": 0,
+			"numeroPapeleta": 0,
+			"codigoInstitucion": 0,
+			"ingresoComprobantesManuales": true
+
+		})
+
+        const data = await call(args);
+        console.log(data);
+
+        if(data.code == 200){
+        	localStorage.clear();
+        	let url_salir = `/kiosko/{{ $mac }}`;
+            location.href = url_salir;
+        }else{
+        	alert(data.message);
+        }
+	}
 
 	async function consultarCajas(soloConsulta = false){
 		let args = [];
