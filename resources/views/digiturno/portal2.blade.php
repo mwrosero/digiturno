@@ -1263,7 +1263,7 @@
 
         $('body').on('click', '.btn-detalle-paquete', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
-            console.log(detalle)
+            //console.log(detalle)
             $('#tituloPaqueteDetalleGestion').html(`${detalle.nombrePaquete}`);
             // si el detalle de cantidadDisponible > 0 Tiene la prestacion pendiente por activar
             // si el campo cantidadUtilizada == 0 y el campo estaRecepcionado == false significa que el paquete no ha sido utilizado en la atencion
@@ -1273,7 +1273,7 @@
             let detallesDisponibles = detalle.detallesDisponibles;
             let servicioMap = {};
             let resultado = [];
-
+            
             detallesDisponibles.forEach(item => {
                 let nombre = item.nombreServicioN1;
                 let codigo = item.codigoServicioN1;
@@ -1292,8 +1292,10 @@
                 let detalle = [];
 
                 if (item.detallesOrden.length > 0) {
+                    console.log(6)
                     detalle = item.detallesOrden.map(d => ({
-                        ...d,
+                        //...d,
+                        ...item,
                         nombrePrestacion: item.nombrePrestacion || item.nombreServicio || null,
                         detalleItemPaquete:{
                             nombreDetalle: item.nombrePrestacion,
@@ -1310,6 +1312,7 @@
                         }
                     }));
                 } else {
+                    console.log(7)
                     detalle = [{
                         ...item,
                         nombrePrestacion: item.nombrePrestacion || item.nombreServicio || null,
@@ -1328,7 +1331,7 @@
                         }
                     }];
                 }
-
+                console.log(detalle)
                 servicioMap[nombre].items.push(...detalle);
             });
 
@@ -1751,16 +1754,20 @@
                 esAgendable = detalle.esAgendable;
                 esPagada = (estadosVigentes.includes(detalle.codigoEstado)) ? "S" : "N";
             }
-            console.log(generales);
-            console.log(detalle);
             {{-- return; --}}
             let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
             let numeroOrden;
 
             let origen = "Listatratamientos";
+            {{-- console.log("/////////////////")
+            console.log(generales)
+            console.log(detalle)
+            return; --}}
+            let codigoEspecialidad = detalle.codigoEspecialidadServicio;
             if(detalle.hasOwnProperty('detalleItemPaquete')){
                 origen = "paquetes";
+                codigoEspecialidad = detalle.codigoEspecialidad;
             }
 
             if(esTerapia){
@@ -1821,7 +1828,7 @@
                 },
                 "online": (detalle.esTeleconsulta) ? "S" : "N",
                 "especialidad": {
-                    "codigoEspecialidad": detalle.codigoEspecialidadServicio ?? detalle.codigoEspecialidad,
+                    "codigoEspecialidad": codigoEspecialidad,
                     "nombre": detalle.nombreServicio,
                     "esOnline": (detalle.esTeleconsulta) ? "S" : "N",
                     "codigoServicio": detalle.codigoServicio,
@@ -1848,8 +1855,8 @@
             dataTurno.ordenAgenda = dataCitaReserva;
             await registrarTracking(tipoAgenda, detalle);
 
-            // console.log(dataCitaReserva)
-            // return;
+            //console.log(dataCitaReserva)
+            //return;
             // console.log('/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}');
             localStorage.setItem('turno-{{ $portalToken }}', JSON.stringify(dataTurno));
             // console.log(dataTurno.ordenAgenda);return;
