@@ -3717,7 +3717,11 @@
                 iconEstadoItemReserva = ``;
                 strEstadoItemReserva = ``;
 
-                let dias = obtenerDiferenciaDiasIntl(detalle.fechaVigencia);
+                // let dias = obtenerDiferenciaDiasIntl(detalle.fechaVigencia);
+                let dias;
+                if(detalle.fechaCaducidadUsoPaquete !== null){
+                    dias = obtenerDiferenciaDiasIntl(detalle.fechaCaducidadUsoPaquete);
+                }
                 
                 if(!estadosVigentes.includes(detalle.codigoEstado)){
                     sectionEstadoPago = `porpagar`;
@@ -3735,7 +3739,7 @@
                 elemFooterCard += `<div class="col-12 text-center fs-16 line-height-16 mb-3 fw-bold">
                     <div class="mt-4 mb-3 fs-16 line-height-18 d-flex justify-content-center align-items-center">
                         <span class="fw-bold text-veris-dark">Válido hasta:</span>
-                        <span class="ms-2 ${ (dias < 0) ? `text-caution` : `text-veris` }">${detalle.fechaVigencia}</span>
+                        <span class="ms-2 ${ (dias < 0) ? `text-caution` : `text-veris` }">${detalle.fechaCaducidadUsoPaquete}</span>
                     </div>
                     <div class="mb-1 text-veris fs-16 line-height-18 d-flex justify-content-center align-items-center">
                         <span class="fw-bold text-veris-dark">Días restantes:</span> <div class="rounded-8 bg-veris-sky border-veris-1 py-2 px-3 ms-2">${ (dias > 0) ? dias : `0` }</div>

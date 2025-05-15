@@ -55,6 +55,9 @@
     	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-3">
     		<div onclick="loginAnonimo();" class="btn bg-veris-dark btn-anonimo text-white mx-auto fs-3 p-2 mb-5 rounded-8 my-3"><i class="fa-solid fa-user-secret me-2"></i>INGRESO ANÓNIMO</div>
     	</div>
+    	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-3 box-btn-cerrar-caja d-none">
+    		<div class="btn bg-success btn-cerrar-caja text-white mx-auto fs-3 p-2 mb-2 rounded-8 my-0"><i class="fa-solid fa-box me-2"></i>Cerrar Caja</div>
+    	</div>
 	</main>
 	<main class="content p-2 not-logged d-none" style="overflow-x: hidden;">
 		<div class="col-12 bg-silver mb-3">
@@ -161,6 +164,7 @@
 
 		let userVeris = localStorage.getItem('userVeris');
 		let userAnonimo = localStorage.getItem('userAnonimo');
+		await parametrosGenerales("{{ $mac }}");
 
 		if (localStorage.getItem('userVeris') !== null || localStorage.getItem('userAnonimo') !== null) {
 			let userKiosko = localStorage.getItem('userKiosko');
@@ -174,9 +178,9 @@
 				})	
 
 				localStorage.clear();
-				await parametrosGenerales("{{ $mac }}");
+				{{-- await parametrosGenerales("{{ $mac }}"); --}}
 			}else{
-				await parametrosGenerales("{{ $mac }}");
+				{{-- await parametrosGenerales("{{ $mac }}"); --}}
 				await consultarCajas();
 				$('.not-logged').removeClass('d-none');
 			}
@@ -209,6 +213,7 @@
 		}else{
 			// mostrar login page
 			console.log("LOGIN")
+			await consultarCajas(true);
 			$('.not-logged-userpass').removeClass('d-none')
 
 			$('body').on('click', '#btn-user-new', async function(){
@@ -234,7 +239,7 @@
 		
 	})
 
-	async function consultarCajas(){
+	async function consultarCajas(soloConsulta = false){
 		let args = [];
         args["endpoint"] = `${api_url_digitales}/facturacion/v1/cajeros/${ dataParametrosGenerales.secuenciaUsuario }/cajas?codigoEmpresa=1&codigoSucursal=${ dataParametrosGenerales.caja.codigoSucursal }`;
         args["method"] = "GET";
@@ -246,12 +251,23 @@
 
         if(data.code == 200){
         	if(data.data.length == 1 && data.data[0].seEncuentraAperturada){
+        		if(soloConsulta){
+        			//Mostrar boton de cerrar caja
+        			$('.box-btn-cerrar-caja').removeClass('d-none');
+        			console.log('Mostrar')
+        			return;
+        		}
         		console.log(data.data[0])
         		let caja = data.data[0];
         		localStorage.setItem('userKiosko', JSON.stringify(caja));
         		// location.reload();
         		location.href = `/kiosko/{{ $mac }}`;
         	}else{
+        		if(soloConsulta){
+        			//Ocultar boton de cerrar caja
+        			$('.box-btn-cerrar-caja').addClass('d-none');
+        			return;
+        		}
         		let elem = ``;
         		$.each(data.data, function(key, value){
         			elem += `<div class="p-3 mb-3 text-start d-flex justify-content-between align-items-center shadow rounded-8">
