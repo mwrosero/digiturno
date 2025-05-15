@@ -211,8 +211,14 @@
 	        	if(localStorage.getItem('userKiosko') !== null) {
 	        		let userVeris = localStorage.getItem('userVeris');
 	        		if(userVeris == null){
-	        			console.log('cerrarCaja');
-	        			await cerrarCaja();
+	        			let userAnonimo = localStorage.getItem('userAnonimo');
+	        			if(userAnonimo == null){
+		        			console.log('cerrarCaja');
+		        			await cerrarCaja();
+		        		}else{
+		        			console.log('finalizar');
+	        				await finalizar();
+		        		}
 	        		}else{
 	        			console.log('finalizar');
 	        			await finalizar();
