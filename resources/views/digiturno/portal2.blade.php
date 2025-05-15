@@ -1834,9 +1834,11 @@
                 "diagnosticos": detalle.diagnosticos
             }
 
+            let tipoAgenda = 'AGENDAR_ORDEN_INTERNA';
             if(detalle.hasOwnProperty('detalleItemPaquete')){
                 dataCitaReserva.detalleItemPaquete = detalle.detalleItemPaquete;
                 dataCitaReserva.secuenciaPaquetePaciente = detalle.secuenciaPaquetePaciente;
+                tipoAgenda = 'AGENDAR_PAQUETE_PROMOCIONAL';
             }
 
             console.log(dataCitaReserva);
@@ -1844,7 +1846,7 @@
             {{-- return; --}}
 
             dataTurno.ordenAgenda = dataCitaReserva;
-            await registrarTracking('AGENDAR_ORDEN_INTERNA', detalle);
+            await registrarTracking(tipoAgenda, detalle);
 
             // console.log(dataCitaReserva)
             // return;
