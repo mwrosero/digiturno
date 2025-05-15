@@ -280,9 +280,17 @@ Mi Veris - Citas - Elige fecha y doctor
     let globalTurno = localStorage.getItem('turno-{{ $params }}');
     localStorage.setItem('flujo','agendamiento');
     let dataTurno = JSON.parse(globalTurno);
+    let dataCita;
+    if(dataTurno.hasOwnProperty('ordenAgenda') && dataTurno.ordenAgenda.online == "S"){
+        console.log(0)
+        localStorage.setItem('cita-{{ $params }}',JSON.stringify(dataTurno.ordenAgenda));
+        dataCita = dataTurno.ordenAgenda;
+    }else{
+        console.log(1)
+        let local = localStorage.getItem('cita-{{ $params }}');
+        dataCita = JSON.parse(local);
+    }
 
-    let local = localStorage.getItem('cita-{{ $params }}');
-    let dataCita = JSON.parse(local);
     let dataOrigen = dataCita?.origen;  
     let renderCalendarExternaFecha;
     let pacienteExternaSolicitud;
