@@ -1850,10 +1850,10 @@
             // return;
             // console.log('/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}');
             localStorage.setItem('turno-{{ $portalToken }}', JSON.stringify(dataTurno));
-            if(detalle.esTeleconsulta == "N"){
+            // console.log(dataTurno.ordenAgenda);return;
+            if(dataTurno.ordenAgenda.online == "N"){
                 location.href = '/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}';
             }else{
-                // console.log(dataTurno);return;
                 location.href = '/citas-elegir-fecha-doctor/{{ $portalToken }}?mac={{ $mac }}';
             }
             // console.log("RED");
