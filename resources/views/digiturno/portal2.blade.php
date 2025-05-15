@@ -1851,10 +1851,10 @@
             // console.log('/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}');
             localStorage.setItem('turno-{{ $portalToken }}', JSON.stringify(dataTurno));
             if(detalle.esTeleconsulta == "N"){
-                console.log(0);return;
+                // console.log(0);return;
                 location.href = '/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}';
             }else{
-                console.log(1);return;
+                // console.log(1);return;
                 location.href = '/citas-elegir-fecha-doctor/{{ $portalToken }}?mac={{ $mac }}';
             }
             // console.log("RED");
