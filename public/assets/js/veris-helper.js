@@ -1,4 +1,9 @@
-const _canalOrigen = "MVE_CMV";
+let c_o = "MVE_CMV"
+if(!isMobile()){
+    // c_o = "KIO_CMV"
+}
+// const _canalOrigen = "MVE_CMV";
+const _canalOrigen = c_o;
 const _plataforma = "WEB";
 const _version = "7.8.0";
 const _langDate = {

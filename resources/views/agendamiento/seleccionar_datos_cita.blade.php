@@ -78,24 +78,24 @@ Elige datos para la Cita
                         </div>
                     </div>
                 </div>
-                {{-- <section class="p-0 mt-0 box-contenido-seleccion element-no-paquete">
+                <section class="p-0 bg-dark-blue-veris-medium-sm mt-0 box-contenido-seleccion invisible element-no-paquete">
                     <div class="row g-0 justify-content-center">
-                        <div class="col-12 col-md-8 p-3">
-                            <p class="fw-medium fs-25 line-height-25 mt-1 mb-2">Elige la modalidad de la cita médica</p>
+                        <div class="col-8 p-3 bg-dark-blue-veris-medium" style="min-width: 375px;">
+                            <p class="text-white fw-medium fs--18 mt-1 mb-2">Elige la modalidad de la cita médica</p>
                             <div class="row d-flex">
                                 <div class="col-6">
-                                    <button type="button" class="btn bg-white fs-25 line-height-25 m-0 p-3 w-100 border border-2 border-secondary btn-modalidad" data-rel="N">Presencial</button>
+                                    <button type="button" class="btn bg-white fs--18 line-height-24 m-0 p-3 w-100 border border-2 border-secondary btn-modalidad" data-rel="N">Presencial</button>
                                 </div>
                                 <div class="col-6">
-                                    <button type="button" class="btn bg-white fs-25 line-height-25 m-0 p-3 w-100 border border-2 border-secondary btn-modalidad" data-rel="S">Virtual</button>
+                                    <button type="button" class="btn bg-white fs--18 line-height-24 m-0 p-3 w-100 border border-2 border-secondary btn-modalidad" data-rel="S">Virtual</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section> --}}
-                <section class="p-0 box-contenido-seleccion">
+                </section>
+                <section class="p-0 box-contenido-seleccion invisible">
                     <div class="row g-0 justify-content-center">
-                        <div class="col-12 col-md-8 mb-4">
+                        {{-- <div class="col-12 col-md-8 mb-4">
                             <p class="fw-medium fs-25 line-height-25 mt-1 mb-2">1. Elige la modalidad de la cita médica</p>
                             <div class="row d-flex">
                                 <div class="col-6">
@@ -105,9 +105,9 @@ Elige datos para la Cita
                                     <button type="button" class="btn bg-white fs-25 line-height-25 m-0 p-3 w-100 border border-2 border-secondary btn-modalidad" data-rel="S">Virtual</button>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-12 col-md-8">
-                            <p class="card-body fw-medium fs-25 line-height-25 mt-3 mb-3 pt-1">2. Elige los datos de la cita médica</p>
+                            <p class="card-body fw-medium fs-25 line-height-25 mt-3 mb-3 pt-1">Elige los datos de la cita médica</p>
                             <!-- CONVENIOS -->
                             <div class="modal modal-top fade" id="convenioModal" tabindex="-1" aria-labelledby="convenioModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-md modal-dialog-centered mx-auto">
@@ -358,6 +358,7 @@ Elige datos para la Cita
             await consultarCiudades();
             $('#btn-convenio').removeClass('disabled selectable')
         }else if(dataCita.origen == "paquetes"){
+            {{-- $('.element-no-paquete').addClass('d-none'); --}}
             $('.element-no-paquete').addClass('d-none');
             $('.label-sugerencia').removeClass('d-none');
             if(dataCita.online == "N"){

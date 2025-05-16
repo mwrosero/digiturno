@@ -389,6 +389,30 @@
         </form>
     </div>
 </div>
+{{-- Modal detalle paquete 2.0 --}}
+<div class="modal modal-top fade" id="gestionModalDetallePaquete" tabindex="-1" aria-labelledby="gestionModalDetallePaqueteLabel">
+    <div class="modal-dialog modal modal-dialog-centered modal-lg mx-auto">
+        <form class="modal-content rounded-8">
+            <div class="modal-header">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3" id="tituloPaqueteDetalleGestion"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3">
+                <input type="hidden" id="dataPaquetes">
+                <div class="d-flex align-items-start">
+                    <div class="nav flex-column nav-pills" id="v-pills-tabPaquete" role="tablist" aria-orientation="vertical">
+                    </div>
+                    <div class="tab-content flex-grow-1 ms-2 rounded-8 border-veris-1" id="v-pills-tabPaqueteContent">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center">
+                <a href="#" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-2 fs-4 btn-activar activar-disabled" data-bs-dismiss="modal">ACTIVAR</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4" data-bs-dismiss="modal">CERRAR</a>
+            </div>
+        </form>
+    </div>
+</div>
 {{-- Modal detalle chequeo --}}
 <div class="modal modal-top fade" id="modalDetalleChequeo" tabindex="-1" aria-labelledby="modalDetalleChequeoLabel">
     <div class="modal-dialog modal modal-dialog-centered modal-lg mx-auto">
@@ -401,13 +425,12 @@
                 <input type="hidden" id="dataChequeo">
                 {{-- <div class="accordion border-0 p-0 my-2" id="detalleComponentesChequeo">
                 </div> --}}
-                 <div class="d-flex align-items-start">
+                <div class="d-flex align-items-start">
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     </div>
                     <div class="tab-content flex-grow-1 ms-2 rounded-8 border-veris-1" id="v-pills-tabContent">
                     </div>
                 </div>
-
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-around align-items-center">
                 <div class="checkbox checkbox-primary fs-18 line-height-16 d-flex justify-content-between align-items-center me-2 box-aceptacion">
@@ -851,6 +874,7 @@
 
     const tiempoInactividad = 45; // Tiempo de inactividad en segundos
     const tiempoMaximoRespuesta = 15; // Tiempo máximo de respuesta al modal en segundos
+    let tipoActivacion;
 
     $(document).ready(async function() {
         if(!isMobile()){
@@ -1238,8 +1262,210 @@
             }, 2000); // Espera 1 segundo después de la última entrada
         });
 
-
         $('body').on('click', '.btn-detalle-paquete', async function(){
+            tipoActivacion = "PAQUETE";
+            let dataPaquetes = $(this).attr('data-rel');
+            $('#dataPaquetes').val(dataPaquetes)
+            let detalle = JSON.parse($(this).attr('data-rel'));
+            //console.log(detalle)
+            $('#tituloPaqueteDetalleGestion').html(`${detalle.nombrePaquete}`);
+            // si el detalle de cantidadDisponible > 0 Tiene la prestacion pendiente por activar
+            // si el campo cantidadUtilizada == 0 y el campo estaRecepcionado == false significa que el paquete no ha sido utilizado en la atencion
+            let elem_header = ``;
+            let elem_content = ``;
+
+            let detallesDisponibles = detalle.detallesDisponibles;
+            let servicioMap = {};
+            let resultado = [];
+            
+            detallesDisponibles.forEach(item => {
+                let nombre = item.nombreServicioN1;
+                let codigo = item.codigoServicioN1;
+                if (!servicioMap[nombre]) {
+                    servicioMap[nombre] = {
+                        codigoServicioNivel1: codigo,
+                        nombreServicioNivel1: nombre,
+                        requiereAgendamientoPrevio: item.requiereAgendamientoPrevio,
+                        esAgendable: item.esAgendable,
+                        esTeleconsulta: item.esTeleconsulta,
+                        items: []
+                    };
+                    resultado.push(servicioMap[nombre]);
+                }
+
+                let detalle = [];
+
+                {{-- if (item.detallesOrden.length > 0) { --}}
+                if (false) {
+                    console.log(6)
+                    detalle = item.detallesOrden.map(d => ({
+                        //...d,
+                        ...item,
+                        nombrePrestacion: item.nombrePrestacion || item.nombreServicio || null,
+                        detalleItemPaquete:{
+                            nombreDetalle: item.nombrePrestacion,
+                            esTeleconsulta: item.esTeleconsulta,
+                            cantidad: item.cantidad,
+                            numeroOrden: item.numeroOrden,
+                            codigoEmpresaOrden: item.codigoEmpresa,
+                            lineaDetalleOrden: item.lineaDetalleOrden,
+                            detalleReserva: null,
+                            itemPaquete: {
+                                numeroOrden: item.numeroOrden,
+                                lineaDetalle: item.lineaDetalleOrden
+                            }
+                        }
+                    }));
+                } else {
+                    console.log(7)
+                    detalle = [{
+                        ...item,
+                        nombrePrestacion: item.nombrePrestacion || item.nombreServicio || null,
+                        detalleItemPaquete:{
+                            nombreDetalle: item.nombrePrestacion,
+                            esTeleconsulta: item.esTeleconsulta,
+                            cantidad: item.cantidad,
+                            numeroOrden: item.numeroOrden,
+                            codigoEmpresaOrden: item.codigoEmpresa,
+                            lineaDetalleOrden: item.lineaDetalleOrden,
+                            detalleReserva: null,
+                            itemPaquete: {
+                                numeroOrden: item.numeroOrden,
+                                lineaDetalle: item.lineaDetalleOrden
+                            }
+                        }
+                    }];
+                }
+                console.log("detalle")
+                console.log(detalle)
+                servicioMap[nombre].items.push(...detalle);
+            });
+
+            console.log("resultado");
+            console.log(resultado);
+            
+            $.each(resultado, function(key, value){
+                let class_active = ``;
+                let class_show = ``;
+                if(key == 0){
+                    class_active = `active`;
+                    class_show = `show`;
+                }
+                elem_header += `<button class="nav-link nav-link-servicios ${class_active}" id="prestacion-${ value.codigoServicioNivel1 }-tab" data-bs-toggle="pill" data-bs-target="#prestacion-${ value.codigoServicioNivel1 }" type="button" role="tab" aria-controls="prestacion-${ value.codigoServicioNivel1 }" aria-selected="true" codigoServicio-rel="${ value.codigoServicioNivel1 }">
+                        ${ value.nombreServicioNivel1 }
+                    </button>`;
+
+                elem_content += `<div class="tab-pane pane-items-${ value.codigoServicioNivel1 } p-2 fade ${class_active} ${class_show}" id="prestacion-${ value.codigoServicioNivel1 }" role="tabpanel" aria-labelledby="prestacion-${ value.codigoServicioNivel1 }-tab">`;
+                console.log(value.requiereAgendamientoPrevio, value.esAgendable)
+                if(!value.requiereAgendamientoPrevio && !value.esAgendable){
+                    elem_content += `<div class="d-flex justify-content-center align-items-center mt-2 mb-3">
+                            <div class="btn bg-veris text-white me-2 select-all" esPaquete-rel="S" codigoServicio-rel="${ value.codigoServicioNivel1 }">
+                                <i class="fa-regular fa-square-check me-2"></i> Todos
+                            </div>
+                            <div class="btn bg-veris-dark text-white me-2 unselect-all" esPaquete-rel="S" codigoServicio-rel="${ value.codigoServicioNivel1 }">
+                                <i class="fa-regular fa-square-minus me-2"></i> Ninguno
+                            </div>
+                        </div>`;
+                }
+
+                $.each(value.items, function(k,v){
+                    console.log(v)
+                    let btnAgenda = ``;
+                    let esLaboratorio = false;
+                    let classLabNoOcupacional = ``;
+                    let classLabNoOcupacionalLegend = ``;
+                    if( value.nombreServicioNivel1 == "LABORATORIO"){
+                        esLaboratorio = true;
+                    }
+                    let disabledAttr = ``;
+                    let checked = ``;
+                    //MARCOS: v.esAgendable &&
+                    if( v.requiereAgendamientoPrevio && v.cantidadUtilizada == 0 && v.cantidadDisponible != v.cantidadUtilizada ){
+                        disabledAttr = `disabled`;
+                    }
+
+                    // if( value.nombreServicioNivel1 == "CONSULTA"){
+                    console.log(value)
+                    if(value.esAgendable || value.requiereAgendamientoPrevio){
+                        let qtyCitas = ``;
+                        if(v.cantidad > 1){
+                            qtyCitas = ` (${v.cantidadUtilizada}/${v.cantidad}) `;
+                        }
+                        btnAgenda = `${qtyCitas}<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(v)}'>Agendar</div>`;                        
+                    }
+
+                    if(v.numeroOrden == null || (v.cantidadDisponible == 0 && !v.estaRecepcionado)){
+                        if(v.numeroOrden !== null){
+                            if(esLaboratorio){
+                                btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Activado</span>`;
+                            }else{
+                                btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Agendado</span>`;
+                            }
+                        }else{
+                            btnAgenda = ``;
+                        }
+
+                    }else if(v.estaRecepcionado){
+                        btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Realizado</span>`;
+                    }
+
+                    var badge_estado_lab_chequeo = ``;
+
+                    if(esLaboratorio){
+                        {{-- console.log("ES LABORATORIO") --}}
+                        {{-- disabledAttr = `disabled`; --}}
+                        classLabNoOcupacional = ``;
+                        classLabNoOcupacionalLegend = ``;
+                        {{-- console.log("prestacion "+v.nombrePrestacion+": "+v.estadoExamen) --}}
+                        if(v.estadoExamen == "ACEPTADO"){
+                            disabledAttr = `disabled`;
+                            badge_estado_lab_chequeo = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Activado</span>`
+                        }
+                        if(v.estaRecepcionado){
+                            disabledAttr = `disabled`;
+                            badge_estado_lab_chequeo = `<span class="badge badge-pill bg-veris text-white fw-normal p-2">Realizado</span>`
+                        }
+                    }
+
+                    if(checked == "checked" && disabledAttr == ""){
+                        permiteAgendarUna = true;
+                    }
+                    if(v.estadoExamen == "PENDIENTE" || v.estadoExamen === null){
+                        prestacionesParaActivar = 1;
+                    }
+
+                    {{-- console.log(badge_estado_lab_chequeo) --}}
+
+                    let inputElem = `<input ${checked} ${disabledAttr} class="form-check-input my-0" type="checkbox" value="" id="item-prestacion-${ v.codigoPrestacion }" codigoServicio-rel="${ value.codigoServicioNivel1 }" nombreServicio-rel="${ value.nombreServicioNivel1 }" data-rel='${ JSON.stringify(v) }'>`;
+
+                    {{-- if(value.requiereAgendamientoPrevio && value.esAgendable){ --}}
+                    if(value.esAgendable || value.requiereAgendamientoPrevio){
+                        inputElem = ``;
+                    }
+
+                    elem_content += `<div class="d-flex justify-content-start align-items-start fs-16 line-height-16 mb-2 ${classLabNoOcupacionalLegend}">
+                            <div class="form-check flex-grow-1 ${classLabNoOcupacional}">
+                                ${inputElem}
+                                <label class="form-check-label" for="item-prestacion-${ v.codigoPrestacion }">
+                                ${ v.nombrePrestacion }
+                                </label>
+                            </div>
+                            ${ badge_estado_lab_chequeo }
+                            ${ btnAgenda }
+                            <!--div class="flex-grow-1 ms-2">
+                                <span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal">${v.nombreServicio}/${ v.nombreServicioN2 }</span>
+                            </div-->
+                        </div>`;
+                })
+                elem_content += `</div>`;
+            })
+            $('#v-pills-tabPaquete').html(elem_header);
+            $('#v-pills-tabPaqueteContent').html(elem_content);
+            $('#gestionModalDetallePaquete').modal('show');
+        })
+
+
+        $('body').on('click', '.btn-detalle-paquete_OLD', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             // console.log(detalle)
             $('#tituloPaqueteDetalle').html(`${detalle.nombrePaquete}`);
@@ -1292,6 +1518,7 @@
         })
 
         $('body').on('click', '.btn-detalle-chequeo', async function(){
+            tipoActivacion = "CHEQUEO";
             let dataChequeo = $(this).attr('data-rel');
             let prestacionesParaActivar = 0;
             let permiteAgendarUna = 0;
@@ -1357,10 +1584,10 @@
 
                 if(!esOcupacional){
                     elem_content += `<div class="d-flex justify-content-center align-items-center mt-2 mb-3">
-                        <div class="btn bg-veris text-white me-2 select-all" codigoServicio-rel="${ value.codigoServicioNivel1 }">
+                        <div class="btn bg-veris text-white me-2 select-all" esPaquete-rel="N" codigoServicio-rel="${ value.codigoServicioNivel1 }">
                             <i class="fa-regular fa-square-check me-2"></i> Todos
                         </div>
-                        <div class="btn bg-veris-dark text-white me-2 unselect-all" codigoServicio-rel="${ value.codigoServicioNivel1 }">
+                        <div class="btn bg-veris-dark text-white me-2 unselect-all" esPaquete-rel="N" codigoServicio-rel="${ value.codigoServicioNivel1 }">
                             <i class="fa-regular fa-square-minus me-2"></i> Ninguno
                         </div>
                     </div>`;
@@ -1457,8 +1684,9 @@
 
         $('body').on('click', '.select-all', function(){
             let id = $(this).attr('codigoServicio-rel');
+            console.log(id)
             $('.pane-items-' + id).find('input:not(:disabled)').prop('checked', true);
-            if($('#autorizacion').is(':checked')) {
+            if($('#autorizacion').is(':checked') || $(this).attr('esPaquete-rel') == "S") {
                 $('.btn-activar').removeClass('activar-disabled');
             }
         })
@@ -1536,8 +1764,6 @@
 
 
         $('body').on('click', '.btn-agendar-prestacion', async function(){
-            console.log(999)
-            // return;
             let generales = JSON.parse($(this).attr('generales-rel'));
             let detalle = JSON.parse($(this).attr('data-rel'));
             let convenioItem;
@@ -1553,16 +1779,26 @@
                 esAgendable = detalle.esAgendable;
                 esPagada = (estadosVigentes.includes(detalle.codigoEstado)) ? "S" : "N";
             }
-            console.log(generales);
-            console.log(detalle);
-            // return;
+            {{-- return; --}}
             let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
             let numeroOrden;
 
+            let origen = "Listatratamientos";
+            console.log("/////////////////")
+            console.log(generales)
+            console.log(detalle)
+            {{-- return; --}}
+            let codigoEspecialidad = detalle.codigoEspecialidadServicio;
+            if(detalle.hasOwnProperty('detalleItemPaquete')){
+                origen = "paquetes";
+                codigoEspecialidad = detalle.codigoEspecialidad;
+            }
+
             if(esTerapia){
                 if(generales.beneficio !== null && generales.beneficio.convenio !== null){
                     convenioItem = {
+                        "codigoCliente": generales.beneficio.convenio.codigoCliente,
                         "codigoConvenio": generales.beneficio.convenio.codigoConvenio,
                         "nombreConvenio": generales.beneficio.convenio.nombreConvenio,
                         "codigoTipoConvenio": generales.beneficio.convenio.codigoTipoConvenio,
@@ -1573,6 +1809,7 @@
                     }
                 }else{
                     convenioItem = {
+                        "codigoCliente": null,
                         "codigoConvenio": null,
                         "nombreConvenio": "Particular",
                         "codigoTipoConvenio": null,
@@ -1585,6 +1822,7 @@
                 numeroOrden = generales.numeroOrden;
             }else{
                 convenioItem = {
+                    "codigoCliente": generales.codigoCliente,
                     "codigoConvenio": generales.codigoConvenio,
                     "nombreConvenio": generales.nombreConvenio,
                     "codigoTipoConvenio": generales.codigoTipoConvenio,
@@ -1618,7 +1856,7 @@
                 },
                 "online": (detalle.esTeleconsulta) ? "S" : "N",
                 "especialidad": {
-                    "codigoEspecialidad": detalle.codigoEspecialidadServicio,
+                    "codigoEspecialidad": codigoEspecialidad,
                     "nombre": detalle.nombreServicio,
                     "esOnline": (detalle.esTeleconsulta) ? "S" : "N",
                     "codigoServicio": detalle.codigoServicio,
@@ -1627,17 +1865,33 @@
                     // "codigoSucursal": detalle.codigoSucursal,
                     "origen": "Listatratamientos"
                 },
-                "origen": "Listatratamientos",
-                "diagnosticos": detalle.diagnosticos
+                "origen": origen,
+                "diagnosticos": generales.diagnosticos
             }
-            dataTurno.ordenAgenda = dataCitaReserva;
-            await registrarTracking('AGENDAR_ORDEN_INTERNA', detalle);
 
-            // console.log(dataCitaReserva)
-            // return;
+            let tipoAgenda = 'AGENDAR_ORDEN_INTERNA';
+            if(detalle.hasOwnProperty('detalleItemPaquete')){
+                dataCitaReserva.detalleItemPaquete = detalle.detalleItemPaquete;
+                dataCitaReserva.secuenciaPaquetePaciente = detalle.secuenciaPaquetePaciente;
+                tipoAgenda = 'AGENDAR_PAQUETE_PROMOCIONAL';
+            }
+
+            console.log(dataCitaReserva);
+            {{-- return; --}}
+
+            dataTurno.ordenAgenda = dataCitaReserva;
+            await registrarTracking(tipoAgenda, detalle);
+
+            //console.log(dataCitaReserva)
+            //return;
             // console.log('/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}');
             localStorage.setItem('turno-{{ $portalToken }}', JSON.stringify(dataTurno));
-            location.href = '/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}';
+            // console.log(dataTurno.ordenAgenda);return;
+            if(dataTurno.ordenAgenda.online == "N"){
+                location.href = '/seleccionar-datos-cita/{{ $portalToken }}?mac={{ $mac }}';
+            }else{
+                location.href = '/citas-elegir-fecha-doctor/{{ $portalToken }}?mac={{ $mac }}';
+            }
             // console.log("RED");
         })
 
@@ -1844,8 +2098,8 @@
 
     // Función para reiniciar el conteo de inactividad
     function reiniciarConteo() {
-        clearTimeout(temporizadorInactividad);
-        temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
+        {{-- clearTimeout(temporizadorInactividad);
+        temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000); --}}
     }
 
     function obtenerNombreConsultorio(detalle) {
@@ -2228,8 +2482,12 @@
         console.log("------------")
         let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
-        
-        let dataChequeo = JSON.parse($('#dataChequeo').val());
+        let dataChequeo;
+        if(tipoActivacion == "CHEQUEO"){
+            dataChequeo = JSON.parse($('#dataChequeo').val());
+        }else{
+            dataChequeo = JSON.parse($('#dataPaquetes').val());
+        }
         let prestacionesActivar = await obtenerPrestacionesParaActivar();
         console.log({prestacionesActivar})
         console.log(prestacionesActivar.length)
@@ -3498,7 +3756,11 @@
                 iconEstadoItemReserva = ``;
                 strEstadoItemReserva = ``;
 
-                let dias = obtenerDiferenciaDiasIntl(detalle.fechaVigencia);
+                // let dias = obtenerDiferenciaDiasIntl(detalle.fechaVigencia);
+                let dias;
+                if(detalle.fechaCaducidadUsoPaquete !== null){
+                    dias = obtenerDiferenciaDiasIntl(detalle.fechaCaducidadUsoPaquete);
+                }
                 
                 if(!estadosVigentes.includes(detalle.codigoEstado)){
                     sectionEstadoPago = `porpagar`;
@@ -3516,7 +3778,7 @@
                 elemFooterCard += `<div class="col-12 text-center fs-16 line-height-16 mb-3 fw-bold">
                     <div class="mt-4 mb-3 fs-16 line-height-18 d-flex justify-content-center align-items-center">
                         <span class="fw-bold text-veris-dark">Válido hasta:</span>
-                        <span class="ms-2 ${ (dias < 0) ? `text-caution` : `text-veris` }">${detalle.fechaVigencia}</span>
+                        <span class="ms-2 ${ (dias < 0) ? `text-caution` : `text-veris` }">${detalle.fechaCaducidadUsoPaquete}</span>
                     </div>
                     <div class="mb-1 text-veris fs-16 line-height-18 d-flex justify-content-center align-items-center">
                         <span class="fw-bold text-veris-dark">Días restantes:</span> <div class="rounded-8 bg-veris-sky border-veris-1 py-2 px-3 ms-2">${ (dias > 0) ? dias : `0` }</div>

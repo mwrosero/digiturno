@@ -55,6 +55,9 @@
     	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-3">
     		<div onclick="loginAnonimo();" class="btn bg-veris-dark btn-anonimo text-white mx-auto fs-3 p-2 mb-5 rounded-8 my-3"><i class="fa-solid fa-user-secret me-2"></i>INGRESO ANÓNIMO</div>
     	</div>
+    	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-3 box-btn-cerrar-caja d-none">
+    		<div onclick="preguntaCerrar()" class="btn bg-success btn-cerrar-caja text-white mx-auto fs-3 p-2 mb-2 rounded-8 my-0"><i class="fa-solid fa-box me-2"></i>Cerrar Caja</div>
+    	</div>
 	</main>
 	<main class="content p-2 not-logged d-none" style="overflow-x: hidden;">
 		<div class="col-12 bg-silver mb-3">
@@ -161,6 +164,7 @@
 
 		let userVeris = localStorage.getItem('userVeris');
 		let userAnonimo = localStorage.getItem('userAnonimo');
+		await parametrosGenerales("{{ $mac }}");
 
 		if (localStorage.getItem('userVeris') !== null || localStorage.getItem('userAnonimo') !== null) {
 			let userKiosko = localStorage.getItem('userKiosko');
@@ -174,9 +178,9 @@
 				})	
 
 				localStorage.clear();
-				await parametrosGenerales("{{ $mac }}");
+				{{-- await parametrosGenerales("{{ $mac }}"); --}}
 			}else{
-				await parametrosGenerales("{{ $mac }}");
+				{{-- await parametrosGenerales("{{ $mac }}"); --}}
 				await consultarCajas();
 				$('.not-logged').removeClass('d-none');
 			}
@@ -190,11 +194,15 @@
 	            // text: `${web_url}/ingreso/{{ $mac }}?utm_source=HOJA&utm_medium=CENTRAL_TUMBACO&utm_campaign=lanzamiento_digiturno`
 			});
 
-			
-
 			if (userKiosko !== null) {
 				// Reescribe usuario
 			    localStorage.setItem('userKiosko', userKiosko);
+			    if(userVeris !== null){
+			    	localStorage.setItem('userVeris', userVeris);
+			    }
+			    if(userAnonimo !== null){
+			    	localStorage.setItem('userAnonimo', userAnonimo);
+			    }
 			}
 
 			$('body').on('click', '.btn-aperturar', async function(){
@@ -205,12 +213,93 @@
 		}else{
 			// mostrar login page
 			console.log("LOGIN")
+			await consultarCajas(true);
 			$('.not-logged-userpass').removeClass('d-none')
+
+			$('body').on('click', '#btn-user-new', async function(){
+				await finalizar($(this).attr('user-rel'));
+			})
+
+			$('body').on('click', '#btn-user-active', async function(){
+				localStorage.setItem('userVeris', JSON.stringify(userLogged));
+	            location.reload();
+			})
+
+			$('body').on('click', '.box-ver-pass', async function(){
+				console.log($('#password').attr('type'))
+				if($('#password').attr('type') == "text"){
+					$('#password').attr('type','password');
+					$('.box-ver-pass').html(`<i class="fa-solid fa-eye"></i>`);
+				}else{
+					$('#password').attr('type','text');
+					$('.box-ver-pass').html(`<i class="fa-solid fa-eye-slash"></i>`);
+				}
+			})
 		}
 		
 	})
 
-	async function consultarCajas(){
+	async function preguntaCerrar(){
+		if (confirm("Desea cerrar caja?")) {
+		    await cerrarCaja();
+		}
+	}
+
+	async function cerrarCaja(){
+		let caja = JSON.parse(localStorage.getItem('userKiosko'));
+		let args = [];
+		// arqueos_caja/apertura
+        args["endpoint"] = `${api_url_digitales}/facturacion/v1/arqueos_caja/cierre`;
+        args["method"] = "PUT";
+        args["showLoader"] = true;
+        args["token"] = "{{ $accessToken }}";
+        args["bodyType"] = "json";
+        args["data"] = JSON.stringify({
+			"codigoCaja": caja.codigoCaja,
+			"numeroPuntoEmision": caja.numeroPuntoEmision,
+			"codigoEmpresa": caja.codigoEmpresa,
+			"codigoSucursal": caja.codigoSucursal,
+			"fondoInicial": 0.00,
+			"ipAddress": "{{ $ip }}",
+			"codigoUsuario": caja.codigoUsuario,
+			"hostName": caja.codigoUsuario,
+			"billetes": {
+				"b100": 0,
+				"b50": 0,
+				"b20": 0,
+				"b10": 0,
+				"b5": 0,
+				"b2": 0,
+				"b1": 0
+			},
+			"monedas": {
+				"m1": 0,
+				"m50": 0,
+				"m25": 0,
+				"m10": 0,
+				"m5": 0,
+				"m01": 0
+			},
+			"valorConteoFisico": 0,
+			"numeroPapeleta": 0,
+			"codigoInstitucion": 0,
+			"ingresoComprobantesManuales": true
+
+		})
+
+        const data = await call(args);
+        console.log(data);
+
+        if(data.code == 200){
+        	localStorage.clear();
+        	let url_salir = `/kiosko/{{ $mac }}`;
+            location.href = url_salir;
+        }else{
+        	alert(data.message);
+        }
+	}
+
+	async function consultarCajas(soloConsulta = false){
 		let args = [];
         args["endpoint"] = `${api_url_digitales}/facturacion/v1/cajeros/${ dataParametrosGenerales.secuenciaUsuario }/cajas?codigoEmpresa=1&codigoSucursal=${ dataParametrosGenerales.caja.codigoSucursal }`;
         args["method"] = "GET";
@@ -222,12 +311,23 @@
 
         if(data.code == 200){
         	if(data.data.length == 1 && data.data[0].seEncuentraAperturada){
+        		if(soloConsulta){
+        			//Mostrar boton de cerrar caja
+        			$('.box-btn-cerrar-caja').removeClass('d-none');
+        			console.log('Mostrar')
+        			return;
+        		}
         		console.log(data.data[0])
         		let caja = data.data[0];
         		localStorage.setItem('userKiosko', JSON.stringify(caja));
         		// location.reload();
         		location.href = `/kiosko/{{ $mac }}`;
         	}else{
+        		if(soloConsulta){
+        			//Ocultar boton de cerrar caja
+        			$('.box-btn-cerrar-caja').addClass('d-none');
+        			return;
+        		}
         		let elem = ``;
         		$.each(data.data, function(key, value){
         			elem += `<div class="p-3 mb-3 text-start d-flex justify-content-between align-items-center shadow rounded-8">

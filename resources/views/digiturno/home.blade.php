@@ -141,6 +141,7 @@
 		}
 		let userVeris = localStorage.getItem('userVeris');
 		let userAnonimo = localStorage.getItem('userAnonimo');
+		let userKiosko = localStorage.getItem('userKiosko')
 
 		if (localStorage.getItem('userVeris') !== null || localStorage.getItem('userAnonimo') !== null) {
 			console.log(0)
@@ -191,6 +192,9 @@
 		    localStorage.setItem('userAnonimo', userAnonimo);
 		}
 
+		if(userKiosko !== null){
+			localStorage.setItem('userKiosko', userKiosko);
+		}
 
 		await parametrosGenerales("{{ $mac }}");
 

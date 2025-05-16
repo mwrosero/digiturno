@@ -209,7 +209,20 @@
 	        console.log("SALIR");
 	        if(!isMobile()){
 	        	if(localStorage.getItem('userKiosko') !== null) {
-	        		await cerrarCaja();
+	        		let userVeris = localStorage.getItem('userVeris');
+	        		if(userVeris == null){
+	        			let userAnonimo = localStorage.getItem('userAnonimo');
+	        			if(userAnonimo == null){
+		        			console.log('cerrarCaja');
+		        			await cerrarCaja();
+		        		}else{
+		        			console.log('finalizar');
+	        				await finalizar();
+		        		}
+	        		}else{
+	        			console.log('finalizar');
+	        			await finalizar();
+	        		}
 	        	}else{
 	        		await finalizar();
 	        	}

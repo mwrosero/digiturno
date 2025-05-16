@@ -351,9 +351,15 @@ Elige Paciente
     
     let url_pago;
     async function asignarPaquete(paquete){
+        let userVeris = localStorage.getItem('userVeris');
+        let idAsesor = '';
+        if(userVeris !== null){
+            let datosUsuario = JSON.parse(userVeris);
+            idAsesor = datosUsuario.codigoUsuario;
+        }
         let paciente = dataCita.paciente;
         let args = [];
-        args["endpoint"] = api_url_digitales + `/${api_war_digitales}/comercial/asignarpaquete?tipoIdentificacion=${paciente.tipoIdentificacion}&numeroIdentificacion=${paciente.numeroIdentificacion}&codigoEmpresa=${paquete.codigoEmpresaPaquete}&codigoPaquete=${paquete.codigoPaquete}&codigoAsesor=&canalOrigen=KIO_CMV`;
+        args["endpoint"] = api_url_digitales + `/${api_war_digitales}/comercial/asignarpaquete?tipoIdentificacion=${paciente.tipoIdentificacion}&numeroIdentificacion=${paciente.numeroIdentificacion}&codigoEmpresa=${paquete.codigoEmpresaPaquete}&codigoPaquete=${paquete.codigoPaquete}&codigoAsesor=&canalOrigen=KIO_CMV&idAsesor=${idAsesor}`;
         args["method"] = "GET";
         args["showLoader"] = true;
         const data = await call(args);
