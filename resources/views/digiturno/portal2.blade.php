@@ -874,6 +874,7 @@
 
     const tiempoInactividad = 45; // Tiempo de inactividad en segundos
     const tiempoMaximoRespuesta = 15; // Tiempo máximo de respuesta al modal en segundos
+    let tipoActivacion;
 
     $(document).ready(async function() {
         if(!isMobile()){
@@ -1262,6 +1263,9 @@
         });
 
         $('body').on('click', '.btn-detalle-paquete', async function(){
+            tipoActivacion = "PAQUETE";
+            let dataPaquetes = $(this).attr('data-rel');
+            $('#dataPaquetes').val(dataPaquetes)
             let detalle = JSON.parse($(this).attr('data-rel'));
             //console.log(detalle)
             $('#tituloPaqueteDetalleGestion').html(`${detalle.nombrePaquete}`);
@@ -1291,7 +1295,8 @@
 
                 let detalle = [];
 
-                if (item.detallesOrden.length > 0) {
+                {{-- if (item.detallesOrden.length > 0) { --}}
+                if (false) {
                     console.log(6)
                     detalle = item.detallesOrden.map(d => ({
                         //...d,
@@ -1331,10 +1336,12 @@
                         }
                     }];
                 }
+                console.log("detalle")
                 console.log(detalle)
                 servicioMap[nombre].items.push(...detalle);
             });
 
+            console.log("resultado");
             console.log(resultado);
             
             $.each(resultado, function(key, value){
@@ -1352,16 +1359,17 @@
                 console.log(value.requiereAgendamientoPrevio, value.esAgendable)
                 if(!value.requiereAgendamientoPrevio && !value.esAgendable){
                     elem_content += `<div class="d-flex justify-content-center align-items-center mt-2 mb-3">
-                            <div class="btn bg-veris text-white me-2 select-all" codigoServicio-rel="${ value.codigoServicioNivel1 }">
+                            <div class="btn bg-veris text-white me-2 select-all" esPaquete-rel="S" codigoServicio-rel="${ value.codigoServicioNivel1 }">
                                 <i class="fa-regular fa-square-check me-2"></i> Todos
                             </div>
-                            <div class="btn bg-veris-dark text-white me-2 unselect-all" codigoServicio-rel="${ value.codigoServicioNivel1 }">
+                            <div class="btn bg-veris-dark text-white me-2 unselect-all" esPaquete-rel="S" codigoServicio-rel="${ value.codigoServicioNivel1 }">
                                 <i class="fa-regular fa-square-minus me-2"></i> Ninguno
                             </div>
                         </div>`;
                 }
 
                 $.each(value.items, function(k,v){
+                    console.log(v)
                     let btnAgenda = ``;
                     let esLaboratorio = false;
                     let classLabNoOcupacional = ``;
@@ -1379,11 +1387,26 @@
                     // if( value.nombreServicioNivel1 == "CONSULTA"){
                     console.log(value)
                     if(value.esAgendable || value.requiereAgendamientoPrevio){
-                        btnAgenda = `<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(v)}'>Agendar</div>`;                        
+                        let qtyCitas = ``;
+                        if(v.cantidad > 1){
+                            qtyCitas = ` (${v.cantidadUtilizada}/${v.cantidad}) `;
+                        }
+                        btnAgenda = `${qtyCitas}<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(v)}'>Agendar</div>`;                        
                     }
 
-                    if(v.numeroOrden == null){
-                        btnAgenda = ``;
+                    if(v.numeroOrden == null || (v.cantidadDisponible == 0 && !v.estaRecepcionado)){
+                        if(v.numeroOrden !== null){
+                            if(esLaboratorio){
+                                btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Activado</span>`;
+                            }else{
+                                btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Agendado</span>`;
+                            }
+                        }else{
+                            btnAgenda = ``;
+                        }
+
+                    }else if(v.estaRecepcionado){
+                        btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Realizado</span>`;
                     }
 
                     var badge_estado_lab_chequeo = ``;
@@ -1398,7 +1421,7 @@
                             disabledAttr = `disabled`;
                             badge_estado_lab_chequeo = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Activado</span>`
                         }
-                        if(v.fechaRecepcion !== null){
+                        if(v.estaRecepcionado){
                             disabledAttr = `disabled`;
                             badge_estado_lab_chequeo = `<span class="badge badge-pill bg-veris text-white fw-normal p-2">Realizado</span>`
                         }
@@ -1495,6 +1518,7 @@
         })
 
         $('body').on('click', '.btn-detalle-chequeo', async function(){
+            tipoActivacion = "CHEQUEO";
             let dataChequeo = $(this).attr('data-rel');
             let prestacionesParaActivar = 0;
             let permiteAgendarUna = 0;
@@ -1560,10 +1584,10 @@
 
                 if(!esOcupacional){
                     elem_content += `<div class="d-flex justify-content-center align-items-center mt-2 mb-3">
-                        <div class="btn bg-veris text-white me-2 select-all" codigoServicio-rel="${ value.codigoServicioNivel1 }">
+                        <div class="btn bg-veris text-white me-2 select-all" esPaquete-rel="N" codigoServicio-rel="${ value.codigoServicioNivel1 }">
                             <i class="fa-regular fa-square-check me-2"></i> Todos
                         </div>
-                        <div class="btn bg-veris-dark text-white me-2 unselect-all" codigoServicio-rel="${ value.codigoServicioNivel1 }">
+                        <div class="btn bg-veris-dark text-white me-2 unselect-all" esPaquete-rel="N" codigoServicio-rel="${ value.codigoServicioNivel1 }">
                             <i class="fa-regular fa-square-minus me-2"></i> Ninguno
                         </div>
                     </div>`;
@@ -1660,8 +1684,9 @@
 
         $('body').on('click', '.select-all', function(){
             let id = $(this).attr('codigoServicio-rel');
+            console.log(id)
             $('.pane-items-' + id).find('input:not(:disabled)').prop('checked', true);
-            if($('#autorizacion').is(':checked')) {
+            if($('#autorizacion').is(':checked') || $(this).attr('esPaquete-rel') == "S") {
                 $('.btn-activar').removeClass('activar-disabled');
             }
         })
@@ -1760,10 +1785,10 @@
             let numeroOrden;
 
             let origen = "Listatratamientos";
-            {{-- console.log("/////////////////")
+            console.log("/////////////////")
             console.log(generales)
             console.log(detalle)
-            return; --}}
+            {{-- return; --}}
             let codigoEspecialidad = detalle.codigoEspecialidadServicio;
             if(detalle.hasOwnProperty('detalleItemPaquete')){
                 origen = "paquetes";
@@ -1773,6 +1798,7 @@
             if(esTerapia){
                 if(generales.beneficio !== null && generales.beneficio.convenio !== null){
                     convenioItem = {
+                        "codigoCliente": generales.beneficio.convenio.codigoCliente,
                         "codigoConvenio": generales.beneficio.convenio.codigoConvenio,
                         "nombreConvenio": generales.beneficio.convenio.nombreConvenio,
                         "codigoTipoConvenio": generales.beneficio.convenio.codigoTipoConvenio,
@@ -1783,6 +1809,7 @@
                     }
                 }else{
                     convenioItem = {
+                        "codigoCliente": null,
                         "codigoConvenio": null,
                         "nombreConvenio": "Particular",
                         "codigoTipoConvenio": null,
@@ -1795,6 +1822,7 @@
                 numeroOrden = generales.numeroOrden;
             }else{
                 convenioItem = {
+                    "codigoCliente": generales.codigoCliente,
                     "codigoConvenio": generales.codigoConvenio,
                     "nombreConvenio": generales.nombreConvenio,
                     "codigoTipoConvenio": generales.codigoTipoConvenio,
@@ -1838,7 +1866,7 @@
                     "origen": "Listatratamientos"
                 },
                 "origen": origen,
-                "diagnosticos": detalle.diagnosticos
+                "diagnosticos": generales.diagnosticos
             }
 
             let tipoAgenda = 'AGENDAR_ORDEN_INTERNA';
@@ -1849,7 +1877,6 @@
             }
 
             console.log(dataCitaReserva);
-            console.log(detalle.esTeleconsulta);
             {{-- return; --}}
 
             dataTurno.ordenAgenda = dataCitaReserva;
@@ -2455,8 +2482,12 @@
         console.log("------------")
         let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
-        
-        let dataChequeo = JSON.parse($('#dataChequeo').val());
+        let dataChequeo;
+        if(tipoActivacion == "CHEQUEO"){
+            dataChequeo = JSON.parse($('#dataChequeo').val());
+        }else{
+            dataChequeo = JSON.parse($('#dataPaquetes').val());
+        }
         let prestacionesActivar = await obtenerPrestacionesParaActivar();
         console.log({prestacionesActivar})
         console.log(prestacionesActivar.length)

@@ -506,9 +506,10 @@ Mi Veris - Citas - Datos de facturación
         let numeroOrden = null;
         let lineaDetalleOrden = null;
 
-        if(dataTurno.hasOwnProperty("detalles")){
-            numeroOrden = dataTurno.detalles.numeroOrden;
-            lineaDetalleOrden = dataTurno.detalles.lineaDetalleOrden;
+        {{-- if(dataTurno.hasOwnProperty("detalles")){ --}}
+        if(dataCita.hasOwnProperty("tratamiento")){
+            numeroOrden = dataCita.tratamiento.numeroOrden;
+            lineaDetalleOrden = dataCita.tratamiento.lineaDetalleOrden;
         }
 
         let detalle = {
@@ -627,7 +628,7 @@ Mi Veris - Citas - Datos de facturación
     async function agregarItemTurno(idPreTransaccion, detalle, origen = "TURNO"){
         // let dataAttr = $('.item-coincidencia-selected').attr("data-rel");
         let paciente = dataTurno.paciente;
-
+        console.log("---Detalle---")
         console.log(detalle);
 
         let args = [];
@@ -676,8 +677,8 @@ Mi Veris - Citas - Datos de facturación
                     }else{
                         if(parseInt(dataCita.convenio.codigoCliente) == 13){
                             console.log("-----////---------");
-                            await obtenerAutorizacionMedPay(detalle);
                             flagAutorizacion = true;
+                            await obtenerAutorizacionMedPay(detalle);
                         }
                     }
                 }
@@ -692,6 +693,7 @@ Mi Veris - Citas - Datos de facturación
         let convenio = dataCita.convenio;
         
         if(convenio.informacionExternaPlan === null || dataCita.precio.hasOwnProperty('secuenciaTransaccion')){
+            flagAutorizacion = false;
             console.log("No emite autorización")
             return;
         }
@@ -722,7 +724,7 @@ Mi Veris - Citas - Datos de facturación
         }
 
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=${canalInvocacion}&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
+        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=${canalInvocacion}&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.codigoCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["sendHeaders"] = "true";
@@ -758,6 +760,7 @@ Mi Veris - Citas - Datos de facturación
     }
 
     async function obtenerAutorizacion(){
+        console.log(8)
         let secuenciaAfiliadoConvenio = dataCita.convenio.secuenciaAfiliado;
         console.log(secuenciaAfiliadoConvenio);
         let args = [];
@@ -824,7 +827,9 @@ Mi Veris - Citas - Datos de facturación
             datosPago.consulta = data.data;
             if(!flagAutorizacion){
                 if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa){
+                    console.log(7)
                     flagAutorizacion = true;
+                    dataCita.convenio.secuenciaAfiliado = datosPago.consulta[0].agrupaciones[0].beneficio.convenio.secuenciaAfiliado;
                     await obtenerAutorizacion();
                     await consultaPreTrx(idPreTransaccion, detalle);
                     return;
