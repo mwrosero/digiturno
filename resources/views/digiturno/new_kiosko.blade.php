@@ -212,6 +212,32 @@
 			})
 		}else{
 			// mostrar login page
+			if(!isMobile()){
+
+		        KioskBoard.init({
+		        	keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
+		        	// keysNumeric: true,
+		            //keysArrayOfObjects: null, // Usa el teclado QWERTY predeterminado
+		            language: 'es',          // Idioma (ejemplo: 'es' para español)
+		            theme: 'light',          // Tema del teclado ('light' o 'dark')
+		            keysSpacebarText: 'Espacio',
+		            allowMobileKeyboard: false,
+		            capsLockActive: true,
+		            keysEnterText: '<i class="material-icons enter-key-icon">check_circle</i>',
+		        });
+
+		        KioskBoard.run('.virtual-keyboard-all', {});
+
+		        if(isKiosk()){
+		        	const style = document.createElement("style");
+		            style.innerHTML = `
+		                #KioskBoard-VirtualKeyboard .kioskboard-wrapper {
+		                    padding-bottom: 300px !important;
+		                }
+		            `;
+		            document.head.appendChild(style);
+		        }
+	    	}
 			console.log("LOGIN")
 			await consultarCajas(true);
 			$('.not-logged-userpass').removeClass('d-none')
