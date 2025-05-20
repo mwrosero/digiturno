@@ -992,6 +992,16 @@
             reiniciarConteo();
         }
 
+        $('body').on('click', 'button', function(){
+            console.log("BORRAR FLUJO AGENDAMIENTO boton")
+            localStorage.removeItem("flujo");
+        })
+
+        $('body').on('click', '.btn', function(){
+            console.log("BORRAR FLUJO AGENDAMIENTO btn")
+            localStorage.removeItem("flujo");
+        })
+
         $('body').on('click', '#btn-ver-examenes', async function(){
             $('.box-detalles-pago').toggleClass('d-none');
         })
@@ -2098,8 +2108,8 @@
 
     // Función para reiniciar el conteo de inactividad
     function reiniciarConteo() {
-        {{-- clearTimeout(temporizadorInactividad);
-        temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000); --}}
+        clearTimeout(temporizadorInactividad);
+        temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
     }
 
     function obtenerNombreConsultorio(detalle) {
