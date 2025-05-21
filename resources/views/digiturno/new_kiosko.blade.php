@@ -312,7 +312,7 @@
 			"ingresoComprobantesManuales": true
 
 		})
-
+        console.log(args["data"] )
         const data = await call(args);
         console.log(data);
 
@@ -333,10 +333,13 @@
         args["token"] = "{{ $accessToken }}";
 
         const data = await call(args);
-        // console.log(data);
+         console.log(data);
+         console.log({soloConsulta});
 
         if(data.code == 200){
         	if(data.data.length == 1 && data.data[0].seEncuentraAperturada){
+        		let caja = data.data[0];
+        		localStorage.setItem('userKiosko', JSON.stringify(caja));
         		if(soloConsulta){
         			//Mostrar boton de cerrar caja
         			$('.box-btn-cerrar-caja').removeClass('d-none');
@@ -344,8 +347,6 @@
         			return;
         		}
         		console.log(data.data[0])
-        		let caja = data.data[0];
-        		localStorage.setItem('userKiosko', JSON.stringify(caja));
         		// location.reload();
         		location.href = `/kiosko/{{ $mac }}`;
         	}else{
