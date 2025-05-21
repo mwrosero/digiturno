@@ -66,18 +66,18 @@
 	$(document).ready(async function() {
 		$(document).on("mousemove keydown click scroll", function () {
 			// console.log("movio algo")
-		    //reiniciarConteo();
+		    reiniciarConteo();
 		});
 		$("#btnSi").on("click", function () {
 		    clearTimeout(temporizadorRespuesta);
 		    $("#modalEstasAhiAgenda").fadeOut();
 		    // console.log("El usuario sigue presente.");
-		    //reiniciarConteo();
+		    reiniciarConteo();
 		});
 		if(!isMobile()){
             // console.log("Iniciando conteo")
             // Iniciar el conteo inicial
-            //reiniciarConteo();
+            reiniciarConteo();
         }
 	})
 

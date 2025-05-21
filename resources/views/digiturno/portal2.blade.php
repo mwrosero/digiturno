@@ -865,7 +865,7 @@
         // $('.logo').css("max-width","400px !important");
     }
 
-    let clientesAuth = [5803, 13, 68, 10996, 7656];
+    let clientesAuth = [5803, 13, 68, 10996, 7656, 6814];
     let datosPago = {};
 
     let url_salir = ``;
@@ -2593,6 +2593,16 @@
     async function agregarItemTurno(idPreTransaccion, detalle, origen = "TURNO"){
         let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
+        let numAuthMedPay = null;
+
+        if( origen != "TURNO" && parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
+            console.log("-----////---------");
+            console.log(7)
+            await obtenerAutorizacionMedPay(detalle);
+            console.log(8)
+            flagAutorizacion = true;
+            numAuthMedPay = datosPago.sync.secuenciaTransaccion;
+        }
 
         // console.log(detalle);
 
@@ -2614,6 +2624,7 @@
                     "secuenciaPaquetePaciente": (detalle.beneficio != null && detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
                 },
                 "codigoReserva": detalle.codigoReserva,
+                "secTransaccionValExt": numAuthMedPay,
                 "numeroOrden": detalle.numeroOrden,
                 "lineaDetalleOrden": detalle.lineaDetalleOrden
             }]
@@ -2640,7 +2651,8 @@
                     "secuenciaPaquetePaciente": (detalle.beneficio != null && detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
                 },
                 "numeroOrden": detalle.numeroOrden,
-                "detallesOrden": detallesOrdenItems
+                "detallesOrden": detallesOrdenItems,
+                "secTransaccionValExt": numAuthMedPay
             }
         }
 
@@ -2665,13 +2677,13 @@
                         flagAutorizacion = true;
                     }else{
                         console.log(detalle.beneficio.convenio);
-                        if(parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
-                            console.log("-----////---------");
-                            console.log(7)
-                            await obtenerAutorizacionMedPay(detalle);
-                            console.log(8)
-                            flagAutorizacion = true;
-                        }
+                        // if(parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
+                        //     console.log("-----////---------");
+                        //     console.log(7)
+                        //     await obtenerAutorizacionMedPay(detalle);
+                        //     console.log(8)
+                        //     flagAutorizacion = true;
+                        // }
                     }
                 }
                 await consultaPreTrx(idPreTransaccion, data.data);
@@ -2698,6 +2710,13 @@
         console.log(detalle);
         console.log('MEDPAYYYYYYYYYYYYYY');
         let convenio = await obtenerInfoConvenio();
+        // alert(convenio.nemonicoTipoCredito)
+        if(convenio.informacionExternaPlan === null){
+            flagAutorizacion = false;
+            console.log("No emite autorización")
+            return;
+        }
+
         let diagnosticos = [29616];
         if(detalle.hasOwnProperty('diagnosticos')){
             diagnosticos = [];
@@ -2765,6 +2784,9 @@
     async function obtenerAutorizacion(){
         let convenio = await obtenerInfoConvenio();
         console.log(convenio);
+        if(convenio.hasOwnProperty('nemonicoTipoCredito') && convenio.nemonicoTipoCredito == "CREDITO_LISTA_PRESTACIONES"){
+            return;
+        }
         let canalInvocacion = "CAJ";
 
         if(esKiosko){
