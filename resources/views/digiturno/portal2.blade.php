@@ -3679,8 +3679,8 @@
                     labelEstadoItem = `Por pagar`;
                     classEstadoItem = `text-pendiente`;
                     // if(esKiosko){
-                        if(detalle.permitePago && !isMobile()){
-                            if(esKiosko){
+                        if(detalle.permitePago){
+                            if(esKiosko && !isMobile()){
                                 elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
                                         Pagar
                                     </button>`;
