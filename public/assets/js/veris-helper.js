@@ -509,7 +509,7 @@ async function registrarCuenta(){
 
     const data = await call(args);
     if(data.code == 200){
-        $('.col-agenda').addClass('d-none');
+        $('.col-agenda').removeClass('d-none');
     }
     return data;
 }

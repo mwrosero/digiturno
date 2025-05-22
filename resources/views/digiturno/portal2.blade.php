@@ -2091,7 +2091,7 @@
             if(dataTurno.paciente.codigoTipoIdentificacion == 2){
                 let res = await registrarCuenta();
                 if(res.code == 200){
-                    $('.col-agenda').addClass('d-none')
+                    $('.col-agenda').removeClass('d-none')
                 }
             }
         }else{
