@@ -2605,13 +2605,15 @@
         let paciente = JSON.parse(dataAttr);
         let numAuthMedPay = null;
 
-        if( origen != "TURNO" && parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
-            console.log("-----////---------");
-            console.log(7)
-            await obtenerAutorizacionMedPay(detalle);
-            console.log(8)
-            flagAutorizacion = true;
-            numAuthMedPay = datosPago.sync.secuenciaTransaccion;
+        if(detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+            if( origen != "TURNO" && parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
+                console.log("-----////---------");
+                console.log(7)
+                await obtenerAutorizacionMedPay(detalle);
+                console.log(8)
+                flagAutorizacion = true;
+                numAuthMedPay = datosPago.sync.secuenciaTransaccion;
+            }
         }
 
         // console.log(detalle);
