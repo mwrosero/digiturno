@@ -471,31 +471,46 @@ function actualizarMaxlength(select) {
 
 async function registrarCuenta(){
     let args = [];
-    args["endpoint"] = api_url + `/${api_war}/v1/seguridad/cuenta`;
+    args["endpoint"] = api_url_digitales + `/${api_war_digitales}/seguridad/cuenta`;
     args["method"] = "POST";
     args["showLoader"] = true;
     args["bodyType"] = "json";
-    let fechaParts = getInput('fechaNacimiento').split('-');
-    let fechaFormateada = fechaParts[2] + '/' + fechaParts[1] + '/' + fechaParts[0];
+    args["sendHeaders"] = false;
+    // let fechaParts = getInput('fechaNacimiento').split('-');
+    // let fechaFormateada = fechaParts[2] + '/' + fechaParts[1] + '/' + fechaParts[0];
 
-    args["data"] = JSON.stringify({
-        "tipoIdentificacion": parseInt(getInput('tipoIdentificacion')),
-        "numeroIdentificacion": getInput('numeroIdentificacion'),
-        "primerApellido": getInput('primerApellido'),
-        "segundoApellido": getInput('segundoApellido'),
-        "primerNombre": getInput('primerNombre'),
-        "mail": getInput('mail').toLowerCase(),
-        "fechaNacimiento": fechaFormateada,
-        "genero": getInput('genero'),
-        "telfMovil": getInput('telefono'),
-        "codPais": parseInt(getInput('pais')),
-        "codigoProv": parseInt(getInput('provincia')),
-        "codigoCiudad": parseInt(getInput('ciudad')),
-        "pass": getInput('password'),
+    let mail = '';
+    if(dataTurno.paciente.mail !== null){
+        mail = dataTurno.paciente.mail.toLowerCase()
+    }
+
+    let payload = {
+        "tipoIdentificacion": dataTurno.paciente.codigoTipoIdentificacion,
+        "numeroIdentificacion": dataTurno.paciente.numeroIdentificacion,
+        "primerApellido": dataTurno.paciente.primerApellido,
+        // "segundoApellido": dataTurno.paciente.segundoApellido,
+        "primerNombre": dataTurno.paciente.primerNombre,
+        "mail": mail.toLowerCase(),
+        "fechaNacimiento": dataTurno.paciente.fechaNacimiento,
+        "genero": dataTurno.paciente.genero,
+        "telfMovil": dataTurno.paciente.telefonoMovil,
+        // "codPais": parseInt(getInput('pais')),
+        // "codigoProv": parseInt(getInput('provincia')),
+        // "codigoCiudad": parseInt(getInput('ciudad')),
+        // "pass": getInput('password'),
         "canalOrigenDigital": _canalOrigen
-    });
+    }
+
+    if(dataTurno.paciente.codigoTipoIdentificacion == 3){
+        // payload.codPais = parseInt(getInput('pais'));
+    }
+    
+    args["data"] = JSON.stringify(payload);
 
     const data = await call(args);
+    if(data.code == 200){
+        $('.col-agenda').addClass('d-none');
+    }
     return data;
 }
 

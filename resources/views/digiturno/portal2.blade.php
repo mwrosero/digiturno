@@ -1036,7 +1036,7 @@
         });
 
         await drawListFamiliaresModal();
-        verificarUsuarioDigital();
+        await verificarUsuarioDigital();
         $('body').on('click','.paciente-item', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'))
             $(`.nombrePacienteElegido`).html(`${ detalle.nombreCompleto }`);
@@ -2087,10 +2087,20 @@
         // console.log(data);
 
         if(data.data === null){
-            $('.col-agenda').addClass('d-none')
+            // $('.col-agenda').addClass('d-none')
+            if(dataTurno.paciente.codigoTipoIdentificacion == 2){
+                let res = await registrarCuenta();
+                if(res.code == 200){
+                    $('.col-agenda').addClass('d-none')
+                }
+            }
         }else{
             $('.col-agenda').removeClass('d-none')
         }
+    }
+
+    async function createUser(){
+
     }
     
     // Función para mostrar el modal
