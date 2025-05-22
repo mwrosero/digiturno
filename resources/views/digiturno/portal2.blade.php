@@ -2685,7 +2685,7 @@
                 }
                 if(detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente) && detalle.beneficio.convenio.requiereAutorizacion){
-                        await obtenerAutorizacion();
+                        await obtenerAutorizacion(detalle);
                         flagAutorizacion = true;
                     }else{
                         console.log(detalle.beneficio.convenio);
@@ -2703,16 +2703,23 @@
         }
     }
 
-    async function obtenerInfoConvenio(){
+    async function obtenerInfoConvenio(detalle){
+
         let secuenciaAfiliadoConvenio;
         let convenio = []
-        $.each(conveniosPaciente, function(key, value){
-            if(clientesAuth.includes(value.codigoCliente)){
-                console.log(value.secuenciaAfiliado)
-                secuenciaAfiliadoConvenio = value.secuenciaAfiliado;
-                convenio = value;
-            }
-        })
+
+        if(detalle.hasOwnProperty('beneficio')){
+            let codigoCliente = detalle.beneficio.convenio.codigoCliente;
+            let codigoConvenio = detalle.beneficio.convenio.codigoConvenio;
+
+            $.each(conveniosPaciente, function(key, value){
+                if(clientesAuth.includes(value.codigoCliente) && codigoCliente == value.codigoCliente && value.codigoConvenio == codigoConvenio){
+                    console.log(value.secuenciaAfiliado)
+                    secuenciaAfiliadoConvenio = value.secuenciaAfiliado;
+                    convenio = value;
+                }
+            })
+        }
         // return secuenciaAfiliadoConvenio;
         return convenio;
     }
@@ -2721,7 +2728,7 @@
         console.log('MEDPAYYYYYYYYYYYYYY');
         console.log(detalle);
         console.log('MEDPAYYYYYYYYYYYYYY');
-        let convenio = await obtenerInfoConvenio();
+        let convenio = await obtenerInfoConvenio(detalle);
         // alert(convenio.nemonicoTipoCredito)
         if(convenio.informacionExternaPlan === null){
             flagAutorizacion = false;
@@ -2822,8 +2829,8 @@
         }
     }
 
-    async function obtenerAutorizacion(){
-        let convenio = await obtenerInfoConvenio();
+    async function obtenerAutorizacion(detalle){
+        let convenio = await obtenerInfoConvenio(detalle);
         console.log(convenio);
         if(convenio.hasOwnProperty('nemonicoTipoCredito') && convenio.nemonicoTipoCredito == "CREDITO_LISTA_PRESTACIONES"){
             return;
@@ -2938,7 +2945,7 @@
             if(!flagAutorizacion){
                 if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa){
                     flagAutorizacion = true;
-                    await obtenerAutorizacion();
+                    await obtenerAutorizacion(detalle);
                     await consultaPreTrx(idPreTransaccion, detalle);
                     return;
                 }
