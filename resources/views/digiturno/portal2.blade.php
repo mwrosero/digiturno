@@ -4821,6 +4821,7 @@
         const data = await call(args);
         if(data.code == 200){
             cargandoConvenios = false;
+            hideLoader()
             console.log(data);
             conveniosPaciente = data.data;
         }

@@ -87,8 +87,11 @@ async function call(args){
             return response.json();
         }).then((data) => {
             if(args.showLoader || args.showLoader == true){
+                console.log({cargandoConvenios})
                 if(!cargandoConvenios){
                     hideLoader();
+                }else{
+                    cargandoConvenios = false;
                 }
             }
             if(!args.dismissAlert && data.code == 400 && localStorage.getItem('flujo') === null){
