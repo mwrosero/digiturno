@@ -2757,15 +2757,23 @@
             canalInvocacion = "KIO";
         }
 
-        let args = [];
-        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=${canalInvocacion}&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
-        args["method"] = "POST";
-        args["token"] = accessToken;
-        args["showLoader"] = true;
-        args["data"] = JSON.stringify({
-            "idTrx": generateUUIDv4(),
-            "idPaciente": paciente.idPaciente,
-            "prestaciones": [{
+        let itemsPrestaciones = []
+        if(detalle.tipoServicio == "ORDEN_MEDICA"){
+            let items = detalle.detallesOrden;
+            $.each(items, function(k,v){
+                itemsPrestaciones.push({
+                    "codigoServicio": v.codigoServicio,
+                    "codigoPrestacion": v.codigoPrestacion,
+                    "cantidad": v.cantidad,
+                    "esOdontologica": false,
+                    "numeroParteDental": 0,
+                    "numeroOrden": detalle.numeroOrden,// si o null
+                    "lineaDetalleOrden": v.lineaDetalleOrden, //si o null
+                    "valorFee": 0
+                })
+            })
+        }else{
+            itemsPrestaciones = [{
                 "codigoServicio": codigoServicio,
                 "codigoPrestacion": codigoPrestacion,
                 "cantidad": 1,
@@ -2774,7 +2782,28 @@
                 "numeroOrden": detalle.numeroOrden,// si o null
                 "lineaDetalleOrden": lineaDetalleOrden, //si o null
                 "valorFee": 0
-            }],
+            }]
+        }
+
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=${canalInvocacion}&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify({
+            "idTrx": generateUUIDv4(),
+            "idPaciente": paciente.idPaciente,
+            "prestaciones": itemsPrestaciones,
+            // "prestaciones": [{
+            //     "codigoServicio": codigoServicio,
+            //     "codigoPrestacion": codigoPrestacion,
+            //     "cantidad": 1,
+            //     "esOdontologica": false,
+            //     "numeroParteDental": 0,
+            //     "numeroOrden": detalle.numeroOrden,// si o null
+            //     "lineaDetalleOrden": lineaDetalleOrden, //si o null
+            //     "valorFee": 0
+            // }],
             "diagnosticos": diagnosticos,
             "medpayPlan": convenio.informacionExternaPlan
         });
