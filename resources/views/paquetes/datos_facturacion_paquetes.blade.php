@@ -312,7 +312,7 @@ Mi Veris - Citas - Datos de facturación
         // }
         esKiosko = isKiosk();
         if(isMobile()){
-            //esKiosko = false;
+            esKiosko = false;
         }else{
             KioskBoard.init({
                 keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
