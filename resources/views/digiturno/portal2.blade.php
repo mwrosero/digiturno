@@ -865,7 +865,7 @@
         // $('.logo').css("max-width","400px !important");
     }
 
-    let clientesAuth = [5803, 13, 68, 10996, 7656];
+    let clientesAuth = [5803, 13, 68, 10996, 7656, 6814];
     let datosPago = {};
 
     let url_salir = ``;
@@ -875,7 +875,7 @@
     const tiempoInactividad = 45; // Tiempo de inactividad en segundos
     const tiempoMaximoRespuesta = 15; // Tiempo máximo de respuesta al modal en segundos
     let tipoActivacion;
-
+    let _detallePagar;
     $(document).ready(async function() {
         if(!isMobile()){
             KioskBoard.init({
@@ -932,7 +932,7 @@
             `;
             document.head.appendChild(style);
             $('.box-content-familia').removeClass('d-none');
-            obtenerConvenios();
+            await obtenerConvenios();
         }else{
             // console.log(9)
             // $('#col-familia').removeClass('col-8').addClass('col-12')
@@ -1036,7 +1036,7 @@
         });
 
         await drawListFamiliaresModal();
-        verificarUsuarioDigital();
+        await verificarUsuarioDigital();
         $('body').on('click','.paciente-item', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'))
             $(`.nombrePacienteElegido`).html(`${ detalle.nombreCompleto }`);
@@ -1305,7 +1305,7 @@
 
                 let detalle = [];
 
-                {{-- if (item.detallesOrden.length > 0) { --}}
+                // if (item.detallesOrden.length > 0) { 
                 if (false) {
                     console.log(6)
                     detalle = item.detallesOrden.map(d => ({
@@ -1969,6 +1969,7 @@
 
         $('body').on('click', '.btn-pagar', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
+            _detallePagar = detalle;
             let esTerapia = $(this).attr('terapia-rel');
             if(esTerapia !== undefined && esTerapia !== null && esTerapia == "S"){
                 let indexItem = $(this).attr('index-rel');
@@ -2087,10 +2088,20 @@
         // console.log(data);
 
         if(data.data === null){
-            $('.col-agenda').addClass('d-none')
+            // $('.col-agenda').addClass('d-none')
+            if(dataTurno.paciente.codigoTipoIdentificacion == 2){
+                let res = await registrarCuenta();
+                if(res.code == 200){
+                    $('.col-agenda').removeClass('d-none')
+                }
+            }
         }else{
             $('.col-agenda').removeClass('d-none')
         }
+    }
+
+    async function createUser(){
+
     }
     
     // Función para mostrar el modal
@@ -2593,6 +2604,18 @@
     async function agregarItemTurno(idPreTransaccion, detalle, origen = "TURNO"){
         let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
+        let numAuthMedPay = null;
+
+        if(detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+            if( origen != "TURNO" && parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
+                console.log("-----////---------");
+                console.log(7)
+                await obtenerAutorizacionMedPay(detalle);
+                console.log(8)
+                flagAutorizacion = true;
+                numAuthMedPay = datosPago.sync.secuenciaTransaccion;
+            }
+        }
 
         // console.log(detalle);
 
@@ -2614,6 +2637,7 @@
                     "secuenciaPaquetePaciente": (detalle.beneficio != null && detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
                 },
                 "codigoReserva": detalle.codigoReserva,
+                "secTransaccionValExt": numAuthMedPay,
                 "numeroOrden": detalle.numeroOrden,
                 "lineaDetalleOrden": detalle.lineaDetalleOrden
             }]
@@ -2640,7 +2664,8 @@
                     "secuenciaPaquetePaciente": (detalle.beneficio != null && detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
                 },
                 "numeroOrden": detalle.numeroOrden,
-                "detallesOrden": detallesOrdenItems
+                "detallesOrden": detallesOrdenItems,
+                "secTransaccionValExt": numAuthMedPay
             }
         }
 
@@ -2661,17 +2686,17 @@
                 }
                 if(detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente) && detalle.beneficio.convenio.requiereAutorizacion){
-                        await obtenerAutorizacion();
+                        await obtenerAutorizacion(detalle);
                         flagAutorizacion = true;
                     }else{
                         console.log(detalle.beneficio.convenio);
-                        if(parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
-                            console.log("-----////---------");
-                            console.log(7)
-                            await obtenerAutorizacionMedPay(detalle);
-                            console.log(8)
-                            flagAutorizacion = true;
-                        }
+                        // if(parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
+                        //     console.log("-----////---------");
+                        //     console.log(7)
+                        //     await obtenerAutorizacionMedPay(detalle);
+                        //     console.log(8)
+                        //     flagAutorizacion = true;
+                        // }
                     }
                 }
                 await consultaPreTrx(idPreTransaccion, data.data);
@@ -2679,16 +2704,32 @@
         }
     }
 
-    async function obtenerInfoConvenio(){
+    async function obtenerInfoConvenio(detalle){
+        console.log("==============obtenerInfoConvenio================")
         let secuenciaAfiliadoConvenio;
         let convenio = []
-        $.each(conveniosPaciente, function(key, value){
-            if(clientesAuth.includes(value.codigoCliente)){
-                console.log(value.secuenciaAfiliado)
-                secuenciaAfiliadoConvenio = value.secuenciaAfiliado;
-                convenio = value;
-            }
-        })
+
+        if(_detallePagar.hasOwnProperty('beneficio')){
+            console.log(0)
+            let codigoCliente = _detallePagar.beneficio.convenio.codigoCliente;
+            let codigoConvenio = _detallePagar.beneficio.convenio.codigoConvenio;
+            console.log(codigoCliente, codigoConvenio)
+            $.each(conveniosPaciente, function(key, value){
+                if(clientesAuth.includes(value.codigoCliente) && codigoCliente == value.codigoCliente && value.codigoConvenio == codigoConvenio){
+                    console.log(value.secuenciaAfiliado)
+                    secuenciaAfiliadoConvenio = value.secuenciaAfiliado;
+                    convenio = value;
+                }
+            })
+        }else{
+            $.each(conveniosPaciente, function(key, value){
+                if(clientesAuth.includes(value.codigoCliente)){
+                    console.log(value.secuenciaAfiliado)
+                    secuenciaAfiliadoConvenio = value.secuenciaAfiliado;
+                    convenio = value;
+                }
+            })
+        }
         // return secuenciaAfiliadoConvenio;
         return convenio;
     }
@@ -2697,7 +2738,14 @@
         console.log('MEDPAYYYYYYYYYYYYYY');
         console.log(detalle);
         console.log('MEDPAYYYYYYYYYYYYYY');
-        let convenio = await obtenerInfoConvenio();
+        let convenio = await obtenerInfoConvenio(detalle);
+        // alert(convenio.nemonicoTipoCredito)
+        if(convenio.informacionExternaPlan === null){
+            flagAutorizacion = false;
+            console.log("No emite autorización")
+            return;
+        }
+
         let diagnosticos = [29616];
         if(detalle.hasOwnProperty('diagnosticos')){
             diagnosticos = [];
@@ -2726,15 +2774,23 @@
             canalInvocacion = "KIO";
         }
 
-        let args = [];
-        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=${canalInvocacion}&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
-        args["method"] = "POST";
-        args["token"] = accessToken;
-        args["showLoader"] = true;
-        args["data"] = JSON.stringify({
-            "idTrx": generateUUIDv4(),
-            "idPaciente": paciente.idPaciente,
-            "prestaciones": [{
+        let itemsPrestaciones = []
+        if(detalle.tipoServicio == "ORDEN_MEDICA"){
+            let items = detalle.detallesOrden;
+            $.each(items, function(k,v){
+                itemsPrestaciones.push({
+                    "codigoServicio": v.codigoServicio,
+                    "codigoPrestacion": v.codigoPrestacion,
+                    "cantidad": v.cantidad,
+                    "esOdontologica": false,
+                    "numeroParteDental": 0,
+                    "numeroOrden": detalle.numeroOrden,// si o null
+                    "lineaDetalleOrden": v.lineaDetalleOrden, //si o null
+                    "valorFee": 0
+                })
+            })
+        }else{
+            itemsPrestaciones = [{
                 "codigoServicio": codigoServicio,
                 "codigoPrestacion": codigoPrestacion,
                 "cantidad": 1,
@@ -2743,7 +2799,28 @@
                 "numeroOrden": detalle.numeroOrden,// si o null
                 "lineaDetalleOrden": lineaDetalleOrden, //si o null
                 "valorFee": 0
-            }],
+            }]
+        }
+
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=${canalInvocacion}&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify({
+            "idTrx": generateUUIDv4(),
+            "idPaciente": paciente.idPaciente,
+            "prestaciones": itemsPrestaciones,
+            // "prestaciones": [{
+            //     "codigoServicio": codigoServicio,
+            //     "codigoPrestacion": codigoPrestacion,
+            //     "cantidad": 1,
+            //     "esOdontologica": false,
+            //     "numeroParteDental": 0,
+            //     "numeroOrden": detalle.numeroOrden,// si o null
+            //     "lineaDetalleOrden": lineaDetalleOrden, //si o null
+            //     "valorFee": 0
+            // }],
             "diagnosticos": diagnosticos,
             "medpayPlan": convenio.informacionExternaPlan
         });
@@ -2762,9 +2839,17 @@
         }
     }
 
-    async function obtenerAutorizacion(){
-        let convenio = await obtenerInfoConvenio();
+    async function obtenerAutorizacion(detalle){
+        console.log("************************OBTENER AUTH***************")
+        console.log(detalle);
+        let convenio = await obtenerInfoConvenio(detalle);
         console.log(convenio);
+        if(convenio.hasOwnProperty('nemonicoTipoCredito') && convenio.nemonicoTipoCredito == "CREDITO_LISTA_PRESTACIONES"){
+            return;
+        }
+        // if(convenio.length == 0){
+        //     return;
+        // }
         let canalInvocacion = "CAJ";
 
         if(esKiosko){
@@ -2875,7 +2960,7 @@
             if(!flagAutorizacion){
                 if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa){
                     flagAutorizacion = true;
-                    await obtenerAutorizacion();
+                    await obtenerAutorizacion(detalle);
                     await consultaPreTrx(idPreTransaccion, detalle);
                     return;
                 }
@@ -3646,7 +3731,7 @@
                     classEstadoItem = `text-pendiente`;
                     // if(esKiosko){
                         if(detalle.permitePago){
-                            if(esKiosko){
+                            if(esKiosko && !isMobile()){
                                 elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
                                         Pagar
                                     </button>`;
@@ -3684,7 +3769,7 @@
                             Verificar consultorio
                         </button>`;
                 }
-
+                
                 let classHoraAgendada = `text-veris`;
                 
                 if(!tieneTiempo(detalle.horaInicioTiempoEspera)){
@@ -4440,6 +4525,7 @@
     }
 
     function obtenerBeneficio(beneficio){
+        console.log(obtenerBeneficio);
         if(beneficio  == null){
             return `Particular`;
         }
@@ -4726,6 +4812,7 @@
 
     let conveniosPaciente;
     async function obtenerConvenios(){
+        cargandoConvenios = true;
         let args = [];
         args["endpoint"] = `${api_url_digitales}/comercial/v1/pacientes/${dataTurno.paciente.idPaciente}/convenios?codigoEmpresa=1&canalInvocacion=KIO`;
         args["method"] = "GET";
@@ -4733,6 +4820,8 @@
         args["showLoader"] = true;
         const data = await call(args);
         if(data.code == 200){
+            cargandoConvenios = false;
+            hideLoader()
             console.log(data);
             conveniosPaciente = data.data;
         }

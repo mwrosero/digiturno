@@ -1,4 +1,6 @@
-let c_o = "MVE_CMV"
+let c_o = "MVE_CMV";
+let cargandoConvenios = false;
+
 if(!isMobile()){
     // c_o = "KIO_CMV"
 }
@@ -85,7 +87,12 @@ async function call(args){
             return response.json();
         }).then((data) => {
             if(args.showLoader || args.showLoader == true){
-                hideLoader();
+                console.log({cargandoConvenios})
+                if(!cargandoConvenios){
+                    hideLoader();
+                }else{
+                    cargandoConvenios = false;
+                }
             }
             if(!args.dismissAlert && data.code == 400 && localStorage.getItem('flujo') === null){
                 // console.log(5555)
@@ -471,31 +478,46 @@ function actualizarMaxlength(select) {
 
 async function registrarCuenta(){
     let args = [];
-    args["endpoint"] = api_url + `/${api_war}/v1/seguridad/cuenta`;
+    args["endpoint"] = api_url_digitales + `/${api_war_digitales}/seguridad/cuenta`;
     args["method"] = "POST";
     args["showLoader"] = true;
     args["bodyType"] = "json";
-    let fechaParts = getInput('fechaNacimiento').split('-');
-    let fechaFormateada = fechaParts[2] + '/' + fechaParts[1] + '/' + fechaParts[0];
+    args["sendHeaders"] = false;
+    // let fechaParts = getInput('fechaNacimiento').split('-');
+    // let fechaFormateada = fechaParts[2] + '/' + fechaParts[1] + '/' + fechaParts[0];
 
-    args["data"] = JSON.stringify({
-        "tipoIdentificacion": parseInt(getInput('tipoIdentificacion')),
-        "numeroIdentificacion": getInput('numeroIdentificacion'),
-        "primerApellido": getInput('primerApellido'),
-        "segundoApellido": getInput('segundoApellido'),
-        "primerNombre": getInput('primerNombre'),
-        "mail": getInput('mail').toLowerCase(),
-        "fechaNacimiento": fechaFormateada,
-        "genero": getInput('genero'),
-        "telfMovil": getInput('telefono'),
-        "codPais": parseInt(getInput('pais')),
-        "codigoProv": parseInt(getInput('provincia')),
-        "codigoCiudad": parseInt(getInput('ciudad')),
-        "pass": getInput('password'),
+    let mail = '';
+    if(dataTurno.paciente.mail !== null){
+        mail = dataTurno.paciente.mail.toLowerCase()
+    }
+
+    let payload = {
+        "tipoIdentificacion": dataTurno.paciente.codigoTipoIdentificacion,
+        "numeroIdentificacion": dataTurno.paciente.numeroIdentificacion,
+        "primerApellido": dataTurno.paciente.primerApellido,
+        // "segundoApellido": dataTurno.paciente.segundoApellido,
+        "primerNombre": dataTurno.paciente.primerNombre,
+        "mail": mail.toLowerCase(),
+        "fechaNacimiento": dataTurno.paciente.fechaNacimiento,
+        "genero": dataTurno.paciente.genero,
+        "telfMovil": dataTurno.paciente.telefonoMovil,
+        // "codPais": parseInt(getInput('pais')),
+        // "codigoProv": parseInt(getInput('provincia')),
+        // "codigoCiudad": parseInt(getInput('ciudad')),
+        // "pass": getInput('password'),
         "canalOrigenDigital": _canalOrigen
-    });
+    }
+
+    if(dataTurno.paciente.codigoTipoIdentificacion == 3){
+        // payload.codPais = parseInt(getInput('pais'));
+    }
+    
+    args["data"] = JSON.stringify(payload);
 
     const data = await call(args);
+    if(data.code == 200){
+        $('.col-agenda').removeClass('d-none');
+    }
     return data;
 }
 

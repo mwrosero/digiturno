@@ -312,7 +312,7 @@ Mi Veris - Citas - Datos de facturación
         // }
         esKiosko = isKiosk();
         if(isMobile()){
-            //esKiosko = false;
+            esKiosko = false;
         }else{
             KioskBoard.init({
                 keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
@@ -449,6 +449,25 @@ Mi Veris - Citas - Datos de facturación
             bgColor: "#FFF",
             text: `${url_payment}${dataCita.url_pago}`
         });
+    }
+
+    function fillBoxEfectivoData(){
+
+        let detalle = {
+            // "tipoServicio": "RESERVA",
+            "beneficio": {
+                "convenio": null,
+                /*temporalmente*/
+                "tarjeta": null,
+                "paquete": null
+            },
+            "codigoReserva": null,
+            "numeroOrden": null,
+            "lineaDetalleOrden": null
+        };
+
+        return detalle;
+
     }
 
     async function validarDatosFactura(){

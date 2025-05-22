@@ -304,7 +304,7 @@ Mi Veris - Citas - Datos de facturación
     let dataCita = JSON.parse(local);
     let estadoPoliticas;
     let ultimaVersionPoliticas;
-    let clientesAuth = [5803, 13, 68, 10996, 7656];
+    let clientesAuth = [5803, 13, 68, 10996, 7656, 6814];
     let esKiosko = false;
 
     document.addEventListener("DOMContentLoaded", async function () {
@@ -691,8 +691,9 @@ Mi Veris - Citas - Datos de facturación
         console.log('MEDPAYYYYYYYYYYYYYY');
         console.log(detalle);
         let convenio = dataCita.convenio;
+        // alert(convenio.nemonicoTipoCredito);
         
-        if(convenio.informacionExternaPlan === null || dataCita.precio.hasOwnProperty('secuenciaTransaccion')){
+        if(convenio.informacionExternaPlan === null || dataCita.precio.hasOwnProperty('secuenciaTransaccion') || convenio.nemonicoTipoCredito == "CREDITO_LISTA_PRESTACIONES"){
             flagAutorizacion = false;
             console.log("No emite autorización")
             return;
@@ -760,7 +761,7 @@ Mi Veris - Citas - Datos de facturación
     }
 
     async function obtenerAutorizacion(){
-        console.log(8)
+        // alert(8)
         let secuenciaAfiliadoConvenio = dataCita.convenio.secuenciaAfiliado;
         console.log(secuenciaAfiliadoConvenio);
         let args = [];
