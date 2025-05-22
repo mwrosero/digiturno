@@ -875,7 +875,7 @@
     const tiempoInactividad = 45; // Tiempo de inactividad en segundos
     const tiempoMaximoRespuesta = 15; // Tiempo máximo de respuesta al modal en segundos
     let tipoActivacion;
-
+    let _detallePagar;
     $(document).ready(async function() {
         if(!isMobile()){
             KioskBoard.init({
@@ -1305,7 +1305,7 @@
 
                 let detalle = [];
 
-                {{-- if (item.detallesOrden.length > 0) { --}}
+                // if (item.detallesOrden.length > 0) { 
                 if (false) {
                     console.log(6)
                     detalle = item.detallesOrden.map(d => ({
@@ -1969,6 +1969,7 @@
 
         $('body').on('click', '.btn-pagar', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
+            _detallePagar = detalle;
             let esTerapia = $(this).attr('terapia-rel');
             if(esTerapia !== undefined && esTerapia !== null && esTerapia == "S"){
                 let indexItem = $(this).attr('index-rel');
@@ -2708,10 +2709,11 @@
         let secuenciaAfiliadoConvenio;
         let convenio = []
 
-        if(detalle.hasOwnProperty('beneficio')){
-            let codigoCliente = detalle.beneficio.convenio.codigoCliente;
-            let codigoConvenio = detalle.beneficio.convenio.codigoConvenio;
-
+        if(_detallePagar.hasOwnProperty('beneficio')){
+            console.log(0)
+            let codigoCliente = _detallePagar.beneficio.convenio.codigoCliente;
+            let codigoConvenio = _detallePagar.beneficio.convenio.codigoConvenio;
+            console.log(codigoCliente, codigoConvenio)
             $.each(conveniosPaciente, function(key, value){
                 if(clientesAuth.includes(value.codigoCliente) && codigoCliente == value.codigoCliente && value.codigoConvenio == codigoConvenio){
                     console.log(value.secuenciaAfiliado)
@@ -2843,6 +2845,9 @@
         let convenio = await obtenerInfoConvenio(detalle);
         console.log(convenio);
         if(convenio.hasOwnProperty('nemonicoTipoCredito') && convenio.nemonicoTipoCredito == "CREDITO_LISTA_PRESTACIONES"){
+            return;
+        }
+        if(convenio.length == 0){
             return;
         }
         let canalInvocacion = "CAJ";
@@ -3764,7 +3769,7 @@
                             Verificar consultorio
                         </button>`;
                 }
-
+                
                 let classHoraAgendada = `text-veris`;
                 
                 if(!tieneTiempo(detalle.horaInicioTiempoEspera)){
@@ -4520,6 +4525,7 @@
     }
 
     function obtenerBeneficio(beneficio){
+        console.log(obtenerBeneficio);
         if(beneficio  == null){
             return `Particular`;
         }
