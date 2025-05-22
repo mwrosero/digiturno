@@ -2704,7 +2704,7 @@
     }
 
     async function obtenerInfoConvenio(detalle){
-
+        console.log("==============obtenerInfoConvenio================")
         let secuenciaAfiliadoConvenio;
         let convenio = []
 
@@ -2714,6 +2714,14 @@
 
             $.each(conveniosPaciente, function(key, value){
                 if(clientesAuth.includes(value.codigoCliente) && codigoCliente == value.codigoCliente && value.codigoConvenio == codigoConvenio){
+                    console.log(value.secuenciaAfiliado)
+                    secuenciaAfiliadoConvenio = value.secuenciaAfiliado;
+                    convenio = value;
+                }
+            })
+        }else{
+            $.each(conveniosPaciente, function(key, value){
+                if(clientesAuth.includes(value.codigoCliente)){
                     console.log(value.secuenciaAfiliado)
                     secuenciaAfiliadoConvenio = value.secuenciaAfiliado;
                     convenio = value;
@@ -2830,6 +2838,8 @@
     }
 
     async function obtenerAutorizacion(detalle){
+        console.log("************************OBTENER AUTH***************")
+        console.log(detalle);
         let convenio = await obtenerInfoConvenio(detalle);
         console.log(convenio);
         if(convenio.hasOwnProperty('nemonicoTipoCredito') && convenio.nemonicoTipoCredito == "CREDITO_LISTA_PRESTACIONES"){
