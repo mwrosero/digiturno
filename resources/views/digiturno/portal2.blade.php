@@ -2847,9 +2847,9 @@
         if(convenio.hasOwnProperty('nemonicoTipoCredito') && convenio.nemonicoTipoCredito == "CREDITO_LISTA_PRESTACIONES"){
             return;
         }
-        if(convenio.length == 0){
-            return;
-        }
+        // if(convenio.length == 0){
+        //     return;
+        // }
         let canalInvocacion = "CAJ";
 
         if(esKiosko){
