@@ -1,4 +1,6 @@
-let c_o = "MVE_CMV"
+let c_o = "MVE_CMV";
+let cargandoConvenios = false;
+
 if(!isMobile()){
     // c_o = "KIO_CMV"
 }
@@ -85,7 +87,9 @@ async function call(args){
             return response.json();
         }).then((data) => {
             if(args.showLoader || args.showLoader == true){
-                hideLoader();
+                if(!cargandoConvenios){
+                    hideLoader();
+                }
             }
             if(!args.dismissAlert && data.code == 400 && localStorage.getItem('flujo') === null){
                 // console.log(5555)

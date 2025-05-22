@@ -932,7 +932,7 @@
             `;
             document.head.appendChild(style);
             $('.box-content-familia').removeClass('d-none');
-            obtenerConvenios();
+            await obtenerConvenios();
         }else{
             // console.log(9)
             // $('#col-familia').removeClass('col-8').addClass('col-12')
@@ -4789,6 +4789,7 @@
 
     let conveniosPaciente;
     async function obtenerConvenios(){
+        cargandoConvenios = true;
         let args = [];
         args["endpoint"] = `${api_url_digitales}/comercial/v1/pacientes/${dataTurno.paciente.idPaciente}/convenios?codigoEmpresa=1&canalInvocacion=KIO`;
         args["method"] = "GET";
@@ -4796,6 +4797,7 @@
         args["showLoader"] = true;
         const data = await call(args);
         if(data.code == 200){
+            cargandoConvenios = false;
             console.log(data);
             conveniosPaciente = data.data;
         }
