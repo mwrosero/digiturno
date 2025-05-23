@@ -380,11 +380,11 @@
             <div class="modal-body p-3">
                 <ul class="list-group border-0 p-0 my-2" id="detalleComponentesPaquete">
                 </ul>
-                <div class="my-2 box-info-detalle p-2 bg-silver">
+                <div class="my-2 box-info-detalle p-2 bg-silver d-none">
                 </div>
             </div>
-            <div class="modal-footer pt-0 pb-3 px-3 border-0">
-                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4" data-bs-dismiss="modal">CERRAR</a>
+            <div class="modal-footer pt-0 pb-3 px-3 box-info-pago-paquete border-0 d-flex justify-content-center align-items-center">
+                {{-- <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4" data-bs-dismiss="modal">CERRAR</a> --}}
             </div>
         </form>
     </div>
@@ -1475,9 +1475,9 @@
         })
 
 
-        $('body').on('click', '.btn-detalle-paquete_OLD', async function(){
+        $('body').on('click', '.btn-detalle-paquete-por-pagar', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
-            // console.log(detalle)
+            console.log(detalle)
             $('#tituloPaqueteDetalle').html(`${detalle.nombrePaquete}`);
             // si el detalle de cantidadDisponible > 0 Tiene la prestacion pendiente por activar
             // si el campo cantidadUtilizada == 0 y el campo estaRecepcionado == false significa que el paquete no ha sido utilizado en la atencion
@@ -1495,6 +1495,22 @@
                     <p class="text-900 fs-12 mb-0"> Muestra pendiente por realizar o por pagar.</p>
                 </div>
             `);
+
+            let elemPago = ``;
+            if(isKiosk() && !isMobile()){
+                elemPago += `<button type="button" data-bs-dismiss="modal" data-rel='${JSON.stringify(detalle)}' class="btn fw-normal fs--16 px-5 py-2 mx-2 fs-4 bg-veris text-white btn-pagar">
+                        Pagar
+                    </button>`;
+            }else{
+                elemPago += `<button type="button" data-bs-dismiss="modal" data-rel='${JSON.stringify(detalle)}' class="btn fw-normal fs--16 px-5 py-2 mx-2 fs-4 bg-veris text-white btn-link-pago">
+                        Pagar aquí
+                    </button>
+                    <button type="button" data-bs-dismiss="modal" data-rel='${JSON.stringify(detalle)}' class="btn fw-normal fs--16 px-5 py-2 mx-2 fs-4 bg-white border-veris-1 text-veris btn-turno">
+                        Pagar en caja
+                    </button>`;
+            }
+
+            $('.box-info-pago-paquete').html(elemPago);
 
             let elem = ``;
             $.each(detalle.detallesDisponibles, function(key, value){
@@ -2119,8 +2135,8 @@
 
     // Función para reiniciar el conteo de inactividad
     function reiniciarConteo() {
-        clearTimeout(temporizadorInactividad);
-        temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
+        // clearTimeout(temporizadorInactividad);
+        // temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
     }
 
     function obtenerNombreConsultorio(detalle) {
@@ -2254,12 +2270,16 @@
         let email = $('#email_link_pago').val();
         if(isValidEmailAddress(email)){
             let detalle = JSON.parse($('#detallePago').val());
+            console.log(detalle);
             let codigoPrincipal;
             if(detalle.tipoServicio == "ORDEN_MEDICA"){
+                codigoPrincipal = detalle.numeroOrden;
+            }else if(detalle.tipoServicio == "PAQUETES_PROMOCIONALES"){
                 codigoPrincipal = detalle.numeroOrden;
             }else{
                 codigoPrincipal = detalle.codigoReserva;
             }
+
             let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
 
@@ -2289,8 +2309,11 @@
 
     async function crearLinkpasarela(datos){
         let detalle = JSON.parse(datos);
+        console.log(detalle)
         let codigoPrincipal;
         if(detalle.tipoServicio == "ORDEN_MEDICA"){
+            codigoPrincipal = detalle.numeroOrden;
+        }else if(detalle.tipoServicio == "PAQUETES_PROMOCIONALES"){
             codigoPrincipal = detalle.numeroOrden;
         }else{
             codigoPrincipal = detalle.codigoReserva;
@@ -2602,11 +2625,12 @@
 
     let flagAutorizacion = false;
     async function agregarItemTurno(idPreTransaccion, detalle, origen = "TURNO"){
+        console.log(detalle)
         let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
         let numAuthMedPay = null;
 
-        if(detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+        if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
             if( origen != "TURNO" && parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
                 console.log("-----////---------");
                 console.log(7)
@@ -2642,10 +2666,10 @@
                 "lineaDetalleOrden": detalle.lineaDetalleOrden
             }]
         }else if(detalle.tipoServicio == "PAQUETES_PROMOCIONALES"){
-            payload.paquetesPromocionales = [{
+            payload.paquetesPromocionales = {
                 "_id": generateUUIDv4(),
                 "secuenciaPaquetePaciente": detalle.secuenciaPaquetePaciente
-            }]
+            }
         }else{
             let detallesOrdenItems = [];
             $.each(detalle.detallesOrden, function(key, value){
@@ -2684,7 +2708,7 @@
                 if(detalle.tipoServicio == "RESERVA" && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     await setearDiagnostico(detalle);
                 }
-                if(detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+                if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente) && detalle.beneficio.convenio.requiereAutorizacion){
                         await obtenerAutorizacion(detalle);
                         flagAutorizacion = true;
@@ -3019,11 +3043,15 @@
     }
 
     async function verificarDatosFactura(datos = null){
-        let numeroIdentificacion = datosPago.consulta[0].paciente.numeroIdentificacion;
-        let codigoTipoIdentificacion = datosPago.consulta[0].paciente.codigoTipoIdentificacion;
+        console.log('-----------verificarDatosFactura------------')
+        let numeroIdentificacion;
+        let codigoTipoIdentificacion;
         if(datos !== null){
             numeroIdentificacion = datos.numeroIdentificacion;
             codigoTipoIdentificacion = datos.codigoTipoIdentificacion;
+        }else{
+            numeroIdentificacion = datosPago.consulta[0].paciente.numeroIdentificacion;
+            codigoTipoIdentificacion = datosPago.consulta[0].paciente.codigoTipoIdentificacion;
         }
         let args = [];
         args["endpoint"] = `${api_url_digitales}/facturacion/v1/pacientes/verificar_datos_factura?numeroIdentificacion=${numeroIdentificacion}&codigoTipoIdentificacion=${codigoTipoIdentificacion}`;
@@ -3731,7 +3759,7 @@
                     classEstadoItem = `text-pendiente`;
                     // if(esKiosko){
                         if(detalle.permitePago){
-                            if(esKiosko && !isMobile()){
+                            if(isKiosk() && !isMobile()){
                                 elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
                                         Pagar
                                     </button>`;
@@ -3844,6 +3872,7 @@
             break;
             case 'PAQUETES_PROMOCIONALES':
                 // console.log(99999)
+                console.log(`----------------PAQUETES_PROMOCIONALES-------------------`)
                 icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/promocion-ico.svg`;
 
                 labelServicio = `${detalle.nombrePaquete.toLowerCase()}`;
@@ -3857,8 +3886,9 @@
                     dias = obtenerDiferenciaDiasIntl(detalle.fechaCaducidadUsoPaquete);
                 }
                 
+                let validesPaquete = ``
                 if(!estadosVigentes.includes(detalle.codigoEstado)){
-                    sectionEstadoPago = `porpagar`;
+                    {{-- sectionEstadoPago = `porpagar`; --}}
                     labelEstadoItem = `Por pagar`;
                     classEstadoItem = `text-pendiente`;
                 }else{
@@ -3868,19 +3898,39 @@
                         labelEstadoItem = `Caducado`;
                         classEstadoItem = `text-caution`;
                     }
-                }
-
-                elemFooterCard += `<div class="col-12 text-center fs-16 line-height-16 mb-3 fw-bold">
-                    <div class="mt-4 mb-3 fs-16 line-height-18 d-flex justify-content-center align-items-center">
+                    validesPaquete = `<div class="mt-4 mb-3 fs-16 line-height-18 d-flex justify-content-center align-items-center">
                         <span class="fw-bold text-veris-dark">Válido hasta:</span>
                         <span class="ms-2 ${ (dias < 0) ? `text-caution` : `text-veris` }">${detalle.fechaCaducidadUsoPaquete}</span>
                     </div>
                     <div class="mb-1 text-veris fs-16 line-height-18 d-flex justify-content-center align-items-center">
                         <span class="fw-bold text-veris-dark">Días restantes:</span> <div class="rounded-8 bg-veris-sky border-veris-1 py-2 px-3 ms-2">${ (dias > 0) ? dias : `0` }</div>
-                    </div>
+                    </div>`;
+                }
+
+                elemFooterCard += `<div class="col-12 text-center fs-16 line-height-16 mb-3 fw-bold">
+                    ${validesPaquete}
                 </div>`;
 
-                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-paquete p-2 py-3 mt-3">
+                let classPaqueteAction = `btn-detalle-paquete`;
+                let aditionalPaymentBtn = ``;
+                if(!estadosVigentes.includes(detalle.codigoEstado)){
+                    classPaqueteAction = `btn-detalle-paquete-por-pagar`;
+                    // Consultar a Marcos si esto debo revisar antes de dejarle pagar
+                    // obtenerDiferenciaDiasIntl(detalle.fechaVigencia)
+                    {{-- if(esKiosko && !isMobile()){
+                        aditionalPaymentBtn += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
+                                Pagar
+                            </button>`;
+                    }else{
+                        aditionalPaymentBtn += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
+                                Pagar aquí
+                            </button>`;
+                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                                Pagar en caja
+                            </button>`;
+                    } --}}
+                }
+                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris ${classPaqueteAction} p-2 py-3 mt-3">
                         Ver detalle
                     </button>`;
                 // if(dias < 0){

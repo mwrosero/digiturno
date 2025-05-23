@@ -412,11 +412,9 @@ Mi Veris - Citas - Datos de facturación
 
         let timeoutId;
 
-        $('body').on('input', '#numeroIdentificacion', function() {
+        $('body').on('keyup change', '#numeroIdentificacion', function() {
             clearTimeout(timeoutId); // Limpia el timeout anterior
-            
             timeoutId = setTimeout(async function() {
-                console.log("verifica");
                 let datosF = {
                     "numeroIdentificacion": $('#numeroIdentificacion').val(),
                     "codigoTipoIdentificacion": $('#codigoTipoIdentificacion option:selected').val()
@@ -425,18 +423,20 @@ Mi Veris - Citas - Datos de facturación
                     if(esValidaCedula($('#numeroIdentificacion').val())){
                         await verificarDatosFactura(datosF);
                     }else{
-                        toastr.warning("Cédula incorrecta", "Atención", {
-                            timeOut: 5000
-                        });
-                        $('#nombreCompleto').val("");
-                        $('#email').val("");
+                        if($('#numeroIdentificacion').val().length == 10){
+                            toastr.warning("Cédula incorrecta", "Atención", {
+                                timeOut: 5000
+                            });
+                            $('#nombreCompleto').val("");
+                            $('#email').val("");
+                        }
                     }
                 }else{
                     if($('#numeroIdentificacion').val().length == 13){
                         await verificarDatosFactura(datosF);
                     }
                 }
-            }, 2000);
+            }, 2000); // Espera 1 segundo después de la última entrada
         });
     });
 
@@ -811,11 +811,15 @@ Mi Veris - Citas - Datos de facturación
     }
 
     async function verificarDatosFactura(datos = null){
-        let numeroIdentificacion = datosPago.consulta[0].paciente.numeroIdentificacion;
-        let codigoTipoIdentificacion = datosPago.consulta[0].paciente.codigoTipoIdentificacion;
+        console.log("---------------verificarDatosFactura")
+        let numeroIdentificacion;
+        let codigoTipoIdentificacion;
         if(datos !== null){
             numeroIdentificacion = datos.numeroIdentificacion;
             codigoTipoIdentificacion = datos.codigoTipoIdentificacion;
+        }else{
+            numeroIdentificacion = datosPago.consulta[0].paciente.numeroIdentificacion;
+            codigoTipoIdentificacion = datosPago.consulta[0].paciente.codigoTipoIdentificacion;
         }
         let args = [];
         args["endpoint"] = `${api_url_digitales}/facturacion/v1/pacientes/verificar_datos_factura?numeroIdentificacion=${numeroIdentificacion}&codigoTipoIdentificacion=${codigoTipoIdentificacion}`;

@@ -320,6 +320,8 @@
 		}
 		return true;
 	}
+
+	let trackIdTmp;
 	async function buscarUsuario(){
 		let tipo = $('.tipoIdentificacion.active').attr('data-rel');
 		let tipoFiltro = ``;
@@ -372,6 +374,7 @@
       			storeData(data.data[0], data.trackId);
       			location.href = "/portal/{{ $tokenTurno }}?mac={{ $mac }}";
       		}else{
+      			trackIdTmp = data.trackId;
       			let elem = ``;
       			$.each(data.data, function(key, value){
       				elem += `<div data-rel='${JSON.stringify(value)}' class="item-coincidencia rounded-8 border-veris-2 p-2 text-center bg-veris-sky mb-2 text-veris fw-medium">
@@ -422,10 +425,10 @@
         console.log(data);
       	if(data.code == 200){
       		paciente.lsGrupoFamiliar = data.data
-      		storeData(paciente,data.trackId);
+      		storeData(paciente, trackIdTmp);
       		location.href = "/portal/{{ $tokenTurno }}?mac={{ $mac }}";
       	}else{
-      		storeData(paciente,data.trackId);
+      		storeData(paciente, trackIdTmp);
       		location.href = "/portal/{{ $tokenTurno }}?mac={{ $mac }}";
       	}
     }
