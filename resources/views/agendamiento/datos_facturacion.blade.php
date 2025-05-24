@@ -77,7 +77,7 @@ Mi Veris - Citas - Datos de facturación
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
                 <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-5 py-2 mx-2 fs-4 btn-salir w-25">No</a>
-                <a href="/portal/{{ $params }}?mac={{ $mac }}" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1 refresh-services w-25">Si</a>
+                <a href="/portal/{{ $params }}?mac={{ $mac }}" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1 delete-storage-agendamiento w-25">Si</a>
             </div>
         </form>
     </div>
@@ -385,6 +385,10 @@ Mi Veris - Citas - Datos de facturación
             if(validacion){
                 await setearDatosFactura();
             }
+        })
+
+        $('body').on('click', '.delete-storage-agendamiento', async function(){
+            localStorage.removeItem("flujo");
         })
 
         $('#modalPagoQr').on('hidden.bs.modal', async function (e) {

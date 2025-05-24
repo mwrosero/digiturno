@@ -895,7 +895,7 @@
 
         }
 
-        if(esKiosko){
+        if(isKiosk()){
             KioskBoard.init({
                 keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
                 keysNumeric: true,
@@ -1183,7 +1183,7 @@
                 // console.log("-------")
                 let btnPagar = ``;
                 if(detalle.tipoServicio == "ORDEN_MEDICA" && (detalle.nombreServicioNivel1 == "LABORATORIO" || detalle.nombreServicioNivel1 == "IMAGENES" || detalle.nombreServicioNivel1 == "PROCEDIMIENTOS" || detalle.nombreServicioNivel1 == "ODONTOLOGIA") && detalle.permitePago){
-                    if(esKiosko){
+                    if(isKiosk()){
                         // console.log(99)
                         if(esProcedimiento && qtyPrestacionesPorPagar >1){
                             btnPagar = `<button type="button" data-rel='${escapeHtmlAttr(JSON.stringify(detalle))}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
@@ -2123,7 +2123,7 @@
 
 
         $('input').on('focus', function() {
-            if(esKiosko){
+            if(isKiosk()){
                 setTimeout(function(){
                     $('.kioskboard-key, .kioskboard-key-backspace, .kioskboard-key-enter, .kioskboard-key-space, .kioskboard-key-specialcharacter, .kioskboard-key-capslock').addClass('custom-kioskboard-key-kiosko');
                 }, 100)
@@ -2486,7 +2486,7 @@
         let canalFacturacion = "DIGITURNOS";
         let esDigiturno = true;
 
-        if(esKiosko){
+        if(isKiosk()){
             canalFacturacion = "KIOSKO";
             esDigiturno = false;
         }
@@ -2796,12 +2796,15 @@
     async function obtenerInfoConvenio(detalle){
         console.log("==============obtenerInfoConvenio================")
         let secuenciaAfiliadoConvenio;
-        let convenio = []
+        let convenio = [];
+
+        let codigoCliente;
+        let codigoConvenio;
 
         if(_detallePagar.hasOwnProperty('beneficio')){
             console.log(0)
-            let codigoCliente = _detallePagar.beneficio.convenio.codigoCliente;
-            let codigoConvenio = _detallePagar.beneficio.convenio.codigoConvenio;
+            codigoCliente = _detallePagar.beneficio.convenio.codigoCliente;
+            codigoConvenio = _detallePagar.beneficio.convenio.codigoConvenio;
             console.log(codigoCliente, codigoConvenio)
             $.each(conveniosPaciente, function(key, value){
                 if(clientesAuth.includes(value.codigoCliente) && codigoCliente == value.codigoCliente && value.codigoConvenio == codigoConvenio){
@@ -2859,7 +2862,7 @@
 
         let canalInvocacion = "CAJ";
 
-        if(esKiosko){
+        if(isKiosk()){
             canalInvocacion = "KIO";
         }
 
@@ -2941,7 +2944,7 @@
         // }
         let canalInvocacion = "CAJ";
 
-        if(esKiosko){
+        if(isKiosk()){
             canalInvocacion = "KIO";
         }
         let args = [];
@@ -3348,7 +3351,14 @@
             $('#modalDatosFacturacion').modal('hide');
             await cargarServicios();
             // alert("Pago realizado exitosamente, se imprimirá su factura...")
-            
+            if(_agregarItemPaquete){
+                idTab = 'v-pills-tabPaqueteContent';
+                let lugares = await labelLugaresChequeos();
+                $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris">${lugares.join(", ").toLowerCase()}</span>. Y espera a ser llamado.`);
+                $('#modalNotificarLlegadaDirigirLugar').modal('show');
+                reiniciarConteo();
+                return;
+            }
             if(datosPago.validacion.valorTotalAPagarPaciente == 0){
                 $('.box-info-comprobante').html(`Transacción: <span class="ms-2"> ${datosPago.comprobantes.transacciones[0].numeroTransaccion}</span>`)
             }else{
@@ -3660,7 +3670,7 @@
                                     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
                                         Ver detalle
                                     </button>`;
-                                    /*if(esKiosko){
+                                    /*if(isKiosk()){
                                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
                                                 Pagar
                                             </button>`;
@@ -3822,7 +3832,7 @@
                     sectionEstadoPago = `porpagar`;
                     labelEstadoItem = `Por pagar`;
                     classEstadoItem = `text-pendiente`;
-                    // if(esKiosko){
+                    // if(isKiosk()){
                         if(detalle.permitePago){
                             if(isKiosk() && !isMobile()){
                                 elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
@@ -4007,7 +4017,7 @@
         }
 
         let classCards = `col-12 col-lg-6 col-xxl-4 d-flex mb-3 mt-0`;
-        if(esKiosko){
+        if(isKiosk()){
             classCards = `col-12 col-md-6 d-flex mb-3 mt-0`
         }
 
@@ -4046,7 +4056,7 @@
 
         if(addForToday){
             let classCards = `col-12 col-lg-6 col-xxl-4 d-flex mb-5 mt-0`;
-            if(esKiosko){
+            if(isKiosk()){
                 classCards = `col-12 col-md-6 d-flex mb-5 mt-0`
             }
             // if(detalle.tipoServicio == 'BATERIA_PRESTACIONES'){
