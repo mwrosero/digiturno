@@ -2686,7 +2686,9 @@
                 await obtenerAutorizacionMedPay(detalle);
                 console.log(8)
                 flagAutorizacion = true;
-                numAuthMedPay = datosPago.sync.secuenciaTransaccion;
+                if(datosPago.hasOwnProperty('sync')){
+                    numAuthMedPay = datosPago.sync.secuenciaTransaccion;
+                }
             }
         }
 
@@ -2840,11 +2842,12 @@
 
         let diagnosticos = [29616];
         if(detalle.hasOwnProperty('diagnosticos')){
-            diagnosticos = [];
-            $.each(detalle.diagnosticos, function(key, value){
-                diagnosticos.push(parseInt(value.codigoDiagnostico));
-            })
-            //return;
+            if(detalle.diagnosticos !== null){
+                diagnosticos = [];
+                $.each(detalle.diagnosticos, function(key, value){
+                    diagnosticos.push(parseInt(value.codigoDiagnostico));
+                })
+            }
         }
 
         let dataAttr = $('.paciente-item-selected').attr("data-rel");
@@ -2899,6 +2902,7 @@
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
+        args["dismissAlert"] = true;
         args["data"] = JSON.stringify({
             "idTrx": generateUUIDv4(),
             "idPaciente": paciente.idPaciente,
@@ -2928,6 +2932,7 @@
             toastr.error("", data.message, {
                 timeOut: 5000
             });
+            //Llamar turno
         }
     }
 
