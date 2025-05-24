@@ -407,7 +407,7 @@
                 </div>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center">
-                <a href="#" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-2 fs-4 btn-activar activar-disabled" data-bs-dismiss="modal">ACTIVAR</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-2 fs-4 btn-activar btn-activar-paquete activar-disabled" data-bs-dismiss="modal">ACTIVAR</a>
                 <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4" data-bs-dismiss="modal">CERRAR</a>
             </div>
         </form>
@@ -876,6 +876,7 @@
     const tiempoMaximoRespuesta = 15; // Tiempo máximo de respuesta al modal en segundos
     let tipoActivacion;
     let _detallePagar;
+    let _agregarItemPaquete = false;
     $(document).ready(async function() {
         if(!isMobile()){
             KioskBoard.init({
@@ -1398,8 +1399,17 @@
                     console.log(value)
                     if(value.esAgendable || value.requiereAgendamientoPrevio){
                         let qtyCitas = ``;
-                        if(v.cantidad > 1){
+                        {{-- if(v.cantidad > 1){
                             qtyCitas = ` (${v.cantidadUtilizada}/${v.cantidad}) `;
+                        } --}}
+                        let cantidadUsada = 0;
+                        $.each(v.detallesOrden, function(k1,v1){
+                            if(v1.codigoReserva !== null){
+                                cantidadUsada++;
+                            }
+                        })
+                        if(v.cantidad > 1){
+                            qtyCitas = ` (${cantidadUsada}/${v.cantidad}) `;
                         }
                         btnAgenda = `${qtyCitas}<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(v)}'>Agendar</div>`;                        
                     }
@@ -1408,8 +1418,17 @@
                         if(v.numeroOrden !== null){
                             if(esLaboratorio){
                                 btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Activado</span>`;
+                                disabledAttr = `disabled`;
                             }else{
-                                btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Agendado</span>`;
+                                let tieneReservasPendientes = false;
+                                $.each(v.detallesOrden, function(k1,v1){
+                                    if(v1.codigoReserva == null){
+                                        tieneReservasPendientes = true;
+                                    }
+                                })
+                                if(!tieneReservasPendientes){
+                                    btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Agendado</span>`;
+                                }
                             }
                         }else{
                             btnAgenda = ``;
@@ -1724,6 +1743,10 @@
         })
 
         $('body').on('click', '.btn-activar', async function(){
+            if($(this).hasClass('btn-activar-paquete')){
+                return;
+            }
+            _agregarItemPaquete = false;
             if($('#autorizacion').is(':checked')) {
                 let autorizar = await autorizarResultados();
                 if(!autorizar){
@@ -1743,6 +1766,12 @@
             //     $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris">${lugares.join(", ").toLowerCase()}</span>. Y espera a ser llamado.`);
             //     $('#modalNotificarLlegadaDirigirLugar').modal('show');
             // }
+        })
+
+        $('body').on('click', '.btn-activar-paquete', async function(){
+            _agregarItemPaquete = true;
+            let detalle = JSON.parse($('#dataPaquetes').val());
+            await activarPrestacionesInicializar('PRESTACION', detalle)
         })
 
         $('body').on('change', '#checkTerminosCondicion', function(){
@@ -1788,6 +1817,19 @@
             }
         });
 
+        $('#v-pills-tabPaqueteContent').on('change', 'input', function(){
+            let tieneItemChequeado = false;
+            $('#v-pills-tabPaqueteContent').find('input:checked').each(async function(index, element) {
+                console.log("Bingo, hay una!")
+                tieneItemChequeado = true;
+            });
+
+            if(tieneItemChequeado){
+                $('.btn-activar').removeClass('activar-disabled');
+            }else{
+                $('.btn-activar').addClass('activar-disabled');
+            }
+        });
 
         $('body').on('click', '.btn-agendar-prestacion', async function(){
             let generales = JSON.parse($(this).attr('generales-rel'));
@@ -1984,6 +2026,7 @@
         })
 
         $('body').on('click', '.btn-pagar', async function(){
+            _agregarItemPaquete = false;
             let detalle = JSON.parse($(this).attr('data-rel'));
             _detallePagar = detalle;
             let esTerapia = $(this).attr('terapia-rel');
@@ -2439,6 +2482,7 @@
 
     async function activarPrestacionesInicializar(origen = 'CHEQUEO', detalle = null){
         // let canalFacturacion = "CAJA";
+        console.log({origen});
         let canalFacturacion = "DIGITURNOS";
         let esDigiturno = true;
 
@@ -2485,10 +2529,10 @@
         }
     }
 
-    async function obtenerPrestacionesParaActivar(){
+    async function obtenerPrestacionesParaActivar(idTab){
         let arr = []
         let ordenesNotificadas = [];
-        $('#v-pills-tabContent').find('input:checked').each(async function(index, element) {
+        $(`#${idTab}`).find('input:checked').each(async function(index, element) {
             // let prestacion = JSON.parse($(this).attr('data-rel'))
             // if(prestacion.estadoExamen == "PENDIENTE"){
             //     // solo unico
@@ -2500,6 +2544,7 @@
             //     })
             // }
             let prestacion = JSON.parse($(this).attr('data-rel'))
+            console.log(prestacion)
             if(parseInt(prestacion.cantidadDisponible) === 0){
                 // solo unico y que sean lab
                 if(prestacion.codigoOrdApoyo !== null && prestacion.estadoExamen == "PENDIENTE"){
@@ -2522,17 +2567,21 @@
         return arr;
     }
 
+    let idTab;
     async function agregarItemChequeo(idPreTransaccion){
         console.log("------------")
         let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
         let dataChequeo;
         if(tipoActivacion == "CHEQUEO"){
+            idTab = 'v-pills-tabContent';
             dataChequeo = JSON.parse($('#dataChequeo').val());
         }else{
+            idTab = 'v-pills-tabPaqueteContent';
             dataChequeo = JSON.parse($('#dataPaquetes').val());
         }
-        let prestacionesActivar = await obtenerPrestacionesParaActivar();
+        console.log(dataChequeo)
+        let prestacionesActivar = await obtenerPrestacionesParaActivar(idTab);
         console.log({prestacionesActivar})
         console.log(prestacionesActivar.length)
         if(prestacionesActivar.length == 0){
@@ -2666,9 +2715,21 @@
                 "lineaDetalleOrden": detalle.lineaDetalleOrden
             }]
         }else if(detalle.tipoServicio == "PAQUETES_PROMOCIONALES"){
+            let detallesPaquete = [];
+            if(_agregarItemPaquete){
+                idTab = 'v-pills-tabPaqueteContent';
+                $(`#${idTab}`).find('input:checked').each(async function(index, element) {
+                    let prestacion = JSON.parse($(this).attr('data-rel'))
+                    detallesPaquete.push({
+                        "_id": generateUUIDv4(),
+                        "lineaDetalleContPaqPcte": prestacion.lineaDetalleContadorPaciente
+                    })
+                })
+            }
             payload.paquetesPromocionales = {
                 "_id": generateUUIDv4(),
-                "secuenciaPaquetePaciente": detalle.secuenciaPaquetePaciente
+                "secuenciaPaquetePaciente": detalle.secuenciaPaquetePaciente,
+                "detallesPaquete": detallesPaquete
             }
         }else{
             let detallesOrdenItems = [];
@@ -2722,6 +2783,10 @@
                         //     flagAutorizacion = true;
                         // }
                     }
+                }
+                if(detalle.tipoServicio == "PAQUETES_PROMOCIONALES" && _agregarItemPaquete){
+                    await facturarCobroPinPad();
+                    return;
                 }
                 await consultaPreTrx(idPreTransaccion, data.data);
             }
@@ -3334,7 +3399,7 @@
 
     async function validarActivarLaboratorioChequeos(){
         let activar = false;
-        $('#v-pills-tabContent').find('input:checked').each(function(index, element) {
+        $('#'+idTab).find('input:checked').each(function(index, element) {
             let prestacion = JSON.parse($(this).attr('data-rel'))
             let nombreServicio = $(this).attr("nombreServicio-rel");
             if(nombreServicio == "LABORATORIO"){
@@ -3347,7 +3412,7 @@
 
     async function labelLugaresChequeos(){
         let lugares = [];
-        $('#v-pills-tabContent').find('input:checked').each(function(index, element) {
+        $('#'+idTab).find('input:checked').each(function(index, element) {
             let prestacion = JSON.parse($(this).attr('data-rel'))
             let nombreServicio = $(this).attr("nombreServicio-rel")
             // console.log(nombreServicio)
@@ -4575,7 +4640,7 @@
     }
 
     function obtenerBeneficio(beneficio){
-        console.log(obtenerBeneficio);
+        // console.log(obtenerBeneficio);
         if(beneficio  == null){
             return `Particular`;
         }
