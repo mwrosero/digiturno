@@ -2214,8 +2214,8 @@
 
     // Función para reiniciar el conteo de inactividad
     function reiniciarConteo() {
-        // clearTimeout(temporizadorInactividad);
-        // temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
+        clearTimeout(temporizadorInactividad);
+        temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
     }
 
     function obtenerNombreConsultorio(detalle) {
