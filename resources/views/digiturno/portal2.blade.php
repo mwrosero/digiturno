@@ -1398,6 +1398,7 @@
                     // if( value.nombreServicioNivel1 == "CONSULTA"){
                     console.log(value)
                     if(value.esAgendable || value.requiereAgendamientoPrevio){
+                        let prestacionReservar = v;
                         let qtyCitas = ``;
                         {{-- if(v.cantidad > 1){
                             qtyCitas = ` (${v.cantidadUtilizada}/${v.cantidad}) `;
@@ -1406,12 +1407,26 @@
                         $.each(v.detallesOrden, function(k1,v1){
                             if(v1.codigoReserva !== null){
                                 cantidadUsada++;
+                            }else{
+                                if(v1.fechaRecepcion == null){
+                                    prestacionReservar = v1;
+                                    prestacionReservar.secuenciaPaquetePaciente = v.secuenciaPaquetePaciente;
+                                    prestacionReservar.detalleItemPaquete = v.detalleItemPaquete;
+                                    prestacionReservar.detalleItemPaquete.itemPaquete = {
+                                        "lineaDetalle": v.lineaDetalleOrden,
+                                        "numeroOrden": v.numeroOrden
+                                    }
+                                    console.log('##############################')
+                                    console.log(v);
+                                    console.log(v1);
+                                    console.log(prestacionReservar);
+                                }
                             }
                         })
                         if(v.cantidad > 1){
                             qtyCitas = ` (${cantidadUsada}/${v.cantidad}) `;
                         }
-                        btnAgenda = `${qtyCitas}<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(v)}'>Agendar</div>`;                        
+                        btnAgenda = `${qtyCitas}<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(prestacionReservar)}'>Agendar</div>`;                        
                     }
 
                     if(v.numeroOrden == null || (v.cantidadDisponible == 0 && !v.estaRecepcionado)){
@@ -1856,9 +1871,9 @@
             console.log("/////////////////")
             console.log(generales)
             console.log(detalle)
-            {{-- return; --}}
+            
             let codigoEspecialidad = detalle.codigoEspecialidadServicio;
-            if(detalle.hasOwnProperty('detalleItemPaquete')){
+            if(detalle.hasOwnProperty('detalleItemPaquete') || generales.tipoServicio == "PAQUETES_PROMOCIONALES"){
                 origen = "paquetes";
                 codigoEspecialidad = detalle.codigoEspecialidad;
             }
@@ -1925,7 +1940,7 @@
                 "online": (detalle.esTeleconsulta) ? "S" : "N",
                 "especialidad": {
                     "codigoEspecialidad": codigoEspecialidad,
-                    "nombre": detalle.nombreServicio,
+                    "nombre": detalle.nombreServicio ?? generales.nombrePaquete,
                     "esOnline": (detalle.esTeleconsulta) ? "S" : "N",
                     "codigoServicio": detalle.codigoServicio,
                     "codigoPrestacion": detalle.codigoPrestacion,
@@ -1936,11 +1951,20 @@
                 "origen": origen,
                 "diagnosticos": generales.diagnosticos
             }
+            
+            console.log(dataCitaReserva)
+            {{-- return; --}}
 
             let tipoAgenda = 'AGENDAR_ORDEN_INTERNA';
             if(detalle.hasOwnProperty('detalleItemPaquete')){
                 dataCitaReserva.detalleItemPaquete = detalle.detalleItemPaquete;
                 dataCitaReserva.secuenciaPaquetePaciente = detalle.secuenciaPaquetePaciente;
+                tipoAgenda = 'AGENDAR_PAQUETE_PROMOCIONAL';
+            }
+
+            if(generales.hasOwnProperty('detalleItemPaquete')){
+                dataCitaReserva.detalleItemPaquete = generales.detalleItemPaquete;
+                dataCitaReserva.secuenciaPaquetePaciente = generales.secuenciaPaquetePaciente;
                 tipoAgenda = 'AGENDAR_PAQUETE_PROMOCIONAL';
             }
 
