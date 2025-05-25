@@ -1274,6 +1274,7 @@
         });
 
         $('body').on('click', '.btn-detalle-paquete', async function(){
+            $('.btn-activar-paquete').addClass('activar-disabled');
             tipoActivacion = "PAQUETE";
             let dataPaquetes = $(this).attr('data-rel');
             $('#dataPaquetes').val(dataPaquetes)
@@ -1437,6 +1438,13 @@
                         if(v.numeroOrden !== null){
                             if(esLaboratorio){
                                 btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Activado</span>`;
+                                if(v.detallesOrden !== null && v.detallesOrden.length > 0){
+                                    $.each(v.detallesOrden, function(k1,v1){
+                                        if(v1.codigoReserva == null){
+                                            btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2 text-capitalize">${v1.estadoExamen.toLowerCase()}</span>`;
+                                        }
+                                    })
+                                }
                                 disabledAttr = `disabled`;
                             }else{
                                 let tieneReservasPendientes = false;
@@ -4690,7 +4698,8 @@
         if(beneficio.convenio != null){
             return beneficio.convenio.nombreConvenio;
         }else if(beneficio.paquete != null){
-            return beneficio.paquete.nombrePaquete;
+            icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/promocion-ico.svg`;
+            return `${beneficio.paquete.nombrePaquete} <img class="ms-2" src="${icon_service_name}" alt="">`;
         }else if(beneficio.tarjeta != null){
             return beneficio.tarjeta.nombreTarjeta;
         }else{
