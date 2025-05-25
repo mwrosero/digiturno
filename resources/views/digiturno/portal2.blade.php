@@ -1381,6 +1381,7 @@
 
                 $.each(value.items, function(k,v){
                     console.log(v)
+                    let esMultiple = false;
                     let btnAgenda = ``;
                     let esLaboratorio = false;
                     let classLabNoOcupacional = ``;
@@ -1409,9 +1410,12 @@
                                 cantidadUsada++;
                             }else{
                                 if(v1.fechaRecepcion == null){
+                                    esMultiple = true;
                                     prestacionReservar = v1;
                                     prestacionReservar.secuenciaPaquetePaciente = v.secuenciaPaquetePaciente;
                                     prestacionReservar.detalleItemPaquete = v.detalleItemPaquete;
+                                    prestacionReservar.detalleItemPaquete.esMultiple = esMultiple;
+
                                     prestacionReservar.detalleItemPaquete.itemPaquete = {
                                         "lineaDetalle": v.lineaDetalleOrden,
                                         "numeroOrden": v.numeroOrden
