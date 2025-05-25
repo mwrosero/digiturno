@@ -76,7 +76,7 @@ Mi Veris - Citas - Datos de facturación
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center align-items-center">
                 <a href="#" class="btn fw-normal bg-veris text-white fs--16 badge bg-veris-dark px-5 py-2 mx-2 fs-4 btn-salir w-25">No</a>
-                <a href="/portal/{{ $params }}?mac={{ $mac }}" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1 refresh-services w-25">Si</a>
+                <a href="/portal/{{ $params }}?mac={{ $mac }}" class="btn fw-normal fs--16 badge bg-white px-5 py-2 mx-2 fs-4 text-veris border-veris-1 delete-storage-agendamiento refresh-services w-25">Si</a>
             </div>
         </form>
     </div>
@@ -380,6 +380,10 @@ Mi Veris - Citas - Datos de facturación
             }
         })
 
+        $('body').on('click', '.delete-storage-agendamiento', async function(){
+            localStorage.removeItem("flujo");
+        })
+
         $('#modalPagoQr').on('hidden.bs.modal', async function (e) {
             // reiniciarConteo()
         });
@@ -412,11 +416,9 @@ Mi Veris - Citas - Datos de facturación
 
         let timeoutId;
 
-        $('body').on('input', '#numeroIdentificacion', function() {
+        $('body').on('keyup change', '#numeroIdentificacion', function() {
             clearTimeout(timeoutId); // Limpia el timeout anterior
-            
             timeoutId = setTimeout(async function() {
-                console.log("verifica");
                 let datosF = {
                     "numeroIdentificacion": $('#numeroIdentificacion').val(),
                     "codigoTipoIdentificacion": $('#codigoTipoIdentificacion option:selected').val()
@@ -425,18 +427,20 @@ Mi Veris - Citas - Datos de facturación
                     if(esValidaCedula($('#numeroIdentificacion').val())){
                         await verificarDatosFactura(datosF);
                     }else{
-                        toastr.warning("Cédula incorrecta", "Atención", {
-                            timeOut: 5000
-                        });
-                        $('#nombreCompleto').val("");
-                        $('#email').val("");
+                        if($('#numeroIdentificacion').val().length == 10){
+                            toastr.warning("Cédula incorrecta", "Atención", {
+                                timeOut: 5000
+                            });
+                            $('#nombreCompleto').val("");
+                            $('#email').val("");
+                        }
                     }
                 }else{
                     if($('#numeroIdentificacion').val().length == 13){
                         await verificarDatosFactura(datosF);
                     }
                 }
-            }, 2000);
+            }, 2000); // Espera 1 segundo después de la última entrada
         });
     });
 
@@ -811,11 +815,15 @@ Mi Veris - Citas - Datos de facturación
     }
 
     async function verificarDatosFactura(datos = null){
-        let numeroIdentificacion = datosPago.consulta[0].paciente.numeroIdentificacion;
-        let codigoTipoIdentificacion = datosPago.consulta[0].paciente.codigoTipoIdentificacion;
+        console.log("---------------verificarDatosFactura")
+        let numeroIdentificacion;
+        let codigoTipoIdentificacion;
         if(datos !== null){
             numeroIdentificacion = datos.numeroIdentificacion;
             codigoTipoIdentificacion = datos.codigoTipoIdentificacion;
+        }else{
+            numeroIdentificacion = datosPago.consulta[0].paciente.numeroIdentificacion;
+            codigoTipoIdentificacion = datosPago.consulta[0].paciente.codigoTipoIdentificacion;
         }
         let args = [];
         args["endpoint"] = `${api_url_digitales}/facturacion/v1/pacientes/verificar_datos_factura?numeroIdentificacion=${numeroIdentificacion}&codigoTipoIdentificacion=${codigoTipoIdentificacion}`;

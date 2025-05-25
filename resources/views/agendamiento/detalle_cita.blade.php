@@ -563,11 +563,18 @@ Mi Veris - Citas - Revisa tus datos
             datosReserva.itemPaquete = dataCita.detalleItemPaquete.itemPaquete;
             // if(dataCita.tratamiento){
                 /*se recibe desde 3 flujos: tratamiento/re-agendamiento*/
-                datosReserva.numeroOrden = null;//dataCita.detalleItemPaquete.numeroOrden;
-                datosReserva.codigoEmpOrden = dataCita.detalleItemPaquete.codigoEmpresaOrden;
+                if(dataCita.detalleItemPaquete.esMultiple){
+                    datosReserva.numeroOrden = dataCita.tratamiento.numeroOrden;
+                    datosReserva.lineaDetalle = dataCita.tratamiento.lineaDetalle;
+                    datosReserva.codigoEmpOrden = dataCita.tratamiento.codigoEmpresaOrden;
+                }else{
+                    datosReserva.numeroOrden = null;
+                    datosReserva.lineaDetalle = null;
+                    datosReserva.codigoEmpOrden = dataCita.tratamiento.codigoEmpresaOrden;
+                }
                 console.log("----------")
                 console.log(dataCita.detalleItemPaquete.codigoEmpresaOrden)
-                datosReserva.lineaDetalle = null;//dataCita.detalleItemPaquete.lineaDetalleOrden;
+                // datosReserva.lineaDetalle = null;//dataCita.detalleItemPaquete.lineaDetalleOrden;
                 datosReserva.secuenciaAfiliado
             // }
         }

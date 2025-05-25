@@ -58,6 +58,10 @@ async function call(args){
         myHeaders.append("trackId", trackId);
     }
 
+    if (typeof trackIdTmp !== 'undefined') {
+        myHeaders.append("trackId", trackIdTmp);
+    }
+
     if(JSON.parse(localStorage.getItem('userVeris')) != null){
         myHeaders.append("usuarioSession", JSON.parse(localStorage.getItem('userVeris')).codigoUsuario);
     }

@@ -380,11 +380,11 @@
             <div class="modal-body p-3">
                 <ul class="list-group border-0 p-0 my-2" id="detalleComponentesPaquete">
                 </ul>
-                <div class="my-2 box-info-detalle p-2 bg-silver">
+                <div class="my-2 box-info-detalle p-2 bg-silver d-none">
                 </div>
             </div>
-            <div class="modal-footer pt-0 pb-3 px-3 border-0">
-                <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4" data-bs-dismiss="modal">CERRAR</a>
+            <div class="modal-footer pt-0 pb-3 px-3 box-info-pago-paquete border-0 d-flex justify-content-center align-items-center">
+                {{-- <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4" data-bs-dismiss="modal">CERRAR</a> --}}
             </div>
         </form>
     </div>
@@ -407,7 +407,7 @@
                 </div>
             </div>
             <div class="modal-footer pt-0 pb-3 px-3 border-0 d-flex justify-content-center">
-                <a href="#" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-2 fs-4 btn-activar activar-disabled" data-bs-dismiss="modal">ACTIVAR</a>
+                <a href="#" class="btn fw-normal fs--16 badge bg-veris-dark text-white m-0 px-4 py-2 mx-2 fs-4 btn-activar btn-activar-paquete activar-disabled" data-bs-dismiss="modal">ACTIVAR</a>
                 <a href="#" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-2 fs-4" data-bs-dismiss="modal">CERRAR</a>
             </div>
         </form>
@@ -876,6 +876,7 @@
     const tiempoMaximoRespuesta = 15; // Tiempo máximo de respuesta al modal en segundos
     let tipoActivacion;
     let _detallePagar;
+    let _agregarItemPaquete = false;
     $(document).ready(async function() {
         if(!isMobile()){
             KioskBoard.init({
@@ -894,7 +895,7 @@
 
         }
 
-        if(esKiosko){
+        if(isKiosk()){
             KioskBoard.init({
                 keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
                 keysNumeric: true,
@@ -1182,7 +1183,7 @@
                 // console.log("-------")
                 let btnPagar = ``;
                 if(detalle.tipoServicio == "ORDEN_MEDICA" && (detalle.nombreServicioNivel1 == "LABORATORIO" || detalle.nombreServicioNivel1 == "IMAGENES" || detalle.nombreServicioNivel1 == "PROCEDIMIENTOS" || detalle.nombreServicioNivel1 == "ODONTOLOGIA") && detalle.permitePago){
-                    if(esKiosko){
+                    if(isKiosk()){
                         // console.log(99)
                         if(esProcedimiento && qtyPrestacionesPorPagar >1){
                             btnPagar = `<button type="button" data-rel='${escapeHtmlAttr(JSON.stringify(detalle))}' class="btn flex-fill bg-veris text-white btn-turno p-2 py-3 mt-3" data-bs-dismiss="modal">
@@ -1273,6 +1274,7 @@
         });
 
         $('body').on('click', '.btn-detalle-paquete', async function(){
+            $('.btn-activar-paquete').addClass('activar-disabled');
             tipoActivacion = "PAQUETE";
             let dataPaquetes = $(this).attr('data-rel');
             $('#dataPaquetes').val(dataPaquetes)
@@ -1380,6 +1382,7 @@
 
                 $.each(value.items, function(k,v){
                     console.log(v)
+                    let esMultiple = false;
                     let btnAgenda = ``;
                     let esLaboratorio = false;
                     let classLabNoOcupacional = ``;
@@ -1397,19 +1400,62 @@
                     // if( value.nombreServicioNivel1 == "CONSULTA"){
                     console.log(value)
                     if(value.esAgendable || value.requiereAgendamientoPrevio){
+                        let prestacionReservar = v;
                         let qtyCitas = ``;
-                        if(v.cantidad > 1){
+                        {{-- if(v.cantidad > 1){
                             qtyCitas = ` (${v.cantidadUtilizada}/${v.cantidad}) `;
+                        } --}}
+                        let cantidadUsada = 0;
+                        $.each(v.detallesOrden, function(k1,v1){
+                            if(v1.codigoReserva !== null){
+                                cantidadUsada++;
+                            }else{
+                                if(v1.fechaRecepcion == null){
+                                    esMultiple = true;
+                                    prestacionReservar = v1;
+                                    prestacionReservar.secuenciaPaquetePaciente = v.secuenciaPaquetePaciente;
+                                    prestacionReservar.detalleItemPaquete = v.detalleItemPaquete;
+                                    prestacionReservar.detalleItemPaquete.esMultiple = esMultiple;
+
+                                    prestacionReservar.detalleItemPaquete.itemPaquete = {
+                                        "lineaDetalle": v.lineaDetalleOrden,
+                                        "numeroOrden": v.numeroOrden
+                                    }
+                                    console.log('##############################')
+                                    console.log(v);
+                                    console.log(v1);
+                                    console.log(prestacionReservar);
+                                }
+                            }
+                        })
+                        if(v.cantidad > 1){
+                            qtyCitas = ` (${cantidadUsada}/${v.cantidad}) `;
                         }
-                        btnAgenda = `${qtyCitas}<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(v)}'>Agendar</div>`;                        
+                        btnAgenda = `${qtyCitas}<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(prestacionReservar)}'>Agendar</div>`;                        
                     }
 
                     if(v.numeroOrden == null || (v.cantidadDisponible == 0 && !v.estaRecepcionado)){
                         if(v.numeroOrden !== null){
                             if(esLaboratorio){
                                 btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Activado</span>`;
+                                if(v.detallesOrden !== null && v.detallesOrden.length > 0){
+                                    $.each(v.detallesOrden, function(k1,v1){
+                                        if(v1.codigoReserva == null){
+                                            btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2 text-capitalize">${v1.estadoExamen.toLowerCase()}</span>`;
+                                        }
+                                    })
+                                }
+                                disabledAttr = `disabled`;
                             }else{
-                                btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Agendado</span>`;
+                                let tieneReservasPendientes = false;
+                                $.each(v.detallesOrden, function(k1,v1){
+                                    if(v1.codigoReserva == null){
+                                        tieneReservasPendientes = true;
+                                    }
+                                })
+                                if(!tieneReservasPendientes){
+                                    btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Agendado</span>`;
+                                }
                             }
                         }else{
                             btnAgenda = ``;
@@ -1475,9 +1521,9 @@
         })
 
 
-        $('body').on('click', '.btn-detalle-paquete_OLD', async function(){
+        $('body').on('click', '.btn-detalle-paquete-por-pagar', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
-            // console.log(detalle)
+            console.log(detalle)
             $('#tituloPaqueteDetalle').html(`${detalle.nombrePaquete}`);
             // si el detalle de cantidadDisponible > 0 Tiene la prestacion pendiente por activar
             // si el campo cantidadUtilizada == 0 y el campo estaRecepcionado == false significa que el paquete no ha sido utilizado en la atencion
@@ -1495,6 +1541,22 @@
                     <p class="text-900 fs-12 mb-0"> Muestra pendiente por realizar o por pagar.</p>
                 </div>
             `);
+
+            let elemPago = ``;
+            if(isKiosk() && !isMobile()){
+                elemPago += `<button type="button" data-bs-dismiss="modal" data-rel='${JSON.stringify(detalle)}' class="btn fw-normal fs--16 px-5 py-2 mx-2 fs-4 bg-veris text-white btn-pagar">
+                        Pagar
+                    </button>`;
+            }else{
+                elemPago += `<button type="button" data-bs-dismiss="modal" data-rel='${JSON.stringify(detalle)}' class="btn fw-normal fs--16 px-5 py-2 mx-2 fs-4 bg-veris text-white btn-link-pago">
+                        Pagar aquí
+                    </button>
+                    <button type="button" data-bs-dismiss="modal" data-rel='${JSON.stringify(detalle)}' class="btn fw-normal fs--16 px-5 py-2 mx-2 fs-4 bg-white border-veris-1 text-veris btn-turno">
+                        Pagar en caja
+                    </button>`;
+            }
+
+            $('.box-info-pago-paquete').html(elemPago);
 
             let elem = ``;
             $.each(detalle.detallesDisponibles, function(key, value){
@@ -1708,6 +1770,10 @@
         })
 
         $('body').on('click', '.btn-activar', async function(){
+            if($(this).hasClass('btn-activar-paquete')){
+                return;
+            }
+            _agregarItemPaquete = false;
             if($('#autorizacion').is(':checked')) {
                 let autorizar = await autorizarResultados();
                 if(!autorizar){
@@ -1727,6 +1793,12 @@
             //     $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris">${lugares.join(", ").toLowerCase()}</span>. Y espera a ser llamado.`);
             //     $('#modalNotificarLlegadaDirigirLugar').modal('show');
             // }
+        })
+
+        $('body').on('click', '.btn-activar-paquete', async function(){
+            _agregarItemPaquete = true;
+            let detalle = JSON.parse($('#dataPaquetes').val());
+            await activarPrestacionesInicializar('PRESTACION', detalle)
         })
 
         $('body').on('change', '#checkTerminosCondicion', function(){
@@ -1772,6 +1844,19 @@
             }
         });
 
+        $('#v-pills-tabPaqueteContent').on('change', 'input', function(){
+            let tieneItemChequeado = false;
+            $('#v-pills-tabPaqueteContent').find('input:checked').each(async function(index, element) {
+                console.log("Bingo, hay una!")
+                tieneItemChequeado = true;
+            });
+
+            if(tieneItemChequeado){
+                $('.btn-activar').removeClass('activar-disabled');
+            }else{
+                $('.btn-activar').addClass('activar-disabled');
+            }
+        });
 
         $('body').on('click', '.btn-agendar-prestacion', async function(){
             let generales = JSON.parse($(this).attr('generales-rel'));
@@ -1798,9 +1883,9 @@
             console.log("/////////////////")
             console.log(generales)
             console.log(detalle)
-            {{-- return; --}}
+            
             let codigoEspecialidad = detalle.codigoEspecialidadServicio;
-            if(detalle.hasOwnProperty('detalleItemPaquete')){
+            if(detalle.hasOwnProperty('detalleItemPaquete') || generales.tipoServicio == "PAQUETES_PROMOCIONALES"){
                 origen = "paquetes";
                 codigoEspecialidad = detalle.codigoEspecialidad;
             }
@@ -1867,7 +1952,7 @@
                 "online": (detalle.esTeleconsulta) ? "S" : "N",
                 "especialidad": {
                     "codigoEspecialidad": codigoEspecialidad,
-                    "nombre": detalle.nombreServicio,
+                    "nombre": detalle.nombreServicio ?? generales.nombrePaquete,
                     "esOnline": (detalle.esTeleconsulta) ? "S" : "N",
                     "codigoServicio": detalle.codigoServicio,
                     "codigoPrestacion": detalle.codigoPrestacion,
@@ -1878,11 +1963,20 @@
                 "origen": origen,
                 "diagnosticos": generales.diagnosticos
             }
+            
+            console.log(dataCitaReserva)
+            {{-- return; --}}
 
             let tipoAgenda = 'AGENDAR_ORDEN_INTERNA';
             if(detalle.hasOwnProperty('detalleItemPaquete')){
                 dataCitaReserva.detalleItemPaquete = detalle.detalleItemPaquete;
                 dataCitaReserva.secuenciaPaquetePaciente = detalle.secuenciaPaquetePaciente;
+                tipoAgenda = 'AGENDAR_PAQUETE_PROMOCIONAL';
+            }
+
+            if(generales.hasOwnProperty('detalleItemPaquete')){
+                dataCitaReserva.detalleItemPaquete = generales.detalleItemPaquete;
+                dataCitaReserva.secuenciaPaquetePaciente = generales.secuenciaPaquetePaciente;
                 tipoAgenda = 'AGENDAR_PAQUETE_PROMOCIONAL';
             }
 
@@ -1968,6 +2062,7 @@
         })
 
         $('body').on('click', '.btn-pagar', async function(){
+            _agregarItemPaquete = false;
             let detalle = JSON.parse($(this).attr('data-rel'));
             _detallePagar = detalle;
             let esTerapia = $(this).attr('terapia-rel');
@@ -2064,7 +2159,7 @@
 
 
         $('input').on('focus', function() {
-            if(esKiosko){
+            if(isKiosk()){
                 setTimeout(function(){
                     $('.kioskboard-key, .kioskboard-key-backspace, .kioskboard-key-enter, .kioskboard-key-space, .kioskboard-key-specialcharacter, .kioskboard-key-capslock').addClass('custom-kioskboard-key-kiosko');
                 }, 100)
@@ -2119,8 +2214,8 @@
 
     // Función para reiniciar el conteo de inactividad
     function reiniciarConteo() {
-        clearTimeout(temporizadorInactividad);
-        temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
+        // clearTimeout(temporizadorInactividad);
+        // temporizadorInactividad = setTimeout(mostrarModal, tiempoInactividad * 1000);
     }
 
     function obtenerNombreConsultorio(detalle) {
@@ -2254,12 +2349,16 @@
         let email = $('#email_link_pago').val();
         if(isValidEmailAddress(email)){
             let detalle = JSON.parse($('#detallePago').val());
+            console.log(detalle);
             let codigoPrincipal;
             if(detalle.tipoServicio == "ORDEN_MEDICA"){
+                codigoPrincipal = detalle.numeroOrden;
+            }else if(detalle.tipoServicio == "PAQUETES_PROMOCIONALES"){
                 codigoPrincipal = detalle.numeroOrden;
             }else{
                 codigoPrincipal = detalle.codigoReserva;
             }
+
             let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
 
@@ -2289,8 +2388,11 @@
 
     async function crearLinkpasarela(datos){
         let detalle = JSON.parse(datos);
+        console.log(detalle)
         let codigoPrincipal;
         if(detalle.tipoServicio == "ORDEN_MEDICA"){
+            codigoPrincipal = detalle.numeroOrden;
+        }else if(detalle.tipoServicio == "PAQUETES_PROMOCIONALES"){
             codigoPrincipal = detalle.numeroOrden;
         }else{
             codigoPrincipal = detalle.codigoReserva;
@@ -2416,10 +2518,11 @@
 
     async function activarPrestacionesInicializar(origen = 'CHEQUEO', detalle = null){
         // let canalFacturacion = "CAJA";
+        console.log({origen});
         let canalFacturacion = "DIGITURNOS";
         let esDigiturno = true;
 
-        if(esKiosko){
+        if(isKiosk()){
             canalFacturacion = "KIOSKO";
             esDigiturno = false;
         }
@@ -2462,10 +2565,10 @@
         }
     }
 
-    async function obtenerPrestacionesParaActivar(){
+    async function obtenerPrestacionesParaActivar(idTab){
         let arr = []
         let ordenesNotificadas = [];
-        $('#v-pills-tabContent').find('input:checked').each(async function(index, element) {
+        $(`#${idTab}`).find('input:checked').each(async function(index, element) {
             // let prestacion = JSON.parse($(this).attr('data-rel'))
             // if(prestacion.estadoExamen == "PENDIENTE"){
             //     // solo unico
@@ -2477,6 +2580,7 @@
             //     })
             // }
             let prestacion = JSON.parse($(this).attr('data-rel'))
+            console.log(prestacion)
             if(parseInt(prestacion.cantidadDisponible) === 0){
                 // solo unico y que sean lab
                 if(prestacion.codigoOrdApoyo !== null && prestacion.estadoExamen == "PENDIENTE"){
@@ -2499,17 +2603,21 @@
         return arr;
     }
 
+    let idTab;
     async function agregarItemChequeo(idPreTransaccion){
         console.log("------------")
         let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
         let dataChequeo;
         if(tipoActivacion == "CHEQUEO"){
+            idTab = 'v-pills-tabContent';
             dataChequeo = JSON.parse($('#dataChequeo').val());
         }else{
+            idTab = 'v-pills-tabPaqueteContent';
             dataChequeo = JSON.parse($('#dataPaquetes').val());
         }
-        let prestacionesActivar = await obtenerPrestacionesParaActivar();
+        console.log(dataChequeo)
+        let prestacionesActivar = await obtenerPrestacionesParaActivar(idTab);
         console.log({prestacionesActivar})
         console.log(prestacionesActivar.length)
         if(prestacionesActivar.length == 0){
@@ -2602,18 +2710,29 @@
 
     let flagAutorizacion = false;
     async function agregarItemTurno(idPreTransaccion, detalle, origen = "TURNO"){
+        console.log(detalle)
         let dataAttr = $('.paciente-item-selected').attr("data-rel");
         let paciente = JSON.parse(dataAttr);
         let numAuthMedPay = null;
 
-        if(detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+        if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
             if( origen != "TURNO" && parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
                 console.log("-----////---------");
                 console.log(7)
                 await obtenerAutorizacionMedPay(detalle);
+                if(cortaProcesoYEnviaCaja){
+                    toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atenci', {
+                        timeOut: 5000
+                    });
+                    await generarTurno(_detallePagar, true)
+                    cortaProcesoYEnviaCaja = false;
+                    return;
+                }
                 console.log(8)
                 flagAutorizacion = true;
-                numAuthMedPay = datosPago.sync.secuenciaTransaccion;
+                if(datosPago.hasOwnProperty('sync')){
+                    numAuthMedPay = datosPago.sync.secuenciaTransaccion;
+                }
             }
         }
 
@@ -2642,10 +2761,22 @@
                 "lineaDetalleOrden": detalle.lineaDetalleOrden
             }]
         }else if(detalle.tipoServicio == "PAQUETES_PROMOCIONALES"){
-            payload.paquetesPromocionales = [{
+            let detallesPaquete = [];
+            if(_agregarItemPaquete){
+                idTab = 'v-pills-tabPaqueteContent';
+                $(`#${idTab}`).find('input:checked').each(async function(index, element) {
+                    let prestacion = JSON.parse($(this).attr('data-rel'))
+                    detallesPaquete.push({
+                        "_id": generateUUIDv4(),
+                        "lineaDetalleContPaqPcte": prestacion.lineaDetalleContadorPaciente
+                    })
+                })
+            }
+            payload.paquetesPromocionales = {
                 "_id": generateUUIDv4(),
-                "secuenciaPaquetePaciente": detalle.secuenciaPaquetePaciente
-            }]
+                "secuenciaPaquetePaciente": detalle.secuenciaPaquetePaciente,
+                "detallesPaquete": detallesPaquete
+            }
         }else{
             let detallesOrdenItems = [];
             $.each(detalle.detallesOrden, function(key, value){
@@ -2684,7 +2815,7 @@
                 if(detalle.tipoServicio == "RESERVA" && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     await setearDiagnostico(detalle);
                 }
-                if(detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+                if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente) && detalle.beneficio.convenio.requiereAutorizacion){
                         await obtenerAutorizacion(detalle);
                         flagAutorizacion = true;
@@ -2699,6 +2830,10 @@
                         // }
                     }
                 }
+                if(detalle.tipoServicio == "PAQUETES_PROMOCIONALES" && _agregarItemPaquete){
+                    await facturarCobroPinPad();
+                    return;
+                }
                 await consultaPreTrx(idPreTransaccion, data.data);
             }
         }
@@ -2707,12 +2842,15 @@
     async function obtenerInfoConvenio(detalle){
         console.log("==============obtenerInfoConvenio================")
         let secuenciaAfiliadoConvenio;
-        let convenio = []
+        let convenio = [];
+
+        let codigoCliente;
+        let codigoConvenio;
 
         if(_detallePagar.hasOwnProperty('beneficio')){
             console.log(0)
-            let codigoCliente = _detallePagar.beneficio.convenio.codigoCliente;
-            let codigoConvenio = _detallePagar.beneficio.convenio.codigoConvenio;
+            codigoCliente = _detallePagar.beneficio.convenio.codigoCliente;
+            codigoConvenio = _detallePagar.beneficio.convenio.codigoConvenio;
             console.log(codigoCliente, codigoConvenio)
             $.each(conveniosPaciente, function(key, value){
                 if(clientesAuth.includes(value.codigoCliente) && codigoCliente == value.codigoCliente && value.codigoConvenio == codigoConvenio){
@@ -2734,6 +2872,7 @@
         return convenio;
     }
 
+    cortaProcesoYEnviaCaja = false;
     async function obtenerAutorizacionMedPay(detalle){
         console.log('MEDPAYYYYYYYYYYYYYY');
         console.log(detalle);
@@ -2741,6 +2880,7 @@
         let convenio = await obtenerInfoConvenio(detalle);
         // alert(convenio.nemonicoTipoCredito)
         if(convenio.informacionExternaPlan === null){
+            cortaProcesoYEnviaCaja = true;
             flagAutorizacion = false;
             console.log("No emite autorización")
             return;
@@ -2748,11 +2888,12 @@
 
         let diagnosticos = [29616];
         if(detalle.hasOwnProperty('diagnosticos')){
-            diagnosticos = [];
-            $.each(detalle.diagnosticos, function(key, value){
-                diagnosticos.push(parseInt(value.codigoDiagnostico));
-            })
-            //return;
+            if(detalle.diagnosticos !== null){
+                diagnosticos = [];
+                $.each(detalle.diagnosticos, function(key, value){
+                    diagnosticos.push(parseInt(value.codigoDiagnostico));
+                })
+            }
         }
 
         let dataAttr = $('.paciente-item-selected').attr("data-rel");
@@ -2770,7 +2911,7 @@
 
         let canalInvocacion = "CAJ";
 
-        if(esKiosko){
+        if(isKiosk()){
             canalInvocacion = "KIO";
         }
 
@@ -2807,6 +2948,7 @@
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
+        args["dismissAlert"] = true;
         args["data"] = JSON.stringify({
             "idTrx": generateUUIDv4(),
             "idPaciente": paciente.idPaciente,
@@ -2836,6 +2978,8 @@
             toastr.error("", data.message, {
                 timeOut: 5000
             });
+            cortaProcesoYEnviaCaja = true;
+            //Llamar turno
         }
     }
 
@@ -2852,7 +2996,7 @@
         // }
         let canalInvocacion = "CAJ";
 
-        if(esKiosko){
+        if(isKiosk()){
             canalInvocacion = "KIO";
         }
         let args = [];
@@ -3019,11 +3163,15 @@
     }
 
     async function verificarDatosFactura(datos = null){
-        let numeroIdentificacion = datosPago.consulta[0].paciente.numeroIdentificacion;
-        let codigoTipoIdentificacion = datosPago.consulta[0].paciente.codigoTipoIdentificacion;
+        console.log('-----------verificarDatosFactura------------')
+        let numeroIdentificacion;
+        let codigoTipoIdentificacion;
         if(datos !== null){
             numeroIdentificacion = datos.numeroIdentificacion;
             codigoTipoIdentificacion = datos.codigoTipoIdentificacion;
+        }else{
+            numeroIdentificacion = datosPago.consulta[0].paciente.numeroIdentificacion;
+            codigoTipoIdentificacion = datosPago.consulta[0].paciente.codigoTipoIdentificacion;
         }
         let args = [];
         args["endpoint"] = `${api_url_digitales}/facturacion/v1/pacientes/verificar_datos_factura?numeroIdentificacion=${numeroIdentificacion}&codigoTipoIdentificacion=${codigoTipoIdentificacion}`;
@@ -3255,7 +3403,14 @@
             $('#modalDatosFacturacion').modal('hide');
             await cargarServicios();
             // alert("Pago realizado exitosamente, se imprimirá su factura...")
-            
+            if(_agregarItemPaquete){
+                idTab = 'v-pills-tabPaqueteContent';
+                let lugares = await labelLugaresChequeos();
+                $('#direccionDirigirseLlegada').html(`Tu orden ya está activada, por favor  dirígete al área de <span class="fw-bold text-capitalize text-veris">${lugares.join(", ").toLowerCase()}</span>. Y espera a ser llamado.`);
+                $('#modalNotificarLlegadaDirigirLugar').modal('show');
+                reiniciarConteo();
+                return;
+            }
             if(datosPago.validacion.valorTotalAPagarPaciente == 0){
                 $('.box-info-comprobante').html(`Transacción: <span class="ms-2"> ${datosPago.comprobantes.transacciones[0].numeroTransaccion}</span>`)
             }else{
@@ -3306,7 +3461,7 @@
 
     async function validarActivarLaboratorioChequeos(){
         let activar = false;
-        $('#v-pills-tabContent').find('input:checked').each(function(index, element) {
+        $('#'+idTab).find('input:checked').each(function(index, element) {
             let prestacion = JSON.parse($(this).attr('data-rel'))
             let nombreServicio = $(this).attr("nombreServicio-rel");
             if(nombreServicio == "LABORATORIO"){
@@ -3319,7 +3474,7 @@
 
     async function labelLugaresChequeos(){
         let lugares = [];
-        $('#v-pills-tabContent').find('input:checked').each(function(index, element) {
+        $('#'+idTab).find('input:checked').each(function(index, element) {
             let prestacion = JSON.parse($(this).attr('data-rel'))
             let nombreServicio = $(this).attr("nombreServicio-rel")
             // console.log(nombreServicio)
@@ -3559,6 +3714,7 @@
                                     // Permite pagar
                                 }
 
+                                {{-- if(permiteAgendar && detalle.tipoServicio !=='ORDENES_APOYO_PENDIENTE'){ --}}
                                 if(permiteAgendar){
                                     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
                                             Agendar cita
@@ -3567,7 +3723,7 @@
                                     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
                                         Ver detalle
                                     </button>`;
-                                    /*if(esKiosko){
+                                    /*if(isKiosk()){
                                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
                                                 Pagar
                                             </button>`;
@@ -3610,7 +3766,7 @@
                             }
                         }
                         {{-- if(detalle.nombreServicioNivel1 == "CONSULTA" && detalle.detallesOrden[0].codigoReserva == null){ --}}
-                        if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].codigoReserva == null && detalle.nombreServicioNivel1 != "LABORATORIO"){
+                        if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].codigoReserva == null && detalle.nombreServicioNivel1 != "LABORATORIO" && detalle.tipoServicio !=='ORDENES_APOYO_PENDIENTE'){
                             elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
                                         Agendar cita
                                     </button>`;
@@ -3729,9 +3885,9 @@
                     sectionEstadoPago = `porpagar`;
                     labelEstadoItem = `Por pagar`;
                     classEstadoItem = `text-pendiente`;
-                    // if(esKiosko){
+                    // if(isKiosk()){
                         if(detalle.permitePago){
-                            if(esKiosko && !isMobile()){
+                            if(isKiosk() && !isMobile()){
                                 elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
                                         Pagar
                                     </button>`;
@@ -3844,6 +4000,7 @@
             break;
             case 'PAQUETES_PROMOCIONALES':
                 // console.log(99999)
+                console.log(`----------------PAQUETES_PROMOCIONALES-------------------`)
                 icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/promocion-ico.svg`;
 
                 labelServicio = `${detalle.nombrePaquete.toLowerCase()}`;
@@ -3857,8 +4014,9 @@
                     dias = obtenerDiferenciaDiasIntl(detalle.fechaCaducidadUsoPaquete);
                 }
                 
+                let validesPaquete = ``
                 if(!estadosVigentes.includes(detalle.codigoEstado)){
-                    sectionEstadoPago = `porpagar`;
+                    {{-- sectionEstadoPago = `porpagar`; --}}
                     labelEstadoItem = `Por pagar`;
                     classEstadoItem = `text-pendiente`;
                 }else{
@@ -3868,19 +4026,39 @@
                         labelEstadoItem = `Caducado`;
                         classEstadoItem = `text-caution`;
                     }
-                }
-
-                elemFooterCard += `<div class="col-12 text-center fs-16 line-height-16 mb-3 fw-bold">
-                    <div class="mt-4 mb-3 fs-16 line-height-18 d-flex justify-content-center align-items-center">
+                    validesPaquete = `<div class="mt-4 mb-3 fs-16 line-height-18 d-flex justify-content-center align-items-center">
                         <span class="fw-bold text-veris-dark">Válido hasta:</span>
                         <span class="ms-2 ${ (dias < 0) ? `text-caution` : `text-veris` }">${detalle.fechaCaducidadUsoPaquete}</span>
                     </div>
                     <div class="mb-1 text-veris fs-16 line-height-18 d-flex justify-content-center align-items-center">
                         <span class="fw-bold text-veris-dark">Días restantes:</span> <div class="rounded-8 bg-veris-sky border-veris-1 py-2 px-3 ms-2">${ (dias > 0) ? dias : `0` }</div>
-                    </div>
+                    </div>`;
+                }
+
+                elemFooterCard += `<div class="col-12 text-center fs-16 line-height-16 mb-3 fw-bold">
+                    ${validesPaquete}
                 </div>`;
 
-                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-paquete p-2 py-3 mt-3">
+                let classPaqueteAction = `btn-detalle-paquete`;
+                let aditionalPaymentBtn = ``;
+                if(!estadosVigentes.includes(detalle.codigoEstado)){
+                    classPaqueteAction = `btn-detalle-paquete-por-pagar`;
+                    // Consultar a Marcos si esto debo revisar antes de dejarle pagar
+                    // obtenerDiferenciaDiasIntl(detalle.fechaVigencia)
+                    {{-- if(esKiosko && !isMobile()){
+                        aditionalPaymentBtn += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-pagar p-2 py-3 mt-3">
+                                Pagar
+                            </button>`;
+                    }else{
+                        aditionalPaymentBtn += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-veris text-white btn-link-pago p-2 py-3 mt-3">
+                                Pagar aquí
+                            </button>`;
+                        elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-turno p-2 py-3 mt-3">
+                                Pagar en caja
+                            </button>`;
+                    } --}}
+                }
+                elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris ${classPaqueteAction} p-2 py-3 mt-3">
                         Ver detalle
                     </button>`;
                 // if(dias < 0){
@@ -3892,7 +4070,7 @@
         }
 
         let classCards = `col-12 col-lg-6 col-xxl-4 d-flex mb-3 mt-0`;
-        if(esKiosko){
+        if(isKiosk()){
             classCards = `col-12 col-md-6 d-flex mb-3 mt-0`
         }
 
@@ -3931,7 +4109,7 @@
 
         if(addForToday){
             let classCards = `col-12 col-lg-6 col-xxl-4 d-flex mb-5 mt-0`;
-            if(esKiosko){
+            if(isKiosk()){
                 classCards = `col-12 col-md-6 d-flex mb-5 mt-0`
             }
             // if(detalle.tipoServicio == 'BATERIA_PRESTACIONES'){
@@ -4525,14 +4703,15 @@
     }
 
     function obtenerBeneficio(beneficio){
-        console.log(obtenerBeneficio);
+        // console.log(obtenerBeneficio);
         if(beneficio  == null){
             return `Particular`;
         }
         if(beneficio.convenio != null){
             return beneficio.convenio.nombreConvenio;
         }else if(beneficio.paquete != null){
-            return beneficio.paquete.nombrePaquete;
+            icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/promocion-ico.svg`;
+            return `${beneficio.paquete.nombrePaquete} <img class="ms-2" src="${icon_service_name}" alt="">`;
         }else if(beneficio.tarjeta != null){
             return beneficio.tarjeta.nombreTarjeta;
         }else{
@@ -4734,6 +4913,9 @@
 
     async function generarTurno(detalle, crearPtx = false){
         console.log(detalle);
+        console.log("GENERAR");
+
+        {{-- return; --}}
         let url_adicional = ``;
         
         // if(detalle != []){
