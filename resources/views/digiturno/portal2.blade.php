@@ -2720,6 +2720,14 @@
                 console.log("-----////---------");
                 console.log(7)
                 await obtenerAutorizacionMedPay(detalle);
+                if(cortaProcesoYEnviaCaja){
+                    toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atenci', {
+                        timeOut: 5000
+                    });
+                    await generarTurno(_detallePagar, true)
+                    cortaProcesoYEnviaCaja = false;
+                    return;
+                }
                 console.log(8)
                 flagAutorizacion = true;
                 if(datosPago.hasOwnProperty('sync')){
@@ -2864,6 +2872,7 @@
         return convenio;
     }
 
+    cortaProcesoYEnviaCaja = false;
     async function obtenerAutorizacionMedPay(detalle){
         console.log('MEDPAYYYYYYYYYYYYYY');
         console.log(detalle);
@@ -2871,6 +2880,7 @@
         let convenio = await obtenerInfoConvenio(detalle);
         // alert(convenio.nemonicoTipoCredito)
         if(convenio.informacionExternaPlan === null){
+            cortaProcesoYEnviaCaja = true;
             flagAutorizacion = false;
             console.log("No emite autorización")
             return;
@@ -2968,6 +2978,7 @@
             toastr.error("", data.message, {
                 timeOut: 5000
             });
+            cortaProcesoYEnviaCaja = true;
             //Llamar turno
         }
     }
@@ -3703,6 +3714,7 @@
                                     // Permite pagar
                                 }
 
+                                {{-- if(permiteAgendar && detalle.tipoServicio !=='ORDENES_APOYO_PENDIENTE'){ --}}
                                 if(permiteAgendar){
                                     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
                                             Agendar cita
@@ -3754,7 +3766,7 @@
                             }
                         }
                         {{-- if(detalle.nombreServicioNivel1 == "CONSULTA" && detalle.detallesOrden[0].codigoReserva == null){ --}}
-                        if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].codigoReserva == null && detalle.nombreServicioNivel1 != "LABORATORIO"){
+                        if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].codigoReserva == null && detalle.nombreServicioNivel1 != "LABORATORIO" && detalle.tipoServicio !=='ORDENES_APOYO_PENDIENTE'){
                             elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
                                         Agendar cita
                                     </button>`;
@@ -4901,6 +4913,9 @@
 
     async function generarTurno(detalle, crearPtx = false){
         console.log(detalle);
+        console.log("GENERAR");
+
+        {{-- return; --}}
         let url_adicional = ``;
         
         // if(detalle != []){
