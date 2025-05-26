@@ -2842,6 +2842,14 @@
                     if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente) && detalle.beneficio.convenio.requiereAutorizacion){
                         await obtenerAutorizacion(detalle);
                         flagAutorizacion = true;
+                        if(cortaProcesoYEnviaCaja){
+                            toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atenci', {
+                                timeOut: 5000
+                            });
+                            await generarTurno(_detallePagar, true)
+                            cortaProcesoYEnviaCaja = false;
+                            return;
+                        }
                     }else{
                         console.log(detalle.beneficio.convenio);
                         // if(parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
@@ -3037,18 +3045,10 @@
             datosPago.sync = data.data
             await setearAutorizacion();
         }else{
-            // cortaProcesoYEnviaCaja = true;
-            toastr.error("", data.message, {
+            cortaProcesoYEnviaCaja = true;
+            /*toastr.error("", data.message, {
                 timeOut: 5000
-            });
-            /*if(cortaProcesoYEnviaCaja){
-                toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atenci', {
-                    timeOut: 5000
-                });
-                await generarTurno(_detallePagar, true)
-                cortaProcesoYEnviaCaja = false;
-                return;
-            }*/
+            });*/
         }
     }
 
@@ -3137,6 +3137,14 @@
                 if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa){
                     flagAutorizacion = true;
                     await obtenerAutorizacion(detalle);
+                    if(cortaProcesoYEnviaCaja){
+                        toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atenci', {
+                            timeOut: 5000
+                        });
+                        await generarTurno(_detallePagar, true)
+                        cortaProcesoYEnviaCaja = false;
+                        return;
+                    }
                     await consultaPreTrx(idPreTransaccion, detalle);
                     return;
                 }
