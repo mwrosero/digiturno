@@ -933,7 +933,7 @@
             `;
             document.head.appendChild(style);
             $('.box-content-familia').removeClass('d-none');
-            await obtenerConvenios();
+            {{-- await obtenerConvenios(); --}}
         }else{
             // console.log(9)
             // $('#col-familia').removeClass('col-8').addClass('col-12')
@@ -1044,11 +1044,16 @@
             $('.paciente-item').removeClass('paciente-item-selected');
             $(this).addClass('paciente-item-selected');
             await cargarServicios(true);
+            conveniosSincronizados = false;
             await obtenerConvenios()
         })
 
         await drawListFamiliares();
         await cargarServicios(true);
+
+        if(isKiosk()){
+            // await obtenerConvenios();
+        }
 
         $('body').on('click', '.item-coincidencia', async function(){
             $('.item-coincidencia').removeClass('item-coincidencia-selected')
@@ -1406,7 +1411,11 @@
                             qtyCitas = ` (${v.cantidadUtilizada}/${v.cantidad}) `;
                         } --}}
                         let cantidadUsada = 0;
+                        let estaRecepcionado = true;
                         $.each(v.detallesOrden, function(k1,v1){
+                            if(v1.fechaRecepcion == null){
+                                estaRecepcionado = false;
+                            }
                             if(v1.codigoReserva !== null){
                                 cantidadUsada++;
                             }else{
@@ -1431,7 +1440,11 @@
                         if(v.cantidad > 1){
                             qtyCitas = ` (${cantidadUsada}/${v.cantidad}) `;
                         }
-                        btnAgenda = `${qtyCitas}<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(prestacionReservar)}'>Agendar</div>`;                        
+                        btnAgenda = `${qtyCitas}<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(prestacionReservar)}'>Agendar</div>`;
+                        if(estaRecepcionado){
+                            btnAgenda = `${qtyCitas}<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Realizado</span>`;
+
+                        }                     
                     }
 
                     if(v.numeroOrden == null || (v.cantidadDisponible == 0 && !v.estaRecepcionado)){
@@ -2076,6 +2089,15 @@
             // Inicializar pago
             console.log(detalle);
             {{-- return; --}}
+            if(!conveniosSincronizados){
+                if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+                    console.table(detalle.beneficio)
+                    toastr.info("Nos estamos comunicando con tu aseguradora, el proceso puede tardar unos segundos", 'Atención', {
+                        timeOut: 5000
+                    });
+                    await obtenerConvenios();
+                }
+            }
             await activarPrestacionesInicializar('PRESTACION', detalle)
         })
 
@@ -2721,7 +2743,7 @@
                 console.log(7)
                 await obtenerAutorizacionMedPay(detalle);
                 if(cortaProcesoYEnviaCaja){
-                    toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atenci', {
+                    toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atención', {
                         timeOut: 5000
                     });
                     await generarTurno(_detallePagar, true)
@@ -3014,9 +3036,18 @@
             datosPago.sync = data.data
             await setearAutorizacion();
         }else{
+            // cortaProcesoYEnviaCaja = true;
             toastr.error("", data.message, {
                 timeOut: 5000
             });
+            /*if(cortaProcesoYEnviaCaja){
+                toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atenci', {
+                    timeOut: 5000
+                });
+                await generarTurno(_detallePagar, true)
+                cortaProcesoYEnviaCaja = false;
+                return;
+            }*/
         }
     }
 
@@ -4993,19 +5024,24 @@
     }
 
     let conveniosPaciente;
+    let conveniosSincronizados = false;
     async function obtenerConvenios(){
         cargandoConvenios = true;
         let args = [];
         args["endpoint"] = `${api_url_digitales}/comercial/v1/pacientes/${dataTurno.paciente.idPaciente}/convenios?codigoEmpresa=1&canalInvocacion=KIO`;
+        //secuenciaAfiliado=
         args["method"] = "GET";
         args["token"] = accessToken;
         args["showLoader"] = true;
         const data = await call(args);
         if(data.code == 200){
+            conveniosSincronizados = true;
             cargandoConvenios = false;
             hideLoader()
             console.log(data);
             conveniosPaciente = data.data;
+        }else{
+            conveniosSincronizados = false;
         }
     }
 </script>
