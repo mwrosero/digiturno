@@ -3041,6 +3041,7 @@
         args["bodyType"] = "json";
         const data = await call(args);
         console.log(data);
+        
         if(data.code == 200){
             datosPago.sync = data.data
             await setearAutorizacion();
