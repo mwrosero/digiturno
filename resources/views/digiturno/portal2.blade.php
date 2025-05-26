@@ -1039,13 +1039,14 @@
         await drawListFamiliaresModal();
         await verificarUsuarioDigital();
         $('body').on('click','.paciente-item', async function(){
+            conveniosSincronizados = false;
             let detalle = JSON.parse($(this).attr('data-rel'))
             $(`.nombrePacienteElegido`).html(`${ detalle.nombreCompleto }`);
             $('.paciente-item').removeClass('paciente-item-selected');
             $(this).addClass('paciente-item-selected');
             await cargarServicios(true);
             conveniosSincronizados = false;
-            await obtenerConvenios()
+            // await obtenerConvenios()
         })
 
         await drawListFamiliares();
@@ -2093,7 +2094,7 @@
                 if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     console.table(detalle.beneficio)
                     toastr.info("Nos estamos comunicando con tu aseguradora, el proceso puede tardar unos segundos", 'Atención', {
-                        timeOut: 5000
+                        timeOut: 8000
                     });
                     await obtenerConvenios();
                 }
@@ -5027,8 +5028,12 @@
     let conveniosSincronizados = false;
     async function obtenerConvenios(){
         cargandoConvenios = true;
+        let aditionalVariables = ``;
+        if(_detallePagar.beneficio.hasOwnProperty('convenio')){
+            aditionalVariables = `&codigoCliente=${_detallePagar.beneficio.convenio.codigoCliente}`
+        }
         let args = [];
-        args["endpoint"] = `${api_url_digitales}/comercial/v1/pacientes/${dataTurno.paciente.idPaciente}/convenios?codigoEmpresa=1&canalInvocacion=KIO`;
+        args["endpoint"] = `${api_url_digitales}/comercial/v1/pacientes/${dataTurno.paciente.idPaciente}/convenios?codigoEmpresa=1&canalInvocacion=KIO${aditionalVariables}`;
         //secuenciaAfiliado=
         args["method"] = "GET";
         args["token"] = accessToken;
