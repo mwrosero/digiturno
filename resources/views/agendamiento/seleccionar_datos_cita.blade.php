@@ -976,13 +976,15 @@ Elige datos para la Cita
         args["showLoader"] = true;
         const data = await call(args);
         if(data.code == 200){
-            let existeSucursal = data.data.some(sucursal => parseInt(sucursal.codigoSucursal) === parseInt(dataCita.central.codigoSucursal));
-            if(!existeSucursal){
-                $('.label-sugerencia-central').hide();
-                $('#btn-central p').html(`Seleccionar`);
-                $('#btn-central').attr('data-rel','');
-                $('#btn-central').addClass(`selectable`);
-                delete dataCita.central;
+            if(dataCita.hasOwnProperty('central')){
+                let existeSucursal = data.data.some(sucursal => parseInt(sucursal.codigoSucursal) === parseInt(dataCita.central.codigoSucursal));
+                if(!existeSucursal){
+                    $('.label-sugerencia-central').hide();
+                    $('#btn-central p').html(`Seleccionar`);
+                    $('#btn-central').attr('data-rel','');
+                    $('#btn-central').addClass(`selectable`);
+                    delete dataCita.central;
+                }
             }
         }
     }
