@@ -2770,7 +2770,7 @@
         }
 
         let esReserva = false;
-        if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].hasOwnProperty('codigoReserva') && detalle.detallesOrden[0].codigoReserva !== null){
+        if(detalle.hasOwnProperty('detallesOrden') && detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].hasOwnProperty('codigoReserva') && detalle.detallesOrden[0].codigoReserva !== null){
             esReserva = true;
         }
 
@@ -3112,7 +3112,7 @@
         let diagnosticos = [29616];
         if(detalle.hasOwnProperty('diagnosticos')){
             diagnosticos = [];
-            if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].hasOwnProperty('codigoReserva') && detalle.detallesOrden[0].codigoReserva !== null){
+            if(detalle.hasOwnProperty('detallesOrden') && detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].hasOwnProperty('codigoReserva') && detalle.detallesOrden[0].codigoReserva !== null){
                 $.each(detalle.diagnosticos, function(key, value){
                     diagnosticos.push(parseInt(value.codigoDiagnostico));
                 })
