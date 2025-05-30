@@ -2156,7 +2156,6 @@
                 `
             });
         });*/
-
         reiniciarConteo();
         $('#modalDatosFacturacion').on('hidden.bs.modal', async function (e) {
             // await cargarCodigosPaises()
@@ -2801,25 +2800,46 @@
                 "detallesPaquete": detallesPaquete
             }
         }else{
-            let detallesOrdenItems = [];
-            $.each(detalle.detallesOrden, function(key, value){
-                if(!estadosVigentes.includes(value.codigoEstado)){
-                    detallesOrdenItems.push({
-                        "_id": generateUUIDv4(),
-                        "lineaDetalle": value.lineaDetalleOrden
-                    })
+            let esReserva = false;
+            if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].hasOwnProperty('codigoReserva')){
+                esReserva = true;
+            }
+            if(!esReserva){
+                let detallesOrdenItems = [];
+                $.each(detalle.detallesOrden, function(key, value){
+                    if(!estadosVigentes.includes(value.codigoEstado)){
+                        detallesOrdenItems.push({
+                            "_id": generateUUIDv4(),
+                            "lineaDetalle": value.lineaDetalleOrden
+                        })
+                    }
+                })
+                
+                payload.ordenes = {
+                    "beneficio": {
+                        "convenio": (detalle.beneficio != null && detalle.beneficio.convenio != null) ? detalle.beneficio.convenio : null,
+                        "secuenciaTarjetaPaciente": (detalle.beneficio != null && detalle.beneficio.tarjeta != null) ? detalle.beneficio.tarjeta.secuenciaTarjetaXPaciente : null,
+                        "secuenciaPaquetePaciente": (detalle.beneficio != null && detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
+                    },
+                    "numeroOrden": detalle.numeroOrden,
+                    "detallesOrden": detallesOrdenItems,
+                    "secTransaccionValExt": numAuthMedPay
                 }
-            })
-            
-            payload.ordenes = {
-                "beneficio": {
-                    "convenio": (detalle.beneficio != null && detalle.beneficio.convenio != null) ? detalle.beneficio.convenio : null,
-                    "secuenciaTarjetaPaciente": (detalle.beneficio != null && detalle.beneficio.tarjeta != null) ? detalle.beneficio.tarjeta.secuenciaTarjetaXPaciente : null,
-                    "secuenciaPaquetePaciente": (detalle.beneficio != null && detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
-                },
-                "numeroOrden": detalle.numeroOrden,
-                "detallesOrden": detallesOrdenItems,
-                "secTransaccionValExt": numAuthMedPay
+            }else{
+                payload.reservas = [{
+                    "_id": generateUUIDv4(),
+                    "beneficio": {
+                        "convenio": (detalle.beneficio != null && detalle.beneficio.convenio != null) ? detalle.beneficio.convenio : null,
+                        "secuenciaTarjetaPaciente": (detalle.beneficio != null && detalle.beneficio.tarjeta != null) ? detalle.beneficio.tarjeta.secuenciaTarjetaXPaciente : null,
+                        "secuenciaPaquetePaciente": (detalle.beneficio != null && detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
+                    },
+                    "codigoReserva": detalle.detallesOrden[0].codigoReserva,
+                    "secTransaccionValExt": numAuthMedPay,
+                    "numeroOrden": detalle.detallesOrden[0].numeroOrden,
+                    "lineaDetalleOrden": detalle.detallesOrden[0].lineaDetalleOrden
+                }]
+                console.log("/////////////\\\\\\\\\\\\\\\\")
+                console.log(payload);
             }
         }
 
