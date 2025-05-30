@@ -2801,7 +2801,7 @@
             }
         }else{
             let esReserva = false;
-            if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].hasOwnProperty('codigoReserva')){
+            if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].hasOwnProperty('codigoReserva') && detalle.detallesOrden[0].codigoReserva !== null){
                 esReserva = true;
             }
             if(!esReserva){
