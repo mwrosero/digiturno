@@ -71,7 +71,7 @@
 					<div class="time-box badge bg-veris-dark text-center p-3 rounded-8" id="header-info">
 						<span class="fs-4">Fecha:</span><span class="ms-1 fs-5 text-veris-light" id="fecha"></span>
 						<span class="fs-5 ms-5 d-none">Hora:</span><span class="ms-1 fs-5 text-veris-light d-none" id="hora"></span>
-                        <span class="fs-6 ms-5">Central:</span><span class="ms-1 fs-4 text-veris-light" id="central"></span>
+                        <span class="fs-5 ms-5">Central:</span><span class="ms-1 fs-4 text-veris-light" id="central"></span>
 					</div>
 				</div>
 			</div>
@@ -606,7 +606,7 @@
 
 	    setTimeout(function(){
 	    	if(localStorage.getItem('userVeris') !== null){
-	    		$('#central').append(`<small class="ms-1 fs-5 text-white">(${JSON.parse(localStorage.getItem('userVeris')).codigoUsuario})</span>`)
+	    		$('#central').append(`<small class="ms-1 fs-6 text-white">(${JSON.parse(localStorage.getItem('userVeris')).codigoUsuario})</span>`)
 	    	}
 	    }, 1000)
     });
