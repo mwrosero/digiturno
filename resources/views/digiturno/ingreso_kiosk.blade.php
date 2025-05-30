@@ -603,6 +603,12 @@
 	            }, 100)
 	        }
 	    })
+
+	    setTimeout(function(){
+	    	if(localStorage.getItem('userVeris') !== null){
+	    		$('#central').append(`<small class="ms-1 fs-5 text-white">(${JSON.parse(localStorage.getItem('userVeris')).codigoUsuario})</span>`)
+	    	}
+	    }, 1000)
     });
 
     // Simular el llamado a `open` externamente
