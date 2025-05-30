@@ -2769,6 +2769,11 @@
             "idPaciente": paciente.idPaciente,
         }
 
+        let esReserva = false;
+        if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].hasOwnProperty('codigoReserva') && detalle.detallesOrden[0].codigoReserva !== null){
+            esReserva = true;
+        }
+
         if(detalle.tipoServicio == "RESERVA"){
             payload.reservas = [{
                 "_id": generateUUIDv4(),
@@ -2800,10 +2805,7 @@
                 "detallesPaquete": detallesPaquete
             }
         }else{
-            let esReserva = false;
-            if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].hasOwnProperty('codigoReserva') && detalle.detallesOrden[0].codigoReserva !== null){
-                esReserva = true;
-            }
+            
             if(!esReserva){
                 let detallesOrdenItems = [];
                 $.each(detalle.detallesOrden, function(key, value){
@@ -2855,9 +2857,11 @@
             }else{
                 datosPago.idPreTransaccion = idPreTransaccion;
                 datosPago.items = data.data;
-                if(detalle.tipoServicio == "RESERVA" && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+                if((detalle.tipoServicio == "RESERVA" || esReserva) && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+                    //Revisar Mmarcos
                     await setearDiagnostico(detalle);
                 }
+                //setear
                 if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente) && detalle.beneficio.convenio.requiereAutorizacion){
                         await obtenerAutorizacion(detalle);
@@ -3108,10 +3112,13 @@
         let diagnosticos = [29616];
         if(detalle.hasOwnProperty('diagnosticos')){
             diagnosticos = [];
-            // $.each(detalle.diagnosticos, function(key, value){
-            //     diagnosticos.push(parseInt(value.codigoDiagnostico));
-            // })
-            return;
+            if(detalle.detallesOrden.length == 1 && detalle.detallesOrden[0].hasOwnProperty('codigoReserva') && detalle.detallesOrden[0].codigoReserva !== null){
+                $.each(detalle.diagnosticos, function(key, value){
+                    diagnosticos.push(parseInt(value.codigoDiagnostico));
+                })
+            }else{
+                return;
+            }
         }
 
         let idAgrupacion = await getIdAgrupacionArray();
