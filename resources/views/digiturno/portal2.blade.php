@@ -2156,6 +2156,7 @@
                 `
             });
         });*/
+
         reiniciarConteo();
         $('#modalDatosFacturacion').on('hidden.bs.modal', async function (e) {
             // await cargarCodigosPaises()
@@ -2864,7 +2865,7 @@
                 //setear
                 if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     if(clientesAuth.includes(detalle.beneficio.convenio.codigoCliente) && detalle.beneficio.convenio.requiereAutorizacion){
-                        await obtenerAutorizacion(detalle);
+                        /*await obtenerAutorizacion(detalle);
                         flagAutorizacion = true;
                         if(cortaProcesoYEnviaCaja){
                             toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atenci', {
@@ -2873,7 +2874,7 @@
                             await generarTurno(_detallePagar, true)
                             cortaProcesoYEnviaCaja = false;
                             return;
-                        }
+                        }*/
                     }else{
                         console.log(detalle.beneficio.convenio);
                         // if(parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
@@ -3059,6 +3060,7 @@
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
+        args["dismissAlert"] = true;
         args["data"] = JSON.stringify({
 
         });
@@ -3070,6 +3072,7 @@
             datosPago.sync = data.data
             await setearAutorizacion();
         }else{
+            console.log(".................................")
             cortaProcesoYEnviaCaja = true;
             /*toastr.error("", data.message, {
                 timeOut: 5000
@@ -3162,7 +3165,7 @@
         if(data.code == 200){
             datosPago.consulta = data.data;
             if(!flagAutorizacion){
-                if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa){
+                if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa && datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa.valorTotal > 0){
                     flagAutorizacion = true;
                     await obtenerAutorizacion(detalle);
                     if(cortaProcesoYEnviaCaja){
@@ -3184,9 +3187,14 @@
                             |
                 <span class="col-5 mb-0 shadow-none cursor-inherit">$${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}</span>`);
             // clearTimeout(temporizadorInactividad);
-            mostrarDetallesFactura();
-            $('#modalDatosFacturacion').modal("show");
-            // await validacionPrevioPago()
+            if(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal > 0){
+                mostrarDetallesFactura();
+                $('#modalDatosFacturacion').modal("show");
+                // await validacionPrevioPago()
+            }else{
+                await facturarCobroPinPad();
+                return;
+            }
         }
     }
 
@@ -3479,10 +3487,14 @@
                 reiniciarConteo();
                 return;
             }
-            if(datosPago.validacion.valorTotalAPagarPaciente == 0){
+            if(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa.valorTotal >= 0 && datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal == 0){
                 $('.box-info-comprobante').html(`Transacción: <span class="ms-2"> ${datosPago.comprobantes.transacciones[0].numeroTransaccion}</span>`)
             }else{
-                $('.box-info-comprobante').html(`Comprobante: <span class="ms-2"> ${datosPago.comprobantes.transacciones[0].numeroComprobante}</span>`)
+                if(datosPago.validacion.valorTotalAPagarPaciente == 0){
+                    $('.box-info-comprobante').html(`Transacción: <span class="ms-2"> ${datosPago.comprobantes.transacciones[0].numeroTransaccion}</span>`)
+                }else{
+                    $('.box-info-comprobante').html(`Comprobante: <span class="ms-2"> ${datosPago.comprobantes.transacciones[0].numeroComprobante}</span>`)
+                }
             }
             $('#modalPagoRealizado').modal('show');
             await registrarTracking('PAGO_PINPAD', datosPago);
