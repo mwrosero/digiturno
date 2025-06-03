@@ -2791,7 +2791,7 @@
                     "secuenciaPaquetePaciente": (detalle.beneficio != null && detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
                 },
                 "codigoReserva": detalle.codigoReserva,
-                "secTransaccionValExt": numAuthMedPay,
+                "secTransaccionValExt": (datosPago.hasOwnProperty('sync')) ? datosPago.sync.secuenciaTransaccion : numAuthMedPay,
                 "numeroOrden": detalle.numeroOrden,
                 "lineaDetalleOrden": detalle.lineaDetalleOrden
             }]
@@ -2833,7 +2833,7 @@
                     },
                     "numeroOrden": detalle.numeroOrden,
                     "detallesOrden": detallesOrdenItems,
-                    "secTransaccionValExt": (_numAuthMedPay !== null) ? _numAuthMedPay : numAuthMedPay
+                    "secTransaccionValExt": (datosPago.hasOwnProperty('sync')) ? datosPago.sync.secuenciaTransaccion : numAuthMedPay
                 }
             }else{
                 payload.reservas = [{
@@ -2844,7 +2844,7 @@
                         "secuenciaPaquetePaciente": (detalle.beneficio != null && detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
                     },
                     "codigoReserva": detalle.detallesOrden[0].codigoReserva,
-                    "secTransaccionValExt": (_numAuthMedPay !== null) ? _numAuthMedPay : numAuthMedPay,
+                    "secTransaccionValExt": (datosPago.hasOwnProperty('sync')) ? _numAuthMedPay : numAuthMedPay,
                     "numeroOrden": detalle.detallesOrden[0].numeroOrden,
                     "lineaDetalleOrden": detalle.detallesOrden[0].lineaDetalleOrden
                 }]
@@ -3180,10 +3180,10 @@
                 if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa && datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa.valorTotal > 0){
                     flagAutorizacion = true;
                     console.log("*2222*")
-                    if(parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
+                    if(parseInt(_detallePagar.beneficio.convenio.codigoCliente) == 13){
                         console.log("-----////---------");
                         console.log(7)
-                        await obtenerAutorizacionMedPay(detalle);
+                        await obtenerAutorizacionMedPay(_detallePagar);
                         if(cortaProcesoYEnviaCaja){
                             toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atención', {
                                 timeOut: 5000
@@ -3201,7 +3201,7 @@
                         for (const item of datosPago.items) {
                             await eliminarAgrupacion(item);
                         }
-                        await agregarItemTurno(idPreTransaccion, detalle, "PRESTACION");
+                        await agregarItemTurno(idPreTransaccion, _detallePagar, "PRESTACION");
                         return;
                     }else{
                         console.log("*3333*")
@@ -3568,7 +3568,7 @@
             datosPago.comprobantes = data.data;
             // Imprimir ticket
             $('#modalDatosFacturacion').modal('hide');
-            // await cargarServicios();
+            await cargarServicios();
             // alert("Pago realizado exitosamente, se imprimirá su factura...")
             if(_agregarItemPaquete){
                 idTab = 'v-pills-tabPaqueteContent';
