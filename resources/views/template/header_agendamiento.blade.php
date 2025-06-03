@@ -68,6 +68,11 @@
 			// console.log("movio algo")
 		    reiniciarConteo();
 		});
+
+		$('body').on('click','.btn-salir', async function(){
+            await registrarTracking('SALIR_SERVICIOS', {});
+        })
+
 		$("#btnSi").on("click", function () {
 		    clearTimeout(temporizadorRespuesta);
 		    $("#modalEstasAhiAgenda").fadeOut();
@@ -97,6 +102,7 @@
             if(isMobile()){
                 url_salir = `/ingreso/{{ $mac }}`;
             }
+            await registrarTracking('SALIR_SERVICIOS', {});
             location.href = url_salir;
         }, tiempoMaximoRespuesta * 1000);
     }
