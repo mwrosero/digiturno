@@ -970,6 +970,10 @@
             await cargarServicios(true);
         })
 
+        $('body').on('click','.btn-salir', async function(){
+            await registrarTracking('SALIR_SERVICIOS', {});
+        })
+
         // Manejar clic en el botón "Sí"
         $("#btnSi").on("click", function () {
             clearTimeout(temporizadorRespuesta);
@@ -2094,7 +2098,7 @@
                 if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
                     console.table(detalle.beneficio)
                     toastr.info("Nos estamos comunicando con tu aseguradora, el proceso puede tardar unos segundos", 'Atención', {
-                        timeOut: 8000
+                        timeOut: 10000
                     });
                     await obtenerConvenios();
                 }
@@ -2231,6 +2235,7 @@
         temporizadorRespuesta = setTimeout(() => {
             $("#modalEstasAhi").modal("hide");
             console.log("No hubo respuesta a tiempo.");
+            await registrarTracking('SALIR_SERVICIOS', {});
             location.href = url_salir;
         }, tiempoMaximoRespuesta * 1000);
     }
