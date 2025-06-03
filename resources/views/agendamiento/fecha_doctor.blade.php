@@ -12,6 +12,29 @@ Mi Veris - Citas - Elige fecha y doctor
 
 @include('template.header_agendamiento', ['showInfo' => true])
 
+<!-- modal elegir horario -->
+                <div class="modal bg-transparent fade" id="elegirHorarioModal" tabindex="-1" aria-labelledby="elegirHorarioModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
+                        <div class="modal-content">
+                            <div class="modal-body p-3 pb-2">
+                                <h6 class="text-center fs--16 line-height-20 fw-medium mb-2">{{ __('Horarios') }}:</h6>
+                                <div id="listaHorariosMedico" class="row g-2">
+                                    {{-- <div class="card card-body rounded-3 position-relative py-2 mb-2">
+                                        <a href="{{route('citas.detalleCita')}}">
+                                            <div class="badge-discount-top fs--3 fw-medium"><span>{{ __('-30%') }}</span></div>
+                                            <p class="fs--2 text-primary-veris text-center my-1">08:00 - 08:20</p>
+                                            <div class="badge-discount-bottom fs--3 fw-medium"><span>{{ __('descuento') }}</span></div>
+                                        </a>
+                                    </div> --}}
+                                </div>
+                            </div>
+                            <div class="modal-footer pt-0 pb-3 px-3">
+                                <button type="button" class="btn btn-sm text-primary-veris fs--18 line-height-24 fw-medium shadow-none m-0 w-100 px-4 py-3" data-bs-dismiss="modal">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 <!-- Modal de error -->
 <div class="modal fade" id="mensajeSolicitudLlamadaModalError" tabindex="-1" aria-labelledby="mensajeSolicitudLlamadaModalErrorLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
@@ -50,28 +73,7 @@ Mi Veris - Citas - Elige fecha y doctor
                         </div>
                     </div>
                 </div>
-                <!-- modal elegir horario -->
-                <div class="modal bg-transparent fade" id="elegirHorarioModal" tabindex="-1" aria-labelledby="elegirHorarioModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
-                        <div class="modal-content">
-                            <div class="modal-body p-3 pb-2">
-                                <h6 class="text-center fs--16 line-height-20 fw-medium mb-2">{{ __('Horarios') }}:</h6>
-                                <div id="listaHorariosMedico" class="row g-2">
-                                    {{-- <div class="card card-body rounded-3 position-relative py-2 mb-2">
-                                        <a href="{{route('citas.detalleCita')}}">
-                                            <div class="badge-discount-top fs--3 fw-medium"><span>{{ __('-30%') }}</span></div>
-                                            <p class="fs--2 text-primary-veris text-center my-1">08:00 - 08:20</p>
-                                            <div class="badge-discount-bottom fs--3 fw-medium"><span>{{ __('descuento') }}</span></div>
-                                        </a>
-                                    </div> --}}
-                                </div>
-                            </div>
-                            <div class="modal-footer pt-0 pb-3 px-3">
-                                <button type="button" class="btn btn-sm text-primary-veris fs--18 line-height-24 fw-medium shadow-none m-0 w-100 px-4 py-3" data-bs-dismiss="modal">Cancelar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
                 <!-- modal NO HAY FECHA DISPONIBLES -->
                 <div class="modal fade" id="sinFechaDisponibles" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="sinFechaDisponiblesLabel" aria-hidden="true">
                     <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
