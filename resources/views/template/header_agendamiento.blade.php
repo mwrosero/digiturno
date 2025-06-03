@@ -91,7 +91,7 @@
         $("#modalEstasAhiAgenda").modal("show");
 
         // Iniciar temporizador para esperar respuesta
-        temporizadorRespuesta = setTimeout(() => {
+        temporizadorRespuesta = setTimeout(async () => {
             $("#modalEstasAhiAgenda").modal("hide");
             // console.log("No hubo respuesta a tiempo.");
             let url_salir = `/{{ $mac }}`;

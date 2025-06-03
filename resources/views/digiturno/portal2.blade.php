@@ -2232,7 +2232,7 @@
         $("#modalEstasAhi").modal("show");
 
         // Iniciar temporizador para esperar respuesta
-        temporizadorRespuesta = setTimeout(() => {
+        temporizadorRespuesta = setTimeout(async () => {
             $("#modalEstasAhi").modal("hide");
             console.log("No hubo respuesta a tiempo.");
             await registrarTracking('SALIR_SERVICIOS', {});
