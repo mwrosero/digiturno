@@ -86,7 +86,7 @@
         }
 	})
 
-	function mostrarModal() {
+	async function mostrarModal() {
         // Mostrar el modal
         $("#modalEstasAhiAgenda").modal("show");
 
