@@ -12,6 +12,21 @@ Mi Veris - Citas - Elige fecha y doctor
 
 @include('template.header_agendamiento', ['showInfo' => true])
 
+<!-- Modal de error -->
+<div class="modal fade" id="mensajeSolicitudLlamadaModalError" tabindex="-1" aria-labelledby="mensajeSolicitudLlamadaModalErrorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
+        <div class="modal-content">
+            <div class="modal-body text-center p-3 pb-2">
+                <h1 class="modal-title fs--20 line-height-24 fw-medium mb-3">Veris</h1>
+                <p class="fs--16 fw-normal text-veris mb-3" id="mensajeError" ></p>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3">
+                <button type="button" class="btn btn-primary-veris fs--18 line-height-24 m-0 px-4 py-3 w-100" data-bs-dismiss="modal" id="btnEntiendoError" data-bs-dismiss="modal">Entiendo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <section class="p-3 px-0 mb-3">
     <div class="row mx-0">
         @include('template.back')
@@ -20,20 +35,6 @@ Mi Veris - Citas - Elige fecha y doctor
         </div>
         <div class="col-12 col-lg-8 overflow-auto pt-3">
             <div class="flex-grow-1 container-p-y pt-0">
-                <!-- Modal de error -->
-                <div class="modal fade" id="mensajeSolicitudLlamadaModalError" tabindex="-1" aria-labelledby="mensajeSolicitudLlamadaModalErrorLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
-                        <div class="modal-content">
-                            <div class="modal-body text-center p-3 pb-2">
-                                <h1 class="modal-title fs--20 line-height-24 fw-medium mb-3">Veris</h1>
-                                <p class="fs--16 fw-normal text-veris mb-3" id="mensajeError" ></p>
-                            </div>
-                            <div class="modal-footer pt-0 pb-3 px-3">
-                                <button type="button" class="btn btn-primary-veris fs--18 line-height-24 m-0 px-4 py-3 w-100" data-bs-dismiss="modal" id="btnEntiendoError" data-bs-dismiss="modal">Entiendo</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Modal de error validacion fecha -->
                 <div class="modal fade" id="modalValidacionFecha" tabindex="-1" aria-labelledby="modalValidacionFechaLabel" aria-hidden="true">
