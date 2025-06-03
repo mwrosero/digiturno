@@ -2080,6 +2080,7 @@
         })
 
         $('body').on('click', '.btn-pagar', async function(){
+            _numAuthMedPay = null
             _agregarItemPaquete = false;
             let detalle = JSON.parse($(this).attr('data-rel'));
             _detallePagar = detalle;
@@ -2743,7 +2744,8 @@
         let paciente = JSON.parse(dataAttr);
         let numAuthMedPay = null;
 
-        if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+        //Remover
+        {{-- if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
             if( origen != "TURNO" && parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
                 console.log("-----////---------");
                 console.log(7)
@@ -2762,7 +2764,7 @@
                     numAuthMedPay = datosPago.sync.secuenciaTransaccion;
                 }
             }
-        }
+        } --}}
 
         // console.log(detalle);
 
@@ -2789,7 +2791,7 @@
                     "secuenciaPaquetePaciente": (detalle.beneficio != null && detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
                 },
                 "codigoReserva": detalle.codigoReserva,
-                "secTransaccionValExt": numAuthMedPay,
+                "secTransaccionValExt": (datosPago.hasOwnProperty('sync')) ? datosPago.sync.secuenciaTransaccion : numAuthMedPay,
                 "numeroOrden": detalle.numeroOrden,
                 "lineaDetalleOrden": detalle.lineaDetalleOrden
             }]
@@ -2831,7 +2833,7 @@
                     },
                     "numeroOrden": detalle.numeroOrden,
                     "detallesOrden": detallesOrdenItems,
-                    "secTransaccionValExt": numAuthMedPay
+                    "secTransaccionValExt": (datosPago.hasOwnProperty('sync')) ? datosPago.sync.secuenciaTransaccion : numAuthMedPay
                 }
             }else{
                 payload.reservas = [{
@@ -2842,7 +2844,7 @@
                         "secuenciaPaquetePaciente": (detalle.beneficio != null && detalle.beneficio.paquete != null)? detalle.beneficio.paquete.secuenciaPaquetePaciente : null
                     },
                     "codigoReserva": detalle.detallesOrden[0].codigoReserva,
-                    "secTransaccionValExt": numAuthMedPay,
+                    "secTransaccionValExt": (datosPago.hasOwnProperty('sync')) ? _numAuthMedPay : numAuthMedPay,
                     "numeroOrden": detalle.detallesOrden[0].numeroOrden,
                     "lineaDetalleOrden": detalle.detallesOrden[0].lineaDetalleOrden
                 }]
@@ -2864,7 +2866,6 @@
                 datosPago.idPreTransaccion = idPreTransaccion;
                 datosPago.items = data.data;
                 if((detalle.tipoServicio == "RESERVA" || esReserva) && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
-                    //Revisar Mmarcos
                     await setearDiagnostico(detalle);
                 }
                 //setear
@@ -3157,6 +3158,8 @@
         return arr;
     }
 
+    let _numAuthMedPay = null;
+
     async function consultaPreTrx(idPreTransaccion, detalle){        
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/consulta?codigoEmpresa=1`;
@@ -3167,24 +3170,91 @@
         args["bodyType"] = "json";
         const data = await call(args);
         console.log(data);
+        let numAuthMedPay = null;
+
         if(data.code == 200){
             datosPago.consulta = data.data;
+            console.log("*0000*")
             if(!flagAutorizacion){
+                console.log("*1111*")
                 if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa && datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa.valorTotal > 0){
                     flagAutorizacion = true;
-                    await obtenerAutorizacion(detalle);
-                    if(cortaProcesoYEnviaCaja){
-                        toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atenci', {
-                            timeOut: 5000
-                        });
-                        await generarTurno(_detallePagar, true)
-                        cortaProcesoYEnviaCaja = false;
+                    console.log("*2222*")
+                    if(parseInt(_detallePagar.beneficio.convenio.codigoCliente) == 13){
+                        console.log("-----////---------");
+                        console.log(7)
+                        await obtenerAutorizacionMedPay(_detallePagar);
+                        if(cortaProcesoYEnviaCaja){
+                            toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atención', {
+                                timeOut: 5000
+                            });
+                            await generarTurno(_detallePagar, true)
+                            cortaProcesoYEnviaCaja = false;
+                            return;
+                        }
+                        console.log(8)
+                        flagAutorizacion = true;
+                        if(datosPago.hasOwnProperty('sync')){
+                            numAuthMedPay = datosPago.sync.secuenciaTransaccion;
+                        }
+                        //Eliminar agrupaciones
+                        for (const item of datosPago.items) {
+                            await eliminarAgrupacion(item);
+                        }
+                        await agregarItemTurno(idPreTransaccion, _detallePagar, "PRESTACION");
+                        return;
+                    }else{
+                        console.log("*3333*")
+                        //Caso contrario
+                        await obtenerAutorizacion(detalle);
+                        if(cortaProcesoYEnviaCaja){
+                            toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atenci', {
+                                timeOut: 5000
+                            });
+                            await generarTurno(_detallePagar, true)
+                            cortaProcesoYEnviaCaja = false;
+                            return;
+                        }
+                        await consultaPreTrx(idPreTransaccion, detalle);
                         return;
                     }
-                    await consultaPreTrx(idPreTransaccion, detalle);
-                    return;
+                }else if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa){
+                    console.log("*4444*")
+                    if(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa.valorTotal == 0 && datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal == 0){
+                        // NO ENTRA
+                        await facturarCobroPinPad();
+                        return
+                    }else{
+                        if(parseInt(_detallePagar.beneficio.convenio.codigoCliente) == 13){
+                            console.log("*5555*")
+                            console.log("-----////---------");
+                            console.log(7)
+                            await obtenerAutorizacionMedPay(_detallePagar);
+                            if(cortaProcesoYEnviaCaja){
+                                toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atención', {
+                                    timeOut: 5000
+                                });
+                                await generarTurno(_detallePagar, true)
+                                cortaProcesoYEnviaCaja = false;
+                                return;
+                            }
+                            console.log(8)
+                            flagAutorizacion = true;
+                            if(datosPago.hasOwnProperty('sync')){
+                                numAuthMedPay = datosPago.sync.secuenciaTransaccion;
+                            }
+                            //Eliminar agrupaciones
+                            for (const item of datosPago.items) {
+                                await eliminarAgrupacion(item);
+                            }
+                            await agregarItemTurno(idPreTransaccion, _detallePagar, "PRESTACION");
+                            return;
+                        }
+                    }
                 }
             }
+
+
             await verificarDatosFactura();
             $('.valorPago').html(`$${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}`);
             // $('.btn-continuar-factura').html(`Pagar $${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}`)
@@ -3201,6 +3271,22 @@
                 return;
             }
         }
+    }
+
+    async function eliminarAgrupacion(item){
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${datosPago.idPreTransaccion}/eliminar_item?codigoEmpresa=1`;
+        args["method"] = "PUT";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        let idAgrupacion = await getIdAgrupacionArray();
+        args["data"] = JSON.stringify({
+            "idAgrupacion": item.idAgrupacion
+        });
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log(data);
+        return;
     }
 
     async function mostrarDetallesFactura(){
