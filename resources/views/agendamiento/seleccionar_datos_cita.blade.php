@@ -12,7 +12,25 @@ Elige datos para la Cita
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/vendor/libs/toastr/toastr.js"></script>
 
 @include('template.header_agendamiento', ['showInfo' => true])
-
+<!-- Modal Tratamiento-->
+<div class="modal fade" id="consultaTratamientoModal" tabindex="-1" aria-labelledby="consultaTratamientoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered mx-auto">
+        <div class="modal-content">
+            <div class="modal-header border-0 d-none">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-3">
+                <h5 class="fw-medium line-height-24 mb-8">Tienes una <b class="fw-medium text-primary-veris">{{ __('cita pendiente') }}</b> {{ __('de esta especialidad en tu tratamiento de') }}:</h5>
+                <div class="border rounded-3 mb-8 p--2" id="tratamiento-content">
+                </div>
+                <p class="fs--16 line-height-20 fw-medium mb-8">{{ __('¿Estas agendando por este motivo?') }}</p>
+                <a href="#" type="button" id="btn-si-tratamiento" class="btn btn-primary-veris fs--18 w-100 px-4 py-3 m-0 mb-3">{{ __('Agendar esta orden') }}</a>
+                <a href="#" type="button" id="btn-no-tratamiento" class="btn btn-outline-primary-veris fs--18 w-100 px-4 py-3 m-0">{{ __('No') }}</a>
+                {{-- <button type="button" class="btn btn-outline-primary-veris w-100 mb-3" data-bs-dismiss="modal">{{ __('No') }}</button> --}}
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Modal de error -->
 <div class="modal fade" id="modalError" tabindex="-1" aria-labelledby="modalErrorLabel" aria-hidden="true">
     <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable mx-auto">
@@ -59,25 +77,6 @@ Elige datos para la Cita
         </div>
         <div class="col-12 col-lg-8 overflow-auto pt-3">
             <div class="flex-grow-1 container-p-y pt-0">
-                <!-- Modal Tratamiento-->
-                <div class="modal fade" id="consultaTratamientoModal" tabindex="-1" aria-labelledby="consultaTratamientoModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-md modal-dialog-centered mx-auto">
-                        <div class="modal-content">
-                            <div class="modal-header border-0 d-none">
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body text-center p-3">
-                                <h5 class="fw-medium line-height-24 mb-8">Tienes una <b class="fw-medium text-primary-veris">{{ __('cita pendiente') }}</b> {{ __('de esta especialidad en tu tratamiento de') }}:</h5>
-                                <div class="border rounded-3 mb-8 p--2" id="tratamiento-content">
-                                </div>
-                                <p class="fs--16 line-height-20 fw-medium mb-8">{{ __('¿Estas agendando por este motivo?') }}</p>
-                                <a href="#" type="button" id="btn-si-tratamiento" class="btn btn-primary-veris fs--18 w-100 px-4 py-3 m-0 mb-3">{{ __('Agendar esta orden') }}</a>
-                                <a href="#" type="button" id="btn-no-tratamiento" class="btn btn-outline-primary-veris fs--18 w-100 px-4 py-3 m-0">{{ __('No') }}</a>
-                                {{-- <button type="button" class="btn btn-outline-primary-veris w-100 mb-3" data-bs-dismiss="modal">{{ __('No') }}</button> --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <section class="p-0 bg-dark-blue-veris-medium-sm mt-0 box-contenido-seleccion invisible element-no-paquete">
                     <div class="row g-0 justify-content-center">
                         <div class="col-8 p-3 bg-dark-blue-veris-medium" style="min-width: 375px;">
