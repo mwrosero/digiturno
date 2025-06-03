@@ -13,27 +13,27 @@ Mi Veris - Citas - Elige fecha y doctor
 @include('template.header_agendamiento', ['showInfo' => true])
 
 <!-- modal elegir horario -->
-                <div class="modal bg-transparent fade" id="elegirHorarioModal" tabindex="-1" aria-labelledby="elegirHorarioModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
-                        <div class="modal-content">
-                            <div class="modal-body p-3 pb-2">
-                                <h6 class="text-center fs--16 line-height-20 fw-medium mb-2">{{ __('Horarios') }}:</h6>
-                                <div id="listaHorariosMedico" class="row g-2">
-                                    {{-- <div class="card card-body rounded-3 position-relative py-2 mb-2">
-                                        <a href="{{route('citas.detalleCita')}}">
-                                            <div class="badge-discount-top fs--3 fw-medium"><span>{{ __('-30%') }}</span></div>
-                                            <p class="fs--2 text-primary-veris text-center my-1">08:00 - 08:20</p>
-                                            <div class="badge-discount-bottom fs--3 fw-medium"><span>{{ __('descuento') }}</span></div>
-                                        </a>
-                                    </div> --}}
-                                </div>
-                            </div>
-                            <div class="modal-footer pt-0 pb-3 px-3">
-                                <button type="button" class="btn btn-sm text-primary-veris fs--18 line-height-24 fw-medium shadow-none m-0 w-100 px-4 py-3" data-bs-dismiss="modal">Cancelar</button>
-                            </div>
-                        </div>
-                    </div>
+<div class="modal bg-transparent fade" id="elegirHorarioModal" tabindex="-1" aria-labelledby="elegirHorarioModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
+        <div class="modal-content">
+            <div class="modal-body p-3 pb-2">
+                <h6 class="text-center fs--16 line-height-20 fw-medium mb-2">{{ __('Horarios') }}:</h6>
+                <div id="listaHorariosMedico" class="row g-2">
+                    {{-- <div class="card card-body rounded-3 position-relative py-2 mb-2">
+                        <a href="{{route('citas.detalleCita')}}">
+                            <div class="badge-discount-top fs--3 fw-medium"><span>{{ __('-30%') }}</span></div>
+                            <p class="fs--2 text-primary-veris text-center my-1">08:00 - 08:20</p>
+                            <div class="badge-discount-bottom fs--3 fw-medium"><span>{{ __('descuento') }}</span></div>
+                        </a>
+                    </div> --}}
                 </div>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3">
+                <button type="button" class="btn btn-sm text-primary-veris fs--18 line-height-24 fw-medium shadow-none m-0 w-100 px-4 py-3" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal de error -->
 <div class="modal fade" id="mensajeSolicitudLlamadaModalError" tabindex="-1" aria-labelledby="mensajeSolicitudLlamadaModalErrorLabel" aria-hidden="true">
@@ -49,7 +49,53 @@ Mi Veris - Citas - Elige fecha y doctor
         </div>
     </div>
 </div>
+<!-- Modal de error validacion fecha -->
+<div class="modal fade" id="modalValidacionFecha" tabindex="-1" aria-labelledby="modalValidacionFechaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
+        <div class="modal-content">
+            <div class="modal-body text-center p-3 pb-2">
+                <h1 class="modal-title fs--20 line-height-24 my-3">Información de tu seguro</h1>
+                <p class="fs--1 fw-normal" id="msg-validacion-fecha"></p>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3">
+                <button type="button" class="btn btn-primary-veris fs--18 line-height-24 m-0 px-4 py-3 w-100" data-bs-dismiss="modal" id="btnEntiendoError">Entiendo</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- modal NO HAY FECHA DISPONIBLES -->
+<div class="modal fade" id="sinFechaDisponibles" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="sinFechaDisponiblesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
+        <div class="modal-content">
+            <div class="modal-body p-3 pb-2">
+                <div class="text-center">
+                    <h1 class="modal-title fs--20 line-height-24 fw-medium mb-3" id="sinFechaDisponiblesLabel">Veris</h1>
+                    <p class="fs--16 fw-normal text-veris mb-3" title="titleNoDisponibilidad">No tiene fechas disponibles.</p>
+                </div>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3">
+                <a href="#" onclick="history.back();" class="btn btn-primary-veris fs--18 line-height-24 m-0 w-100 px-4 py-3">Aceptar</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal no hay medicos disponibles -->
+<div class="modal fade" i|d="sinMedicosDisponibles" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="sinMedicosDisponiblesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
+        <div class="modal-content">
+            <div class="modal-body p-3 pb-2">
+                <div class="text-center">
+                    <h1 class="modal-title fs--20 line-height-24 fw-medium mb-3" id="sinMedicosDisponiblesLabel">Veris</h1>
+                    <p class="fs--16 fw-normal text-veris mb-3">No tiene médicos disponibles.</p>
+                </div>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3">
+                <a href="#" onclick="history.back();" class="btn btn-primary-veris fs--18 line-height-24 m-0 w-100 px-4 py-3">Aceptar</a>
+            </div>
+        </div>
+    </div>
+</div>
 <section class="p-3 px-0 mb-3">
     <div class="row mx-0">
         @include('template.back')
@@ -58,54 +104,6 @@ Mi Veris - Citas - Elige fecha y doctor
         </div>
         <div class="col-12 col-lg-8 overflow-auto pt-3">
             <div class="flex-grow-1 container-p-y pt-0">
-
-                <!-- Modal de error validacion fecha -->
-                <div class="modal fade" id="modalValidacionFecha" tabindex="-1" aria-labelledby="modalValidacionFechaLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
-                        <div class="modal-content">
-                            <div class="modal-body text-center p-3 pb-2">
-                                <h1 class="modal-title fs--20 line-height-24 my-3">Información de tu seguro</h1>
-                                <p class="fs--1 fw-normal" id="msg-validacion-fecha"></p>
-                            </div>
-                            <div class="modal-footer pt-0 pb-3 px-3">
-                                <button type="button" class="btn btn-primary-veris fs--18 line-height-24 m-0 px-4 py-3 w-100" data-bs-dismiss="modal" id="btnEntiendoError">Entiendo</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- modal NO HAY FECHA DISPONIBLES -->
-                <div class="modal fade" id="sinFechaDisponibles" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="sinFechaDisponiblesLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
-                        <div class="modal-content">
-                            <div class="modal-body p-3 pb-2">
-                                <div class="text-center">
-                                    <h1 class="modal-title fs--20 line-height-24 fw-medium mb-3" id="sinFechaDisponiblesLabel">Veris</h1>
-                                    <p class="fs--16 fw-normal text-veris mb-3" title="titleNoDisponibilidad">No tiene fechas disponibles.</p>
-                                </div>
-                            </div>
-                            <div class="modal-footer pt-0 pb-3 px-3">
-                                <a href="#" onclick="history.back();" class="btn btn-primary-veris fs--18 line-height-24 m-0 w-100 px-4 py-3">Aceptar</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- modal no hay medicos disponibles -->
-                <div class="modal fade" i|d="sinMedicosDisponibles" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="sinMedicosDisponiblesLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable mx-auto">
-                        <div class="modal-content">
-                            <div class="modal-body p-3 pb-2">
-                                <div class="text-center">
-                                    <h1 class="modal-title fs--20 line-height-24 fw-medium mb-3" id="sinMedicosDisponiblesLabel">Veris</h1>
-                                    <p class="fs--16 fw-normal text-veris mb-3">No tiene médicos disponibles.</p>
-                                </div>
-                            </div>
-                            <div class="modal-footer pt-0 pb-3 px-3">
-                                <a href="#" onclick="history.back();" class="btn btn-primary-veris fs--18 line-height-24 m-0 w-100 px-4 py-3">Aceptar</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <section class="p-0 bg-dark-blue-veris-medium-sm">
                     <div class="row g-0 justify-content-center">
                         <div class="col-12 col-md-8 mb-4 p-2 bg-dark-blue-veris-medium" style="min-width: 375px;">
