@@ -2227,7 +2227,7 @@
     }
     
     // Función para mostrar el modal
-    function mostrarModal() {
+    async function mostrarModal() {
         // Mostrar el modal
         $("#modalEstasAhi").modal("show");
 
