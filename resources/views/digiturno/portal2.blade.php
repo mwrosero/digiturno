@@ -1406,7 +1406,7 @@
                     if( v.requiereAgendamientoPrevio && v.cantidadUtilizada == 0 && v.cantidadDisponible != v.cantidadUtilizada ){
                         disabledAttr = `disabled`;
                     }
-
+                    let newArrRecepcionados = v.detallesOrden.filter(vo => vo.fechaRecepcion !== null );
                     // if( value.nombreServicioNivel1 == "CONSULTA"){
                     console.log(value)
                     if(value.esAgendable || value.requiereAgendamientoPrevio){
@@ -1421,7 +1421,7 @@
                             if(v1.fechaRecepcion == null){
                                 estaRecepcionado = false;
                             }
-                            if(v1.codigoReserva !== null){
+                            if(v1.codigoReserva !== null || v1.fechaRecepcion !== null){
                                 cantidadUsada++;
                             }else{
                                 if(v1.fechaRecepcion == null){
@@ -1445,11 +1445,13 @@
                         if(v.cantidad > 1){
                             qtyCitas = ` (${cantidadUsada}/${v.cantidad}) `;
                         }
+                        console.log({qtyCitas})
                         btnAgenda = `${qtyCitas}<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(prestacionReservar)}'>Agendar</div>`;
-                        if(estaRecepcionado){
+                        
+                        //if(estaRecepcionado && v.cantidad == v.detallesOrden.length){
+                        if(newArrRecepcionados.length == v.cantidad){
                             btnAgenda = `${qtyCitas}<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Realizado</span>`;
-
-                        }                     
+                        }
                     }
 
                     if(v.numeroOrden == null || (v.cantidadDisponible == 0 && !v.estaRecepcionado)){
@@ -1467,7 +1469,7 @@
                             }else{
                                 let tieneReservasPendientes = false;
                                 $.each(v.detallesOrden, function(k1,v1){
-                                    if(v1.codigoReserva == null){
+                                    if(v1.codigoReserva == null && v1.fechaRecepcion == null){
                                         tieneReservasPendientes = true;
                                     }
                                 })
@@ -1479,7 +1481,7 @@
                             btnAgenda = ``;
                         }
 
-                    }else if(v.estaRecepcionado){
+                    }else if(newArrRecepcionados.length == v.cantidad){
                         btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Realizado</span>`;
                     }
 

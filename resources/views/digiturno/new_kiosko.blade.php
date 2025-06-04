@@ -86,7 +86,7 @@
 	<!-- Content -->
 	<main class="content p-2 logged d-none" id="qr-box-container">
 		<div class="container-fluid h-100">
-			<div class="row d-flex justify-content-between align-items-center h-100">
+			<div class="row d-flex justify-content-between align-items-center h-100 d-none">
 				<div class="col-8 mt-5 offset-2 d-flex justify-content-center align-items-center h-100 text-center">
 					{{-- <img src="{{ asset('assets/img/qr-inicio.png') }}" alt="" style="width: 250px"> --}}
 					<div class="mt-5">
@@ -124,6 +124,12 @@
 	#qr-box-container{
 		background: url({{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/bg-digiturno.jpg) no-repeat center center;
 		background-size: cover;
+	}
+	.new-box-inicio{
+		background: url({{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/bg-start.png) no-repeat center center;
+		background-size: cover;
+		width: 100%;
+		height: 100%;
 	}
 	#qrcode{
 	    background: #fff;
@@ -171,6 +177,7 @@
 
 			if (localStorage.getItem('userKiosko') !== null) {
 				$('.logged').removeClass('d-none');
+				$('body').html(`<div class="new-box-inicio" style="background: url({{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/bg-start.png) no-repeat center center;background-size: cover;width: 100%;height: 100%;"></div>`)
 				
 
 				$('body').on('click touch', function(){
