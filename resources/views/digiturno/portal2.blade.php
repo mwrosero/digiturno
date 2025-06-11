@@ -1406,7 +1406,7 @@
                     if( v.requiereAgendamientoPrevio && v.cantidadUtilizada == 0 && v.cantidadDisponible != v.cantidadUtilizada ){
                         disabledAttr = `disabled`;
                     }
-
+                    let newArrRecepcionados = v.detallesOrden.filter(vo => vo.fechaRecepcion !== null );
                     // if( value.nombreServicioNivel1 == "CONSULTA"){
                     console.log(value)
                     if(value.esAgendable || value.requiereAgendamientoPrevio){
@@ -1421,7 +1421,7 @@
                             if(v1.fechaRecepcion == null){
                                 estaRecepcionado = false;
                             }
-                            if(v1.codigoReserva !== null){
+                            if(v1.codigoReserva !== null || v1.fechaRecepcion !== null){
                                 cantidadUsada++;
                             }else{
                                 if(v1.fechaRecepcion == null){
@@ -1445,11 +1445,13 @@
                         if(v.cantidad > 1){
                             qtyCitas = ` (${cantidadUsada}/${v.cantidad}) `;
                         }
+                        console.log({qtyCitas})
                         btnAgenda = `${qtyCitas}<div class="btn bg-veris text-white ms-2 h-100 fw-bold rounded-8 py-1 btn-agendar-prestacion" generales-rel='${ JSON.stringify(detalle) }' data-rel='${JSON.stringify(prestacionReservar)}'>Agendar</div>`;
-                        if(estaRecepcionado){
+                        
+                        //if(estaRecepcionado && v.cantidad == v.detallesOrden.length){
+                        if(newArrRecepcionados.length == v.cantidad){
                             btnAgenda = `${qtyCitas}<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Realizado</span>`;
-
-                        }                     
+                        }
                     }
 
                     if(v.numeroOrden == null || (v.cantidadDisponible == 0 && !v.estaRecepcionado)){
@@ -1467,7 +1469,7 @@
                             }else{
                                 let tieneReservasPendientes = false;
                                 $.each(v.detallesOrden, function(k1,v1){
-                                    if(v1.codigoReserva == null){
+                                    if(v1.codigoReserva == null && v1.fechaRecepcion == null){
                                         tieneReservasPendientes = true;
                                     }
                                 })
@@ -1479,7 +1481,7 @@
                             btnAgenda = ``;
                         }
 
-                    }else if(v.estaRecepcionado){
+                    }else if(newArrRecepcionados.length == v.cantidad){
                         btnAgenda = `<span class="badge badge-pill bg-veris-sky text-veris-dark fw-normal p-2">Realizado</span>`;
                     }
 
@@ -2161,6 +2163,7 @@
                 `
             });
         });*/
+        
 
         reiniciarConteo();
         $('#modalDatosFacturacion').on('hidden.bs.modal', async function (e) {
@@ -4000,7 +4003,7 @@
                 }else if(detalle.nombreServicioNivel1 == "LABORATORIO"){
                     textColorServicio = `text-green-dark`;
                     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/laboratorio-ico.svg`;
-                }else if(detalle.nombreServicioNivel1 == "CONSULTA" || detalle.nombreServicioNivel1 == "CONSULTA NO MEDICA" || detalle.nombreServicioNivel1 == "ODONTOLOGIA"){
+                }else if(detalle.nombreServicioNivel1 == "CONSULTA" || detalle.nombreServicioNivel1 == "CONSULTA NO MEDICA" || detalle.nombreServicioNivel1 == "ODONTOLOGIA" || detalle.nombreServicioNivel1 == "OPTICA"){
                     textColorServicio = `text-green-dark`;
                     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg`;
                 }else if(detalle.tipoServicio == 'ORDENES_APOYO_PENDIENTE'){
@@ -4358,6 +4361,9 @@
                     }else if(item.nombreServicioNivel1 == "ODONTOLOGIA"){
                         tipoServicioItem = 'Odontologia';
                         labelServicio = 'Odontología';
+                    }else if(item.nombreServicioNivel1 == "OPTICA"){
+                        tipoServicioItem = 'Optica';
+                        labelServicio = 'Óptica';
                     }else if(item.nombreServicioNivel1 == "CONSULTA" || item.nombreServicioNivel1 =="CONSULTA NO MEDICA"){
                         tipoServicioItem = 'Consulta';
                         labelServicio = 'Consulta';

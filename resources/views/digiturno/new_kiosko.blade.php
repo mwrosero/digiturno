@@ -52,7 +52,7 @@
     		</div>
     		<div onclick="loginUser();" class="btn bg-veris btn-ingresar text-white mx-auto fs-1 p-3 mb-5 rounded-8 my-5">INICIAR SESIÓN</div>
     	</div>
-    	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-3">
+    	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-3 box-btn-anonimo">
     		<div onclick="loginAnonimo();" class="btn bg-veris-dark btn-anonimo text-white mx-auto fs-3 p-2 mb-5 rounded-8 my-3"><i class="fa-solid fa-user-secret me-2"></i>INGRESO ANÓNIMO</div>
     	</div>
     	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-3 box-btn-cerrar-caja d-none">
@@ -86,7 +86,7 @@
 	<!-- Content -->
 	<main class="content p-2 logged d-none" id="qr-box-container">
 		<div class="container-fluid h-100">
-			<div class="row d-flex justify-content-between align-items-center h-100">
+			<div class="row d-flex justify-content-between align-items-center h-100 d-none">
 				<div class="col-8 mt-5 offset-2 d-flex justify-content-center align-items-center h-100 text-center">
 					{{-- <img src="{{ asset('assets/img/qr-inicio.png') }}" alt="" style="width: 250px"> --}}
 					<div class="mt-5">
@@ -124,6 +124,12 @@
 	#qr-box-container{
 		background: url({{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/bg-digiturno.jpg) no-repeat center center;
 		background-size: cover;
+	}
+	.new-box-inicio{
+		background: url({{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/bg-start.png) no-repeat center center;
+		background-size: cover;
+		width: 100%;
+		height: 100%;
 	}
 	#qrcode{
 	    background: #fff;
@@ -164,13 +170,14 @@
 
 		let userVeris = localStorage.getItem('userVeris');
 		let userAnonimo = localStorage.getItem('userAnonimo');
-		await parametrosGenerales("{{ $mac }}");
+		await parametrosGenerales("{{ $mac }}", false, true);
 
 		if (localStorage.getItem('userVeris') !== null || localStorage.getItem('userAnonimo') !== null) {
 			let userKiosko = localStorage.getItem('userKiosko');
 
 			if (localStorage.getItem('userKiosko') !== null) {
 				$('.logged').removeClass('d-none');
+				$('body').html(`<div class="new-box-inicio" style="background: url({{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/bg-start.png) no-repeat center center;background-size: cover;width: 100%;height: 100%;"></div>`)
 				
 
 				$('body').on('click touch', function(){
@@ -317,12 +324,30 @@
         console.log(data);
 
         if(data.code == 200){
+			await cerrarLote(data.data.secuenciaArqueo);
         	localStorage.clear();
         	let url_salir = `/kiosko/{{ $mac }}`;
             location.href = url_salir;
         }else{
         	alert(data.message);
         }
+	}
+
+	async function cerrarLote(secuenciaArqueo) {
+		let args = [];
+		// arqueos_caja/apertura
+        args["endpoint"] = `${api_url_digitales}/facturacion/v1/pin_pad/cierre_lote?codigoEmpresa=1&esManual=false`;
+        args["method"] = "POST";
+        args["showLoader"] = true;
+		args["dismissAlert"] = true;
+        args["token"] = "{{ $accessToken }}";
+        args["bodyType"] = "json";
+		args["data"] = JSON.stringify({
+			"caja": dataParametrosGenerales.caja,
+			"secuenciaArqueo": secuenciaArqueo
+		});
+		const data = await call(args);
+        console.log(data);
 	}
 
 	async function consultarCajas(soloConsulta = false){
@@ -350,6 +375,7 @@
         		// location.reload();
         		location.href = `/kiosko/{{ $mac }}`;
         	}else{
+				//$('.box-btn-anonimo').addClass('d-none')
         		if(soloConsulta){
         			//Ocultar boton de cerrar caja
         			$('.box-btn-cerrar-caja').addClass('d-none');

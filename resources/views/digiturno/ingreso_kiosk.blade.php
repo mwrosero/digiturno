@@ -276,6 +276,7 @@
         console.log(data);
 
         if(data.code == 200){
+			// await cerrarLote();
         	localStorage.clear();
         	let url_salir = `/kiosko/{{ $mac }}`;
             location.href = url_salir;
@@ -283,6 +284,22 @@
         	alert(data.message);
         }
 	}
+
+	// async function cerrarLote() {
+	// 	let args = [];
+    //     args["endpoint"] = `${api_url_digitales}/facturacion/v1/pin_pad/cierre_lote?codigoEmpresa=1&esManual=true`;
+    //     args["method"] = "POST";
+    //     args["showLoader"] = true;
+	// 	args["dismissAlert"] = true;
+    //     args["token"] = "{{ $accessToken }}";
+    //     args["bodyType"] = "json";
+	// 	args["data"] = JSON.stringify({
+	// 		"caja": dataParametrosGenerales.caja,
+	// 		"secuenciaArqueo": 1
+	// 	});
+	// 	const data = await call(args);
+    //     console.log(data);
+	// }
 
 	let accion = "FINALIZAR";
 	async function finalizar(){
