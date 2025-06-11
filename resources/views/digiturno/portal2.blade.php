@@ -2163,6 +2163,7 @@
                 `
             });
         });*/
+        
 
         reiniciarConteo();
         $('#modalDatosFacturacion').on('hidden.bs.modal', async function (e) {
@@ -4002,7 +4003,7 @@
                 }else if(detalle.nombreServicioNivel1 == "LABORATORIO"){
                     textColorServicio = `text-green-dark`;
                     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/laboratorio-ico.svg`;
-                }else if(detalle.nombreServicioNivel1 == "CONSULTA" || detalle.nombreServicioNivel1 == "CONSULTA NO MEDICA" || detalle.nombreServicioNivel1 == "ODONTOLOGIA"){
+                }else if(detalle.nombreServicioNivel1 == "CONSULTA" || detalle.nombreServicioNivel1 == "CONSULTA NO MEDICA" || detalle.nombreServicioNivel1 == "ODONTOLOGIA" || detalle.nombreServicioNivel1 == "OPTICA"){
                     textColorServicio = `text-green-dark`;
                     icon_service_name = `{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/svg/consultas-ico.svg`;
                 }else if(detalle.tipoServicio == 'ORDENES_APOYO_PENDIENTE'){
@@ -4360,6 +4361,9 @@
                     }else if(item.nombreServicioNivel1 == "ODONTOLOGIA"){
                         tipoServicioItem = 'Odontologia';
                         labelServicio = 'Odontología';
+                    }else if(item.nombreServicioNivel1 == "OPTICA"){
+                        tipoServicioItem = 'Optica';
+                        labelServicio = 'Óptica';
                     }else if(item.nombreServicioNivel1 == "CONSULTA" || item.nombreServicioNivel1 =="CONSULTA NO MEDICA"){
                         tipoServicioItem = 'Consulta';
                         labelServicio = 'Consulta';

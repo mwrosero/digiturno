@@ -52,7 +52,7 @@
     		</div>
     		<div onclick="loginUser();" class="btn bg-veris btn-ingresar text-white mx-auto fs-1 p-3 mb-5 rounded-8 my-5">INICIAR SESIÓN</div>
     	</div>
-    	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-3">
+    	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-3 box-btn-anonimo">
     		<div onclick="loginAnonimo();" class="btn bg-veris-dark btn-anonimo text-white mx-auto fs-3 p-2 mb-5 rounded-8 my-3"><i class="fa-solid fa-user-secret me-2"></i>INGRESO ANÓNIMO</div>
     	</div>
     	<div class="col-12 col-md-8 offset-md-2 mb-4 text-center mt-3 box-btn-cerrar-caja d-none">
@@ -170,7 +170,7 @@
 
 		let userVeris = localStorage.getItem('userVeris');
 		let userAnonimo = localStorage.getItem('userAnonimo');
-		await parametrosGenerales("{{ $mac }}");
+		await parametrosGenerales("{{ $mac }}", false, true);
 
 		if (localStorage.getItem('userVeris') !== null || localStorage.getItem('userAnonimo') !== null) {
 			let userKiosko = localStorage.getItem('userKiosko');
@@ -324,12 +324,30 @@
         console.log(data);
 
         if(data.code == 200){
+			await cerrarLote(data.data.secuenciaArqueo);
         	localStorage.clear();
         	let url_salir = `/kiosko/{{ $mac }}`;
             location.href = url_salir;
         }else{
         	alert(data.message);
         }
+	}
+
+	async function cerrarLote(secuenciaArqueo) {
+		let args = [];
+		// arqueos_caja/apertura
+        args["endpoint"] = `${api_url_digitales}/facturacion/v1/pin_pad/cierre_lote?codigoEmpresa=1&esManual=false`;
+        args["method"] = "POST";
+        args["showLoader"] = true;
+		args["dismissAlert"] = true;
+        args["token"] = "{{ $accessToken }}";
+        args["bodyType"] = "json";
+		args["data"] = JSON.stringify({
+			"caja": dataParametrosGenerales.caja,
+			"secuenciaArqueo": secuenciaArqueo
+		});
+		const data = await call(args);
+        console.log(data);
 	}
 
 	async function consultarCajas(soloConsulta = false){
@@ -357,6 +375,7 @@
         		// location.reload();
         		location.href = `/kiosko/{{ $mac }}`;
         	}else{
+				//$('.box-btn-anonimo').addClass('d-none')
         		if(soloConsulta){
         			//Ocultar boton de cerrar caja
         			$('.box-btn-cerrar-caja').addClass('d-none');

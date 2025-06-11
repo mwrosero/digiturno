@@ -176,11 +176,12 @@
                 }
             }
 
-            async function parametrosGenerales(_mac, sendHeaders = false){
+            async function parametrosGenerales(_mac, sendHeaders = false, esLogin = false){
                 let args = [];
-                args["endpoint"] = `${api_url}/${api_war}/util/parametros_generales?macAddress=${ _mac }`;
+                args["endpoint"] = `${api_url}/${api_war}/util/parametros_generales?macAddress=${ _mac }&esLogin=${ esLogin }`;
                 args["method"] = "GET";
                 args["showLoader"] = false;
+                args["dismissAlert"] = true;
                 args["token"] = "{{ $accessToken }}";
                 if(sendHeaders){
                     args["sendHeaders"] = "true";
@@ -192,6 +193,10 @@
                 if(data.code == 200){
                     dataParametrosGenerales = data.data
                     $('#central').html(`${ dataParametrosGenerales.nombreSucursalTurnero }`)
+                }else{
+                    toastr.error(data.message, "Atención - Parámetros Generales", {
+                        timeOut: 5000
+                    });
                 }
             }
 

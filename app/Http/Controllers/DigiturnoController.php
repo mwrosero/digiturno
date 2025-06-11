@@ -21,11 +21,14 @@ class DigiturnoController extends Controller
 
     public function kiosko($mac) {
         $token = Veris::getToken();
+        // $tokenPinPad = Veris::getTokenPinPad();
+        
         $ip = request()->ip();
         // dd($ip);
 
         return view('digiturno.new_kiosko')
                     ->with('accessToken',$token)
+                    // ->with('accessTokenPinPad',$tokenPinPad)
                     ->with('ip', $ip)
                     ->with('mac',$mac);
 

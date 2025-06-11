@@ -29,6 +29,8 @@ class Veris extends Model
     public const URLPAYMENT = 'https://miveris.akold.com';
     public const APPLICATION_LOGIN = 'UEhBTlRPTVhfRU1QUkVTQVJJQUw=';
     public const IDORGANIZACION_LOGIN = '365509c8-9596-4506-a5b3-487782d5876e';
+    public const BASICAUTHPINPAD = 'd3NwaW5wYWQ6VyRQwqFOUEBEQVVUIzNOVMKhQ0BUSTBO';
+    public const BASIC_URL_PINPAD = 'https://ipnws.veris.com.ec/pinpadTest-api/v1';
 
     //PROD 
     // public const BASE_URL = 'https://turnero.phantomx.com.ec';
@@ -45,6 +47,8 @@ class Veris extends Model
     // public const URLPAYMENT = 'https://app.veris.com.ec';
     // public const APPLICATION_LOGIN = 'UEhBTlRPTVhfRU1QUkVTQVJJQUw=';
     // public const IDORGANIZACION_LOGIN = '365509c8-9596-4506-a5b3-487782d5876e';
+    // public const BASICAUTHPINPAD = 'd3NwaW5wYWQ6VyRQwqFOUEBEQVVUIzNOVMKhQ0BUSTBO';
+    // public const BASIC_URL_PINPAD = 'https://phantom-wsinternos.phantomx.com.ec/pinpad-api/v1';
 
     static function call(Array $config)
     {
@@ -154,6 +158,36 @@ class Veris extends Model
         
         session(['accessToken' => $response->data->idToken]);
         return $response->data->idToken;
+    }
+
+    static function getTokenPinPad()
+    {
+        $token = session('accessTokenPinPad', null);
+
+        /*if( $token !== null ){
+            return $token;
+        }*/
+        
+        $method = 'autenticacion/login';
+        // $response = Veris::call([
+        //     'endpoint' => self::BASE_URL_DIGITALES.'/'.self::SEGURIDADES_WAR.$method,
+        //     'basic' => self::BASICAUTHDIGITALES,
+        //     'method'   => 'POST'
+        // ]);
+
+        $res =  Http::withOptions([
+                    'verify' => false, // Desactivar verificación de certificados
+                ])->withHeaders([
+                    'Application' => self::APPLICATION,
+                    'Authorization' => 'Basic '.self::BASICAUTHPINPAD,
+                ])->post(self::BASIC_URL_PINPAD.'/'.$method);
+        $response = json_decode($res->body());
+
+        // echo self::BASIC_URL_PINPAD.'/'.$method;
+        // dd($response);
+        
+        session(['accessTokenPinPad' => $response->data->accesToken]);
+        return $response->data->accesToken;
     }
 
 }
