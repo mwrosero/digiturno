@@ -178,8 +178,15 @@
             }
 
             async function parametrosGenerales(_mac, sendHeaders = false, esLogin = false){
+                let isDeviceKiosko = true;
+                if(!isKiosk()){
+                    isDeviceKiosko = false;
+                }
+                if(isMobile()){
+                    isDeviceKiosko = false;
+                }
                 let args = [];
-                args["endpoint"] = `${api_url}/${api_war}/util/parametros_generales?macAddress=${ _mac }&esLogin=${ esLogin }`;
+                args["endpoint"] = `${api_url}/${api_war}/util/parametros_generales?macAddress=${ _mac }&esLogin=${ esLogin }&esKiosko=${ isDeviceKiosko }`;
                 args["method"] = "GET";
                 args["showLoader"] = false;
                 args["dismissAlert"] = true;
