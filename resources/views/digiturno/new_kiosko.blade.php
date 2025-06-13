@@ -166,13 +166,17 @@
 <script>
 	setInterval(actualizarFechaHora, 1000);
 	let accion = "INICIALIZAR";
+	
 	$(document).ready(async function() {
 
 		let userVeris = localStorage.getItem('userVeris');
 		let userAnonimo = localStorage.getItem('userAnonimo');
-		await parametrosGenerales("{{ $mac }}", false, true);
+		console.log({estaAperturada});
 
+		await parametrosGenerales("{{ $mac }}", false, true);
+		
 		if (localStorage.getItem('userVeris') !== null || localStorage.getItem('userAnonimo') !== null) {
+			// await parametrosGenerales("{{ $mac }}", false, true);
 			let userKiosko = localStorage.getItem('userKiosko');
 
 			if (localStorage.getItem('userKiosko') !== null) {
@@ -219,6 +223,8 @@
 			})
 		}else{
 			// mostrar login page
+			
+			// await parametrosGenerales("{{ $mac }}", false, true);
 			if(!isMobile()){
 
 		        KioskBoard.init({
@@ -247,6 +253,13 @@
 	    	}
 			console.log("LOGIN")
 			await consultarCajas(true);
+			
+			//Eliminar el kiosko
+			if(!estaAperturada){
+				localStorage.removeItem("userKiosko");
+				//location.reload();
+			}
+
 			$('.not-logged-userpass').removeClass('d-none')
 
 			$('body').on('click', '#btn-user-new', async function(){
@@ -367,7 +380,7 @@
         		localStorage.setItem('userKiosko', JSON.stringify(caja));
         		if(soloConsulta){
         			//Mostrar boton de cerrar caja
-        			$('.box-btn-cerrar-caja').removeClass('d-none');
+        			//$('.box-btn-cerrar-caja').removeClass('d-none');
         			console.log('Mostrar')
         			return;
         		}
@@ -375,6 +388,7 @@
         		// location.reload();
         		location.href = `/kiosko/{{ $mac }}`;
         	}else{
+				estaAperturada = false;
 				//$('.box-btn-anonimo').addClass('d-none')
         		if(soloConsulta){
         			//Ocultar boton de cerrar caja
@@ -395,6 +409,7 @@
         		$('.not-logged').removeClass('d-none');
         	}
         }else{
+			estaAperturada = false;
         	alert(data.message);
         }
 	}

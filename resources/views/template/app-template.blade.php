@@ -135,6 +135,7 @@
 
         @stack('scripts')
         <script>
+            let estaAperturada = true;
             let dataParametrosGenerales;
             localStorage.removeItem('sessionTime');
             $(document).ready(async function() {
