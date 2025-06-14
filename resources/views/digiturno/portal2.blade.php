@@ -2170,6 +2170,8 @@
             // await cargarCodigosPaises()
             $('.box-datos-factura').removeClass('d-none')
             $('.box-load-pago').addClass('d-none')
+            cortaProcesoYEnviaCaja = false;
+            flagAutorizacion = false;
             // reiniciarConteo();
         });
 
