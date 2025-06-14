@@ -645,7 +645,10 @@ Mi Veris - Citas - Revisa tus datos
                         $('#modalAgendado').modal('show');
                     }
                 }else{
-                    await crearPreTransaccion()
+                    // await crearPreTransaccion()
+                    guardarData();
+                    location.href = '/citas-datos-facturacion/{{ $params }}?mac={{ $mac }}';
+                    showLoader();
                 }
                 //location.href = '/citas-datos-facturacion/{{ $params }}?mac={{ $mac }}';
             }else{
