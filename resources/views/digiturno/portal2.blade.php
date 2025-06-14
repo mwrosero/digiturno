@@ -2170,6 +2170,8 @@
             // await cargarCodigosPaises()
             $('.box-datos-factura').removeClass('d-none')
             $('.box-load-pago').addClass('d-none')
+            cortaProcesoYEnviaCaja = false;
+            flagAutorizacion = false;
             // reiniciarConteo();
         });
 
@@ -2937,7 +2939,7 @@
         return convenio;
     }
 
-    cortaProcesoYEnviaCaja = false;
+    let cortaProcesoYEnviaCaja = false;
     async function obtenerAutorizacionMedPay(detalle){
         console.log('MEDPAYYYYYYYYYYYYYY');
         console.log(detalle);
@@ -4479,6 +4481,8 @@
         $('#list-familiares').html(elem);
     }
     async function cargarServicios(showLoader = false){
+        cortaProcesoYEnviaCaja = false;
+        flagAutorizacion = false;
         // console.log(showLoader)
         $('#pills-tab-servicios').empty();
         // let dataAttr = $('.paciente-item-selected').attr("data-rel");
