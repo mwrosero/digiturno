@@ -865,7 +865,7 @@
         // $('.logo').css("max-width","400px !important");
     }
 
-    let clientesAuth = [5803, 13, 68, 10996, 7656, 6814];
+    let clientesAuth = [5803, 13, 68, 10996, 7656, 6814, 7220];
     let datosPago = {};
 
     let url_salir = ``;
@@ -3182,7 +3182,7 @@
             console.log("*0000*")
             if(!flagAutorizacion){
                 console.log("*1111*")
-                if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa && datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa.valorTotal > 0){
+                if(datosPago.consulta[0].agrupaciones[0].permiteValorizacionExterna && datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa.valorTotal > 0){
                     flagAutorizacion = true;
                     console.log("*2222*")
                     if(parseInt(_detallePagar.beneficio.convenio.codigoCliente) == 13){
@@ -3223,7 +3223,7 @@
                         await consultaPreTrx(idPreTransaccion, detalle);
                         return;
                     }
-                }else if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa){
+                }else if(datosPago.consulta[0].agrupaciones[0].permiteValorizacionExterna){
                     console.log("*4444*")
                     if(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa.valorTotal == 0 && datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal == 0){
                         // NO ENTRA

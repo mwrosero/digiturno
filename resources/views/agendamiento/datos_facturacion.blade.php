@@ -304,7 +304,7 @@ Mi Veris - Citas - Datos de facturación
     let dataCita = JSON.parse(local);
     let estadoPoliticas;
     let ultimaVersionPoliticas;
-    let clientesAuth = [5803, 13, 68, 10996, 7656, 6814];
+    let clientesAuth = [5803, 13, 68, 10996, 7656, 6814, 7220];
     let esKiosko = false;
 
     document.addEventListener("DOMContentLoaded", async function () {
