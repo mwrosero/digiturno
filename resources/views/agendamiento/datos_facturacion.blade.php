@@ -831,7 +831,7 @@ Mi Veris - Citas - Datos de facturación
         if(data.code == 200){
             datosPago.consulta = data.data;
             if(!flagAutorizacion){
-                if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa){
+                if(datosPago.consulta[0].agrupaciones[0].permiteValorizacionExterna){
                     console.log(7)
                     flagAutorizacion = true;
                     dataCita.convenio.secuenciaAfiliado = datosPago.consulta[0].agrupaciones[0].beneficio.convenio.secuenciaAfiliado;
