@@ -141,4 +141,11 @@ class DigiturnoController extends Controller
                 ->with('accessToken',$token)
                 ->with('mac',$mac);
     }
+
+    public function adminKiosko($mac){
+        $token = Veris::getToken();
+        return view('digiturno.admin')
+                ->with('accessToken',$token)
+                ->with('mac',$mac);
+    }
 }
