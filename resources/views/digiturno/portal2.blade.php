@@ -865,7 +865,7 @@
         // $('.logo').css("max-width","400px !important");
     }
 
-    let clientesAuth = [5803, 13, 68, 10996, 7656, 6814, 7220];
+    let clientesAuth = [5803, 13, 68, 10996, 7656, 6814];
     let datosPago = {};
 
     let url_salir = ``;
@@ -3010,18 +3010,8 @@
             }]
         }
 
-        let fechaReserva = null;
-        let informacionExternaPlanMedPay = null;
-        let nemonicoTipoAutorizacion = "AUTORIZACION_BUPA";
-        if(convenio.codigoCliente == 13){
-            informacionExternaPlanMedPay = convenio.informacionExternaPlan;
-            nemonicoTipoAutorizacion = "AUTORIZACION_MEDPAY";
-        }else{
-            fechaReserva = detalle.horaInicio + ':00';
-        }
-
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=${canalInvocacion}&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=${ nemonicoTipoAutorizacion }`;
+        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=${canalInvocacion}&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.idCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
@@ -3030,9 +3020,18 @@
             "idTrx": generateUUIDv4(),
             "idPaciente": paciente.idPaciente,
             "prestaciones": itemsPrestaciones,
+            // "prestaciones": [{
+            //     "codigoServicio": codigoServicio,
+            //     "codigoPrestacion": codigoPrestacion,
+            //     "cantidad": 1,
+            //     "esOdontologica": false,
+            //     "numeroParteDental": 0,
+            //     "numeroOrden": detalle.numeroOrden,// si o null
+            //     "lineaDetalleOrden": lineaDetalleOrden, //si o null
+            //     "valorFee": 0
+            // }],
             "diagnosticos": diagnosticos,
-            "medpayPlan": informacionExternaPlanMedPay,
-            "fechaReserva": fechaReserva
+            "medpayPlan": convenio.informacionExternaPlan
         });
         args["bodyType"] = "json";
         const data = await call(args);
@@ -3040,116 +3039,7 @@
         console.log(data);
         if(data.code == 200){
             datosPago.sync = data.data
-            {{-- if(convenio.codigoCliente !== 13){
-                await setearAutorizacion();
-            } --}}
-        }else{
-            // cerrar modal
-            toastr.error("", data.message, {
-                timeOut: 5000
-            });
-            cortaProcesoYEnviaCaja = true;
-            //Llamar turno
-        }
-    }
-
-    async function obtenerAutorizacionMedPayBupa(detalle){
-        console.log('BUPAAAAAAA');
-        console.log(detalle);
-        console.log('BUPAAAAAAA');
-        let convenio = await obtenerInfoConvenio(detalle);
-        // alert(convenio.nemonicoTipoCredito)
-        {{-- if(convenio.informacionExternaPlan === null && convenio.codigoCliente == 13){
-            cortaProcesoYEnviaCaja = true;
-            flagAutorizacion = false;
-            console.log("No emite autorización")
-            return;
-        } --}}
-
-        let diagnosticos = [29616];
-        if(detalle.hasOwnProperty('diagnosticos')){
-            if(detalle.diagnosticos !== null){
-                diagnosticos = [];
-                $.each(detalle.diagnosticos, function(key, value){
-                    diagnosticos.push(parseInt(value.codigoDiagnostico));
-                })
-            }
-        }
-
-        let dataAttr = $('.paciente-item-selected').attr("data-rel");
-        let paciente = JSON.parse(dataAttr);
-
-        let codigoServicio = detalle.codigoServicio;
-        let codigoPrestacion = detalle.codigoPrestacion;
-        let lineaDetalleOrden = detalle.lineaDetalleOrden;
-
-        if(detalle.hasOwnProperty('detallesOrden')){
-            codigoServicio = detalle.detallesOrden[0].codigoServicio;
-            codigoPrestacion = detalle.detallesOrden[0].codigoPrestacion;
-            lineaDetalleOrden = detalle.detallesOrden[0].lineaDetalleOrden;
-        }
-
-        let canalInvocacion = "CAJ";
-
-        if(isKiosk()){
-            canalInvocacion = "KIO";
-        }
-
-        let itemsPrestaciones = []
-        if(detalle.tipoServicio == "ORDEN_MEDICA"){
-            let items = detalle.detallesOrden;
-            $.each(items, function(k,v){
-                itemsPrestaciones.push({
-                    "codigoServicio": v.codigoServicio,
-                    "codigoPrestacion": v.codigoPrestacion,
-                    "cantidad": v.cantidad,
-                    "esOdontologica": false,
-                    "numeroParteDental": 0,
-                    "numeroOrden": detalle.numeroOrden,// si o null
-                    "lineaDetalleOrden": v.lineaDetalleOrden, //si o null
-                    "valorFee": 0
-                })
-            })
-        }else{
-            itemsPrestaciones = [{
-                "codigoServicio": codigoServicio,
-                "codigoPrestacion": codigoPrestacion,
-                "cantidad": 1,
-                "esOdontologica": false,
-                "numeroParteDental": 0,
-                "numeroOrden": detalle.numeroOrden,// si o null
-                "lineaDetalleOrden": lineaDetalleOrden, //si o null
-                "valorFee": 0
-            }]
-        }
-
-        let fechaReserva = null;
-        let informacionExternaPlanMedPay = null;
-        let nemonicoTipoAutorizacion = "BUPA";
-        if(convenio.codigoCliente == 13){
-            informacionExternaPlanMedPay = convenio.informacionExternaPlan;
-            nemonicoTipoAutorizacion = "AUTORIZACION_MEDPAY";
-        }else{
-            fechaReserva = detalle.horaInicio + ':00';
-        }
-
-        let idAgrupacion = await getIdAgrupacionArray();
-        let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${datosPago.idPreTransaccion}/emision_valorizacion_externa?nemonicoValorizacion=${nemonicoTipoAutorizacion}&codigoEmpresa=1`;
-        args["method"] = "POST";
-        args["token"] = accessToken;
-        args["showLoader"] = true;
-        args["dismissAlert"] = true;
-        args["data"] = JSON.stringify({
-            "idAgrupacion": idAgrupacion
-        });
-        args["bodyType"] = "json";
-        const data = await call(args);
-        console.log('BUPAAAAAAAAAAAA');
-        console.log(data);
-        if(data.code == 200){
-            datosPago.sync = data.data
-            await setearAutorizacion();
+            //await setearAutorizacion();
         }else{
             // cerrar modal
             toastr.error("", data.message, {
@@ -3202,9 +3092,6 @@
     }
 
     async function setearAutorizacion(){
-        console.table(datosPago.sync)
-        let secuencia = (datosPago.sync.hasOwnProperty('secuenciaLogSincronizacion')) ? datosPago.sync.secuenciaLogSincronizacion : datosPago.sync.secuenciaTransaccion;
-        let autorizacion = (datosPago.sync.hasOwnProperty('autorizacionAseguradora')) ? datosPago.sync.autorizacionAseguradora : datosPago.sync.numeroAutorizacion;
         let idAgrupacion = await getIdAgrupacionArray();
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${ datosPago.idPreTransaccion }/setear_autorizacion_aseguradora?codigoEmpresa=1`;
@@ -3215,10 +3102,8 @@
             "idAgrupacion": idAgrupacion[0],
             // "_id": "string",
             "esAutorizacionAutomatica": true,
-            "secuenciaLogWs": secuencia,
-            "numeroAutorizacion": autorizacion
-            {{-- "secuenciaLogWs": datosPago.sync.secuenciaTransaccion,
-            "numeroAutorizacion": datosPago.sync.numeroAutorizacion --}}
+            "secuenciaLogWs": datosPago.sync.secuenciaLogSincronizacion,
+            "numeroAutorizacion": datosPago.sync.autorizacionAseguradora
         });
         args["bodyType"] = "json";
         const data = await call(args);
@@ -3297,18 +3182,13 @@
             console.log("*0000*")
             if(!flagAutorizacion){
                 console.log("*1111*")
-                if(datosPago.consulta[0].agrupaciones[0].permiteValorizacionExterna && datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa.valorTotal > 0){
+                if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa && datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa.valorTotal > 0){
                     flagAutorizacion = true;
                     console.log("*2222*")
-                    if(parseInt(_detallePagar.beneficio.convenio.codigoCliente) == 13 || parseInt(_detallePagar.beneficio.convenio.codigoCliente) == 7220){
+                    if(parseInt(_detallePagar.beneficio.convenio.codigoCliente) == 13){
                         console.log("-----////---------");
                         console.log(7)
-                        if(parseInt(_detallePagar.beneficio.convenio.codigoCliente) == 13){
-                            await obtenerAutorizacionMedPay(_detallePagar);
-                        }
-                        if(parseInt(_detallePagar.beneficio.convenio.codigoCliente) == 7220){
-                            await obtenerAutorizacionMedPayBupa(_detallePagar);
-                        }
+                        await obtenerAutorizacionMedPay(_detallePagar);
                         if(cortaProcesoYEnviaCaja){
                             toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atención', {
                                 timeOut: 5000
@@ -3343,22 +3223,18 @@
                         await consultaPreTrx(idPreTransaccion, detalle);
                         return;
                     }
-                }else if(datosPago.consulta[0].agrupaciones[0].permiteValorizacionExterna){
+                }else if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa){
                     console.log("*4444*")
                     if(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa.valorTotal == 0 && datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal == 0){
                         // NO ENTRA
                         await facturarCobroPinPad();
                         return
                     }else{
-                        if(parseInt(_detallePagar.beneficio.convenio.codigoCliente) == 13 || parseInt(_detallePagar.beneficio.convenio.codigoCliente) == 7220){
-
-                            if(parseInt(_detallePagar.beneficio.convenio.codigoCliente) == 13){
-                                await obtenerAutorizacionMedPay(_detallePagar);
-                            }
-                            if(parseInt(_detallePagar.beneficio.convenio.codigoCliente) == 7220){
-                                await obtenerAutorizacionMedPayBupa(_detallePagar);
-                            }
-
+                        if(parseInt(_detallePagar.beneficio.convenio.codigoCliente) == 13){
+                            console.log("*5555*")
+                            console.log("-----////---------");
+                            console.log(7)
+                            await obtenerAutorizacionMedPay(_detallePagar);
                             if(cortaProcesoYEnviaCaja){
                                 toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atención', {
                                     timeOut: 5000

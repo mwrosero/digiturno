@@ -8,6 +8,62 @@
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+{{-- Modal Pinpad --}}
+<div class="modal modal-top fade" id="modalPinpad" tabindex="-1" aria-labelledby="modalPinpadLabel" data-bs-backdrop="static" data-bs-keyboard="true">
+    <div class="modal-dialog modal-md modal-dialog-top modal-dialog-scrollable mx-auto">
+        <form class="modal-content rounded-8 mt-5">
+            <div class="modal-header">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-center">Inserta o desliza la tarjeta</h5
+                >
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3 text-center">
+                <img class="w-75 mx-auto" src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/payment.svg" alt="">
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- Modal de datos de facturación --}}
+<div class="modal modal-top fade" id="modalDatosFacturacion" tabindex="-1" aria-labelledby="modalDatosFacturacionLabel" data-bs-backdrop="static" data-bs-keyboard="true">
+    {{-- <div class="modal-dialog modal modal-lg modal-dialog-centered mx-auto"> --}}
+    <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable mx-auto">
+        <form class="modal-content rounded-8 mt-5">
+            <div class="modal-header">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-center">Datos de Facturación</h5
+                >
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="row box-datos-factura">
+                    <div class="col-6 mb-3">
+                        <label class="form-label fs-20 text-silver-dark" for="codigoTipoIdentificacion">Tipo de documento</label>
+                        <select class="form-select p-1 rounded-8 fs-25 text-start" name="codigoTipoIdentificacion" id="codigoTipoIdentificacion">
+                            <option value="2">Cédula</option>
+                            <option value="1">Ruc</option>
+                        </select>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label class="form-label fs-20 text-silver-dark" for="numeroIdentificacion">Número de documento</label>
+                        <input autocomplete="off" class="form-control w-100 keyboard-input virtual-keyboard-numpad p-1 rounded-8 text-start fs-25 onlyNumber" type="number" name="numeroIdentificacion" id="numeroIdentificacion" data-kioskboard-type="numpad">
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="form-label fs-20 text-silver-dark" for="nombreCompleto">Nombre completo</label>
+                        <input autocomplete="off" class="form-control w-100 onlyLetters text-uppercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-start fs-25 mb-2" type="text" name="nombreCompleto" id="nombreCompleto">
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="form-label fs-20 text-silver-dark" for="email">Correo electrónico</label>
+                        <input autocomplete="off" class="form-control w-100 onlyLetters text-lowercase keyboard-input virtual-keyboard-all p-1 rounded-8 text-start fs-25 mb-2" type="email" name="email" id="email" data-kioskboard-specialcharacters="true"/>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <button type="button" class="btn bg-veris fs-25 line-height-25 text-white w-100 py-3 px-32 shadow-none d-flex justify-content-center align-items-center btn-disabled btn-continuar-factura rounded-8">Actualizar datos de Factura</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="wrapper">
     <!-- Header -->
     <header class="header p-3">
@@ -25,6 +81,7 @@
                         <span class="fs-4">Fecha:</span><span class="ms-1 fs-5 text-veris-light" id="fecha"></span>
                         <span class="fs-5 ms-5 d-none">Hora:</span><span class="ms-1 fs-5 text-veris-light d-none" id="hora"></span>
                         <span class="fs-5 ms-5">Central:</span><span class="ms-1 fs-4 text-veris-light" id="central"></span>
+                        <i class="fa-solid fa-arrow-right-from-bracket ms-2 text-warning fw-bold fs-20 exitAdmin"></i>
                     </div>
                 </div>
             </div>
@@ -38,7 +95,7 @@
                 <div class="col-12 h-100 px-0 rounded-t-8">
                     <ul class="nav nav-pills justify-content-between bg-white w-100 rounded-t-8 border-start-0 border-start-0" id="pills-tab-servicios" role="tablist">
                         <li class="nav-item flex-fill w-50 border-silver-light-1 rounded-8" role="presentation">
-                            <button tipo-rel="AV" class="nav-link tipoServicio w-100 px-8 px-2 d-flex justify-content-center align-items-center text-veris-dark fs-20 active" id="pills-AV-tab" data-bs-toggle="pill" data-bs-target="#pills-AV" type="button" role="tab" aria-controls="pills-AV" aria-selected="true">
+                            <button tipo-rel="AV" class="nav-link tipoServicio w-100 px-8 px-2 d-flex justify-content-center align-items-center text-veris-dark fs-20 " id="pills-AV-tab" data-bs-toggle="pill" data-bs-target="#pills-AV" type="button" role="tab" aria-controls="pills-AV" aria-selected="true">
                             ANULACIÓN DE VOUCHER<br>SIN FACTURA
                             </button>
                         </li>
@@ -48,12 +105,12 @@
                             </button>
                         </li>
                         <li class="nav-item flex-fill w-50 border-silver-light-1 rounded-8" role="presentation">
-                            <button tipo-rel="SF" class="nav-link tipoServicio w-100 px-8 px-2 d-flex justify-content-center align-items-center text-veris-dark fs-20" id="pills-SF-tab" data-bs-toggle="pill" data-bs-target="#pills-SF" type="button" role="tab" aria-controls="pills-SF" aria-selected="false">
+                            <button tipo-rel="SF" class="nav-link tipoServicio w-100 px-8 px-2 d-flex justify-content-center align-items-center text-veris-dark fs-20" id="pills-SF-tab" data-bs-toggle="pill" data-bs-target="#pills-NC" type="button" role="tab" aria-controls="pills-NC" aria-selected="false">
                                 SALDO A FAVOR<br>DEL CLIENTE
                             </button>
                         </li>
                         <li class="nav-item flex-fill w-50 border-silver-light-1 rounded-8" role="presentation">
-                            <button tipo-rel="CDF" class="nav-link tipoServicio w-100 px-8 px-2 d-flex justify-content-center align-items-center text-veris-dark fs-20" id="pills-CDF-tab" data-bs-toggle="pill" data-bs-target="#pills-CDF" type="button" role="tab" aria-controls="pills-CDF" aria-selected="false">
+                            <button tipo-rel="CDF" class="nav-link tipoServicio w-100 px-8 px-2 d-flex justify-content-center align-items-center text-veris-dark fs-20" id="pills-CDF-tab" data-bs-toggle="pill" data-bs-target="#pills-NC" type="button" role="tab" aria-controls="pills-NC" aria-selected="false">
                                 CAMBIO DATOS<br>DE FACTURA
                             </button>
                         </li>
@@ -61,7 +118,7 @@
                     <div class="tab-content bg-transparent pt-2" id="pills-tabContent-servicios">
                         <div class="tab-pane fade mt-3 px-3 show active" id="pills-AV" role="tabpanel" aria-labelledby="pills-AV-tab" tabindex="0">
                             <div class="row row-flex mb-3 pb-3">
-                                <div class="col-12 mt-3">
+                                <div class="col-12 mt-3 box-vouchers d-none">
                                     <table class="table">
                                         <thead>
                                             <tr>
@@ -98,30 +155,33 @@
                                     <p class="fs--2 fw-bold text-veris mt-3">Número de Factura</p>
                                     <div class="d-flex mt-3 align-items-center justify-content-between">
                                         <input type="text" maxlength="3" 
-                                            class="flex-grow-1 text-center rounded-3 form-control fs--1 p-2" 
+                                            class="flex-grow-1 text-center rounded-3 form-control fs--1 p-2 keyboard-input virtual-keyboard-numpad" 
                                             oninput="limitarCaracteres(this, this.getAttribute('maxlength'))" 
                                             onkeypress="return validarNumeros(event)" 
                                             onblur="completarConCeros(this)" 
                                             required 
-                                            autocomplete="off" 
+                                            autocomplete="off"
+                                            data-kioskboard-type="numpad"
                                             id="first-input">
                                         <i class="fa-solid fa-minus txt-veris fw-bold mx-1 mx-md-3"></i>
                                         <input type="text" maxlength="3" 
-                                            class="flex-grow-1 text-center rounded-3 form-control fs--1 p-2" 
+                                            class="flex-grow-1 text-center rounded-3 form-control fs--1 p-2 keyboard-input virtual-keyboard-numpad" 
                                             oninput="limitarCaracteres(this, this.getAttribute('maxlength'))" 
                                             onkeypress="return validarNumeros(event)" 
                                             onblur="completarConCeros(this)" 
                                             required 
-                                            autocomplete="off" 
+                                            autocomplete="off"
+                                            data-kioskboard-type="numpad"
                                             id="medium-input">
                                         <i class="fa-solid fa-minus txt-veris fw-bold mx-1 mx-md-3"></i>
                                         <input type="text" maxlength="9" 
-                                            class="flex-grow-1 text-center rounded-3 form-control fs--1 p-2" 
+                                            class="flex-grow-1 text-center rounded-3 form-control fs--1 p-2 keyboard-input virtual-keyboard-numpad" 
                                             oninput="limitarCaracteres(this, this.getAttribute('maxlength'))" 
                                             onkeypress="return validarNumeros(event)" 
                                             onblur="completarConCeros(this)" 
                                             required 
-                                            autocomplete="off" 
+                                            autocomplete="off"
+                                            data-kioskboard-type="numpad"
                                             id="last-input">
                                         <button class="m-0 mx-1 mx-md-3 bg-transparent border-0" id="btnSearch">
                                             <i class="fa-solid fa-magnifying-glass"></i>
@@ -182,6 +242,14 @@
 
     // Completa con ceros a la izquierda hasta el maxlength definido
     function completarConCeros(input) {
+        return;
+        const valor = input.value.trim(); // eliminamos espacios
+
+        if (valor === '') {
+            return; // no hacer nada si está vacío
+        }
+
+
         const maxLength = parseInt(input.getAttribute('maxlength'), 10);
         if (input.value.length < maxLength) {
             input.value = input.value.padStart(maxLength, '0');
@@ -195,9 +263,63 @@
         }
     }
 
+    let dataAdmin = JSON.parse(localStorage.getItem('dataAdmin'));
+
     document.addEventListener('DOMContentLoaded', async function () {
         await parametrosGenerales("{{ $mac }}");
-        await getVouchers();
+
+        $('body').on('click', '.exitAdmin', function(){
+            localStorage.removeItem('dataAdmin');
+            location.href = '/kiosko/{{ $mac }}';
+        })
+
+        //$('body').on('change', '#first-input, #medium-input, #last-input', function() {
+        $('body').on('change', '#first-input', function() {
+            let input = $(this);
+            const maxLength = parseInt(input.attr('maxlength'), 10);
+            let valor = input.val().trim();
+
+            if (valor.length < maxLength) {
+                input.val(valor.padStart(maxLength, '0'));
+            }
+        });
+
+        KioskBoard.init({
+            keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
+            keysNumeric: true,
+            //keysArrayOfObjects: null, // Usa el teclado QWERTY predeterminado
+            language: 'es',          // Idioma (ejemplo: 'es' para español)
+            theme: 'light',          // Tema del teclado ('light' o 'dark')
+            allowMobileKeyboard: false,
+            keysEnterText: '<i class="material-icons enter-key-icon">check_circle</i>',
+        });
+
+        // Activa el teclado virtual en los inputs con la clase 'virtual-keyboard'
+        KioskBoard.run('.virtual-keyboard-numpad', {});
+
+        KioskBoard.init({
+            keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
+            // keysNumeric: true,
+            //keysArrayOfObjects: null, // Usa el teclado QWERTY predeterminado
+            language: 'es',          // Idioma (ejemplo: 'es' para español)
+            theme: 'light',          // Tema del teclado ('light' o 'dark')
+            keysSpacebarText: 'Espacio',
+            // keysSpecialCharsArray: ["@", ".", "_", "-"],
+            allowMobileKeyboard: false,
+            capsLockActive: true,
+            keysEnterText: '<i class="material-icons enter-key-icon">check_circle</i>',
+        });
+
+        KioskBoard.run('.virtual-keyboard-all', {});
+
+        // $('#KioskBoard-VirtualKeyboard .kioskboard-wrapper').css('padding-bottom','300px');
+        const style = document.createElement("style");
+        style.innerHTML = `
+            #KioskBoard-VirtualKeyboard .kioskboard-wrapper {
+                padding-bottom: 300px !important;
+            }
+        `;
+        document.head.appendChild(style);
 
         $('body').on('click', '.btn-anular-voucher', async function(){
             let datosVoucher = JSON.parse($(this).attr('data-rel'));
@@ -205,14 +327,47 @@
             await anularVoucher(datosVoucher);
         })
 
+        $('body').on('click', '.tipoServicio', async function(){
+            let tipo = $('.tipoServicio.active').attr('tipo-rel')
+            switch(tipo){
+                case 'AV':
+                    $('.box-vouchers').removeClass('d-none')
+                    await getVouchers();
+                default:
+                    $('#first-input').val("");
+                    $('#medium-input').val("");
+                    $('#last-input').val("");
+                    $('.box-info-factura').addClass('d-none');
+                    $('.box-paciente').empty();
+                    $('.box-factura').empty();
+                    $('#listado-prestaciones').empty();
+                break;
+            }
+        })
+
         $('body').on('click', '#btnSearch', async function(){
+            /**/
+            let input = $('#last-input');
+            const maxLength = parseInt(input.attr('maxlength'), 10);
+            let valor = input.val().trim();
+
+            if (valor.length < maxLength) {
+                input.val(valor.padStart(maxLength, '0'));
+            }
+            /**/
             let tipo = $('.tipoServicio.active').attr('tipo-rel')
             console.log(tipo)
             $('.btn-action').attr(`tipo-rel`, tipo);
+            await obtenerInfoFactura()
             switch(tipo){
                 case 'NC':
                     $('.btn-action').html(`Crear Nota de Crédito`)
-                    await obtenerInfoFactura()
+                break;
+                case 'SF':
+                    $('.btn-action').html(`Saldo a Favor`)
+                break;
+                case 'CDF':
+                    $('.btn-action').html(`Cambiar Datos Factura`)
                 break;
             }
         })
@@ -223,27 +378,96 @@
                 case 'NC':
                     await crearNC()
                 break;
+                case 'SF':
+                    await crearSaldoFavor()
+                break;
+                case 'CDF':
+                    $('#modalDatosFacturacion').modal('show');
+                break;
             }
         })
+
+        let timeoutId;
+
+        $('body').on('keyup change', '#numeroIdentificacion', function() {
+            clearTimeout(timeoutId); // Limpia el timeout anterior
+            timeoutId = setTimeout(async function() {
+                let datosF = {
+                    "numeroIdentificacion": $('#numeroIdentificacion').val(),
+                    "codigoTipoIdentificacion": $('#codigoTipoIdentificacion option:selected').val()
+                };
+                if(parseInt($('#codigoTipoIdentificacion option:selected').val()) == 2){
+                    if(esValidaCedula($('#numeroIdentificacion').val())){
+                        await verificarDatosFactura(datosF);
+                    }else{
+                        if($('#numeroIdentificacion').val().length == 10){
+                            toastr.warning("Cédula incorrecta", "Atención", {
+                                timeOut: 5000
+                            });
+                            $('#nombreCompleto').val("");
+                            $('#email').val("");
+                        }
+                    }
+                }else{
+                    if($('#numeroIdentificacion').val().length == 13){
+                        await verificarDatosFactura(datosF);
+                    }
+                }
+            }, 2000); // Espera 1 segundo después de la última entrada
+        });
 
     })
 
     async function crearNC(){
-        let infoFactura = JSON.parse($('.btn-action').attr('data-rel'));
-        let detalles = [];
-        let pagos = [];
+        let infoFactura = JSON.parse($('.btn-action').attr('data-rel'));   
+        let detalles = [];        
         $.each(infoFactura.detalles, function(k, v){
             detalles.push({
                 "lineaDetalleOrden": v.lineaDetalleOrden,
                 "lineaDetalleComprobante": v.lineaDetalleComprobante
             })
         })
+        let pagos = [];
         $.each(infoFactura.pagos, function(k, v){
             pagos.push({
                 "lineaDetallePago": v.lineaDetallePago,
                 "valor": v.valor
             })
         })
+
+        let obj = {
+            "secuenciaUsuario": dataParametrosGenerales.secuenciaUsuario,
+            "nemonicoCanalFacturacion": "KIOSKO",
+            "codigoMotivo": 16,
+            "caja": dataParametrosGenerales.caja,
+            "numeroOrden": infoFactura.numeroOrden,
+            "secuenciaComprobante": infoFactura.secuenciaComprobante,
+            "detalles": detalles,
+            "observacionMotivo": "NC CON REFACTURACION - SALDO FAVOR",
+            "permitirAnularPago": false,
+            "pagos": pagos,
+            "secuenciaUsuarioAutorizacion": dataAdmin.secuenciaUsuario
+        }
+        await anularFactura(obj);
+    }
+
+    async function crearSaldoFavor(){
+        let infoFactura = JSON.parse($('.btn-action').attr('data-rel'));   
+        let detalles = [];        
+        $.each(infoFactura.detalles, function(k, v){
+            detalles.push({
+                "lineaDetalleOrden": v.lineaDetalleOrden,
+                "lineaDetalleComprobante": v.lineaDetalleComprobante
+            })
+        })
+        let pagos = [];
+        $.each(infoFactura.pagos, function(k, v){
+            pagos.push({
+                "lineaDetallePago": v.lineaDetallePago,
+                "valor": v.valor
+            })
+        })
+
         let obj = {
             "secuenciaUsuario": dataParametrosGenerales.secuenciaUsuario,
             "nemonicoCanalFacturacion": "KIOSKO",
@@ -255,12 +479,14 @@
             "observacionMotivo": "SERVICIOS FACTURADOS NO BRINDADOS",
             "permitirAnularPago": false,
             "pagos": pagos,
-            "secuenciaUsuarioAutorizacion": dataParametrosGenerales.secuenciaUsuario
+            "secuenciaUsuarioAutorizacion": dataAdmin.secuenciaUsuario
         }
         await anularFactura(obj);
     }
 
     async function anularFactura(obj){
+        let tipo = $('.tipoServicio.active').attr('tipo-rel')
+        let infoFactura = JSON.parse($('.btn-action').attr('data-rel'));
         let args = [];
 
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/comprobantes/anulacion_paciente?codigoEmpresa=1&tipoAnulacion=AUTOMATICA`;
@@ -273,15 +499,21 @@
         args["bodyType"] = "json";
         const data = await call(args);
         if(data.code == 200){
-            if(infoFactura.permiteAnularVoucher){
-                let datosVoucher = {
-                    "secuenciaDocumentoVoucher": infoFactura.pagos[0].secuenciaDocumentoVoucher
+            showMessage('success','Atención', 'Factura anulada exitosamente')
+            if(tipo == "NC"){
+                if(infoFactura.permiteAnularVoucher){
+                    let datosVoucher = {
+                        "secuenciaDocumentoVoucher": infoFactura.pagos[0].secuenciaDocumentoVoucher
+                    }
+                    await anularVoucher(datosVoucher);
                 }
-                await anularVoucher(datosVoucher);
             }
+
             if(infoFactura.permiteAnularValExt){
                 await anularAutorizacion(infoFactura);
             }
+        }else{
+            showMessage('error','Atención', data.message)
         }
     }
 
@@ -299,6 +531,11 @@
         args["bodyType"] = "json";
         const data = await call(args);
         console.log(data);
+        if(data.code == 200){
+            showMessage('success','Atención', 'Autorización anulada exitosamente')
+        }else{
+            showMessage('error','Atención', data.message)
+        }
     }
 
     async function obtenerInfoFactura(){
@@ -381,6 +618,7 @@
     }
 
     async function anularVoucher(datosVoucher){
+        $('#modalPinpad').modal('show');
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/anular_cobro/${datosVoucher.secuenciaDocumentoVoucher}?codigoEmpresa=1&codigoUsuario=KKENNEDY1&macAddress={{ $mac }}`;
         args["method"] = "DELETE";
@@ -390,6 +628,48 @@
         args["bodyType"] = "json";
         const data = await call(args);
         console.log(data);
+        $('#modalPinpad').modal('hide');
+        if(data.code == 200){
+            showMessage('success','Atención','Voucher anulado exitosamente')
+        }else{
+            showMessage('error','Atención', data.message)
+        }
+
+    }
+
+    async function verificarDatosFactura(datos = null){
+        console.log('-----------verificarDatosFactura------------')
+        let numeroIdentificacion;
+        let codigoTipoIdentificacion;
+        if(datos !== null){
+            numeroIdentificacion = datos.numeroIdentificacion;
+            codigoTipoIdentificacion = datos.codigoTipoIdentificacion;
+        }else{
+            numeroIdentificacion = datosPago.consulta[0].paciente.numeroIdentificacion;
+            codigoTipoIdentificacion = datosPago.consulta[0].paciente.codigoTipoIdentificacion;
+        }
+        let args = [];
+        args["endpoint"] = `${api_url_digitales}/facturacion/v1/pacientes/verificar_datos_factura?numeroIdentificacion=${numeroIdentificacion}&codigoTipoIdentificacion=${codigoTipoIdentificacion}`;
+        args["method"] = "GET";
+        args["showLoader"] = true;
+        args["token"] = "{{ $accessToken }}";
+
+        const data = await call(args);
+        console.log(data);
+
+        if(data.code = 200){
+            datosPago.infoFactura = data.data;
+            $('#codigoTipoIdentificacion').val(datosPago.infoFactura.codigoTipoIdentificacion);
+            $('#numeroIdentificacion').val(datosPago.infoFactura.numeroIdentificacion);
+            $('#nombreCompleto').val(datosPago.infoFactura.nombreCompleto);
+            $('#email').val(datosPago.infoFactura.mail);
+
+            $('#codigoTipoIdentificacionV').val(datosPago.infoFactura.codigoTipoIdentificacion);
+            $('#numeroIdentificacionV').val(datosPago.infoFactura.numeroIdentificacion);
+            $('#nombreCompletoV').val(datosPago.infoFactura.nombreCompleto);
+            $('#emailV').val(datosPago.infoFactura.mail);
+        }
+        return;
     }
 </script>
 <style>

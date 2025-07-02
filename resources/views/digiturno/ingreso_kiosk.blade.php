@@ -10,6 +10,33 @@
 <script src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/html2canvas.min.js"></script>
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+{{-- Modal Login Admin --}}
+<div class="modal fade" id="modalLoginAdmin" tabindex="-1" aria-labelledby="modalLoginAdminLabel">
+    <div class="modal-dialog modal-sm modal-dialog-top modal-dialog-scrollable mx-auto">
+        <div class="modal-content rounded-8">
+            <div class="modal-body text-center p-3 pb-2">
+                <h1 class="modal-title fs--20 line-height-24 fw-medium mb-3">Veris</h1>
+                <input autocomplete="off" class="w-100 onlyLetters keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1 mb-2" id="user" type="text" placeholder="Ingresar Usuario" />
+	    		<div class="w-100 d-flex justify-content-between align-items-center">
+	    			<input autocomplete="off" type="password" class="w-100 mt-3 onlyLetters keyboard-input virtual-keyboard-all p-1 rounded-8 text-center fs-1 mb-2" id="password" type="text" placeholder="Ingresar Clave" data-kioskboard-specialcharacters="true"/>
+	    			<div class="box-ver-pass ms-3 fs-40 text-veris">
+	    				<i class="fa-solid fa-eye"></i>
+	    			</div>
+	    		</div>
+			    <div onclick="accederAdmin();" class="btn bg-veris text-white mx-auto mb-5 rounded-8 my-5">ACCEDER</div>
+	    		{{-- <button onclick="buscarUsuario();" class="btn bg-veris text-white mt-2 mx-auto">BUSCAR</button> --}}
+	    		<div class="w-100 d-none d-md-block">
+			    	<div class="keyboardContainer w-100"></div>
+			    </div>
+            </div>
+            {{-- <div class="modal-footer pt-0 pb-3 px-3 border-0">
+                <button type="button" class="btn bg-veris btn-ingresar text-white mx-auto rounded-8 mt-3" data-bs-dismiss="modal">Entiendo</button>
+            </div> --}}
+        </div>
+    </div>
+</div>
+
 <!-- Modal usuario turno -->
 <div class="modal fade" id="modalIngresarNombres" tabindex="-1" aria-labelledby="modalIngresarNombresLabel">
     <div class="modal-dialog modal-sm modal-dialog-top modal-dialog-scrollable mx-auto">
@@ -69,6 +96,7 @@
 				</div>
 				<div class="col-9 col-md-9 d-md-flex justify-content-end align-items-center d-none d-md-block">
 					<div class="time-box badge bg-veris-dark text-center p-3 rounded-8" id="header-info">
+						<i class="fa-solid fa-lock d-none d-md-inline-block me-2 text-warning fw-bold fs-20" data-bs-toggle="modal" data-bs-target="#modalLoginAdmin"></i>
 						<span class="fs-4">Fecha:</span><span class="ms-1 fs-5 text-veris-light" id="fecha"></span>
 						<span class="fs-5 ms-5 d-none">Hora:</span><span class="ms-1 fs-5 text-veris-light d-none" id="hora"></span>
                         <span class="fs-5 ms-5">Central:</span><span class="ms-1 fs-4 text-veris-light" id="central"></span>
@@ -514,6 +542,17 @@
 		  	}
 		})
 
+		$('body').on('click', '.box-ver-pass', async function(){
+			console.log($('#password').attr('type'))
+			if($('#password').attr('type') == "text"){
+				$('#password').attr('type','password');
+				$('.box-ver-pass').html(`<i class="fa-solid fa-eye"></i>`);
+			}else{
+				$('#password').attr('type','text');
+				$('.box-ver-pass').html(`<i class="fa-solid fa-eye-slash"></i>`);
+			}
+		})
+
 		$('body').on('click', '.nav-link', function(){
 			// Keyboard.close('none');
 			if(!$(this).hasClass('active')){
@@ -627,6 +666,84 @@
 	    	}
 	    }, 1000)
     });
+
+	async function accederAdmin(){
+		/*let args = [];
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/autorizacion_servicio/autenticacion/ejecutivo_lider?codigoEmpresa=1&codigoSucursal=${dataParametrosGenerales.codigoSucursal}`;
+        let payload = {
+            "usuario": btoa($('#user').val()),
+  			"clave": btoa($('#password').val())
+        }
+        args["method"] = "POST";
+        args["token"] = {{ $accessTokenLider }};
+        args["showLoader"] = true;
+        args["data"] = JSON.stringify(payload);
+		args["bodyType"] = "json";
+        const data = await call(args);
+        console.log(data);*/
+
+        let user = $('#user').val();
+		let password = $('#password').val();
+		if(user == "" || password == "" ){
+			alert("Debe ingresar sus credenciales");
+			return;
+		}
+
+        let basicData = b64EncodeUnicode(user.toUpperCase()+":"+password);
+
+        let args = [];
+		args["endpoint"] = `${api_url_digitales}/${api_war_seguridad}/autenticacion/login`;
+        args["method"] = "POST";
+        // args["token"] = "{{ $accessTokenLider }}";
+        args["esLoginLider"] = true;
+        args["basic"] = basicData;
+        args["showLoader"] = true;
+        const data = await call(args);
+
+        if(data.code == 200){
+        	{{-- https://api-phantomx.veris.com.ec/seguridadtest/v1/usuarios/2065' --}}
+        	let args = [];
+	        args["endpoint"] = `${api_url_digitales}/${api_war_seguridad}/usuarios/${data.data.secuenciaUsuario}`;
+			args["method"] = "GET";
+			args["esWSLider"] = true;
+	        args["token"] = data.data.idToken;
+	        args["showLoader"] = true;
+	        const dataRol = await call(args);
+	        console.log(dataRol);
+	        if(dataRol.code == 200){
+	        	const existe = dataRol.data.roles.some(item => item.nombreRol === "CAJERO LIDER PHX");
+	        	if(existe){
+	        		localStorage.setItem('dataAdmin', JSON.stringify(dataRol.data));
+	        		location.href = '/admin/{{ $mac }}';
+	        	}else{
+	        		alert("ROL NO PERMITIDO");
+	        	}
+	        }else{
+	        	alert(dataRol.message)
+	        }
+        }else{
+        	alert(data.message)
+        }
+
+        /*
+        $method = '/loginUser';
+        $response = Veris::call([
+            'endpoint' => Veris::URL_EPI.$method,
+            'token'    => $accessToken,
+            'method'   => 'POST',
+            'data'     => ["user"=>strtoupper($_POST['numeroIdentificacion']),"pass"=>$_POST['password']]
+        ]);
+        */
+
+        // echo Veris::URL_EPI.$method;
+        // dd($response);
+	}
+
+	function b64EncodeUnicode(str) {
+	    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+	    	return String.fromCharCode(parseInt(p1,16))
+	    }));
+	}
 
     // Simular el llamado a `open` externamente
 function simulateOpen(inputId) {

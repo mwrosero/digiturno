@@ -304,7 +304,7 @@ Mi Veris - Citas - Datos de facturación
     let dataCita = JSON.parse(local);
     let estadoPoliticas;
     let ultimaVersionPoliticas;
-    let clientesAuth = [5803, 13, 68, 10996, 7656, 6814, 7220];
+    let clientesAuth = [5803, 13, 68, 10996, 7656, 6814];
     let esKiosko = false;
 
     document.addEventListener("DOMContentLoaded", async function () {
@@ -697,7 +697,7 @@ Mi Veris - Citas - Datos de facturación
         let convenio = dataCita.convenio;
         // alert(convenio.nemonicoTipoCredito);
         
-        if((convenio.informacionExternaPlan === null || dataCita.precio.hasOwnProperty('secuenciaTransaccion') || convenio.nemonicoTipoCredito == "CREDITO_LISTA_PRESTACIONES") && convenio.codigoCliente == 13){
+        if(convenio.informacionExternaPlan === null || dataCita.precio.hasOwnProperty('secuenciaTransaccion') || convenio.nemonicoTipoCredito == "CREDITO_LISTA_PRESTACIONES"){
             flagAutorizacion = false;
             console.log("No emite autorización")
             return;
@@ -728,15 +728,8 @@ Mi Veris - Citas - Datos de facturación
             canalInvocacion = "KIO";
         }
 
-        let informacionExternaPlanMedPay = null;
-        let nemonicoTipoAutorizacion = "AUTORIZACION_BUPA";
-        if(convenio.codigoCliente == 13){
-            informacionExternaPlanMedPay = convenio.informacionExternaPlan;
-            nemonicoTipoAutorizacion = "AUTORIZACION_MEDPAY";
-        }
-
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=${canalInvocacion}&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.codigoCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=${nemonicoTipoAutorizacion}`;
+        args["endpoint"] =  `${api_url_digitales}/sync-convenios/v1/valorizacion_externa/emision_autorizacion?canalInvocacion=${canalInvocacion}&lineaNegocio=CMV&secuenciaAfiliado=${ convenio.secuenciaAfiliado }&idCliente=${ convenio.codigoCliente }&codigoEmpresa=${ convenio.codigoEmpresa }&nemonicoTipoAutorizacion=AUTORIZACION_MEDPAY`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["sendHeaders"] = "true";
@@ -755,7 +748,7 @@ Mi Veris - Citas - Datos de facturación
                 "valorFee": 0
             }],
             "diagnosticos": diagnosticos,
-            "medpayPlan": informacionExternaPlanMedPay
+            "medpayPlan": convenio.informacionExternaPlan
         });
         args["bodyType"] = "json";
         const data = await call(args);
@@ -838,7 +831,7 @@ Mi Veris - Citas - Datos de facturación
         if(data.code == 200){
             datosPago.consulta = data.data;
             if(!flagAutorizacion){
-                if(datosPago.consulta[0].agrupaciones[0].permiteValorizacionExterna){
+                if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa){
                     console.log(7)
                     flagAutorizacion = true;
                     dataCita.convenio.secuenciaAfiliado = datosPago.consulta[0].agrupaciones[0].beneficio.convenio.secuenciaAfiliado;
