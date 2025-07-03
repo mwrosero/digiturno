@@ -438,16 +438,17 @@
         let obj = {
             "secuenciaUsuario": dataParametrosGenerales.secuenciaUsuario,
             "nemonicoCanalFacturacion": "KIOSKO",
-            "codigoMotivo": 16,
+            "codigoMotivo": 9,
             "caja": dataParametrosGenerales.caja,
             "numeroOrden": infoFactura.numeroOrden,
             "secuenciaComprobante": infoFactura.secuenciaComprobante,
             "detalles": detalles,
-            "observacionMotivo": "NC CON REFACTURACION - SALDO FAVOR",
+            "observacionMotivo": "SERVICIOS FACTURADOS NO BRINDADOS",
             "permitirAnularPago": false,
             "pagos": pagos,
             "secuenciaUsuarioAutorizacion": dataAdmin.secuenciaUsuario
         }
+        
         await anularFactura(obj);
     }
 
@@ -465,18 +466,18 @@
             pagos.push({
                 "lineaDetallePago": v.lineaDetallePago,
                 "valor": v.valor
-            })
+            }) 
         })
 
         let obj = {
             "secuenciaUsuario": dataParametrosGenerales.secuenciaUsuario,
             "nemonicoCanalFacturacion": "KIOSKO",
-            "codigoMotivo": 9,
+            "codigoMotivo": 16,
             "caja": dataParametrosGenerales.caja,
             "numeroOrden": infoFactura.numeroOrden,
             "secuenciaComprobante": infoFactura.secuenciaComprobante,
             "detalles": detalles,
-            "observacionMotivo": "SERVICIOS FACTURADOS NO BRINDADOS",
+            "observacionMotivo": "NC CON REFACTURACION - SALDO FAVOR",
             "permitirAnularPago": false,
             "pagos": pagos,
             "secuenciaUsuarioAutorizacion": dataAdmin.secuenciaUsuario
