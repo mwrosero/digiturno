@@ -342,6 +342,13 @@
             await anularVoucher(datosVoucher);
         })
 
+        $('body').on('click', '.btn-continuar-factura', async function(){
+            let validacion = await validarDatosFactura();
+            if(validacion){
+                await setearDatosFactura();
+            }
+        })
+
         $('body').on('click', '.tipoServicio', async function(){
             let tipo = $('.tipoServicio.active').attr('tipo-rel')
             switch(tipo){
@@ -525,18 +532,26 @@
         args["bodyType"] = "json";
         const data = await call(args);
         if(data.code == 200){
-            showMessage('success','Atención', 'Factura anulada exitosamente')
-            if(tipo == "NC"){
-                if(infoFactura.permiteAnularVoucher){
-                    let datosVoucher = {
-                        "secuenciaDocumentoVoucher": infoFactura.pagos[0].secuenciaDocumentoVoucher
+            await printFactura(data.data.numeroTransaccion);
+            if(tipo == "CDF"){
+                showMessage('success','Atención', 'Datos de Factura modificados exitosamente');
+                $('#modalDatosFacturacion').modal('hide');
+            }else{
+                if(tipo == "NC"){
+                    showMessage('success','Atención', 'Factura anulada exitosamente')
+                    if(infoFactura.permiteAnularVoucher){
+                        let datosVoucher = {
+                            "secuenciaDocumentoVoucher": infoFactura.pagos[0].secuenciaDocumentoVoucher
+                        }
+                        await anularVoucher(datosVoucher);
                     }
-                    await anularVoucher(datosVoucher);
+                }else{
+                    showMessage('success','Atención', 'Factura cargada como Saldo a favor exitosamente')
                 }
-            }
 
-            if(infoFactura.permiteAnularValExt){
-                await anularAutorizacion(infoFactura);
+                if(infoFactura.permiteAnularValExt){
+                    await anularAutorizacion(infoFactura);
+                }
             }
         }else{
             showMessage('error','Atención', data.message)
@@ -663,17 +678,12 @@
 
     }
 
+    let infoFacturaValidada;
     async function verificarDatosFactura(datos = null){
         console.log('-----------verificarDatosFactura------------')
-        let numeroIdentificacion;
-        let codigoTipoIdentificacion;
-        if(datos !== null){
-            numeroIdentificacion = datos.numeroIdentificacion;
-            codigoTipoIdentificacion = datos.codigoTipoIdentificacion;
-        }else{
-            numeroIdentificacion = datosPago.consulta[0].paciente.numeroIdentificacion;
-            codigoTipoIdentificacion = datosPago.consulta[0].paciente.codigoTipoIdentificacion;
-        }
+        let numeroIdentificacion = $('#numeroIdentificacion').val();
+        let codigoTipoIdentificacion = $('#codigoTipoIdentificacion option:selected').val();
+        
         let args = [];
         args["endpoint"] = `${api_url_digitales}/facturacion/v1/pacientes/verificar_datos_factura?numeroIdentificacion=${numeroIdentificacion}&codigoTipoIdentificacion=${codigoTipoIdentificacion}`;
         args["method"] = "GET";
@@ -684,18 +694,120 @@
         console.log(data);
 
         if(data.code = 200){
-            datosPago.infoFactura = data.data;
-            $('#codigoTipoIdentificacion').val(datosPago.infoFactura.codigoTipoIdentificacion);
-            $('#numeroIdentificacion').val(datosPago.infoFactura.numeroIdentificacion);
-            $('#nombreCompleto').val(datosPago.infoFactura.nombreCompleto);
-            $('#email').val(datosPago.infoFactura.mail);
+            infoFacturaValidada = data.data;
+            $('#codigoTipoIdentificacion').val(infoFacturaValidada.codigoTipoIdentificacion);
+            $('#numeroIdentificacion').val(infoFacturaValidada.numeroIdentificacion);
+            $('#nombreCompleto').val(infoFacturaValidada.nombreCompleto);
+            $('#email').val(infoFacturaValidada.mail);
 
-            $('#codigoTipoIdentificacionV').val(datosPago.infoFactura.codigoTipoIdentificacion);
-            $('#numeroIdentificacionV').val(datosPago.infoFactura.numeroIdentificacion);
-            $('#nombreCompletoV').val(datosPago.infoFactura.nombreCompleto);
-            $('#emailV').val(datosPago.infoFactura.mail);
+            $('#codigoTipoIdentificacionV').val(infoFacturaValidada.codigoTipoIdentificacion);
+            $('#numeroIdentificacionV').val(infoFacturaValidada.numeroIdentificacion);
+            $('#nombreCompletoV').val(infoFacturaValidada.nombreCompleto);
+            $('#emailV').val(infoFacturaValidada.mail);
         }
         return;
+    }
+
+    async function setearDatosFactura(){
+        console.log("setear datos factura");
+        let infoFactura = JSON.parse($('.btn-action').attr('data-rel'));   
+        let detalles = [];        
+        $.each(infoFactura.detalles, function(k, v){
+            detalles.push({
+                "lineaDetalleOrden": v.lineaDetalleOrden,
+                "lineaDetalleComprobante": v.lineaDetalleComprobante
+            })
+        })
+        let pagos = [];
+        $.each(infoFactura.pagos, function(k, v){
+            pagos.push({
+                "lineaDetallePago": v.lineaDetallePago,
+                "valor": v.valor
+            })
+        })
+
+        let obj = {
+            "secuenciaUsuario": dataParametrosGenerales.secuenciaUsuario,
+            "nemonicoCanalFacturacion": "KIOSKO",
+            "codigoMotivo": 12,
+            "caja": dataParametrosGenerales.caja,
+            "cajaFacturacion": dataParametrosGenerales.caja,
+            "numeroOrden": infoFactura.numeroOrden,
+            "secuenciaComprobante": infoFactura.secuenciaComprobante,
+            "detalles": detalles,
+            "observacionMotivo": "CAMBIO DE DATOS KIOSKO",
+            "permitirAnularPago": false,
+            "pagos": pagos,
+            "datosFactura": {
+                "codigoTipoIdentificacion": parseInt($('#codigoTipoIdentificacion option:selected').val()),
+                "numeroIdentificacion": $('#numeroIdentificacion').val(),
+                "nombreFactura": $('#nombreCompleto').val(),
+                "correo": $('#email').val()
+            },
+            "secuenciaUsuarioAutorizacion": dataAdmin.secuenciaUsuario
+        }
+        
+        await anularFactura(obj);
+    }
+
+    async function printFactura(numeroTransaccion){
+        $('#first-input').val("");
+        $('#medium-input').val("");
+        $('#last-input').val("");
+        $('.box-info-factura').addClass('d-none');
+        $('.box-paciente').empty();
+        $('.box-factura').empty();
+        $('#listado-prestaciones').empty();
+        showMessage('success','Atención','Imprimiendo documento');
+        return;
+        // http://localhost:3001/printer-ticket/v1/printFile?url=https://api-phantomx.veris.com.ec/reportes/v1/facturacion/comprobante_paciente?format=text_plain%26codigoEmpresa=1%26numeroTransaccion=21479281%26codigoSucursalImpresion=1%26usuarioRealizaImpresion=true
+
+        const apiUrl = `${api_url_digitales}/reportes/v1/facturacion/comprobante_paciente?format=text_plain&codigoEmpresa=1&numeroTransaccion=${numeroTransaccion}&codigoSucursalImpresion=${dataParametrosGenerales.caja.codigoSucursal}&usuarioRealizaImpresion=true`;
+        const encodedUrl = encodeURIComponent(apiUrl);
+        let args = [];
+        args["endpoint"] = `http://localhost:3001/printer-ticket/v1/printFile?url=${encodedUrl}`;
+        args["method"] = "GET";
+        args["token"] = accessToken;
+        const data = await call(args);
+        if(data.code == 200){
+            console.log(data)
+        }
+        return;
+    }
+
+    async function validarDatosFactura(){
+        let msg = "";
+
+        if($('#numeroIdentificacion').val() == ""){
+            msg += "Debe ingresar un número de documento \n";
+        }else{
+            if(parseInt($('#codigoTipoIdentificacion option:selected').val()) == 2){
+                if(!esValidaCedula($('#numeroIdentificacion').val())){
+                    msg += "Debe ingresar una cédula válida \n";
+                }
+            }else{
+                if($('#numeroIdentificacion').val().length != 13){
+                    msg += "Debe ingresar un RUC válido \n";
+                }
+            }
+        }
+
+        if($('#nombreCompleto').val() == ""){
+            msg += "Debe ingresar nombres completos \n";
+        }
+
+        if(!isValidEmailAddress($('#email').val())){
+            msg += "Debe ingresar un email válido \n";
+        }
+        
+        if(msg == ""){
+            return true;
+        }else{
+            toastr.error(msg, 'Datos de Factura incorrectos', {
+                timeOut: 8000
+            });
+            return false;
+        }
     }
 </script>
 <style>
