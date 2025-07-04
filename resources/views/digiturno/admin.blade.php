@@ -240,6 +240,21 @@
             : event.charCode >= 48 && event.charCode <= 57;
     }
 
+    function completarConCerosString(inputId, str) {
+        let input = $(`#${inputId}`);
+        const valor = input.value.trim(); // eliminamos espacios
+
+        if (valor === '') {
+            return; // no hacer nada si está vacío
+        }
+
+
+        const maxLength = parseInt(input.getAttribute('maxlength'), 10);
+        if (input.value.length < maxLength) {
+            input.value = input.value.padStart(maxLength, '0');
+        }
+    }
+
     // Completa con ceros a la izquierda hasta el maxlength definido
     function completarConCeros(input) {
         return;
@@ -274,7 +289,7 @@
         })
 
         //$('body').on('change', '#first-input, #medium-input, #last-input', function() {
-        $('body').on('change', '#first-input', function() {
+        /*$('body').on('change', '#first-input', function() {
             let input = $(this);
             const maxLength = parseInt(input.attr('maxlength'), 10);
             let valor = input.val().trim();
@@ -282,7 +297,7 @@
             if (valor.length < maxLength) {
                 input.val(valor.padStart(maxLength, '0'));
             }
-        });
+        });*/
 
         KioskBoard.init({
             keysJsonUrl: '{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/js/kioskboard-keys-spanish.json',
@@ -347,13 +362,23 @@
 
         $('body').on('click', '#btnSearch', async function(){
             /**/
-            let input = $('#last-input');
-            const maxLength = parseInt(input.attr('maxlength'), 10);
+            let input = $('#first-input');
+            const maxLength1 = parseInt(input.attr('maxlength'), 10);
             let valor = input.val().trim();
 
-            if (valor.length < maxLength) {
-                input.val(valor.padStart(maxLength, '0'));
+            if (valor.length < maxLength1) {
+                input.val(valor.padStart(maxLength1, '0'));
             }
+
+            input = $('#last-input');
+            const maxLength3 = parseInt(input.attr('maxlength'), 10);
+            valor = input.val().trim();
+
+            if (valor.length < maxLength3) {
+                input.val(valor.padStart(maxLength3, '0'));
+            }
+
+
             /**/
             let tipo = $('.tipoServicio.active').attr('tipo-rel')
             console.log(tipo)
