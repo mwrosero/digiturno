@@ -162,6 +162,8 @@
                                             required 
                                             autocomplete="off"
                                             data-kioskboard-type="numpad"
+                                            readonly
+                                            disabled
                                             id="first-input">
                                         <i class="fa-solid fa-minus txt-veris fw-bold mx-1 mx-md-3"></i>
                                         <input type="text" maxlength="3" 
@@ -172,6 +174,8 @@
                                             required 
                                             autocomplete="off"
                                             data-kioskboard-type="numpad"
+                                            readonly
+                                            disabled
                                             id="medium-input">
                                         <i class="fa-solid fa-minus txt-veris fw-bold mx-1 mx-md-3"></i>
                                         <input type="text" maxlength="9" 
@@ -283,6 +287,9 @@
     document.addEventListener('DOMContentLoaded', async function () {
         await parametrosGenerales("{{ $mac }}");
 
+        $('#first-input').val(dataParametrosGenerales.caja.numeroEstablecimientoSri);
+        $('#medium-input').val(dataParametrosGenerales.caja.numeroPuntoEmisionSri);
+
         $('body').on('click', '.exitAdmin', function(){
             localStorage.removeItem('dataAdmin');
             location.href = '/kiosko/{{ $mac }}';
@@ -356,8 +363,6 @@
                     $('.box-vouchers').removeClass('d-none')
                     await getVouchers();
                 default:
-                    $('#first-input').val("");
-                    $('#medium-input').val("");
                     $('#last-input').val("");
                     $('.box-info-factura').addClass('d-none');
                     $('.box-paciente').empty();
@@ -536,6 +541,9 @@
             if(tipo == "CDF"){
                 showMessage('success','Atención', 'Datos de Factura modificados exitosamente');
                 $('#modalDatosFacturacion').modal('hide');
+                $('#numeroIdentificacion').val("");
+                $('#nombreCompleto').val("");
+                $('#email').val("");
             }else{
                 if(tipo == "NC"){
                     showMessage('success','Atención', 'Factura anulada exitosamente')
@@ -546,7 +554,7 @@
                         await anularVoucher(datosVoucher);
                     }
                 }else{
-                    showMessage('success','Atención', 'Factura cargada como Saldo a favor exitosamente')
+                    showMessage('success','Atención', `$${infoFactura.totales.paciente.valorTotal} acumulado como Saldo a favor exitosamente al cliente: ${infoFactura.nombrePersonaFactura}`)
                 }
 
                 if(infoFactura.permiteAnularValExt){
@@ -660,6 +668,7 @@
 
     async function anularVoucher(datosVoucher){
         $('#modalPinpad').modal('show');
+        let tipo = $('.tipoServicio.active').attr('tipo-rel')
         let args = [];
         args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/anular_cobro/${datosVoucher.secuenciaDocumentoVoucher}?codigoEmpresa=1&codigoUsuario=KKENNEDY1&macAddress={{ $mac }}`;
         args["method"] = "DELETE";
@@ -674,6 +683,9 @@
             showMessage('success','Atención','Voucher anulado exitosamente')
         }else{
             showMessage('error','Atención', data.message)
+            if(tipo == "NC"){
+                alert("Proceso de anulación de Voucher incompleto, debe realizarlo manualmente desde la opción ANULACIÓN DE VOUCHER SIN FACTURA");
+            }
         }
 
     }
