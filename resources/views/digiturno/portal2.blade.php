@@ -2163,7 +2163,6 @@
                 `
             });
         });*/
-        
 
         reiniciarConteo();
         $('#modalDatosFacturacion').on('hidden.bs.modal', async function (e) {

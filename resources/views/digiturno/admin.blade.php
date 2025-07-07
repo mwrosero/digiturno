@@ -285,6 +285,7 @@
     let dataAdmin = JSON.parse(localStorage.getItem('dataAdmin'));
 
     document.addEventListener('DOMContentLoaded', async function () {
+        actualizarFechaHora()
         await parametrosGenerales("{{ $mac }}");
 
         $('#first-input').val(dataParametrosGenerales.caja.numeroEstablecimientoSri);
