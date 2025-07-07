@@ -763,8 +763,8 @@
     }
 
     async function printFactura(numeroTransaccion){
-        $('#first-input').val("");
-        $('#medium-input').val("");
+        // $('#first-input').val("");
+        // $('#medium-input').val("");
         $('#last-input').val("");
         $('.box-info-factura').addClass('d-none');
         $('.box-paciente').empty();
