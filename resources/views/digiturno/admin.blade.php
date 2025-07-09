@@ -23,6 +23,24 @@
         </form>
     </div>
 </div>
+{{-- Modal nuevo dato comprobante --}}
+<div class="modal fade" id="modalInfoAction" tabindex="-1" aria-labelledby="modalInfoActionLabel" data-bs-backdrop="static" data-bs-keyboard="true">
+    <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable mx-auto">
+        <form class="modal-content rounded-8 mt-5">
+            <div class="modal-header">
+                <h5 class="fs--20 line-height-24 mt-3 mb-3 text-center">Atención</h5
+                >
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3 text-center">
+                <h2 class="text-start text-veris my-4 mensajeInformativo"></h2>
+            </div>
+            <div class="modal-footer pt-0 pb-3 px-3 border-0">
+                <button type="button" class="btn fw-normal fs--16 badge bg-veris text-white m-0 px-4 py-2 mx-auto fs-4" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 {{-- Modal de datos de facturación --}}
 <div class="modal modal-top fade" id="modalDatosFacturacion" tabindex="-1" aria-labelledby="modalDatosFacturacionLabel" data-bs-backdrop="static" data-bs-keyboard="true">
@@ -211,7 +229,7 @@
                                         <tbody id="listado-prestaciones"></tbody>
                                     </table>
                                 </div>
-                                <div class="col-4 offset-4 box-info-factura d-none mt-5">
+                                <div class="col-4 offset-4 box-info-factura d-none mt-5 text-center">
                                     <button class="btn bg-veris btn-action text-white mx-auto fs--20 p-3 mb-5 rounded-8 my-5">Crear Nota de Crédito</button>
                                 </div>
                             </div>
@@ -402,7 +420,7 @@
                     $('.btn-action').html(`Crear Nota de Crédito`)
                 break;
                 case 'SF':
-                    $('.btn-action').html(`Saldo a Favor`)
+                    $('.btn-action').html(`Saldo a Favor`);
                 break;
                 case 'CDF':
                     $('.btn-action').html(`Cambiar Datos Factura`)
@@ -538,10 +556,16 @@
         args["bodyType"] = "json";
         const data = await call(args);
         if(data.code == 200){
-            await printFactura(data.data.numeroTransaccion);
+            let numeroTransaccion = data.data.numeroTransaccion;
             if(tipo == "CDF"){
-                showMessage('success','Atención', 'Datos de Factura modificados exitosamente');
+                numeroTransaccion = data.data.factura.numeroTransaccion;
+            }
+            await printFactura(numeroTransaccion);
+            if(tipo == "CDF"){
+                showMessage('success','Atención', `Datos de Factura modificados exitosamente. Comprobante generado: ${data.data.factura.numeroComprobante}`);
                 $('#modalDatosFacturacion').modal('hide');
+                $('.mensajeInformativo').html(`Datos de Factura modificados exitosamente, nuevo comprobante generado: <br>${data.data.factura.numeroComprobante}`);
+                $('#modalInfoAction').modal('show');
                 $('#numeroIdentificacion').val("");
                 $('#nombreCompleto').val("");
                 $('#email').val("");
@@ -555,7 +579,9 @@
                         await anularVoucher(datosVoucher);
                     }
                 }else{
-                    showMessage('success','Atención', `$${infoFactura.totales.paciente.valorTotal} acumulado como Saldo a favor exitosamente al cliente: ${infoFactura.nombrePersonaFactura}`)
+                    showMessage('success','Atención', `Valor de $${infoFactura.totales.paciente.valorTotal} acumulado como Saldo a favor exitosamente al cliente: ${infoFactura.nombrePersonaFactura}`)
+                    $('.mensajeInformativo').html(`Valor de $${infoFactura.totales.paciente.valorTotal} acumulado como Saldo a favor exitosamente al cliente: ${infoFactura.nombrePersonaFactura}`);
+                    $('#modalInfoAction').modal('show');
                 }
 
                 if(infoFactura.permiteAnularValExt){
