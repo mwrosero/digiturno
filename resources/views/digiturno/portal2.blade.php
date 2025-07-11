@@ -3993,6 +3993,12 @@
                     }
                 }
 
+                if(detalle.tipoServicio == "ORDEN_MEDICA"){
+                    if(obtenerDiferenciaDiasIntl(detalle.fechaOrden) == 0){
+                        addForToday = true;
+                    }
+                }
+
                 // console.log(`----------------${detalle.nombreServicioNivel1}-----------------`)
 
                 if(detalle.nombreServicioNivel1 == "PROCEDIMIENTOS"){
