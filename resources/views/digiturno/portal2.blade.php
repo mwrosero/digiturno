@@ -2163,7 +2163,6 @@
                 `
             });
         });*/
-        
 
         reiniciarConteo();
         $('#modalDatosFacturacion').on('hidden.bs.modal', async function (e) {
@@ -3991,6 +3990,12 @@
                         elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-detalle-orden p-2 py-3 mt-3">
                                             Ver detalle
                                         </button>`;
+                    }
+                }
+
+                if(detalle.tipoServicio == "ORDEN_MEDICA"){
+                    if(obtenerDiferenciaDiasIntl(detalle.fechaOrden) == 0){
+                        addForToday = true;
                     }
                 }
 

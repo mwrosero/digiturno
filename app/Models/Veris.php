@@ -31,6 +31,10 @@ class Veris extends Model
     // public const IDORGANIZACION_LOGIN = '365509c8-9596-4506-a5b3-487782d5876e';
     // public const BASICAUTHPINPAD = 'd3NwaW5wYWQ6VyRQwqFOUEBEQVVUIzNOVMKhQ0BUSTBO';
     // public const BASIC_URL_PINPAD = 'https://ipnws.veris.com.ec/pinpadTest-api/v1';
+    // public const APPLICATION_LOGIN_LIDER = 'UEhBTlRPTVhfV0VC';
+    // public const BASIC_LOGIN_LIDER = 'TFBMVUE6Q2xAdmUxMjM=';
+    // public const URL_EPI = 'http://ecstest.veris.com.ec/Verisrest/v1/formularioepi1';
+
 
     //PROD 
     public const BASE_URL = 'https://turnero.phantomx.com.ec';
@@ -49,6 +53,9 @@ class Veris extends Model
     public const IDORGANIZACION_LOGIN = '365509c8-9596-4506-a5b3-487782d5876e';
     public const BASICAUTHPINPAD = 'd3NwaW5wYWQ6VyRQwqFOUEBEQVVUIzNOVMKhQ0BUSTBO';
     public const BASIC_URL_PINPAD = 'https://phantom-wsinternos.phantomx.com.ec/pinpad-api/v1';
+    public const APPLICATION_LOGIN_LIDER = 'UEhBTlRPTVhfV0VC';
+    public const BASIC_LOGIN_LIDER = 'TFBMVUE6Q2xAdmUxMjM=';
+    public const URL_EPI = 'https://phantom-wsexternos.phantomx.com.ec/Verisrest/v1/formularioepi1';
 
     static function call(Array $config)
     {
@@ -188,6 +195,37 @@ class Veris extends Model
         
         session(['accessTokenPinPad' => $response->data->accesToken]);
         return $response->data->accesToken;
+    }
+
+    static function getTokenLider()
+    {
+        $token = session('accessTokenLider', null);
+
+        /*if( $token !== null ){
+            return $token;
+        }*/
+        
+        $method = 'autenticacion/login';
+        // $response = Veris::call([
+        //     'endpoint' => self::BASE_URL_DIGITALES.'/'.self::SEGURIDADES_WAR.$method,
+        //     'basic' => self::BASICAUTHDIGITALES,
+        //     'method'   => 'POST'
+        // ]);
+
+        $res =  Http::withOptions([
+                    'verify' => false, // Desactivar verificación de certificados
+                ])->withHeaders([
+                    'Application' => self::APPLICATION_LOGIN_LIDER,
+                    'IdOrganizacion' => self::IDORGANIZACION_LOGIN,
+                    'Authorization' => 'Basic '.self::BASIC_LOGIN_LIDER,
+                ])->post(self::BASE_URL_DIGITALES.'/'.self::SEGURIDADES_WAR.'/'.$method);
+        $response = json_decode($res->body());
+
+        // echo self::BASE_URL_DIGITALES.'/'.self::BASE_WAR_DIGITALES.'/'.$method;
+        // dd($response->data->accessToken);
+        
+        session(['accessTokenLider' => $response->data->accessToken]);
+        return $response->data->accessToken;
     }
 
 }

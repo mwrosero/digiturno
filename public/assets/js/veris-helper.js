@@ -43,6 +43,14 @@ async function call(args){
             myHeaders.append("Authorization", "Basic " + args.basic);
             myHeaders.append("Application", _applicationLogin);
             myHeaders.append("IdOrganizacion", _idOrganizacionLogin);
+        }else if(args.esLoginLider || args.esWSLider){
+            if(args.esLoginLider){
+                myHeaders.append("Authorization", "Basic " + args.basic);
+            }else{
+                myHeaders.append("Authorization","Bearer "+ args.token);
+            }
+            myHeaders.append("Application", _applicationLoginLider);
+            myHeaders.append("IdOrganizacion", _idOrganizacion);
         }else{
             // console.log(999)
             if(args.sendHeaders === undefined || args.sendHeaders){

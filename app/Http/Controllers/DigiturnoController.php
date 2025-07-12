@@ -54,10 +54,12 @@ class DigiturnoController extends Controller
         }
 
         $token = Veris::getToken();
-        //dd($token);
+        $tokenLider = Veris::getTokenLider();
+        //dd($tokenLider);
         return view('digiturno.ingreso_kiosk')
                 ->with('ip', $ip)
                 ->with('accessToken',$token)
+                ->with('accessTokenLider',$tokenLider)
                 ->with('mac',$mac);
     }
 
@@ -138,6 +140,13 @@ class DigiturnoController extends Controller
         $token = Veris::getToken();
         //dd($token);
         return view('digiturno.ingreso_kiosk')
+                ->with('accessToken',$token)
+                ->with('mac',$mac);
+    }
+
+    public function adminKiosko($mac){
+        $token = Veris::getToken();
+        return view('digiturno.admin')
                 ->with('accessToken',$token)
                 ->with('mac',$mac);
     }

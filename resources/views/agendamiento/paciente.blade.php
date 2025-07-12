@@ -60,8 +60,8 @@ Elige Paciente
                     <i class="fa-solid fa-arrow-left me-1"></i> Atrás
                 </div>
             </div>
-            <div class="col-12 flex-grow-1 d-flex">
-                <div class="row">
+            <div class="col-12 d-flex">
+                <div class="row flex-grow-1">
                     <div class="col-12 col-lg-4 d-flex justify-content-start justify-content-lg-center align-items-center bg-veris">
                         <h5 class="ps-3 text-white my-auto py-3 fs-40 line-height-48 fs-md-24">{{ __('Elegir paciente') }}</h5>
                     </div>

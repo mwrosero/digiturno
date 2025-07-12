@@ -56,6 +56,8 @@ Route::get('/paciente-paquete/{portalToken}', [PaquetesController::class, 'pacie
 Route::get('/seleccionar-paquete/{portalToken}', [PaquetesController::class, 'listadoPaquetes'])->name('listadoPaquetes');
 Route::get('/citas-datos-facturacion-paquete/{params}',[PaquetesController::class, 'datosFacturacionPaquetes'])->name('datosFacturacionPaquetes');
 
+Route::get('/admin/{mac}', [DigiturnoController::class, 'adminKiosko'])->name('adminKiosko');
+
 
 
 // Route::get('/test', function () {

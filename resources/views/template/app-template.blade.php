@@ -49,6 +49,7 @@
             const _application = "{{ \App\Models\Veris::APPLICATION }}";
             const _idOrganizacion = "{{ \App\Models\Veris::IDORGANIZACION }}";
             const _applicationLogin = "{{ \App\Models\Veris::APPLICATION_LOGIN }}";
+            const _applicationLoginLider = "{{ \App\Models\Veris::APPLICATION_LOGIN_LIDER }}";
             const _idOrganizacionLogin = "{{ \App\Models\Veris::IDORGANIZACION_LOGIN }}";
             let trackId = '';
             let canalOrigen = 'MVE_CMV';

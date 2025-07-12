@@ -934,6 +934,10 @@ Mi Veris - Citas - Datos de facturación
 
         let item = [];
 
+        if(dataCita.hasOwnProperty('tratamiento') || dataCita.hasOwnProperty('diagnosticos')){
+            return;
+        }
+
         let idAgrupacion = await getIdAgrupacionArray();
         let payload = {
             "idAgrupacion": idAgrupacion[0],
