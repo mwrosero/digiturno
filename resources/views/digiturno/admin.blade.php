@@ -798,7 +798,7 @@
         $('.box-factura').empty();
         $('#listado-prestaciones').empty();
         showMessage('success','Atención','Imprimiendo documento');
-        return;
+        // return;
         // http://localhost:3001/printer-ticket/v1/printFile?url=https://api-phantomx.veris.com.ec/reportes/v1/facturacion/comprobante_paciente?format=text_plain%26codigoEmpresa=1%26numeroTransaccion=21479281%26codigoSucursalImpresion=1%26usuarioRealizaImpresion=true
 
         const apiUrl = `${api_url_digitales}/reportes/v1/facturacion/comprobante_paciente?format=text_plain&codigoEmpresa=1&numeroTransaccion=${numeroTransaccion}&codigoSucursalImpresion=${dataParametrosGenerales.caja.codigoSucursal}&usuarioRealizaImpresion=true`;
