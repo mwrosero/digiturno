@@ -675,7 +675,6 @@
   			"clave": btoa($('#password').val())
         }
         args["method"] = "POST";
-        args["token"] = {{ $accessTokenLider }};
         args["showLoader"] = true;
         args["data"] = JSON.stringify(payload);
 		args["bodyType"] = "json";
@@ -694,7 +693,6 @@
         let args = [];
 		args["endpoint"] = `${api_url_digitales}/${api_war_seguridad}/autenticacion/login`;
         args["method"] = "POST";
-        // args["token"] = "{{ $accessTokenLider }}";
         args["esLoginLider"] = true;
         args["basic"] = basicData;
         args["showLoader"] = true;
