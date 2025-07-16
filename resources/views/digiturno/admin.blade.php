@@ -305,7 +305,7 @@
     document.addEventListener('DOMContentLoaded', async function () {
         actualizarFechaHora()
         await parametrosGenerales("{{ $mac }}");
-
+        
         $('#first-input').val(dataParametrosGenerales.caja.numeroEstablecimientoSri);
         $('#medium-input').val(dataParametrosGenerales.caja.numeroPuntoEmisionSri);
 
