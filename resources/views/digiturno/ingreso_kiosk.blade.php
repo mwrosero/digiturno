@@ -26,7 +26,7 @@
 	    		</div>
 			    <div onclick="accederAdmin();" class="btn bg-veris text-white mx-auto mb-5 rounded-8 my-5">ACCEDER</div>
 	    		{{-- <button onclick="buscarUsuario();" class="btn bg-veris text-white mt-2 mx-auto">BUSCAR</button> --}}
-	    		<div class="w-100 d-none d-md-block">
+	    		<div class="w-100 d-none d-md-block" id="loginLiderBox">
 			    	<div class="keyboardContainer w-100"></div>
 			    </div>
             </div>
@@ -522,6 +522,10 @@
 	            `;
 	            document.head.appendChild(style);
 	        }
+    	}
+
+    	if(!isKiosk()){
+    		$('#loginLiderBox').remove();
     	}
 
 		// Keyboard.open();

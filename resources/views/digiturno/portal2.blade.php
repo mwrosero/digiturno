@@ -2023,6 +2023,10 @@
         $('body').on('click', '.btn-agendar', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             console.log(detalle);
+            {{-- let permiteAtencion = await puedeAtenderse(detalle);
+            if(!permiteAtencion){
+                return;
+            } --}}
             let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
             let convenioItem = {
@@ -2199,6 +2203,40 @@
         })
 
     });
+
+    //Atencion
+    async function puedeAtenderse(detalle){
+        let msg = `No puede atenderse`;
+        let canalInvocacion = "CAJ";
+
+        let ordenes = [];
+
+        ordenes.push({
+            "numeroOrden": detalle.numeroOrden,
+            "codigoSucursalAtencion": dataParametrosGenerales.caja.codigoSucursal
+        })
+
+        if(isKiosk()){
+            canalInvocacion = "KIO";
+        }
+        let args = [];
+        args["endpoint"] = `${api_url_digitales}/comercial/v1/util/permite_atencion?codigoEmpresa=1&canalInvocacion=${canalInvocacion}`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["bodyType"] = "json";
+        args["data"] = JSON.stringify({
+            "ordenes": ordenes
+        });
+        const data = await call(args);
+        console.log(data);
+        toastr.warning(msg, 'Datos de Factura incorrectos', {
+            timeOut: 8000
+        });
+
+        return false;
+
+    }
 
     async function verificarUsuarioDigital(){
         let dataAttr = $('.paciente-item-selected').attr("data-rel");

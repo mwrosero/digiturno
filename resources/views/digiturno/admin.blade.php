@@ -663,7 +663,7 @@
 
     async function getVouchers(){
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/consulta/vouchers_por_anular?usuarioIngreso=KKENNEDY1&codigoEmpresa=1`;
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/consulta/vouchers_por_anular?usuarioIngreso=${dataParametrosGenerales.codigoUsuario}&codigoEmpresa=1`;
         args["method"] = "GET";
         args["showLoader"] = true;
         args["token"] = "{{ $accessToken }}";
@@ -697,7 +697,7 @@
         $('#modalPinpad').modal('show');
         let tipo = $('.tipoServicio.active').attr('tipo-rel')
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/anular_cobro/${datosVoucher.secuenciaDocumentoVoucher}?codigoEmpresa=1&codigoUsuario=KKENNEDY1&macAddress={{ $mac }}`;
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/anular_cobro/${datosVoucher.secuenciaDocumentoVoucher}?codigoEmpresa=1&codigoUsuario=${dataParametrosGenerales.codigoUsuario}&macAddress={{ $mac }}`;
         args["method"] = "DELETE";
         args["token"] = accessToken;
         args["showLoader"] = true;
