@@ -2804,7 +2804,7 @@
         let numAuthMedPay = null;
 
         //Remover
-        if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+        {{-- if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
             if( origen == "TURNO" && parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
                 console.log("-----////---------");
                 console.log(7)
@@ -2823,7 +2823,7 @@
                     numAuthMedPay = datosPago.sync.secuenciaTransaccion;
                 }
             }
-        }
+        } --}}
 
         // console.log(detalle);
 
