@@ -2243,8 +2243,16 @@
         const data = await call(args);
         console.log(data);
         if(data.code == 200){
+            let mensajes = [];
+            $.each(data.data.ordenesValidadas[0].prestacionesValidadas, function(key, value){
+                let str = value.mensajeValidacion.split(', Linea detalle:');
+                let item = `<li>${str[0]}</li>`;
+                if (!mensajes.includes(item)) {
+                    mensajes.push(item);
+                }
+            })
             if(!data.data.ordenesValidadas[0].permiteAtencion){
-                toastr.warning(data.data.ordenesValidadas[0].mensajeValidacion, 'Atención', {
+                toastr.warning(`${data.data.ordenesValidadas[0].mensajeValidacion} <ul>${mensajes.join('')}</ul>`, 'Atención', {
                     timeOut: 8000
                 });
             }
