@@ -1086,7 +1086,12 @@
 
         $('body').on('click', '.btn-notificar-llegada', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
-            // console.log(detalle);
+            console.log(detalle);
+            let permiteAtencion = await puedeAtenderse(detalle);
+            if(!permiteAtencion){
+                // await generarTurno(detalle, true);
+                return;
+            }
             await notificarLlegada(detalle)
             // mostrarPrestaciones(JSON.parse(detalle))
             // $('.btn-print-notificar-llegada').attr('data-rel',detalle)
@@ -1883,6 +1888,12 @@
             let detalle = JSON.parse($(this).attr('data-rel'));
             let convenioItem;
 
+            let permiteAtencion = await puedeAtenderse(detalle);
+            if(!permiteAtencion){
+                await generarTurno(detalle, true);
+                return;
+            }
+
             let esTerapia = false;
             let permitePago = "S";
             let esAgendable = "S";
@@ -2023,10 +2034,11 @@
         $('body').on('click', '.btn-agendar', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             console.log(detalle);
-            {{-- let permiteAtencion = await puedeAtenderse(detalle);
+            let permiteAtencion = await puedeAtenderse(detalle);
             if(!permiteAtencion){
+                await generarTurno(detalle, true);
                 return;
-            } --}}
+            }
             let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
             let convenioItem = {
@@ -2230,12 +2242,17 @@
         });
         const data = await call(args);
         console.log(data);
-        toastr.warning(msg, 'Datos de Factura incorrectos', {
-            timeOut: 8000
-        });
-
-        return false;
-
+        if(data.code == 200){
+            if(!data.data.ordenesValidadas[0].permiteAtencion){
+                toastr.warning(data.data.ordenesValidadas[0].mensajeValidacion, 'Atención', {
+                    timeOut: 8000
+                });
+            }
+            return data.data.ordenesValidadas[0].permiteAtencion;
+        }else{
+            console.log("Error servicio")
+            return true;
+        }
     }
 
     async function verificarUsuarioDigital(){
@@ -2787,8 +2804,8 @@
         let numAuthMedPay = null;
 
         //Remover
-        {{-- if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
-            if( origen != "TURNO" && parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
+        if(detalle.hasOwnProperty('beneficio') && detalle.beneficio !== null && detalle.beneficio.convenio !== null){
+            if( origen == "TURNO" && parseInt(detalle.beneficio.convenio.codigoCliente) == 13){
                 console.log("-----////---------");
                 console.log(7)
                 await obtenerAutorizacionMedPay(detalle);
@@ -2806,7 +2823,7 @@
                     numAuthMedPay = datosPago.sync.secuenciaTransaccion;
                 }
             }
-        } --}}
+        }
 
         // console.log(detalle);
 
