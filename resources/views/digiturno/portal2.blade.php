@@ -1890,7 +1890,7 @@
 
             let permiteAtencion = await puedeAtenderse(detalle);
             if(!permiteAtencion){
-                await generarTurno(detalle, true);
+                // await generarTurno(detalle, true);
                 return;
             }
 
@@ -2036,7 +2036,7 @@
             console.log(detalle);
             let permiteAtencion = await puedeAtenderse(detalle);
             if(!permiteAtencion){
-                await generarTurno(detalle, true);
+                // await generarTurno(detalle, true);
                 return;
             }
             let dataAttr = $('.paciente-item-selected').attr("data-rel");
