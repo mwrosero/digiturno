@@ -1087,10 +1087,14 @@
         $('body').on('click', '.btn-notificar-llegada', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             console.log(detalle);
-            let permiteAtencion = await puedeAtenderse(detalle);
-            if(!permiteAtencion){
-                // await generarTurno(detalle, true);
-                return;
+            var ordenPagada = verificarEstadoOrden(detalle)
+            console.log({ordenPagada});
+            if(ordenPagada){
+                let permiteAtencion = await puedeAtenderse(detalle);
+                if(!permiteAtencion){
+                    // await generarTurno(detalle, true);
+                    return;
+                }
             }
             await notificarLlegada(detalle)
             // mostrarPrestaciones(JSON.parse(detalle))
@@ -1888,12 +1892,15 @@
             let detalle = JSON.parse($(this).attr('data-rel'));
             let convenioItem;
 
-            let permiteAtencion = await puedeAtenderse(detalle);
-            if(!permiteAtencion){
-                // await generarTurno(detalle, true);
-                return;
+            let citaPagada = await verificarEstadoPago(detalle);
+            console.log({citaPagada});
+            if(citaPagada){
+                let permiteAtencion = await puedeAtenderse(detalle);
+                if(!permiteAtencion){
+                    // await generarTurno(detalle, true);
+                    return;
+                }
             }
-
             let esTerapia = false;
             let permitePago = "S";
             let esAgendable = "S";
@@ -2034,10 +2041,14 @@
         $('body').on('click', '.btn-agendar', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             console.log(detalle);
-            let permiteAtencion = await puedeAtenderse(detalle);
-            if(!permiteAtencion){
-                // await generarTurno(detalle, true);
-                return;
+            let citaPagada = await verificarEstadoPago(detalle);
+            console.log({citaPagada});
+            if(citaPagada){
+                let permiteAtencion = await puedeAtenderse(detalle);
+                if(!permiteAtencion){
+                    // await generarTurno(detalle, true);
+                    return;
+                }
             }
             let dataAttr = $('.paciente-item-selected').attr("data-rel");
             let paciente = JSON.parse(dataAttr);
@@ -3339,6 +3350,24 @@
                 await facturarCobroPinPad();
                 return;
             }
+        }
+    }
+
+    async function verificarEstadoPago(detalle){
+        switch(detalle.tipoServicio){
+        case 'ORDEN_MEDICA':
+            case 'ORDENES_APOYO_PENDIENTE':
+                return verificarEstadoOrden(detalle);
+            break;
+            case 'RESERVA':
+                return detalle.estaPagado;
+            break;
+            case 'BATERIA_PRESTACIONES':
+                return false;
+            break;
+            case 'PAQUETES_PROMOCIONALES':
+                return false;
+            break;
         }
     }
 
