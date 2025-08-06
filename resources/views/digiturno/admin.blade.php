@@ -588,6 +588,7 @@
                     await anularAutorizacion(infoFactura);
                 }
             }
+            await registrarTracking('ANULAR_FACTURA_'+tipo.toUpperCase(), obj);
         }else{
             showMessage('error','Atención', data.message)
         }
@@ -708,6 +709,7 @@
         $('#modalPinpad').modal('hide');
         if(data.code == 200){
             showMessage('success','Atención','Voucher anulado exitosamente')
+            await registrarTracking('VOUCHER_ANULADO', {"secuenciaDocumentoVoucher":datosVoucher.secuenciaDocumentoVoucher});
         }else{
             showMessage('error','Atención', data.message)
             if(tipo == "NC"){
