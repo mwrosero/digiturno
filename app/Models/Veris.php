@@ -56,7 +56,7 @@ class Veris extends Model
     public const APPLICATION_LOGIN_LIDER = 'UEhBTlRPTVhfV0VC';
     public const BASIC_LOGIN_LIDER = 'TFBMVUE6Q2xAdmUxMjM=';
     public const URL_EPI = 'https://phantom-wsexternos.phantomx.com.ec/Verisrest/v1/formularioepi1';
-
+ 
     static function call(Array $config)
     {
         $ch = curl_init();

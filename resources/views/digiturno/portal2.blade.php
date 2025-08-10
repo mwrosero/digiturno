@@ -1087,12 +1087,41 @@
         $('body').on('click', '.btn-notificar-llegada', async function(){
             let detalle = JSON.parse($(this).attr('data-rel'));
             console.log(detalle);
-            var ordenPagada = verificarEstadoOrden(detalle)
-            console.log({ordenPagada});
-            if(ordenPagada){
-                let permiteAtencion = await puedeAtenderse(detalle);
-                if(!permiteAtencion){
-                    // await generarTurno(detalle, true);
+            // var ordenPagada = verificarEstadoOrden(detalle)
+            var ordenPagadaParcialmente = verificarEstadoOrdenParcialmente(detalle)
+            console.log({ordenPagadaParcialmente});
+            if(ordenPagadaParcialmente == 1){
+                let permiteAtencion = await puedeAtenderseArr(detalle);
+                let prestacionesArr = [];
+                let permiteContinuar = true;
+                let mensajes = [];
+                $.each(detalle.detallesOrden, function(k,v) {
+                    if(detalle.tipoServicio == 'ORDENES_APOYO_PENDIENTE'){
+                        if(estadosVigentes.includes(v.codigoEstado)){
+                            prestacionesArr.push(v.codigoPrestacion);
+                        }    
+                    }else{
+                        if(v.estaFacturado){
+                            prestacionesArr.push(v.codigoPrestacion);
+                        }
+                    }
+                });
+                $.each(permiteAtencion, function(key, value){
+                    if(prestacionesArr.includes(value.codigoPrestacion) && value.false){
+                        permiteContinuar = false;
+                        if(value.mensajeValidacion !== null){
+                            let str = value.mensajeValidacion.split(', Linea detalle:');
+                            let item = `<li>${str[0]}</li>`;
+                            if (!mensajes.includes(item)) {
+                                mensajes.push(item);
+                            }
+                        }
+                    }
+                })
+                if(!permiteContinuar){
+                    toastr.warning(`${data.data.ordenesValidadas[0].mensajeValidacion} <ul>${mensajes.join('')}</ul>`, 'Atención', {
+                        timeOut: 8000
+                    });
                     return;
                 }
             }
@@ -2272,6 +2301,37 @@
             return data.data.ordenesValidadas[0].permiteAtencion;
         }else{
             console.log("Error servicio")
+            return true;
+        }
+    }
+
+    async function puedeAtenderseArr(detalle){
+        let canalInvocacion = "CAJ";
+
+        let ordenes = [];
+
+        ordenes.push({
+            "numeroOrden": detalle.numeroOrden,
+            "codigoSucursalAtencion": dataParametrosGenerales.caja.codigoSucursal
+        })
+
+        if(isKiosk()){
+            canalInvocacion = "KIO";
+        }
+        let args = [];
+        args["endpoint"] = `${api_url_digitales}/comercial/v1/util/permite_atencion?codigoEmpresa=1&canalInvocacion=${canalInvocacion}`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["bodyType"] = "json";
+        args["data"] = JSON.stringify({
+            "ordenes": ordenes
+        });
+        const data = await call(args);
+        if(data.code == 200){
+            return data.data.ordenesValidadas;
+        }else{
+            alert("Error servicio")
             return true;
         }
     }
@@ -5192,13 +5252,8 @@
     }
 
     async function generarTurno(detalle, crearPtx = false){
-        console.log(detalle);
-        console.log("GENERAR");
-
-        {{-- return; --}}
         let url_adicional = ``;
         
-        // if(detalle != []){
         if (crearPtx) {
             let pre_trx = await activarPrestacionesInicializar('TURNO',detalle);
             url_adicional += `&idPreTransaccion=${pre_trx}`

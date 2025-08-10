@@ -537,7 +537,6 @@ Mi Veris - Citas - Datos de facturación
         console.log(detalle);
         let url_adicional = ``;
         
-        // if(detalle != []){
         if (crearPtx) {
             let pre_trx = await activarPrestacionesInicializar('TURNO',detalle);
             url_adicional += `&idPreTransaccion=${pre_trx}`;
