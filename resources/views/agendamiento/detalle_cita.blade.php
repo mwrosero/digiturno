@@ -524,6 +524,13 @@ Mi Veris - Citas - Revisa tus datos
             canalOrigenAgendamiento = "KIO";
         }
 
+        let permitePagoConvenio;
+        if(dataCita.convenio.permitePago == "S" || dataCita.convenio.permitePago == "true" || dataCita.convenio.permitePago == true){
+            permitePagoConvenio = "S";
+        }else{
+            permitePagoConvenio = "N";
+        }
+
         let datosReserva = {
             "numeroIdentificacion": dataCita.paciente.numeroIdentificacion,
             "tipoIdentificacion": tipoIdentificacion,
@@ -540,7 +547,7 @@ Mi Veris - Citas - Revisa tus datos
             "codigoEmpresaRegistro": 1,
             "codigoSucursalRegistro": null,
             "porcentajeDescuento": dataCita.horario.porcentajeDescuento,
-            "permitePago": dataCita.convenio.permitePago,
+            "permitePago": permitePagoConvenio,//dataCita.convenio.permitePago,
             "secuenciaAfiliado": dataCita.convenio.secuenciaAfiliado ?? null,
             "canalOrigen": _canalOrigen,
             "enviarLinkPago": null,
