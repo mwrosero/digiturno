@@ -341,7 +341,7 @@
             </div>
             <div class="modal-body p-3">
                 <div class="bg-silver-light rounded-8 text-veris-dark text-center fs-16 fw-bold p-2 mb-2">Muestras / Exámenes</div>
-                <ul class="row border-0 p-0 my-2" id="detalleComponentesOrden">
+                <ul class="row border-0 p-0 my-2" id="detalleComponentesOrden" style="overflow-x: auto;">
                     <div class="col-12 col-md-6 d-flex flex-fill flex-column prestaciones-pagadas">
                         <ul class="list-group flex-grow-1"></ul>
                     </div>
@@ -1194,9 +1194,9 @@
                     let btnTerapia = ``;
                     console.log('esTerapia:' + esTerapia)
                     console.log(value)
-                    if(esTerapia && value.codigoReserva == null){
+                    if((esTerapia || esProcedimiento) && value.codigoReserva == null){
                         btnTerapia += `<button type='button' class="btn bg-veris text-white p-2 py-1 ms-auto btn-agendar-prestacion" terapia-rel='S' generales-rel='${ escapeHtmlAttr(JSON.stringify(detalle)) }' data-rel='${JSON.stringify(value)}'>Agendar</button>`;
-                    }else if(esTerapia && value.codigoReserva != null){
+                    }else if((esTerapia || esProcedimiento) && value.codigoReserva != null){
                         btnTerapia += `<button type='button' class="btn bg-veris-dark text-white p-2 py-1 ms-auto btn-pagar" terapia-rel='S' index-rel='${key}' data-rel='${escapeHtmlAttr(JSON.stringify(detalle))}' data-bs-dismiss="modal">Pagar</button>`;
                     }
                     
@@ -1255,7 +1255,7 @@
                                 </button>`;
                 }
 
-                if(esTerapia){
+                if(esTerapia || esProcedimiento){
                     console.log("ES TERAPIA")
                     btnPagar = ``;
                 }
@@ -4026,6 +4026,7 @@
                             // console.log({ordenParcial});
                         }
                         if(ordenParcial > 0){
+                            console.log('Orden Parcial mayor a 0')
                             addForToday = true;
                             labelEstadoItem = `Pagado parcialmente`;
                             let cantidadPagados = ` (${ordenParcial}) <span class="text-veris-dark fw-medium">${ (ordenParcial == 1) ? `Examen pagado` : `Exámenes pagados` }</span>`
@@ -4034,6 +4035,7 @@
                                 Ver detalle
                             </button>`;
                         }else{
+                            console.log('Orden Parcial menor o igual a 0')
                             labelEstadoItem = `Por pagar`;
                             if(detalle.nombreServicioNivel1 == "LABORATORIO" || detalle.nombreServicioNivel1 == "IMAGENES" || detalle.nombreServicioNivel1 == "PROCEDIMIENTOS" || detalle.nombreServicioNivel1 == "CONSULTA" || detalle.nombreServicioNivel1 == "CONSULTA NO MEDICA" || tipoServicio == "TERAPIA_FISICA"){
                                 // Permite agendar
@@ -4044,7 +4046,7 @@
                                 }
 
                                 {{-- if(permiteAgendar && detalle.tipoServicio !=='ORDENES_APOYO_PENDIENTE'){ --}}
-                                if(permiteAgendar){
+                                if(permiteAgendar && detalle.nombreServicioNivel1 !== "PROCEDIMIENTOS"){
                                     elemFooterCard += `<button type="button" data-rel='${detalleRel}' class="btn flex-fill bg-white border-veris-1 text-veris btn-agendar p-2 py-3 mt-3">
                                             Agendar cita
                                         </button>`;
