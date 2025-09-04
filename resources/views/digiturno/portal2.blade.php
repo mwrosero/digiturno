@@ -3594,6 +3594,7 @@ return;
     }
 
     async function solicitarPagoPinPad(){
+        // temporal
         await setearPago();
         return;
         if(datosPago.validacion.valorTotalAPagarPaciente == 0){
@@ -3660,8 +3661,8 @@ return;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
-        
-        let tarjeta = datosPago.cobro.datosTarjeta;
+        // temporal
+        //let tarjeta = datosPago.cobro.datosTarjeta;
 
         args["data"] = JSON.stringify({
             "formaPago": {
