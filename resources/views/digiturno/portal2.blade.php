@@ -1920,7 +1920,9 @@
             let generales = JSON.parse($(this).attr('generales-rel'));
             let detalle = JSON.parse($(this).attr('data-rel'));
             let convenioItem;
-
+console.log(generales)
+console.log(detalle)
+return;
             let citaPagada = await verificarEstadoPago(detalle);
             console.log({citaPagada});
             if(citaPagada){
@@ -3661,12 +3663,12 @@
 
         args["data"] = JSON.stringify({
             "formaPago": {
-                // "efectivo": {
-                //   "idPago": null,
-                //   "valorEntregado": parseFloat(datosPago.validacion.valorTotalAPagarPaciente),
-                //   "valorCambio": 0.00
-                // },
-                "tarjeta": [{
+                "efectivo": {
+                  "idPago": null,
+                  "valorEntregado": parseFloat(datosPago.validacion.valorTotalAPagarPaciente),
+                  "valorCambio": 0.00
+                }, 
+                /*"tarjeta": [{
                     "idPago": 1,
                     "valorEntregado": tarjeta.valor,
                     "nombre": tarjeta.nombre,
@@ -3692,7 +3694,7 @@
                         "codigoIngresoVap": null,
                         "codigoSolicitudServDomicilio": null
                     }
-                }]
+                }]*/
             }
         });
         args["bodyType"] = "json";
