@@ -3594,6 +3594,8 @@ return;
     }
 
     async function solicitarPagoPinPad(){
+        await setearPago();
+        return;
         if(datosPago.validacion.valorTotalAPagarPaciente == 0){
             await facturarCobroPinPad();
             return;
