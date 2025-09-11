@@ -414,18 +414,23 @@
             let tipo = $('.tipoServicio.active').attr('tipo-rel')
             console.log(tipo)
             $('.btn-action').attr(`tipo-rel`, tipo);
-            await obtenerInfoFactura()
+            
+            let opcionMenu;
             switch(tipo){
                 case 'NC':
                     $('.btn-action').html(`Crear Nota de Crédito`)
+                    opcionMenu = 'NC_NORMAL'
                 break;
                 case 'SF':
                     $('.btn-action').html(`Saldo a Favor`);
+                    opcionMenu = 'SALDO_FAVOR'
                 break;
                 case 'CDF':
                     $('.btn-action').html(`Cambiar Datos Factura`)
+                    opcionMenu = 'CAMBIO_DATOS'
                 break;
             }
+            await obtenerInfoFactura(opcionMenu)
         })
 
         $('body').on('click', '.btn-action', async function(){
@@ -615,12 +620,12 @@
         }
     }
 
-    async function obtenerInfoFactura(){
+    async function obtenerInfoFactura(opcionMenu){
         $('.box-info-factura').addClass('d-none');
         let numeroFactura = `${getInput('first-input')}${getInput('medium-input')}${getInput('last-input')}`
         let args = [];
 
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/comprobantes/factura_paciente/kiosko/consulta_por_anulacion?codigoEmpresa=1&macAddress={{ $mac }}&criterioBusqueda=COMPROBANTE_CON_FACTURA&valorBusqueda=${numeroFactura}`;
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/comprobantes/factura_paciente/kiosko/consulta_por_anulacion?codigoEmpresa=1&macAddress={{ $mac }}&criterioBusqueda=COMPROBANTE_CON_FACTURA&valorBusqueda=${numeroFactura}&idOpcionMenu=${opcionMenu}`;
         args["method"] = "GET";
         args["dismissAlert"] = true;
         args["showLoader"] = true;

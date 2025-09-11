@@ -1920,9 +1920,9 @@
             let generales = JSON.parse($(this).attr('generales-rel'));
             let detalle = JSON.parse($(this).attr('data-rel'));
             let convenioItem;
-console.log(generales)
+{{-- console.log(generales)
 console.log(detalle)
-return;
+return; --}}
             let citaPagada = await verificarEstadoPago(detalle);
             console.log({citaPagada});
             if(citaPagada){
