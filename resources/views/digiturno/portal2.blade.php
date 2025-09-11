@@ -3025,7 +3025,7 @@
         }
 
         let payload = {
-            "idAgrupacion": idAgrupacion[0],
+            "idAgrupacion": idAgrupacion,
         }
 
         if(tipoAutorizacionTrxValExt == "AUTORIZACION_MEDPAY"){
@@ -3062,7 +3062,7 @@
             // "_id": "string",
             "esAutorizacionAutomatica": true,
             "secuenciaLogWs": datosPago.sync.secuenciaLogSincronizacion,
-            "numeroAutorizacion": datosPago.sync.autorizacionAseguradora
+            "numeroAutorizacion": `${datosPago.sync.numeroAutorizacion}`
         });
         args["bodyType"] = "json";
         const data = await call(args);
@@ -3318,8 +3318,10 @@
             datosPago.consulta = data.data;
             console.log("*0000*")
 
+            console.log({flagAutorizacion})
             if(!flagAutorizacion){
-                if(datosPago.consulta[0].agrupaciones[0].permiteValorizacionExt){
+                if(datosPago.consulta[0].agrupaciones[0].permiteValorizacionExterna){
+                    console.log(1)
                     //emision_valorizacion_externa
                     await emisionValorizacionExterna(_detallePagar, datosPago.consulta[0].agrupaciones[0].tipoAutorizacionTrxValExt);
                     if(cortaProcesoYEnviaCaja){
@@ -3339,7 +3341,9 @@
                     await consultaPreTrx(idPreTransaccion, detalle);
                     return;
                 }else{
+                    console.log(2)
                     if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa && datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa.valorTotal > 0){
+                        console.log(3)
                         await obtenerAutorizacion(detalle);
                         if(cortaProcesoYEnviaCaja){
                             toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atenci', {
