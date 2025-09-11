@@ -3029,7 +3029,7 @@
         }
 
         if(tipoAutorizacionTrxValExt == "AUTORIZACION_MEDPAY"){
-            payload.medpayPlan: convenio.informacionExternaPlan
+            payload.medpayPlan = convenio.informacionExternaPlan
         }
 
         let args = [];
