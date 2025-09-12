@@ -3353,6 +3353,7 @@
                             cortaProcesoYEnviaCaja = false;
                             return;
                         }
+                        flagAutorizacion = true;
                         await consultaPreTrx(idPreTransaccion, detalle);
                         return;
                     }
