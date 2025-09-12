@@ -713,6 +713,7 @@ Mi Veris - Citas - Datos de facturación
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
+        args["sendHeaders"] = "true";
         args["data"] = JSON.stringify(payload);
         args["bodyType"] = "json";
         const data = await call(args);
@@ -733,6 +734,7 @@ Mi Veris - Citas - Datos de facturación
         args["method"] = "PUT";
         args["token"] = accessToken;
         args["showLoader"] = true;
+        args["sendHeaders"] = "true";
         args["data"] = JSON.stringify({
             "idAgrupacion": idAgrupacion[0],
             // "_id": "string",
