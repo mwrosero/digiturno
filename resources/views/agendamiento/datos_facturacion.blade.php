@@ -537,7 +537,6 @@ Mi Veris - Citas - Datos de facturación
         console.log(detalle);
         let url_adicional = ``;
         
-        // if(detalle != []){
         if (crearPtx) {
             let pre_trx = await activarPrestacionesInicializar('TURNO',detalle);
             url_adicional += `&idPreTransaccion=${pre_trx}`;
@@ -676,13 +675,13 @@ Mi Veris - Citas - Datos de facturación
                 }
                 if(dataCita.convenio != null){
                     if(clientesAuth.includes(dataCita.convenio.codigoCliente) && dataCita.convenio.requiereAutorizacionFacturacion){
-                        await obtenerAutorizacion();
-                        flagAutorizacion = true;
+                        // await obtenerAutorizacion();
+                        // flagAutorizacion = true;
                     }else{
                         if(parseInt(dataCita.convenio.codigoCliente) == 13){
                             console.log("-----////---------");
-                            flagAutorizacion = true;
-                            await obtenerAutorizacionMedPay(detalle);
+                            // flagAutorizacion = true;
+                            // await obtenerAutorizacionMedPay(detalle);
                         }
                     }
                 }
@@ -691,6 +690,71 @@ Mi Veris - Citas - Datos de facturación
         }
     }
 
+    async function emisionValorizacionExterna(detalle, tipoAutorizacionTrxValExt){
+        let idAgrupacion = await getIdAgrupacionArray();
+        let convenio = dataCita.convenio;
+        if(tipoAutorizacionTrxValExt == "AUTORIZACION_MEDPAY" && convenio.informacionExternaPlan === null){
+            cortaProcesoYEnviaCaja = true;
+            flagAutorizacion = false;
+            console.log("No emite autorización Medpay")
+            return;
+        }
+
+        let payload = {
+            "idAgrupacion": idAgrupacion,
+        }
+
+        if(tipoAutorizacionTrxValExt == "AUTORIZACION_MEDPAY"){
+            payload.medpayPlan = convenio.informacionExternaPlan
+        }
+
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${ datosPago.idPreTransaccion }/emision_valorizacion_externa?codigoEmpresa=1&nemonicoValorizacion=${tipoAutorizacionTrxValExt}`;
+        args["method"] = "POST";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["sendHeaders"] = "true";
+        args["data"] = JSON.stringify(payload);
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            datosPago.sync = data.data
+        }else{
+            toastr.error("Atención", data.message, {
+                timeOut: 5000
+            });
+        }
+    }
+
+    async function setearAutorizacionAseguradora(){
+        let idAgrupacion = await getIdAgrupacionArray();
+        let args = [];
+        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${ datosPago.idPreTransaccion }/setear_autorizacion_aseguradora?codigoEmpresa=1`;
+        args["method"] = "PUT";
+        args["token"] = accessToken;
+        args["showLoader"] = true;
+        args["sendHeaders"] = "true";
+        args["data"] = JSON.stringify({
+            "idAgrupacion": idAgrupacion[0],
+            // "_id": "string",
+            "esAutorizacionAutomatica": true,
+            "secuenciaLogWs": datosPago.sync.secuenciaLogSincronizacion,
+            "numeroAutorizacion": `${datosPago.sync.numeroAutorizacion}`
+        });
+        args["bodyType"] = "json";
+        const data = await call(args);
+        console.log(data);
+        if(data.code == 200){
+            datosPago.setearAutorizacion = data.data
+        }else{
+            toastr.error("Atención", data.message, {
+                timeOut: 5000
+            });
+        }
+    }
+
+    let cortaProcesoYEnviaCaja = false;
     async function obtenerAutorizacionMedPay(detalle){
         console.log('MEDPAYYYYYYYYYYYYYY');
         console.log(detalle);
@@ -831,14 +895,52 @@ Mi Veris - Citas - Datos de facturación
         if(data.code == 200){
             datosPago.consulta = data.data;
             if(!flagAutorizacion){
-                if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa){
+                if(datosPago.consulta[0].agrupaciones[0].permiteValorizacionExterna){
+                    console.log(1)
+                    //emision_valorizacion_externa
+                    await emisionValorizacionExterna(detalle, datosPago.consulta[0].agrupaciones[0].tipoAutorizacionTrxValExt);
+                    if(cortaProcesoYEnviaCaja){
+                        toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atención', {
+                            timeOut: 5000
+                        });
+                        await generarTurno(detalle, true)
+                        cortaProcesoYEnviaCaja = false;
+                        return;
+                    }
+
+                    flagAutorizacion = true;
+                    if(datosPago.hasOwnProperty('sync')){
+                        numAuthMedPay = datosPago.sync.secuenciaTransaccion;
+                    }
+                    await setearAutorizacionAseguradora()
+                    await consultaPreTrx(idPreTransaccion, detalle);
+                    return;
+                }else{
+                    console.log(2)
+                    if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa && datosPago.consulta[0].agrupaciones[0].totalAgrupacion.empresa.valorTotal > 0){
+                        console.log(3)
+                        await obtenerAutorizacion(detalle);
+                        if(cortaProcesoYEnviaCaja){
+                            toastr.error('Estimado usuario, tenemos inconvenientes comunicándonos con tu aseguradora, te generamos un turno para asistirte en Caja.', 'Atenci', {
+                                timeOut: 5000
+                            });
+                            await generarTurno(detalle, true)
+                            cortaProcesoYEnviaCaja = false;
+                            return;
+                        }
+                        flagAutorizacion = true;
+                        await consultaPreTrx(idPreTransaccion, detalle);
+                        return;
+                    }
+                }
+                {{-- if(datosPago.consulta[0].agrupaciones[0].requiereAutorizacionEmpresa){
                     console.log(7)
                     flagAutorizacion = true;
                     dataCita.convenio.secuenciaAfiliado = datosPago.consulta[0].agrupaciones[0].beneficio.convenio.secuenciaAfiliado;
                     await obtenerAutorizacion();
                     await consultaPreTrx(idPreTransaccion, detalle);
                     return;
-                }
+                } --}}
             }
             await verificarDatosFactura();
             $('.valorPago').html(`$${parseFloat(datosPago.consulta[0].agrupaciones[0].totalAgrupacion.paciente.valorTotal).toFixed(2)}`);
