@@ -692,7 +692,7 @@ Mi Veris - Citas - Datos de facturación
 
     async function emisionValorizacionExterna(detalle, tipoAutorizacionTrxValExt){
         let idAgrupacion = await getIdAgrupacionArray();
-        let convenio = await obtenerInfoConvenio(detalle);
+        let convenio = dataCita.convenio;
         if(tipoAutorizacionTrxValExt == "AUTORIZACION_MEDPAY" && convenio.informacionExternaPlan === null){
             cortaProcesoYEnviaCaja = true;
             flagAutorizacion = false;
