@@ -721,7 +721,7 @@ Mi Veris - Citas - Datos de facturación
         if(data.code == 200){
             datosPago.sync = data.data
         }else{
-            toastr.error("", data.message, {
+            toastr.error("Atención", data.message, {
                 timeOut: 5000
             });
         }
@@ -748,7 +748,7 @@ Mi Veris - Citas - Datos de facturación
         if(data.code == 200){
             datosPago.setearAutorizacion = data.data
         }else{
-            toastr.error("", data.message, {
+            toastr.error("Atención", data.message, {
                 timeOut: 5000
             });
         }
