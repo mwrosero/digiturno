@@ -180,7 +180,7 @@
             // text: `${web_url}/ingreso/{{ $mac }}?utm_source=HOJA&utm_medium=CENTRAL_TUMBACO&utm_campaign=lanzamiento_digiturno`
 		});
 
-		localStorage.clear();
+		//localStorage.clear();
 
 		if (userVeris !== null) {
 			// Reescribe usuario
