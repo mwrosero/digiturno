@@ -59,6 +59,9 @@
         case "48-21-0B-2D-2F-04":
             $playlist = "https://www.youtube.com/embed/videoseries?list=PLfkN66gdZWCxR9jdOcaml_dkvqC4CYYGS&playlist=PLfkN66gdZWCxR9jdOcaml_dkvqC4CYYGS&autoplay=1&mute=1&controls=0&loop=1";
         break;
+        case "88-AE-DD-67-93-DD":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLfkN66gdZWCwRJ06UqSnlgyqZYcCJ2zbl&playlist=PLfkN66gdZWCwRJ06UqSnlgyqZYcCJ2zbl&autoplay=1&mute=1&controls=0&loop=1";
+        break;
         default:
             $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6rRzJbZmaLutrK9po3379Zh&autoplay=1&mute=1&controls=0&loop=1&playlist=PLhHmuSWjQz6rRzJbZmaLutrK9po3379Zh";
     }
