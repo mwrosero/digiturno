@@ -128,15 +128,18 @@
                 </div>
             </div>
             <div class="col-6 h-100 overflow-hidden h-100 d-flex align-items-end justify-content-center">
-                @if (in_array($mac, \App\Models\Veris::MACS_PARAMI))
-                {{-- <div class="w-100 h-100" style="background: url({{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/preview_parami.png) no-repeat center center;background-size: cover;"></div> --}}
+                {{-- @if (in_array($mac, \App\Models\Veris::MACS_PARAMI))
                 <video src="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/video/parami.mp4" autoplay loop muted playsinline style="width:100%; height:auto;"></video>
                 @else
                 <div class="ratio ratio-16x9">
                     <iframe class="rounded-8" src="{{ $playlist }}" allow="autoplay; fullscreen" allowfullscreen>
                     </iframe>
                 </div>
-                @endif
+                @endif --}}
+                <div class="ratio ratio-16x9">
+                    <iframe class="rounded-8" src="{{ $playlist }}" allow="autoplay; fullscreen" allowfullscreen>
+                    </iframe>
+                </div>
             </div>
         </div>
     </main>
