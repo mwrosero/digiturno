@@ -1,4 +1,10 @@
-let c_o = "KIO_CMV";
+let c_o;
+if (macsParaMi.includes(mac)) {
+    c_o = "KIO_PMF";
+} else {
+    c_o = "KIO_CMV";
+}
+
 let cargandoConvenios = false;
 
 if(!isMobile()){
