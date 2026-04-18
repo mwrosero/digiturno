@@ -62,6 +62,9 @@
         case "88-AE-DD-67-93-DD":
             $playlist = "https://www.youtube.com/embed/videoseries?list=PLfkN66gdZWCwRJ06UqSnlgyqZYcCJ2zbl&playlist=PLfkN66gdZWCwRJ06UqSnlgyqZYcCJ2zbl&autoplay=1&mute=1&controls=0&loop=1";
         break;
+        case "88-AE-DD-6D-DF-88":
+            $playlist = "https://www.youtube.com/embed/videoseries?list=PLfkN66gdZWCwRJ06UqSnlgyqZYcCJ2zbl&playlist=PLfkN66gdZWCwRJ06UqSnlgyqZYcCJ2zbl&autoplay=1&mute=1&controls=0&loop=1";
+        break;
         default:
             $playlist = "https://www.youtube.com/embed/videoseries?list=PLhHmuSWjQz6rRzJbZmaLutrK9po3379Zh&autoplay=1&mute=1&controls=0&loop=1&playlist=PLhHmuSWjQz6rRzJbZmaLutrK9po3379Zh";
     }
