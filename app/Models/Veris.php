@@ -12,7 +12,7 @@ class Veris extends Model
 {
     use HasFactory;
 
-    public const MACS_PARAMI = ["1C-69-7A-AE-99-3D","48-21-0B-2D-28-8F","48-21-0B-2D-1F-3C","48-21-0B-2D-2F-04","1C-69-7A-6A-CF-95","88-AE-DD-67-93-DD","88-AE-DD-67-93-DD"];
+    public const MACS_PARAMI = ["1C-69-7A-AE-99-3D","48-21-0B-2D-28-8F","48-21-0B-2D-1F-3C","48-21-0B-2D-2F-04","1C-69-7A-6A-CF-95","88-AE-DD-67-93-DD","88-AE-DD-67-93-DD","88-AE-DD-6D-DF-88"];
 
     //DEV
     // public const BASE_URL = 'https://desa-turnero.phantomx.com.ec';
