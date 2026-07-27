@@ -20,6 +20,7 @@ class Veris extends Model
     public const BASE_WAR = 'turnero/v2';
     public const SEGURIDADES_WAR = 'seguridadtest/v1';
     public const BASE_WAR_DIGITALES = 'digitalestest/v1';
+    public const WAR_FACTURACION = 'facturaciontest';
     public const CANAL_ORIGEN = 'MVE_CMV';
     public const APPLICATION = 'UEhBTlRPTVhfQkFDS0VORA==';//UEhBTlRPTVhfRU1QUkVTQVJJQUw=
     public const IDORGANIZACION = 'adf4e264-cd20-4653-9a44-025b13050992';
@@ -42,6 +43,7 @@ class Veris extends Model
     // public const BASE_WAR = 'turnero/v2';
     // public const SEGURIDADES_WAR = 'seguridad/v1';
     // public const BASE_WAR_DIGITALES = 'digitales/v1';
+    // public const WAR_FACTURACION = 'facturacion';
     // public const CANAL_ORIGEN = 'MVE_CMV';
     // public const APPLICATION = 'UEhBTlRPTVhfQkFDS0VORA==';
     // public const IDORGANIZACION = '365509c8-9596-4506-a5b3-487782d5876e';

@@ -295,7 +295,7 @@
 		let caja = JSON.parse(localStorage.getItem('userKiosko'));
 		let args = [];
 		// arqueos_caja/apertura
-        args["endpoint"] = `${api_url_digitales}/facturacion/v1/arqueos_caja/cierre`;
+        args["endpoint"] = `${api_url_digitales}/${api_war_facturacion}/v1/arqueos_caja/cierre`;
         args["method"] = "PUT";
         args["showLoader"] = true;
         args["token"] = "{{ $accessToken }}";
@@ -349,7 +349,7 @@
 	async function cerrarLote(secuenciaArqueo) {
 		let args = [];
 		// arqueos_caja/apertura
-        args["endpoint"] = `${api_url_digitales}/facturacion/v1/pin_pad/cierre_lote?codigoEmpresa=1&esManual=false`;
+        args["endpoint"] = `${api_url_digitales}/${api_war_facturacion}/v1/pin_pad/cierre_lote?codigoEmpresa=1&esManual=false`;
         args["method"] = "POST";
         args["showLoader"] = true;
 		args["dismissAlert"] = true;
@@ -365,7 +365,7 @@
 
 	async function consultarCajas(soloConsulta = false){
 		let args = [];
-        args["endpoint"] = `${api_url_digitales}/facturacion/v1/cajeros/${ dataParametrosGenerales.secuenciaUsuario }/cajas?codigoEmpresa=1&codigoSucursal=${ dataParametrosGenerales.caja.codigoSucursal }`;
+        args["endpoint"] = `${api_url_digitales}/${api_war_facturacion}/v1/cajeros/${ dataParametrosGenerales.secuenciaUsuario }/cajas?codigoEmpresa=1&codigoSucursal=${ dataParametrosGenerales.caja.codigoSucursal }`;
         args["method"] = "GET";
         args["showLoader"] = true;
         args["token"] = "{{ $accessToken }}";
@@ -417,7 +417,7 @@
 	async function aperturarCaja(caja){
 		let args = [];
 		// arqueos_caja/apertura
-        args["endpoint"] = `${api_url_digitales}/facturacion/v1/arqueos_caja/apertura`;
+        args["endpoint"] = `${api_url_digitales}/${api_war_facturacion}/v1/arqueos_caja/apertura`;
         args["method"] = "POST";
         args["showLoader"] = true;
         args["token"] = "{{ $accessToken }}";

@@ -262,7 +262,7 @@
 		let caja = JSON.parse(localStorage.getItem('userKiosko'));
 		let args = [];
 		// arqueos_caja/apertura
-        args["endpoint"] = `${api_url_digitales}/facturacion/v1/arqueos_caja/cierre`;
+        args["endpoint"] = `${api_url_digitales}/${api_war_facturacion}/v1/arqueos_caja/cierre`;
         args["method"] = "PUT";
         args["showLoader"] = true;
         args["token"] = "{{ $accessToken }}";
@@ -315,7 +315,7 @@
 
 	// async function cerrarLote() {
 	// 	let args = [];
-    //     args["endpoint"] = `${api_url_digitales}/facturacion/v1/pin_pad/cierre_lote?codigoEmpresa=1&esManual=true`;
+    //     args["endpoint"] = `${api_url_digitales}/${api_war_facturacion}/v1/pin_pad/cierre_lote?codigoEmpresa=1&esManual=true`;
     //     args["method"] = "POST";
     //     args["showLoader"] = true;
 	// 	args["dismissAlert"] = true;
@@ -673,7 +673,7 @@
 
 	async function accederAdmin(){
 		/*let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/autorizacion_servicio/autenticacion/ejecutivo_lider?codigoEmpresa=1&codigoSucursal=${dataParametrosGenerales.codigoSucursal}`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/autorizacion_servicio/autenticacion/ejecutivo_lider?codigoEmpresa=1&codigoSucursal=${dataParametrosGenerales.codigoSucursal}`;
         let payload = {
             "usuario": btoa($('#user').val()),
   			"clave": btoa($('#password').val())
