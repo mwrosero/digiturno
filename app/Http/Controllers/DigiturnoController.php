@@ -106,8 +106,14 @@ class DigiturnoController extends Controller
 
     public function turnero($mac){
         $token = Veris::getToken();
-        return view('digiturno.visor_turnero')
-               ->with('accessToken',$token)
+        $lineaNegocio = "veris";
+        if (in_array($mac, Veris::MACS_PARAMI, true)) {
+            $lineaNegocio = "parami";
+        }
+        // return view('digiturno.visor_turnero')
+        return view('digiturno.visor_turnero_2026')
+                ->with('lineaNegocio', $lineaNegocio)
+                ->with('accessToken',$token)
                 ->with('mac',$mac);
     }
 
