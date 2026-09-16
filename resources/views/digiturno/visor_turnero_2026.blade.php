@@ -60,7 +60,9 @@
     top: 10vh;
     right: 5vw;
     width: 35vw;
+    @if($lineaNegocio == "parami")
     max-width: 440px;
+    @endif
     text-align: right;
   }
   .logo-wrap img {
