@@ -61,6 +61,7 @@
     right: 5vw;
     width: 35vw;
     @if($lineaNegocio == "parami")
+    top: 5vh;
     max-width: 440px;
     @endif
     text-align: right;
