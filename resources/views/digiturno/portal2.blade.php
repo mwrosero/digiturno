@@ -2637,7 +2637,7 @@
         }
 
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/inicializar?codigoEmpresa=1&tipoPreTransaccion=FACTURA`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/inicializar?codigoEmpresa=1&tipoPreTransaccion=FACTURA`;
         let payload = {
             "secuenciaUsuario": dataParametrosGenerales.secuenciaUsuario,
             "idTurno": null,
@@ -2739,7 +2739,7 @@
         }
         console.log(775)
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/agregar_item?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${idPreTransaccion}/agregar_item?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
         let payload = {
             "idPaciente": paciente.idPaciente,
             "bateriaPrestaciones": {
@@ -2771,7 +2771,7 @@
         })
 
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/facturar?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${idPreTransaccion}/facturar?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
         let payload = {
             "idAgrupacion": idAgrupacion
         }
@@ -2800,7 +2800,7 @@
     async function activarLaboratorioChequeo(detalle){
         let numeroTransaccion = detalle.numeroTransaccion;
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/transacciones/genera_atencion_pac_laboratorio?codigoEmpresa=1&nemonicoCanalFacturacion=CAJA`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/transacciones/genera_atencion_pac_laboratorio?codigoEmpresa=1&nemonicoCanalFacturacion=CAJA`;
         let payload = {
             "enviaOrdenesLaboratorio": true,
             "numeroTransaccion": [
@@ -2849,7 +2849,7 @@
         // console.log(detalle);
 
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/agregar_item?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${idPreTransaccion}/agregar_item?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
 
         let item = [];
 
@@ -3033,7 +3033,7 @@
         }
 
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${ datosPago.idPreTransaccion }/emision_valorizacion_externa?codigoEmpresa=1&nemonicoValorizacion=${tipoAutorizacionTrxValExt}`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${ datosPago.idPreTransaccion }/emision_valorizacion_externa?codigoEmpresa=1&nemonicoValorizacion=${tipoAutorizacionTrxValExt}`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
@@ -3053,7 +3053,7 @@
     async function setearAutorizacionAseguradora(){
         let idAgrupacion = await getIdAgrupacionArray();
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${ datosPago.idPreTransaccion }/setear_autorizacion_aseguradora?codigoEmpresa=1`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${ datosPago.idPreTransaccion }/setear_autorizacion_aseguradora?codigoEmpresa=1`;
         args["method"] = "PUT";
         args["token"] = accessToken;
         args["showLoader"] = true;
@@ -3231,7 +3231,7 @@
     async function setearAutorizacion(){
         let idAgrupacion = await getIdAgrupacionArray();
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${ datosPago.idPreTransaccion }/setear_autorizacion_aseguradora?codigoEmpresa=1`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${ datosPago.idPreTransaccion }/setear_autorizacion_aseguradora?codigoEmpresa=1`;
         args["method"] = "PUT";
         args["token"] = accessToken;
         args["showLoader"] = true;
@@ -3256,7 +3256,7 @@
 
     async function setearDiagnostico(detalle){
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${datosPago.idPreTransaccion}/setear_diagnosticos?codigoEmpresa=1`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${datosPago.idPreTransaccion}/setear_diagnosticos?codigoEmpresa=1`;
 
         let item = [];
 
@@ -3304,7 +3304,7 @@
 
     async function consultaPreTrx(idPreTransaccion, detalle){        
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/consulta?codigoEmpresa=1`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${idPreTransaccion}/consulta?codigoEmpresa=1`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
@@ -3461,7 +3461,7 @@
 
     async function eliminarAgrupacion(item){
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${datosPago.idPreTransaccion}/eliminar_item?codigoEmpresa=1`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${datosPago.idPreTransaccion}/eliminar_item?codigoEmpresa=1`;
         args["method"] = "PUT";
         args["token"] = accessToken;
         args["showLoader"] = true;
@@ -3527,7 +3527,7 @@
             codigoTipoIdentificacion = datosPago.consulta[0].paciente.codigoTipoIdentificacion;
         }
         let args = [];
-        args["endpoint"] = `${api_url_digitales}/facturacion/v1/pacientes/verificar_datos_factura?numeroIdentificacion=${numeroIdentificacion}&codigoTipoIdentificacion=${codigoTipoIdentificacion}`;
+        args["endpoint"] = `${api_url_digitales}/${api_war_facturacion}/v1/pacientes/verificar_datos_factura?numeroIdentificacion=${numeroIdentificacion}&codigoTipoIdentificacion=${codigoTipoIdentificacion}`;
         args["method"] = "GET";
         args["showLoader"] = true;
         args["token"] = "{{ $accessToken }}";
@@ -3552,7 +3552,7 @@
 
     async function setearDatosFactura(){
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${datosPago.idPreTransaccion}/setear_datos_factura?codigoEmpresa=1`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${datosPago.idPreTransaccion}/setear_datos_factura?codigoEmpresa=1`;
 
         let item = [];
 
@@ -3582,7 +3582,7 @@
 
     async function validacionPrevioPago(){        
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${datosPago.idPreTransaccion}/validacion_previo_pago?codigoEmpresa=1`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${datosPago.idPreTransaccion}/validacion_previo_pago?codigoEmpresa=1`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
@@ -3629,8 +3629,8 @@
         $('.box-load-pago').removeClass('d-none');
         
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
-        // args["endpoint"] =  `https://zq3hqnfr-3000.use2.devtunnels.ms/facturacion/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
+        // args["endpoint"] =  `https://zq3hqnfr-3000.use2.devtunnels.ms/${api_war_facturacion}/v1/pin_pad/procesar_cobro?codigoEmpresa=1`;
 
         let telefonoMovil = $('#telefonoV').val();
         if(telefonoMovil.length == 10){
@@ -3680,7 +3680,7 @@
 
     async function setearPago(){
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${datosPago.idPreTransaccion}/setear_pagos?codigoEmpresa=1&accion=NEW`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${datosPago.idPreTransaccion}/setear_pagos?codigoEmpresa=1&accion=NEW`;
         args["method"] = "POST";
         args["token"] = accessToken;
         args["showLoader"] = true;
@@ -3737,7 +3737,7 @@
 
     async function facturarCobroPinPad(){
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${datosPago.idPreTransaccion}/facturar?codigoEmpresa=1&idPreTransaccion=${datosPago.idPreTransaccion}`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${datosPago.idPreTransaccion}/facturar?codigoEmpresa=1&idPreTransaccion=${datosPago.idPreTransaccion}`;
         let idAgrupacion = await getIdAgrupacionArray();
         let payload = {
             "idAgrupacion": idAgrupacion

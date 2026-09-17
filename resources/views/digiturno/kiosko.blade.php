@@ -171,7 +171,7 @@
 
 	async function consultarCajas(){
 		let args = [];
-        args["endpoint"] = `${api_url_digitales}/facturacion/v1/cajeros/${ dataParametrosGenerales.secuenciaUsuario }/cajas?codigoEmpresa=1&codigoSucursal=${ dataParametrosGenerales.caja.codigoSucursal }`;
+        args["endpoint"] = `${api_url_digitales}/${api_war_facturacion}/v1/cajeros/${ dataParametrosGenerales.secuenciaUsuario }/cajas?codigoEmpresa=1&codigoSucursal=${ dataParametrosGenerales.caja.codigoSucursal }`;
         args["method"] = "GET";
         args["showLoader"] = true;
         args["token"] = "{{ $accessToken }}";
@@ -208,7 +208,7 @@
 	async function aperturarCaja(caja){
 		let args = [];
 		// arqueos_caja/apertura
-        args["endpoint"] = `${api_url_digitales}/facturacion/v1/arqueos_caja/apertura`;
+        args["endpoint"] = `${api_url_digitales}/${api_war_facturacion}/v1/arqueos_caja/apertura`;
         args["method"] = "POST";
         args["showLoader"] = true;
         args["token"] = "{{ $accessToken }}";

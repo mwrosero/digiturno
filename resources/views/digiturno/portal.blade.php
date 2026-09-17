@@ -886,7 +886,7 @@
 
     async function activarPrestacionesChequeos(){
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/inicializar?codigoEmpresa=1&tipoPreTransaccion=FACTURA`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/inicializar?codigoEmpresa=1&tipoPreTransaccion=FACTURA`;
         let payload = {
             "secuenciaUsuario": dataParametrosGenerales.secuenciaUsuario,
             "idTurno": null,
@@ -935,7 +935,7 @@
         let dataChequeo = JSON.parse($('#dataChequeo').val());
 
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/agregar_item?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${idPreTransaccion}/agregar_item?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
         let payload = {
             "idPaciente": paciente.idPaciente,
             "bateriaPrestaciones": {
@@ -967,7 +967,7 @@
         })
 
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/pre_transacciones/${idPreTransaccion}/facturar?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/pre_transacciones/${idPreTransaccion}/facturar?codigoEmpresa=1&idPreTransaccion=${idPreTransaccion}`;
         let payload = {
             "idAgrupacion": idAgrupacion
         }
@@ -995,7 +995,7 @@
     async function activarLaboratorioChequeo(detalle){
         let numeroTransaccion = detalle.numeroTransaccion;
         let args = [];
-        args["endpoint"] =  `${api_url_digitales}/facturacion/v1/transacciones/genera_atencion_pac_laboratorio?codigoEmpresa=1&nemonicoCanalFacturacion=CAJA`;
+        args["endpoint"] =  `${api_url_digitales}/${api_war_facturacion}/v1/transacciones/genera_atencion_pac_laboratorio?codigoEmpresa=1&nemonicoCanalFacturacion=CAJA`;
         let payload = {
             "enviaOrdenesLaboratorio": true,
             "numeroTransaccion": [
