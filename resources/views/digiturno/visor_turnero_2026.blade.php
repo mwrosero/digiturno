@@ -37,10 +37,11 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    /* Flexbox para centrar verticalmente el contenido dentro de la pantalla */
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 2.5vw;
     padding: 0 5vw;
     box-sizing: border-box;
   }
@@ -57,11 +58,11 @@
 
   .logo-wrap {
     position: absolute;
-    top: 10vh;
+    top: 5vh;
     right: 5vw;
     width: 35vw;
     @if($lineaNegocio == "parami")
-    top: 5vh;
+    top: 3vh;
     max-width: 440px;
     @endif
     text-align: right;
@@ -73,13 +74,12 @@
     margin-left: auto;
   }
 
-  /* Contenedor principal ajustado para centrado flex */
   .main-container {
     width: 100%;
     display: flex;
     gap: 2.5vw;
     align-items: stretch;
-    margin-top: 4vh; /* Desplazamiento ligero opcional si la marca del logo ocupa la parte superior */
+    margin-top: 4vh;
   }
 
   .turnos-card {
@@ -98,7 +98,7 @@
     background: var(--header-dark);
     color: #fff;
     font-weight: 700;
-    font-size: 1.8vw;
+    font-size: 2.2vw;
     padding: 0.7vw 1.2vw;
     border-radius: 0.9vw;
     margin-bottom: 0.5vw;
@@ -115,10 +115,9 @@
     overflow: hidden;
   }
 
-  /* Filas con altura fija uniforme y compacta */
   .turno-row {
-    height: 5.5vh;
-    min-height: 5.5vh;
+    height: 6vh;
+    min-height: 6vh;
     display: flex;
     align-items: center;
     border-radius: 0.5vw;
@@ -128,13 +127,12 @@
     background: transparent !important;
   }
 
-  /* Columna 1: Código */
   .turno-codigo {
-    flex: 0 0 22%;
+    flex: 0 0 30%;
     height: 100%;
     padding: 0.3vw 0.8vw;
     font-weight: 700;
-    font-size: 1.5vw;
+    font-size: 2.5vw;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -146,7 +144,6 @@
     @endif
   }
 
-  /* Columna 2: Nombre (Centro) */
   .turno-nombre {
     flex: 1 1 auto;
     height: 100%;
@@ -163,18 +160,18 @@
     background: rgba(41, 171, 226, 0.29);
   }
 
-  /* Columna 3: Caja / Módulo */
   .turno-caja {
-    flex: 0 0 22%;
+    flex: 1 1 auto;
     height: 100%;
     padding: 0.3vw 0.8vw;
     font-weight: 700;
-    font-size: 1.5vw;
+    font-size: 2.5vw;
     text-align: left;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 113, 188, 0.29);
+    background: rgba(0, 113, 188, 0.71);
+    color: #fff;
   }
 
   .video-card {
@@ -195,6 +192,118 @@
   .prioridad-icon {
     width: 1.3vw;
     height: auto;
+  }
+
+  /* --- CAJA INFERIOR --- */
+  .bottom-card {
+    width: 100%;
+    height: 5vw;
+    background: rgba(255, 255, 255, 0.88);
+    border-radius: 0.8vw;
+    box-shadow: 0 1vw 2vw rgba(0, 0, 0, 0.28);
+    display: flex;
+    align-items: center;
+    padding: 0.9vw;
+    gap: 0.5vw;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .bottom-card-icon {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.5vw;
+  }
+
+  .bottom-card-icon img {
+    height: 80%;
+    width: auto;
+  }
+
+  .bottom-card-items {
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+    flex: 1;
+    height: 100%;
+  }
+
+  .bottom-item-box {
+    height: 100%;
+    padding: 0 1vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 2.5vw;
+    color: #123a5e;
+    border-radius: 0.4vw;
+    white-space: nowrap;
+  }
+
+  .bottom-item-box.bg-light-blue {
+    background: rgba(0, 113, 188, 0.29);
+  }
+
+  .bottom-item-box.bg-dark-blue {
+    background: rgba(0, 113, 188, 0.71);
+    color: #fff;
+  }
+
+  /* --- NOTIFICACIÓN POP-UP FLOTANTE --- */
+  .turno-alert-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    background: rgba(4, 38, 74, 0.96);
+    border: 0.4vw solid #29abe2;
+    border-radius: 2vw;
+    padding: 2.5vw 4vw;
+    box-shadow: 0 2vw 5vw rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    text-align: center;
+    color: #fff;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease-out;
+    min-width: 40vw;
+  }
+
+  .turno-alert-overlay.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .alert-title {
+    font-size: 2.2vw;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #29abe2;
+    margin-bottom: 0.8vw;
+    font-weight: 600;
+  }
+
+  .alert-codigo {
+    font-size: 6.5vw;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 1.2vw;
+    color: #ffffff;
+    text-shadow: 0 0.5vw 1vw rgba(0,0,0,0.5);
+  }
+
+  .alert-modulo {
+    font-size: 3.5vw;
+    font-weight: 700;
+    background: #0071bc;
+    color: #fff;
+    padding: 0.6vw 2.5vw;
+    border-radius: 1vw;
+    display: inline-block;
+    box-shadow: 0 0.8vw 1.5vw rgba(0,0,0,0.3);
   }
 </style>
 
@@ -222,74 +331,165 @@
             </iframe>
         </div>
     </div>
+
+    <!-- CAJA INFERIOR ANCHO COMPLETO -->
+    <div class="bottom-card d-none">
+        <div class="bottom-card-icon mx-3">
+            <i class="fa-solid fa-clock-rotate-left" style="color: #0071bc; font-size: 45px;"></i>
+        </div>
+        <div class="bottom-card-items" id="bottom-turnos-list">
+            <!-- Se llena dinámicamente con JS -->
+        </div>
+    </div>
+
+    <!-- POP-UP NOTIFICACIÓN DE NUEVO TURNO -->
+    <div id="turno-pop-alert" class="turno-alert-overlay">
+        <div class="alert-title">Siguiente Turno</div>
+        <div class="alert-codigo" id="pop-turno-codigo">--</div>
+        <div class="alert-modulo" id="pop-turno-modulo">--</div>
+    </div>
 </div>
 
 <script>
     let turnosEnAtencion = [];
+    let colaNotificaciones = [];
+    let mostrandoNotificacion = false;
 
-    var sound = new Howl({
-        src: ['{{ $assetUrl }}/assets/sound.mp3'],
-        volume: 1.0
-    });
+    // Web Audio API para reproducir desde RAM al instante
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+    let soundBuffer = null;
 
-    function iniciarTurnero() {
-        cargarTurnos();
-        $('.iniciador').addClass('d-none');
-        $('.turnero').removeClass('d-none');
-        setInterval(cargarTurnos, 2000);
+    function getAudioContext() {
+        if (!audioCtx) {
+            audioCtx = new AudioCtx();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        return audioCtx;
+    }
+
+    // Precargar el MP3 original como buffer en RAM
+    async function precargarAudio() {
+        try {
+            const ctx = getAudioContext();
+            const url = '{{ request()->getHost() === "127.0.0.1" ? url("/") : secure_url("/") }}/assets/sound.mp3';
+            const response = await fetch(url);
+            const arrayBuffer = await response.arrayBuffer();
+            soundBuffer = await ctx.decodeAudioData(arrayBuffer);
+        } catch (e) {
+            console.error("Error al precargar el audio:", e);
+        }
+    }
+
+    // Reproducción pura e instantánea sin retardo de red
+    function playSound() {
+        if (!soundBuffer) return;
+
+        try {
+            const ctx = getAudioContext();
+            const source = ctx.createBufferSource();
+            source.buffer = soundBuffer;
+            source.connect(ctx.destination);
+            source.start(0);
+        } catch (e) {
+            console.error("Error al reproducir audio:", e);
+        }
     }
 
     async function notificarNuevo(data) {
-        $.each(data, async function(key, value) {
+        let hayNuevos = false;
+
+        // Procesamiento síncrono correcto de la lista de turnos
+        $.each(data, function(key, value) {
             if (!turnosEnAtencion.includes(value.idorden)) {
                 turnosEnAtencion.push(value.idorden);
-                await playSound();
+                
+                colaNotificaciones.push({
+                    turno: value.turno,
+                    caja: value.cajaatiende
+                });
+
+                hayNuevos = true;
             }
         });
+
+        if (hayNuevos && !mostrandoNotificacion) {
+            procesarColaNotificaciones();
+        }
     }
 
-    async function playSound() {
-        sound.muted = false;
-        sound.play();
+    function procesarColaNotificaciones() {
+        if (colaNotificaciones.length === 0) {
+            mostrandoNotificacion = false;
+            return;
+        }
+
+        mostrandoNotificacion = true;
+
+        const item = colaNotificaciones.shift();
+        const modulo = item.caja ? `Módulo ${item.caja}` : '';
+
+        $('#pop-turno-codigo').text(item.turno);
+        $('#pop-turno-modulo').text(modulo);
+
+        // Disparo en paralelo exacto: Sonido RAM (0ms) + Modal CSS
+        playSound();
+        $('#turno-pop-alert').addClass('show');
+
+        setTimeout(() => {
+            $('#turno-pop-alert').removeClass('show');
+
+            setTimeout(() => {
+                procesarColaNotificaciones();
+            }, 400);
+
+        }, 4000);
     }
 
     async function cargarTurnos() {
-        let args = [];
-        args["endpoint"] = `${api_url}/${api_war}/transaccion/turnos_asignados_caja?macAddress={{ $mac }}&estado=TURNO_ASIGNADO`;
-        args["method"] = "GET";
-        args["token"] = accessToken;
-        args["showLoader"] = false;
+        let argsAsignados = {
+            endpoint: `${api_url}/${api_war}/transaccion/turnos_asignados_caja?macAddress={{ $mac }}&estado=TURNO_ASIGNADO`,
+            method: "GET",
+            token: accessToken,
+            showLoader: false
+        };
 
-        const data = await call(args);
+        let argsEnEspera = {
+            endpoint: `${api_url}/${api_war}/transaccion/turnos_asignados_caja?macAddress={{ $mac }}&estado=TURNO_NO_ASIGNADO`,
+            method: "GET",
+            token: accessToken,
+            showLoader: false
+        };
+
+        const [data, dataWait] = await Promise.all([
+            call(argsAsignados),
+            call(argsEnEspera)
+        ]);
 
         if (data && data.code == 200) {
             notificarNuevo(data.data);
             let elem = '';
             
-            // Set para almacenar las combinaciones únicas
             const procesados = new Set();
             let mostrados = 0;
 
             $.each(data.data, function(key, value) {
-                // Creamos un identificador único por cada combinación de turno y caja
                 const identificador = `${value.turno}_${value.cajaatiende}`;
 
-                // Si la combinación ya existe en el Set, omitimos este elemento
                 if (procesados.has(identificador)) {
-                    return true; // continue en $.each de jQuery
+                    return true;
                 }
 
-                // Si ya mostramos 6 elementos únicos, detenemos la iteración
                 if (mostrados >= 6) {
-                    return false; // break en $.each de jQuery
+                    return false;
                 }
 
-                // Registramos el elemento como procesado e incrementamos el contador
                 procesados.add(identificador);
                 mostrados++;
 
                 let modulo = value.cajaatiende ? `Módulo ${value.cajaatiende}` : '';
-                let nombrePaciente = value.paciente || value.nombre || '';
                 
                 let icon = '';
                 if (value.nemonicoPrioridad && value.nemonicoPrioridad !== "NORMAL") {
@@ -302,12 +502,10 @@
                     ${icon}
                     <span>${value.turno}</span>
                   </div>
-                  <div class="turno-nombre">${nombrePaciente}</div>
                   <div class="turno-caja">${modulo}</div>
                 </div>`;
             });
 
-            // Verificamos si no se generó ningún elemento visual
             if (mostrados === 0) {
                 elem = `<div class="d-flex align-items-center justify-content-center h-100 text-muted fs-2 fw-medium">
                     <img src="{{ $assetUrl }}/assets/img/empty-turno-{{$lineaNegocio}}.png" style="height: 300px">
@@ -316,74 +514,62 @@
 
             $('#next-turno').html(elem);
         }
-    }
 
-    async function BKcargarTurnos() {
-        let args = [];
-        args["endpoint"] = `${api_url}/${api_war}/transaccion/turnos_asignados_caja?macAddress={{ $mac }}&estado=TURNO_ASIGNADO`;
-        args["method"] = "GET";
-        args["token"] = accessToken;
-        args["showLoader"] = false;
+        let elemBottom = '';
+        let contadorEspera = 0;
 
-        const data = await call(args);
+        if (dataWait && dataWait.code == 200 && Array.isArray(dataWait.data)) {
+            const procesadosEspera = new Set();
 
-        if (data && data.code == 200) {
-            notificarNuevo(data.data);
-            let elem = '';
+            $.each(dataWait.data, function(key, value) {
+                const identificador = `${value.turno}`;
 
-            $.each(data.data, function(key, value) {
-                if (key < 6) {
-                    let modulo = value.cajaatiende ? `Módulo ${value.cajaatiende}` : '';
-                    let nombrePaciente = value.paciente || value.nombre || '';
-                    
-                    let icon = '';
-                    if (value.nemonicoPrioridad && value.nemonicoPrioridad !== "NORMAL") {
-                        icon = `<img class="prioridad-icon" src="{{ $assetUrl }}/assets/img/${value.nemonicoPrioridad}.svg" alt="">`;
-                    }
-
-                    elem += `
-                    <div class="turno-row">
-                      <div class="turno-codigo">
-                        ${icon}
-                        <span>${value.turno}</span>
-                      </div>
-                      <div class="turno-nombre">${nombrePaciente}</div>
-                      <div class="turno-caja">${modulo}</div>
-                    </div>`;
+                if (procesadosEspera.has(identificador)) {
+                    return true;
                 }
-            });
 
-            if (data.data.length === 0) {
-                elem = `<div class="d-flex align-items-center justify-content-center h-100 text-muted fs-2 fw-medium">
-                    <img src="{{ $assetUrl }}/assets/img/empty-turno-{{$lineaNegocio}}.png" style="height: 300px">
-                    {{-- Sin turnos en atención --}}
+                procesadosEspera.add(identificador);
+                contadorEspera++;
+
+                const bgClass = (contadorEspera % 2 === 1) ? 'bg-light-blue' : 'bg-dark-blue';
+                
+                elemBottom += `
+                <div class="bottom-item-box ${bgClass}">
+                    ${value.turno}
                 </div>`;
-            }
-
-            $('#next-turno').html(elem);
+            });
         }
+
+        $('.bottom-card').toggleClass('d-none', contadorEspera === 0);$('#bottom-turnos-list').html(elemBottom);
     }
 
+    // PREVENCION DE SUSPENSION DEL NAVEGADOR (Tu Web Worker + Reactivación de Audio)
     const worker = new Worker(URL.createObjectURL(new Blob([`
         setInterval(() => postMessage("keepAlive"), 30000);
     `], { type: "text/javascript" })));
-    worker.onmessage = (event) => console.log(event.data);
+
+    worker.onmessage = () => {
+        // Al recibir el keepAlive reactivamos el AudioContext si el navegador intentó suspenderlo
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    };
 
     setInterval(() => {
         document.dispatchEvent(new Event("visibilitychange"));
         document.title = document.title === "Turnos" ? "Turnos Activos" : "Turnos";
     }, 60000);
 
+    // INICIALIZACIÓN AUTOMÁTICA PARA PANTALLA DESATENDIDA
     document.addEventListener("DOMContentLoaded", async () => {
+        await precargarAudio();
         await cargarTurnos();
         setInterval(cargarTurnos, 2000);
-        reiniciarCadaHora();
-    });
-
-    function reiniciarCadaHora() {
-        setInterval(function () {
+        
+        // Reinicio automático cada 1 hora
+        setInterval(() => {
             location.reload();
         }, 3600000);
-    }
+    });
 </script>
 @endsection
