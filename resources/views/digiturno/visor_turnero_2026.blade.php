@@ -190,7 +190,7 @@
   }
 
   .prioridad-icon {
-    width: 1.3vw;
+    width: 3vw;
     height: auto;
   }
 
@@ -207,6 +207,10 @@
     gap: 0.5vw;
     overflow: hidden;
     box-sizing: border-box;
+  }
+
+  .bottom-card .prioridad-icon{
+    width: 5vw;
   }
 
   .bottom-card-icon {
@@ -237,7 +241,7 @@
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 4vw;
+    font-size: 3.75vw;
     color: #123a5e;
     border-radius: 0.4vw;
     white-space: nowrap;
@@ -295,6 +299,10 @@
     text-shadow: 0 0.5vw 1vw rgba(0,0,0,0.5);
   }
 
+  .alert-codigo .prioridad-icon{
+    width: 5vw;
+  }
+
   .alert-modulo {
     font-size: 3.5vw;
     font-weight: 700;
@@ -335,7 +343,7 @@
     <!-- CAJA INFERIOR ANCHO COMPLETO -->
     <div class="bottom-card d-none">
         <div class="bottom-card-icon mx-3">
-            <i class="fa-solid fa-clock-rotate-left" style="color: #0071bc; font-size: 80px;"></i>
+            <i class="fa-solid fa-clock-rotate-left" style="color: #0071bc; font-size: 60px;"></i>
         </div>
         <div class="bottom-card-items" id="bottom-turnos-list">
             <!-- Se llena dinámicamente con JS -->
@@ -345,7 +353,8 @@
     <!-- POP-UP NOTIFICACIÓN DE NUEVO TURNO -->
     <div id="turno-pop-alert" class="turno-alert-overlay">
         <div class="alert-title">Siguiente Turno</div>
-        <div class="alert-codigo" id="pop-turno-codigo">--</div>
+        <div class="text-center mx-auto" id="box-nemonico-turno"></div>
+        <div class="alert-codigo d-flex justify-content-center align-items-center" id="pop-turno-codigo">--</div>
         <div class="alert-modulo" id="pop-turno-modulo">--</div>
     </div>
 </div>
@@ -355,47 +364,120 @@
     let colaNotificaciones = [];
     let mostrandoNotificacion = false;
 
-    // Web Audio API para reproducir desde RAM al instante
+    // ===== AUDIO ROBUSTO PARA PANTALLA DESATENDIDA =====
+    // Problemas que resuelve:
+    //  - El AudioContext queda "pegado" al dispositivo de salida que existía al crearlo. Si ese
+    //    dispositivo cambia o se duerme (HDMI/TV, sesión remota RDP, driver de audio virtual),
+    //    el contexto sigue diciendo "running" pero ya no suena nada. Ahora se recrea.
+    //  - Si el MP3 falla al cargar (p. ej. tras el reload de cada hora), antes quedaba en silencio
+    //    para siempre. Ahora reintenta y además hay un respaldo con <audio>.
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const SOUND_URL = '{{ $assetUrl }}/assets/sound.mp3';
+    const AUDIO_IDLE_RECREAR_MS = 5 * 60 * 1000; // si pasan 5 min sin sonar, se recrea el contexto antes de sonar
+
     let audioCtx = null;
     let soundBuffer = null;
+    let cargandoAudio = false;
+    let ultimoUsoAudio = 0;
+    let htmlAudio = null; // respaldo
+
+    function crearAudioContext() {
+        if (audioCtx && audioCtx.state !== 'closed') {
+            try { audioCtx.close().catch(() => {}); } catch (e) {}
+        }
+        audioCtx = new AudioCtx({ latencyHint: 'interactive' });
+        audioCtx.onstatechange = () => {
+            if (audioCtx && audioCtx.state !== 'running' && audioCtx.state !== 'closed') {
+                audioCtx.resume().catch(() => {});
+            }
+        };
+        return audioCtx;
+    }
 
     function getAudioContext() {
-        if (!audioCtx) {
-            audioCtx = new AudioCtx();
+        if (!audioCtx || audioCtx.state === 'closed') {
+            crearAudioContext();
         }
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
+        if (audioCtx.state !== 'running') {
+            audioCtx.resume().catch(() => {});
         }
         return audioCtx;
     }
 
-    // Precargar el MP3 original como buffer en RAM
+    // Precargar el MP3 como buffer en RAM (con guardas para no lanzar cargas en paralelo)
     async function precargarAudio() {
+        if (soundBuffer || cargandoAudio) return;
+        cargandoAudio = true;
         try {
             const ctx = getAudioContext();
-            const url = '{{ request()->getHost() === "127.0.0.1" ? url("/") : secure_url("/") }}/assets/sound.mp3';
-            const response = await fetch(url);
+            const response = await fetch(SOUND_URL, { cache: 'force-cache' });
+            if (!response.ok) throw new Error('HTTP ' + response.status);
             const arrayBuffer = await response.arrayBuffer();
             soundBuffer = await ctx.decodeAudioData(arrayBuffer);
         } catch (e) {
+            // Se reintenta solo: el heartbeat del worker (cada 30 s) vuelve a llamar a precargarAudio()
             console.error("Error al precargar el audio:", e);
+        } finally {
+            cargandoAudio = false;
         }
     }
 
-    // Reproducción pura e instantánea sin retardo de red
-    function playSound() {
-        if (!soundBuffer) return;
+    function esperar(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
+    // Respaldo: elemento <audio> normal (usa --autoplay-policy=no-user-gesture-required)
+    function reproducirRespaldo() {
         try {
-            const ctx = getAudioContext();
+            if (!htmlAudio) {
+                htmlAudio = new Audio(SOUND_URL);
+                htmlAudio.preload = 'auto';
+            }
+            htmlAudio.currentTime = 0;
+            const p = htmlAudio.play();
+            if (p && p.catch) p.catch(e => console.error("Respaldo de audio falló:", e));
+        } catch (e) {
+            console.error("Respaldo de audio falló:", e);
+        }
+    }
+
+    async function playSound() {
+        try {
+            // Tras mucho tiempo sin sonar, el dispositivo de salida pudo cambiar/dormirse: contexto nuevo
+            if (audioCtx && ultimoUsoAudio && (Date.now() - ultimoUsoAudio) > AUDIO_IDLE_RECREAR_MS) {
+                crearAudioContext();
+            }
+
+            let ctx = getAudioContext();
+            if (ctx.state !== 'running') {
+                await Promise.race([ctx.resume(), esperar(300)]);
+            }
+            if (ctx.state !== 'running') {
+                // Contexto colgado: recrearlo
+                ctx = crearAudioContext();
+                await Promise.race([ctx.resume(), esperar(300)]);
+            }
+
+            if (!soundBuffer) throw new Error('El buffer de audio aún no está cargado');
+
             const source = ctx.createBufferSource();
             source.buffer = soundBuffer;
             source.connect(ctx.destination);
             source.start(0);
+            ultimoUsoAudio = Date.now();
         } catch (e) {
-            console.error("Error al reproducir audio:", e);
+            console.error("Error al reproducir audio (se usa respaldo):", e);
+            reproducirRespaldo();
+            precargarAudio();
         }
+    }
+
+    // Si Windows cambia/agrega/quita un dispositivo de audio (HDMI, RDP, etc.), recrear el contexto
+    if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
+        navigator.mediaDevices.addEventListener('devicechange', () => {
+            crearAudioContext();
+            if (!soundBuffer) precargarAudio();
+        });
     }
 
     async function notificarNuevo(data) {
@@ -408,7 +490,8 @@
                 
                 colaNotificaciones.push({
                     turno: value.turno,
-                    caja: value.cajaatiende
+                    caja: value.cajaatiende,
+                    nemonicoPrioridad: value.nemonicoPrioridad
                 });
 
                 hayNuevos = true;
@@ -430,8 +513,16 @@
 
         const item = colaNotificaciones.shift();
         const modulo = item.caja ? `Módulo ${item.caja}` : '';
+        console.log(item)
+        
+        let icon = ``;
+        if (item.nemonicoPrioridad && item.nemonicoPrioridad !== "NORMAL") {
+            icon = `<img class="prioridad-icon me-2" src="{{ $assetUrl }}/assets/img/${item.nemonicoPrioridad}.svg" alt="">`;
+        }
+        icon = `<img class="prioridad-icon me-2" src="{{ $assetUrl }}/assets/img/NORMAL.svg" alt="">`;
+        // $('#box-nemonico-turno').html(icon);
 
-        $('#pop-turno-codigo').text(item.turno);
+        $('#pop-turno-codigo').html(`${icon} ${item.turno}`);
         $('#pop-turno-modulo').text(modulo);
 
         // Disparo en paralelo exacto: Sonido RAM (0ms) + Modal CSS
@@ -493,7 +584,7 @@
                 
                 let icon = '';
                 if (value.nemonicoPrioridad && value.nemonicoPrioridad !== "NORMAL") {
-                    icon = `<img class="prioridad-icon" src="{{ $assetUrl }}/assets/img/${value.nemonicoPrioridad}.svg" alt="">`;
+                    icon = `<img class="prioridad-icon me-2" src="{{ $assetUrl }}/assets/img/${value.nemonicoPrioridad}.svg" alt="">`;
                 }
 
                 elem += `
@@ -520,7 +611,7 @@
 
         if (dataWait && dataWait.code == 200 && Array.isArray(dataWait.data)) {
             const procesadosEspera = new Set();
-
+            let mostrados = 0;
             $.each(dataWait.data, function(key, value) {
                 const identificador = `${value.turno}`;
 
@@ -531,8 +622,18 @@
                 procesadosEspera.add(identificador);
                 contadorEspera++;
 
+                let icon = '';
+                if (value.nemonicoPrioridad && value.nemonicoPrioridad !== "NORMAL") {
+                    icon = `<img class="prioridad-icon me-2" src="{{ $assetUrl }}/assets/img/${value.nemonicoPrioridad}.svg" alt="">`;
+                }
+
                 const bgClass = (contadorEspera % 2 === 1) ? 'bg-light-blue' : 'bg-dark-blue';
-                
+
+                if (mostrados >= 6) {
+                    return false;
+                }
+
+                mostrados++;                
                 elemBottom += `
                 <div class="bottom-item-box ${bgClass}">
                     ${value.turno}
@@ -540,7 +641,8 @@
             });
         }
 
-        $('.bottom-card').toggleClass('d-none', contadorEspera === 0);$('#bottom-turnos-list').html(elemBottom);
+        $('.bottom-card').toggleClass('d-none', contadorEspera === 0);
+        $('#bottom-turnos-list').html(elemBottom);
     }
 
     // PREVENCION DE SUSPENSION DEL NAVEGADOR (Tu Web Worker + Reactivación de Audio)
@@ -550,8 +652,12 @@
 
     worker.onmessage = () => {
         // Al recibir el keepAlive reactivamos el AudioContext si el navegador intentó suspenderlo
-        if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
+        if (audioCtx && audioCtx.state !== 'running' && audioCtx.state !== 'closed') {
+            audioCtx.resume().catch(() => {});
+        }
+        // Si el MP3 no llegó a cargar, reintentar
+        if (!soundBuffer) {
+            precargarAudio();
         }
     };
 
@@ -564,7 +670,7 @@
     document.addEventListener("DOMContentLoaded", async () => {
         await precargarAudio();
         await cargarTurnos();
-        //setInterval(cargarTurnos, 2000);
+        setInterval(cargarTurnos, 2000);
         
         // Reinicio automático cada 1 hora
         setInterval(() => {

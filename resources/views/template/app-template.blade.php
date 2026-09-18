@@ -8,6 +8,7 @@
 
         <title>Digiturno - Veris</title>
         <meta name="description" content="" />
+        <meta name="google" content="notranslate">
         <!-- Favicon -->
         <link rel="icon" type="image/x-icon" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/favicon/favicon.svg" />
         <link rel="icon" type="image/x-icon" href="{{ request()->getHost() === '127.0.0.1' ? url('/') : secure_url('/') }}/assets/img/favicon/favicon.png" />
