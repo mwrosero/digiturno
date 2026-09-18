@@ -519,7 +519,6 @@
         if (item.nemonicoPrioridad && item.nemonicoPrioridad !== "NORMAL") {
             icon = `<img class="prioridad-icon me-2" src="{{ $assetUrl }}/assets/img/${item.nemonicoPrioridad}.svg" alt="">`;
         }
-        icon = `<img class="prioridad-icon me-2" src="{{ $assetUrl }}/assets/img/NORMAL.svg" alt="">`;
         // $('#box-nemonico-turno').html(icon);
 
         $('#pop-turno-codigo').html(`${icon} ${item.turno}`);
