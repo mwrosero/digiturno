@@ -41,8 +41,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2.5vw;
-    padding: 0 5vw;
+    gap: 2vw;
+    padding: 0 2vw;
     box-sizing: border-box;
   }
 
@@ -58,11 +58,11 @@
 
   .logo-wrap {
     position: absolute;
-    top: 5vh;
-    right: 5vw;
-    width: 35vw;
+    top: 2vh;
+    right: 2vw;
+    width: 30vw;
     @if($lineaNegocio == "parami")
-    top: 3vh;
+    top: 2vh;
     max-width: 440px;
     @endif
     text-align: right;
@@ -79,7 +79,7 @@
     display: flex;
     gap: 2.5vw;
     align-items: stretch;
-    margin-top: 4vh;
+    margin-top: 8vh;
   }
 
   .turnos-card {
@@ -116,8 +116,8 @@
   }
 
   .turno-row {
-    height: 6vh;
-    min-height: 6vh;
+    height: 8vh;
+    min-height: 8vh;
     display: flex;
     align-items: center;
     border-radius: 0.5vw;
@@ -128,11 +128,11 @@
   }
 
   .turno-codigo {
-    flex: 0 0 30%;
+    flex: 0 0 40%;
     height: 100%;
     padding: 0.3vw 0.8vw;
     font-weight: 700;
-    font-size: 2.5vw;
+    font-size: 3.5vw;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -165,12 +165,12 @@
     height: 100%;
     padding: 0.3vw 0.8vw;
     font-weight: 700;
-    font-size: 2.5vw;
+    font-size: 3.5vw;
     text-align: left;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 113, 188, 0.71);
+    background: rgba(0, 113, 188, 1);
     color: #fff;
   }
 
@@ -197,7 +197,7 @@
   /* --- CAJA INFERIOR --- */
   .bottom-card {
     width: 100%;
-    height: 5vw;
+    height: 10vw;
     background: rgba(255, 255, 255, 0.88);
     border-radius: 0.8vw;
     box-shadow: 0 1vw 2vw rgba(0, 0, 0, 0.28);
@@ -237,7 +237,7 @@
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 2.5vw;
+    font-size: 4vw;
     color: #123a5e;
     border-radius: 0.4vw;
     white-space: nowrap;
@@ -248,7 +248,7 @@
   }
 
   .bottom-item-box.bg-dark-blue {
-    background: rgba(0, 113, 188, 0.71);
+    background: rgba(0, 113, 188, 1);
     color: #fff;
   }
 
@@ -335,7 +335,7 @@
     <!-- CAJA INFERIOR ANCHO COMPLETO -->
     <div class="bottom-card d-none">
         <div class="bottom-card-icon mx-3">
-            <i class="fa-solid fa-clock-rotate-left" style="color: #0071bc; font-size: 45px;"></i>
+            <i class="fa-solid fa-clock-rotate-left" style="color: #0071bc; font-size: 80px;"></i>
         </div>
         <div class="bottom-card-items" id="bottom-turnos-list">
             <!-- Se llena dinámicamente con JS -->
@@ -564,7 +564,7 @@
     document.addEventListener("DOMContentLoaded", async () => {
         await precargarAudio();
         await cargarTurnos();
-        setInterval(cargarTurnos, 2000);
+        //setInterval(cargarTurnos, 2000);
         
         // Reinicio automático cada 1 hora
         setInterval(() => {
