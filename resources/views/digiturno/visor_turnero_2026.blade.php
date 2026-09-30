@@ -503,6 +503,8 @@
         }
     }
 
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
     async function procesarColaNotificaciones() {
         if (colaNotificaciones.length === 0) {
             mostrandoNotificacion = false;
@@ -523,6 +525,7 @@
         $('#pop-turno-modulo').text(modulo);
 
         await playSound();
+        await delay(1000);
         await llamarPaciente(item);
 
         $('#turno-pop-alert').addClass('show');
@@ -543,20 +546,54 @@
         let turnoTexto = await numberToWords(item.turno);
         const textToSpeak = `Turno ${letraTurno} ${turnoTexto}, Módulo ${item.caja}`;
 
+        const voices = window.speechSynthesis.getVoices();
+        const vozAndrea = voices.find(v => v.name.includes('Andrea') && v.lang === 'es-EC') 
+               || voices.find(v => v.lang === 'es-EC') 
+               || voices.find(v => v.name.includes('Andrea'));
+
+        const speech = new SpeechSynthesisUtterance(textToSpeak);
         speech.text = textToSpeak;
-        speech.lang = 'es-ES'; 
+        speech.lang = 'es-EC';
+        speech.volume = 1;
+        speech.rate = 1;
 
-        const spanishVoice = voices.find(v => v.lang.startsWith('es'));
-        if (spanishVoice) {
-            // speech.voice = spanishVoice;
+        if (vozAndrea) {
+            speech.voice = vozAndrea;
         }
-
-        // Configuración de volumen y velocidad
-        speech.volume = 1; // Volumen máximo (rango de 0 a 1)
-        speech.rate = 0.9;  // Velocidad más lenta (1 es normal, 0.8 o 0.9 suele sonar natural y pausado)
 
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(speech);
+    }
+
+    function obtenerMejorVozLatina() {
+        const voices = window.speechSynthesis.getVoices();
+
+        // 1. Prioridad: Voz 'Natural' o 'Online' en español de Latinoamérica (es-MX, es-US, es-CO, es-AR, etc.)
+        let vozElegida = voices.find(v => 
+            v.lang.startsWith('es') && 
+            !v.lang.includes('ES') && // Excluye España
+            (v.name.includes('Natural') || v.name.includes('Online'))
+        );
+
+        // 2. Segunda opción: Cualquier voz 'Natural' en español (incluso si es es-ES)
+        if (!vozElegida) {
+            vozElegida = voices.find(v => 
+                v.lang.startsWith('es') && 
+                (v.name.includes('Natural') || v.name.includes('Online'))
+            );
+        }
+
+        // 3. Tercera opción: Cualquier voz en español latino no-España
+        if (!vozElegida) {
+            vozElegida = voices.find(v => v.lang.startsWith('es') && !v.lang.includes('ES'));
+        }
+
+        // 4. Último recurso: Primera voz que empiece por 'es'
+        if (!vozElegida) {
+            vozElegida = voices.find(v => v.lang.startsWith('es'));
+        }
+
+        return vozElegida;
     }
 
     async function numberToWords(str) {
