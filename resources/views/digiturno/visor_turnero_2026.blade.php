@@ -363,23 +363,26 @@
     let turnosEnAtencion = [];
     let colaNotificaciones = [];
     let mostrandoNotificacion = false;
+    let cargandoTurnos = false; // Prevención de llamadas traslapadas
+
+    let speech = new SpeechSynthesisUtterance();
+
+    function cargarVoces() {
+        voices = window.speechSynthesis.getVoices();
+    }
+    window.speechSynthesis.onvoiceschanged = cargarVoces;
+    cargarVoces();
 
     // ===== AUDIO ROBUSTO PARA PANTALLA DESATENDIDA =====
-    // Problemas que resuelve:
-    //  - El AudioContext queda "pegado" al dispositivo de salida que existía al crearlo. Si ese
-    //    dispositivo cambia o se duerme (HDMI/TV, sesión remota RDP, driver de audio virtual),
-    //    el contexto sigue diciendo "running" pero ya no suena nada. Ahora se recrea.
-    //  - Si el MP3 falla al cargar (p. ej. tras el reload de cada hora), antes quedaba en silencio
-    //    para siempre. Ahora reintenta y además hay un respaldo con <audio>.
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     const SOUND_URL = '{{ $assetUrl }}/assets/sound.mp3';
-    const AUDIO_IDLE_RECREAR_MS = 5 * 60 * 1000; // si pasan 5 min sin sonar, se recrea el contexto antes de sonar
+    const AUDIO_IDLE_RECREAR_MS = 5 * 60 * 1000;
 
     let audioCtx = null;
     let soundBuffer = null;
     let cargandoAudio = false;
     let ultimoUsoAudio = 0;
-    let htmlAudio = null; // respaldo
+    let htmlAudio = null;
 
     function crearAudioContext() {
         if (audioCtx && audioCtx.state !== 'closed') {
@@ -404,7 +407,6 @@
         return audioCtx;
     }
 
-    // Precargar el MP3 como buffer en RAM (con guardas para no lanzar cargas en paralelo)
     async function precargarAudio() {
         if (soundBuffer || cargandoAudio) return;
         cargandoAudio = true;
@@ -415,7 +417,6 @@
             const arrayBuffer = await response.arrayBuffer();
             soundBuffer = await ctx.decodeAudioData(arrayBuffer);
         } catch (e) {
-            // Se reintenta solo: el heartbeat del worker (cada 30 s) vuelve a llamar a precargarAudio()
             console.error("Error al precargar el audio:", e);
         } finally {
             cargandoAudio = false;
@@ -426,7 +427,6 @@
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    // Respaldo: elemento <audio> normal (usa --autoplay-policy=no-user-gesture-required)
     function reproducirRespaldo() {
         try {
             if (!htmlAudio) {
@@ -443,7 +443,6 @@
 
     async function playSound() {
         try {
-            // Tras mucho tiempo sin sonar, el dispositivo de salida pudo cambiar/dormirse: contexto nuevo
             if (audioCtx && ultimoUsoAudio && (Date.now() - ultimoUsoAudio) > AUDIO_IDLE_RECREAR_MS) {
                 crearAudioContext();
             }
@@ -453,7 +452,6 @@
                 await Promise.race([ctx.resume(), esperar(300)]);
             }
             if (ctx.state !== 'running') {
-                // Contexto colgado: recrearlo
                 ctx = crearAudioContext();
                 await Promise.race([ctx.resume(), esperar(300)]);
             }
@@ -472,7 +470,6 @@
         }
     }
 
-    // Si Windows cambia/agrega/quita un dispositivo de audio (HDMI, RDP, etc.), recrear el contexto
     if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
         navigator.mediaDevices.addEventListener('devicechange', () => {
             crearAudioContext();
@@ -483,12 +480,15 @@
     async function notificarNuevo(data) {
         let hayNuevos = false;
 
-        // Procesamiento síncrono correcto de la lista de turnos
         $.each(data, function(key, value) {
-            if (!turnosEnAtencion.includes(value.idorden)) {
+            // Verificar que no se haya procesado ni esté actualmente en la cola
+            const yaEnCola = colaNotificaciones.some(item => item.idorden === value.idorden);
+
+            if (!turnosEnAtencion.includes(value.idorden) && !yaEnCola) {
                 turnosEnAtencion.push(value.idorden);
                 
                 colaNotificaciones.push({
+                    idorden: value.idorden,
                     turno: value.turno,
                     caja: value.cajaatiende,
                     nemonicoPrioridad: value.nemonicoPrioridad
@@ -503,7 +503,7 @@
         }
     }
 
-    function procesarColaNotificaciones() {
+    async function procesarColaNotificaciones() {
         if (colaNotificaciones.length === 0) {
             mostrandoNotificacion = false;
             return;
@@ -513,19 +513,18 @@
 
         const item = colaNotificaciones.shift();
         const modulo = item.caja ? `Módulo ${item.caja}` : '';
-        console.log(item)
         
         let icon = ``;
         if (item.nemonicoPrioridad && item.nemonicoPrioridad !== "NORMAL") {
             icon = `<img class="prioridad-icon me-2" src="{{ $assetUrl }}/assets/img/${item.nemonicoPrioridad}.svg" alt="">`;
         }
-        // $('#box-nemonico-turno').html(icon);
 
         $('#pop-turno-codigo').html(`${icon} ${item.turno}`);
         $('#pop-turno-modulo').text(modulo);
 
-        // Disparo en paralelo exacto: Sonido RAM (0ms) + Modal CSS
-        playSound();
+        await playSound();
+        await llamarPaciente(item);
+
         $('#turno-pop-alert').addClass('show');
 
         setTimeout(() => {
@@ -533,128 +532,206 @@
 
             setTimeout(() => {
                 procesarColaNotificaciones();
-            }, 400);
+            }, 1500);
 
         }, 4000);
     }
 
-    async function cargarTurnos() {
-        let argsAsignados = {
-            endpoint: `${api_url}/${api_war}/transaccion/turnos_asignados_caja?macAddress={{ $mac }}&estado=TURNO_ASIGNADO`,
-            method: "GET",
-            token: accessToken,
-            showLoader: false
-        };
+    async function llamarPaciente(item){
+        console.log(item.turno);
+        let letraTurno = (item.turno.split('-'))[0];
+        let turnoTexto = await numberToWords(item.turno);
+        const textToSpeak = `Turno ${letraTurno} ${turnoTexto}, Módulo ${item.caja}`;
 
-        let argsEnEspera = {
-            endpoint: `${api_url}/${api_war}/transaccion/turnos_asignados_caja?macAddress={{ $mac }}&estado=TURNO_NO_ASIGNADO`,
-            method: "GET",
-            token: accessToken,
-            showLoader: false
-        };
+        speech.text = textToSpeak;
+        speech.lang = 'es-ES'; 
 
-        const [data, dataWait] = await Promise.all([
-            call(argsAsignados),
-            call(argsEnEspera)
-        ]);
-
-        if (data && data.code == 200) {
-            notificarNuevo(data.data);
-            let elem = '';
-            
-            const procesados = new Set();
-            let mostrados = 0;
-
-            $.each(data.data, function(key, value) {
-                const identificador = `${value.turno}_${value.cajaatiende}`;
-
-                if (procesados.has(identificador)) {
-                    return true;
-                }
-
-                if (mostrados >= 6) {
-                    return false;
-                }
-
-                procesados.add(identificador);
-                mostrados++;
-
-                let modulo = value.cajaatiende ? `Módulo ${value.cajaatiende}` : '';
-                
-                let icon = '';
-                if (value.nemonicoPrioridad && value.nemonicoPrioridad !== "NORMAL") {
-                    icon = `<img class="prioridad-icon me-2" src="{{ $assetUrl }}/assets/img/${value.nemonicoPrioridad}.svg" alt="">`;
-                }
-
-                elem += `
-                <div class="turno-row">
-                  <div class="turno-codigo">
-                    ${icon}
-                    <span>${value.turno}</span>
-                  </div>
-                  <div class="turno-caja">${modulo}</div>
-                </div>`;
-            });
-
-            if (mostrados === 0) {
-                elem = `<div class="d-flex align-items-center justify-content-center h-100 text-muted fs-2 fw-medium">
-                    <img src="{{ $assetUrl }}/assets/img/empty-turno-{{$lineaNegocio}}.png" style="height: 300px">
-                </div>`;
-            }
-
-            $('#next-turno').html(elem);
+        const spanishVoice = voices.find(v => v.lang.startsWith('es'));
+        if (spanishVoice) {
+            // speech.voice = spanishVoice;
         }
 
-        let elemBottom = '';
-        let contadorEspera = 0;
+        // Configuración de volumen y velocidad
+        speech.volume = 1; // Volumen máximo (rango de 0 a 1)
+        speech.rate = 0.9;  // Velocidad más lenta (1 es normal, 0.8 o 0.9 suele sonar natural y pausado)
 
-        if (dataWait && dataWait.code == 200 && Array.isArray(dataWait.data)) {
-            const procesadosEspera = new Set();
-            let mostrados = 0;
-            $.each(dataWait.data, function(key, value) {
-                const identificador = `${value.turno}`;
-
-                if (procesadosEspera.has(identificador)) {
-                    return true;
-                }
-
-                procesadosEspera.add(identificador);
-                contadorEspera++;
-
-                let icon = '';
-                if (value.nemonicoPrioridad && value.nemonicoPrioridad !== "NORMAL") {
-                    icon = `<img class="prioridad-icon me-2" src="{{ $assetUrl }}/assets/img/${value.nemonicoPrioridad}.svg" alt="">`;
-                }
-
-                const bgClass = (contadorEspera % 2 === 1) ? 'bg-light-blue' : 'bg-dark-blue';
-
-                if (mostrados >= 6) {
-                    return false;
-                }
-
-                mostrados++;                
-                elemBottom += `
-                <div class="bottom-item-box ${bgClass}">
-                    ${value.turno}
-                </div>`;
-            });
-        }
-
-        $('.bottom-card').toggleClass('d-none', contadorEspera === 0);
-        $('#bottom-turnos-list').html(elemBottom);
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(speech);
     }
 
-    // PREVENCION DE SUSPENSION DEL NAVEGADOR (Tu Web Worker + Reactivación de Audio)
+    async function numberToWords(str) {
+        if (!str) return '';
+        let turno = str.split('-');
+        let num = turno[1] || str;
+        const units = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+        const tens = ['', 'diez', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
+        const teens = ['diez', 'once', 'doce', 'trece', 'caturce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
+        const twenties = ['veinte', 'veintiuno', 'veintidós', 'veintitrés', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve'];
+        const hundreds = ['', 'ciento', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecentos'];
+
+        let n = parseInt(num, 10);
+        if (isNaN(n)) return str;
+        if (n === 0) return 'cero';
+        if (n === 100) return 'cien';
+
+        let parts = [];
+
+        if (n >= 100) {
+            parts.push(hundreds[Math.floor(n / 100)]);
+            n %= 100;
+        }
+
+        if (n >= 20) {
+            if (n < 30) {
+                parts.push(twenties[n - 20]);
+            } else {
+                let ten = Math.floor(n / 10);
+                let unit = n % 10;
+                parts.push(unit > 0 ? `${tens[ten]} y ${units[unit]}` : tens[ten]);
+            }
+        } else if (n >= 10) {
+            parts.push(teens[n - 10]);
+        } else if (n > 0) {
+            parts.push(units[n]);
+        }
+
+        return parts.join(' ');
+    }
+
+    function formatTextForSpeech(text) {
+        let cleanText = text.replace(/([a-záéíóúñ]+)-(\d+)/gi, '$1 $2');
+        return cleanText.replace(/\b(0*)(\d+)\b/g, (match, zeros, number) => {
+            const word = numberToWords(number);
+            const prefix = zeros.length > 0 ? 'cero '.repeat(zeros.length) : '';
+            return prefix + word;
+        });
+    }
+
+    async function cargarTurnos() {
+        if (cargandoTurnos) return; // Evita llamadas colisionadas si la red tarda
+        cargandoTurnos = true;
+
+        try {
+            let argsAsignados = {
+                endpoint: `${api_url}/${api_war}/transaccion/turnos_asignados_caja?macAddress={{ $mac }}&estado=TURNO_ASIGNADO`,
+                method: "GET",
+                token: accessToken,
+                showLoader: false
+            };
+
+            let argsEnEspera = {
+                endpoint: `${api_url}/${api_war}/transaccion/turnos_asignados_caja?macAddress={{ $mac }}&estado=TURNO_NO_ASIGNADO`,
+                method: "GET",
+                token: accessToken,
+                showLoader: false
+            };
+
+            const [data, dataWait] = await Promise.all([
+                call(argsAsignados),
+                call(argsEnEspera)
+            ]);
+
+            if (data && data.code == 200) {
+                notificarNuevo(data.data);
+                let elem = '';
+                
+                const procesados = new Set();
+                let mostrados = 0;
+
+                const turnosOrdenados = Array.isArray(data.data) ? [...data.data].reverse() : [];
+                
+                $.each(turnosOrdenados, function(key, value) {
+                    const identificador = `${value.turno}_${value.cajaatiende}`;
+
+                    if (procesados.has(identificador)) {
+                        return true;
+                    }
+
+                    if (mostrados >= 6) {
+                        return false;
+                    }
+
+                    procesados.add(identificador);
+                    mostrados++;
+
+                    let modulo = value.cajaatiende ? `Módulo ${value.cajaatiende}` : '';
+                    
+                    let icon = '';
+                    if (value.nemonicoPrioridad && value.nemonicoPrioridad !== "NORMAL") {
+                        icon = `<img class="prioridad-icon me-2" src="{{ $assetUrl }}/assets/img/${value.nemonicoPrioridad}.svg" alt="">`;
+                    }
+
+                    elem += `
+                    <div class="turno-row">
+                      <div class="turno-codigo">
+                        ${icon}
+                        <span>${value.turno}</span>
+                      </div>
+                      <div class="turno-caja">${modulo}</div>
+                    </div>`;
+                });
+
+                if (mostrados === 0) {
+                    elem = `<div class="d-flex align-items-center justify-content-center h-100 text-muted fs-2 fw-medium">
+                        <img src="{{ $assetUrl }}/assets/img/empty-turno-{{$lineaNegocio}}.png" style="height: 300px">
+                    </div>`;
+                }
+
+                $('#next-turno').html(elem);
+            }
+
+            let elemBottom = '';
+            let contadorEspera = 0;
+
+            if (dataWait && dataWait.code == 200 && Array.isArray(dataWait.data)) {
+                const procesadosEspera = new Set();
+                let mostrados = 0;
+                $.each(dataWait.data, function(key, value) {
+                    const identificador = `${value.turno}`;
+
+                    if (procesadosEspera.has(identificador)) {
+                        return true;
+                    }
+
+                    procesadosEspera.add(identificador);
+                    contadorEspera++;
+
+                    let icon = '';
+                    if (value.nemonicoPrioridad && value.nemonicoPrioridad !== "NORMAL") {
+                        icon = `<img class="prioridad-icon me-2" src="{{ $assetUrl }}/assets/img/${value.nemonicoPrioridad}.svg" alt="">`;
+                    }
+
+                    const bgClass = (contadorEspera % 2 === 1) ? 'bg-light-blue' : 'bg-dark-blue';
+
+                    if (mostrados >= 6) {
+                        return false;
+                    }
+
+                    mostrados++;                
+                    elemBottom += `
+                    <div class="bottom-item-box ${bgClass}">
+                        ${value.turno}
+                    </div>`;
+                });
+            }
+
+            $('.bottom-card').toggleClass('d-none', contadorEspera === 0);$('#bottom-turnos-list').html(elemBottom);
+        } catch (e) {
+            console.error("Error al cargar turnos:", e);
+        } finally {
+            cargandoTurnos = false;
+        }
+    }
+
+    // PREVENCION DE SUSPENSION DEL NAVEGADOR
     const worker = new Worker(URL.createObjectURL(new Blob([`
         setInterval(() => postMessage("keepAlive"), 30000);
     `], { type: "text/javascript" })));
 
     worker.onmessage = () => {
-        // Al recibir el keepAlive reactivamos el AudioContext si el navegador intentó suspenderlo
         if (audioCtx && audioCtx.state !== 'running' && audioCtx.state !== 'closed') {
             audioCtx.resume().catch(() => {});
         }
-        // Si el MP3 no llegó a cargar, reintentar
         if (!soundBuffer) {
             precargarAudio();
         }
@@ -665,13 +742,12 @@
         document.title = document.title === "Turnos" ? "Turnos Activos" : "Turnos";
     }, 60000);
 
-    // INICIALIZACIÓN AUTOMÁTICA PARA PANTALLA DESATENDIDA
+    // INICIALIZACIÓN AUTOMÁTICA
     document.addEventListener("DOMContentLoaded", async () => {
         await precargarAudio();
         await cargarTurnos();
         setInterval(cargarTurnos, 2000);
         
-        // Reinicio automático cada 1 hora
         setInterval(() => {
             location.reload();
         }, 3600000);
