@@ -547,18 +547,18 @@
         const textToSpeak = `Turno ${letraTurno} ${turnoTexto}, Módulo ${item.caja}`;
 
         const voices = window.speechSynthesis.getVoices();
-        const vozAndrea = voices.find(v => v.name.includes('Andrea') && v.lang === 'es-EC') 
-               || voices.find(v => v.lang === 'es-EC') 
-               || voices.find(v => v.name.includes('Andrea'));
+        const vozPaloma = voices.find(v => v.name.includes('Paloma') && v.lang === 'es-US') 
+                       || voices.find(v => v.name.includes('Paloma'))
+                       || voices.find(v => v.lang === 'es-US');
 
         const speech = new SpeechSynthesisUtterance(textToSpeak);
         speech.text = textToSpeak;
-        speech.lang = 'es-EC';
+        speech.lang = 'es-US';
         speech.volume = 1;
         speech.rate = 1;
 
-        if (vozAndrea) {
-            speech.voice = vozAndrea;
+        if (vozPaloma) {
+            speech.voice = vozPaloma;
         }
 
         window.speechSynthesis.cancel();
