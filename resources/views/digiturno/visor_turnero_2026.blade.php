@@ -561,6 +561,9 @@
             speech.voice = vozPaloma;
         }
 
+        speech.onend = () => resolve();
+        speech.onerror = () => resolve();
+
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(speech);
     }
