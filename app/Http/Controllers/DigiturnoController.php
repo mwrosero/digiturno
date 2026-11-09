@@ -110,6 +110,8 @@ class DigiturnoController extends Controller
         if (in_array($mac, Veris::MACS_PARAMI, true)) {
             $lineaNegocio = "parami";
         }
+        // dump(Veris::MACS_PARAMI);
+        // dd($lineaNegocio);
         // return view('digiturno.visor_turnero')
         return view('digiturno.visor_turnero_2026')
                 ->with('lineaNegocio', $lineaNegocio)
